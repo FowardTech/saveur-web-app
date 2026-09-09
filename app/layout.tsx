@@ -32,6 +32,22 @@ const plusJakartaSans = localFont({
   display: "swap",
 });
 
+// MontserratAlternates-Black (900) — mobile's dedicated wordmark font for
+// the "Saveur" brand text specifically (components/BrandWordmark.tsx),
+// distinct from the app's body font (Plus Jakarta Sans above). Self-hosted
+// from public/fonts the same way — copied from the mobile repo's own
+// assets/fonts/MontserratAlternates-Black.ttf — rather than next/font/google,
+// for the same network-restricted-build-environment reason as above. Only
+// ever applied via the `font-brand` Tailwind token to the wordmark text
+// itself, never to body copy.
+const montserratAlternates = localFont({
+  src: "../public/fonts/MontserratAlternates-Black.ttf",
+  weight: "900",
+  style: "normal",
+  variable: "--font-montserrat-alternates",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Saveur — AI Career Coaching",
   description:
@@ -43,7 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${plusJakartaSans.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${montserratAlternates.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-page text-primary">
         <ThemeProvider>

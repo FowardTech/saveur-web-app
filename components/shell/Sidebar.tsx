@@ -54,8 +54,8 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full w-64 flex-col bg-surface-1">
       <div className="flex items-center gap-2 px-5 py-5">
-        <Image src="/logo-mark.png" alt="" width={28} height={26} priority />
-        <span className="text-xl font-bold tracking-tight text-primary">
+        <Image src="/logo-badge.png" alt="" width={28} height={28} priority className="rounded-[22%]" />
+        <span className="font-brand text-xl tracking-tight text-primary">
           Saveur<span className="text-brand">.</span>
         </span>
       </div>

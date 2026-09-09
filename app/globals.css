@@ -67,6 +67,11 @@
 
 @theme inline {
   --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Wordmark-only font — mirrors mobile's BrandWordmark.tsx use of
+     MontserratAlternates-Black for the "Saveur" text specifically. Not a
+     replacement for --font-sans; apply via the `font-brand` utility only
+     to that wordmark. */
+  --font-brand: var(--font-montserrat-alternates), var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
 
   --color-page: var(--page);
   --color-surface-1: var(--surface-1);
