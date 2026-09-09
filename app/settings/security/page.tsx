@@ -8,6 +8,7 @@ import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/two_factor.py
 //   GET  /api/v1/auth/2fa/status  -> {enabled}
@@ -15,6 +16,7 @@ import apiClient, { type ApiError } from "@/lib/apiClient";
 //   POST /api/v1/auth/2fa/verify  -> {verified, two_factor_enabled}  (body: {code, purpose})
 //   POST /api/v1/auth/2fa/disable -> {two_factor_enabled: false}
 export default function SecuritySettingsPage() {
+  const { profile, updateProfile } = useAuth();
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
@@ -22,6 +24,7 @@ export default function SecuritySettingsPage() {
   const [code, setCode] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [disabling, setDisabling] = useState(false);
+  const [savingNotifications, setSavingNotifications] = useState(false);
 
   async function load() {
     try {
@@ -84,6 +87,24 @@ export default function SecuritySettingsPage() {
     }
   }
 
+  // Plain notification PREFERENCE flag shared with mobile (PATCH /api/users/me
+  // -> notifications_enabled) -- not a browser Push API / service-worker
+  // subscription. Actual browser push delivery is a separate, larger feature
+  // and out of scope here; this just persists the same on/off preference
+  // mobile has always stored for this account.
+  async function handleToggleNotifications() {
+    if (!profile || savingNotifications) return;
+    setSavingNotifications(true);
+    setError(null);
+    try {
+      await updateProfile({ notificationsEnabled: !profile.notificationsEnabled });
+    } catch (err) {
+      setError((err as ApiError).message || "Couldn't update your notification preference right now.");
+    } finally {
+      setSavingNotifications(false);
+    }
+  }
+
   return (
     <RequireAuth>
       <AppShell>
@@ -126,6 +147,34 @@ export default function SecuritySettingsPage() {
                 </Button>
               </form>
             )}
+          </div>
+
+          <div className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
+                <EvaIcon name="bell-outline" size={20} />
+              </span>
+              <div>
+                <h2 className="font-semibold text-primary">Push notifications</h2>
+                <p className="text-sm text-hint">Notify me about job matches, interview reminders, and coach follow-ups.</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={!!profile?.notificationsEnabled}
+              disabled={!profile || savingNotifications}
+              onClick={handleToggleNotifications}
+              className={`relative h-6 w-11 shrink-0 rounded-pill transition disabled:opacity-50 ${
+                profile?.notificationsEnabled ? "bg-brand" : "bg-surface-4"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
+                  profile?.notificationsEnabled ? "translate-x-5" : "translate-x-0.5"
+                }`}
+              />
+            </button>
           </div>
         </div>
       </AppShell>
