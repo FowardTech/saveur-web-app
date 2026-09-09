@@ -8,6 +8,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { getPlans, createCheckoutSession, createPortalSession } from "@/lib/billingService";
 import { formatPrice, type BillingPlan } from "@/lib/types";
+import { getErrorMessage } from "@/lib/errors";
 
 export default function SubscriptionPage() {
   const router = useRouter();
@@ -52,7 +53,7 @@ export default function SubscriptionPage() {
       });
       window.location.assign(url);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Couldn't start checkout. Please try again.";
+      const message = getErrorMessage(err, "Couldn't start checkout. Please try again.");
       setActionError(message);
       setBusyCode(null);
     }
@@ -65,7 +66,7 @@ export default function SubscriptionPage() {
       const url = await createPortalSession(`${window.location.origin}/subscription`);
       window.location.assign(url);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Couldn't open the billing portal. Please try again.";
+      const message = getErrorMessage(err, "Couldn't open the billing portal. Please try again.");
       setActionError(message);
       setBusyCode(null);
     }

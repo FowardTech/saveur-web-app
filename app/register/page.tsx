@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword, updateProfile as updateFirebaseProfile } from "firebase/auth";
 import { firebaseAuth, isFirebaseConfigured } from "@/lib/firebase";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { getErrorMessage } from "@/lib/errors";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LinkedInButton } from "@/components/auth/LinkedInButton";
@@ -41,7 +42,7 @@ export default function RegisterPage() {
       // Brand-new account — always straight to onboarding.
       router.push("/onboarding");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Registration failed. Please try again.";
+      const message = getErrorMessage(err, "Registration failed. Please try again.");
       setError(message);
     } finally {
       setLoading(false);

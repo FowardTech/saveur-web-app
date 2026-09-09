@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { getErrorMessage } from "@/lib/errors";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
@@ -89,7 +90,7 @@ export default function OnboardingPage() {
       });
       router.push("/dashboard");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Something went wrong saving your profile. Please try again.";
+      const message = getErrorMessage(err, "Something went wrong saving your profile. Please try again.");
       setError(message);
     } finally {
       setSubmitting(false);

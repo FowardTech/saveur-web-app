@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { API_BASE_URL } from "@/lib/apiClient";
+import { getErrorMessage } from "@/lib/errors";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 
 /** "Continue with LinkedIn" — mirrors GoogleButton's shape, but drives the
@@ -27,7 +28,17 @@ export function LinkedInButton({ label = "Continue with LinkedIn" }: { label?: s
       if (!data?.url) throw new Error("LinkedIn sign-in isn't available right now. Please try again later.");
       window.location.href = data.url;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "LinkedIn sign-in failed. Please try again.";
+      // A raw "Failed to fetch" TypeError (as opposed to an HTTP error
+      // response, which the `!res.ok` branch above already turns into a
+      // friendlier message) means the request never got a response at all —
+      // almost always the backend's CORS_ORIGINS not allowing this origin,
+      // or a genuine connectivity problem. Neither is meaningful to a user,
+      // so swap it for the same "check your connection" wording apiClient
+      // uses for the equivalent case elsewhere in the app.
+      const raw = getErrorMessage(err, "LinkedIn sign-in failed. Please try again.");
+      const message = raw === "Failed to fetch"
+        ? "Couldn't reach the server. Please check your connection and try again."
+        : raw;
       setError(message);
       setLoading(false);
     }

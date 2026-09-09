@@ -6,10 +6,13 @@ import { signInWithPopup } from "firebase/auth";
 import { firebaseAuth, googleAuthProvider, isFirebaseConfigured } from "@/lib/firebase";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
+import { getErrorMessage } from "@/lib/errors";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 
-/** "Continue with Google" — the only OAuth provider Saveur's mobile app
- * supports, per AuthContext.tsx. Real Firebase popup sign-in; on success,
+/** "Continue with Google" — one of mobile's Firebase-native OAuth providers
+ * (Google/Apple; Apple is iOS-only and not offered on web — LinkedIn is the
+ * third, handled separately by LinkedInButton.tsx since Firebase has no
+ * built-in LinkedIn provider). Real Firebase popup sign-in; on success,
  * syncs the backend profile (POST /api/users/me) and routes to /onboarding
  * for a brand-new user or /dashboard for a returning one. */
 export function GoogleButton({ label = "Continue with Google" }: { label?: string }) {
@@ -30,7 +33,7 @@ export function GoogleButton({ label = "Continue with Google" }: { label?: strin
       const profile = await syncProfile();
       router.push(needsOnboarding(profile) ? "/onboarding" : "/dashboard");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Google sign-in failed. Please try again.";
+      const message = getErrorMessage(err, "Google sign-in failed. Please try again.");
       setError(message);
     } finally {
       setLoading(false);

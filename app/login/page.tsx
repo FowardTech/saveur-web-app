@@ -7,6 +7,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth, isFirebaseConfigured } from "@/lib/firebase";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
+import { getErrorMessage } from "@/lib/errors";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LinkedInButton } from "@/components/auth/LinkedInButton";
@@ -34,7 +35,7 @@ export default function LoginPage() {
       const profile = await syncProfile();
       router.push(needsOnboarding(profile) ? "/onboarding" : "/dashboard");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Sign in failed. Please check your details and try again.";
+      const message = getErrorMessage(err, "Sign in failed. Please check your details and try again.");
       setError(message);
     } finally {
       setLoading(false);
