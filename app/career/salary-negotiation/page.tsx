@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -35,14 +37,15 @@ interface Round {
   recruiter_response: string;
 }
 
-function formatOffer(offer: Offer) {
-  const parts = [`Base ${offer.currency} ${offer.base.toLocaleString()}`];
-  if (offer.bonus) parts.push(`Bonus ${offer.currency} ${offer.bonus.toLocaleString()}`);
-  if (offer.equity) parts.push(`Equity ${offer.currency} ${offer.equity.toLocaleString()}`);
+function formatOffer(offer: Offer, t: TFunction) {
+  const parts = [t("web:career.salaryNegotiation.offerBase", { defaultValue: "Base {{currency}} {{amount}}", currency: offer.currency, amount: offer.base.toLocaleString() })];
+  if (offer.bonus) parts.push(t("web:career.salaryNegotiation.offerBonus", { defaultValue: "Bonus {{currency}} {{amount}}", currency: offer.currency, amount: offer.bonus.toLocaleString() }));
+  if (offer.equity) parts.push(t("web:career.salaryNegotiation.offerEquity", { defaultValue: "Equity {{currency}} {{amount}}", currency: offer.currency, amount: offer.equity.toLocaleString() }));
   return parts.join(" · ");
 }
 
 export default function SalaryNegotiationPage() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proRequired, setProRequired] = useState(false);
@@ -67,7 +70,7 @@ export default function SalaryNegotiationPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setProRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't start a negotiation scenario right now.");
+        setError(apiErr.message || t("web:career.salaryNegotiation.startFailedDefault", { defaultValue: "Couldn't start a negotiation scenario right now." }));
       }
     } finally {
       setLoading(false);
@@ -93,7 +96,7 @@ export default function SalaryNegotiationPage() {
       setIsFinal(Boolean(data.is_final_round));
       setAsk("");
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't send that ask right now.");
+      setError((err as ApiError).message || t("web:career.salaryNegotiation.sendFailedDefault", { defaultValue: "Couldn't send that ask right now." }));
     } finally {
       setSending(false);
     }
@@ -103,15 +106,18 @@ export default function SalaryNegotiationPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="Salary Negotiation" subtitle="Practice pushing back on an offer with a realistic recruiter simulation." />
+          <PageHeader
+            title={t("web:career.salaryNegotiation.title", { defaultValue: "Salary Negotiation" })}
+            subtitle={t("web:career.salaryNegotiation.subtitle", { defaultValue: "Practice pushing back on an offer with a realistic recruiter simulation." })}
+          />
 
           {proRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">Salary Negotiation requires a paid plan</h2>
-              <p className="text-sm text-hint">Upgrade your plan to practice negotiation with the AI coach.</p>
+              <h2 className="font-semibold text-primary">{t("web:career.salaryNegotiation.proRequiredTitle", { defaultValue: "Salary Negotiation requires a paid plan" })}</h2>
+              <p className="text-sm text-hint">{t("web:career.salaryNegotiation.proRequiredSubtitle", { defaultValue: "Upgrade your plan to practice negotiation with the AI coach." })}</p>
             </div>
           )}
 
@@ -119,9 +125,9 @@ export default function SalaryNegotiationPage() {
 
           {!scenario && !proRequired && (
             <div className="rounded-card border border-border bg-surface-2 p-6 text-center">
-              <p className="text-sm text-hint">Start a scenario to get a realistic offer and practice your ask.</p>
+              <p className="text-sm text-hint">{t("web:career.salaryNegotiation.startPrompt", { defaultValue: "Start a scenario to get a realistic offer and practice your ask." })}</p>
               <Button onClick={handleStart} disabled={loading} className="mt-4">
-                {loading ? "Generating scenario…" : "Start negotiation practice"}
+                {loading ? t("web:career.salaryNegotiation.generatingScenario", { defaultValue: "Generating scenario…" }) : t("web:career.salaryNegotiation.startPractice", { defaultValue: "Start negotiation practice" })}
               </Button>
             </div>
           )}
@@ -133,7 +139,9 @@ export default function SalaryNegotiationPage() {
                   {scenario.role} at {scenario.company}
                 </h2>
                 <p className="mt-1 text-sm text-hint">{scenario.location} {scenario.level ? `· ${scenario.level}` : ""}</p>
-                <p className="mt-3 text-sm font-medium text-primary">Current offer: {formatOffer(currentOffer)}</p>
+                <p className="mt-3 text-sm font-medium text-primary">
+                  {t("web:career.salaryNegotiation.currentOfferLabel", { defaultValue: "Current offer: {{offer}}", offer: formatOffer(currentOffer, t) })}
+                </p>
                 {scenario.notes && <p className="mt-2 text-xs text-hint">{scenario.notes}</p>}
               </div>
 
@@ -148,26 +156,26 @@ export default function SalaryNegotiationPage() {
 
               {isFinal ? (
                 <div className="rounded-card border border-dashed border-border p-4 text-center text-sm text-hint">
-                  This negotiation has reached its final round. Start a new scenario to practice again.
+                  {t("web:career.salaryNegotiation.finalRoundNotice", { defaultValue: "This negotiation has reached its final round. Start a new scenario to practice again." })}
                 </div>
               ) : (
                 <form onSubmit={handleSend} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 sm:flex-row sm:items-end">
                   <div className="flex-1">
                     <TextField
-                      label="Your ask"
-                      placeholder="e.g. Could we move the base to $175,000?"
+                      label={t("web:career.salaryNegotiation.askLabel", { defaultValue: "Your ask" })}
+                      placeholder={t("web:career.salaryNegotiation.askPlaceholder", { defaultValue: "e.g. Could we move the base to $175,000?" })}
                       value={ask}
                       onChange={(e) => setAsk(e.target.value)}
                     />
                   </div>
                   <Button type="submit" disabled={sending || !ask.trim()}>
-                    {sending ? "Sending…" : "Send"}
+                    {sending ? t("web:career.salaryNegotiation.sending", { defaultValue: "Sending…" }) : t("web:career.salaryNegotiation.send", { defaultValue: "Send" })}
                   </Button>
                 </form>
               )}
 
               <Button variant="outline" onClick={handleStart} className="w-fit">
-                Start a new scenario
+                {t("web:career.salaryNegotiation.startNewScenario", { defaultValue: "Start a new scenario" })}
               </Button>
             </div>
           )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -14,6 +15,7 @@ import apiClient, { type ApiError } from "@/lib/apiClient";
 const TONES = ["friendly", "professional", "concise", "enthusiastic"];
 
 export default function NetworkingAssistantPage() {
+  const { t } = useTranslation();
   const [recipientRole, setRecipientRole] = useState("");
   const [context, setContext] = useState("");
   const [tone, setTone] = useState("friendly");
@@ -35,7 +37,7 @@ export default function NetworkingAssistantPage() {
       });
       setMessage(data.message);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't draft a message right now. Please try again.");
+      setError((err as ApiError).message || t("web:career.networking.draftFailedDefault", { defaultValue: "Couldn't draft a message right now. Please try again." }));
     } finally {
       setLoading(false);
     }
@@ -56,32 +58,35 @@ export default function NetworkingAssistantPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="Networking Assistant" subtitle="Draft LinkedIn outreach messages tailored to your target contact." />
+          <PageHeader
+            title={t("web:career.networking.title", { defaultValue: "Networking Assistant" })}
+            subtitle={t("web:career.networking.subtitle", { defaultValue: "Draft LinkedIn outreach messages tailored to your target contact." })}
+          />
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <TextField
-              label="Recipient's role"
-              placeholder="e.g. Engineering Manager at Acme Corp"
+              label={t("web:career.networking.recipientRoleLabel", { defaultValue: "Recipient's role" })}
+              placeholder={t("web:career.networking.recipientRolePlaceholder", { defaultValue: "e.g. Engineering Manager at Acme Corp" })}
               value={recipientRole}
               onChange={(e) => setRecipientRole(e.target.value)}
               required
             />
             <TextField
-              label="Context"
-              placeholder="e.g. Applying for the Senior Backend Engineer role, met at a career fair"
+              label={t("web:career.networking.contextLabel", { defaultValue: "Context" })}
+              placeholder={t("web:career.networking.contextPlaceholder", { defaultValue: "e.g. Applying for the Senior Backend Engineer role, met at a career fair" })}
               value={context}
               onChange={(e) => setContext(e.target.value)}
             />
-            <SelectField label="Tone" value={tone} onChange={(e) => setTone(e.target.value)}>
-              {TONES.map((t) => (
-                <option key={t} value={t}>
-                  {t[0].toUpperCase() + t.slice(1)}
+            <SelectField label={t("web:career.networking.toneLabel", { defaultValue: "Tone" })} value={tone} onChange={(e) => setTone(e.target.value)}>
+              {TONES.map((tn) => (
+                <option key={tn} value={tn}>
+                  {t(`web:career.networking.tones.${tn}`, { defaultValue: tn[0].toUpperCase() + tn.slice(1) })}
                 </option>
               ))}
             </SelectField>
             {error && <p className="text-sm text-danger">{error}</p>}
             <Button type="submit" disabled={loading || !recipientRole.trim()} className="mt-1 w-full">
-              {loading ? "Drafting…" : "Draft message"}
+              {loading ? t("web:career.networking.drafting", { defaultValue: "Drafting…" }) : t("web:career.networking.draftMessage", { defaultValue: "Draft message" })}
             </Button>
           </form>
 
@@ -89,7 +94,7 @@ export default function NetworkingAssistantPage() {
             <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
               <p className="whitespace-pre-wrap text-sm text-primary">{message}</p>
               <Button variant="outline" size="sm" onClick={handleCopy} className="w-fit">
-                {copied ? "Copied!" : "Copy message"}
+                {copied ? t("web:career.networking.copied", { defaultValue: "Copied!" }) : t("web:career.networking.copyMessage", { defaultValue: "Copy message" })}
               </Button>
             </div>
           )}

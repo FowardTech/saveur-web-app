@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -22,6 +23,7 @@ interface CareerDnaPayload {
 }
 
 export default function CareerDnaPage() {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<CareerDnaPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
@@ -37,7 +39,7 @@ export default function CareerDnaPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setPremiumRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't load your Career DNA profile.");
+        setError(apiErr.message || t("web:career.dna.loadFailedDefault", { defaultValue: "Couldn't load your Career DNA profile." }));
       }
     } finally {
       setLoading(false);
@@ -46,6 +48,7 @@ export default function CareerDnaPage() {
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleRefresh() {
@@ -55,7 +58,7 @@ export default function CareerDnaPage() {
       const data = await apiClient.post<CareerDnaPayload>("/api/v1/career-dna/refresh");
       setProfile(data);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't refresh your profile right now.");
+      setError((err as ApiError).message || t("web:career.dna.refreshFailedDefault", { defaultValue: "Couldn't refresh your profile right now." }));
     } finally {
       setRefreshing(false);
     }
@@ -65,25 +68,30 @@ export default function CareerDnaPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="Career DNA" subtitle="An AI-built profile of your work style, built from your real activity in the app." />
+          <PageHeader
+            title={t("web:career.dna.title", { defaultValue: "Career DNA" })}
+            subtitle={t("web:career.dna.subtitle", { defaultValue: "An AI-built profile of your work style, built from your real activity in the app." })}
+          />
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">Career DNA is a Premium feature</h2>
-              <p className="text-sm text-hint">Upgrade your plan to unlock your AI-built career profile.</p>
+              <h2 className="font-semibold text-primary">{t("web:career.dna.premiumRequiredTitle", { defaultValue: "Career DNA is a Premium feature" })}</h2>
+              <p className="text-sm text-hint">{t("web:career.dna.premiumRequiredSubtitle", { defaultValue: "Upgrade your plan to unlock your AI-built career profile." })}</p>
             </div>
           )}
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {loading && !premiumRequired && <p className="text-sm text-hint">Loading…</p>}
+          {loading && !premiumRequired && <p className="text-sm text-hint">{t("web:career.dna.loading", { defaultValue: "Loading…" })}</p>}
 
           {profile && !profile.has_profile && !premiumRequired && (
             <div className="rounded-card border border-dashed border-border p-6 text-center text-sm text-hint">
-              Keep using the app — mock interviews, resume tools, learning courses — and your Career DNA profile will
-              unlock once there&apos;s enough activity to build one.
+              {t("web:career.dna.notEnoughData", {
+                defaultValue:
+                  "Keep using the app — mock interviews, resume tools, learning courses — and your Career DNA profile will unlock once there's enough activity to build one.",
+              })}
             </div>
           )}
 
@@ -92,7 +100,7 @@ export default function CareerDnaPage() {
               <div className="rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-6">
                 <p className="text-sm leading-relaxed text-primary">{profile.narrative}</p>
                 <p className="mt-3 text-xs text-hint">
-                  Version {profile.version} · built from {profile.signal_count} signal(s)
+                  {t("web:career.dna.versionLine", { defaultValue: "Version {{version}} · built from {{count}} signal(s)", version: profile.version, count: profile.signal_count })}
                 </p>
               </div>
 
@@ -108,7 +116,7 @@ export default function CareerDnaPage() {
               )}
 
               <Button variant="outline" onClick={handleRefresh} disabled={refreshing} className="w-fit">
-                {refreshing ? "Refreshing…" : "Refresh my profile"}
+                {refreshing ? t("web:career.dna.refreshing", { defaultValue: "Refreshing…" }) : t("web:career.dna.refreshProfile", { defaultValue: "Refresh my profile" })}
               </Button>
             </div>
           )}

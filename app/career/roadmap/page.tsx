@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -37,6 +38,7 @@ const statusStyles: Record<string, string> = {
 };
 
 export default function CareerRoadmapPage() {
+  const { t } = useTranslation();
   const [roadmap, setRoadmap] = useState<Roadmap | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
@@ -53,7 +55,7 @@ export default function CareerRoadmapPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setPremiumRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't load your roadmap.");
+        setError(apiErr.message || t("web:career.roadmap.loadFailedDefault", { defaultValue: "Couldn't load your roadmap." }));
       }
       setRoadmap(null);
     }
@@ -61,6 +63,7 @@ export default function CareerRoadmapPage() {
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleGenerate(e: React.FormEvent) {
@@ -79,7 +82,7 @@ export default function CareerRoadmapPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setPremiumRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't generate a roadmap right now.");
+        setError(apiErr.message || t("web:career.roadmap.generateFailedDefault", { defaultValue: "Couldn't generate a roadmap right now." }));
       }
     } finally {
       setGenerating(false);
@@ -99,38 +102,41 @@ export default function CareerRoadmapPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="Career Roadmap" subtitle="An AI-planned, step-by-step path toward your target role." />
+          <PageHeader
+            title={t("web:career.roadmap.title", { defaultValue: "Career Roadmap" })}
+            subtitle={t("web:career.roadmap.subtitle", { defaultValue: "An AI-planned, step-by-step path toward your target role." })}
+          />
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">Career Roadmap is a Premium feature</h2>
-              <p className="text-sm text-hint">Upgrade your plan to generate and track a personalized roadmap.</p>
+              <h2 className="font-semibold text-primary">{t("web:career.roadmap.premiumRequiredTitle", { defaultValue: "Career Roadmap is a Premium feature" })}</h2>
+              <p className="text-sm text-hint">{t("web:career.roadmap.premiumRequiredSubtitle", { defaultValue: "Upgrade your plan to generate and track a personalized roadmap." })}</p>
             </div>
           )}
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {roadmap === undefined && !premiumRequired && <p className="text-sm text-hint">Loading…</p>}
+          {roadmap === undefined && !premiumRequired && <p className="text-sm text-hint">{t("web:career.roadmap.loading", { defaultValue: "Loading…" })}</p>}
 
           {roadmap === null && !premiumRequired && (
             <form onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
               <TextField
-                label="Target role"
-                placeholder="e.g. Senior Backend Engineer"
+                label={t("web:career.roadmap.targetRoleLabel", { defaultValue: "Target role" })}
+                placeholder={t("web:career.roadmap.targetRolePlaceholder", { defaultValue: "e.g. Senior Backend Engineer" })}
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
                 required
               />
               <TextField
-                label="Current role (optional)"
-                placeholder="e.g. Junior Backend Engineer"
+                label={t("web:career.roadmap.currentRoleLabel", { defaultValue: "Current role (optional)" })}
+                placeholder={t("web:career.roadmap.currentRolePlaceholder", { defaultValue: "e.g. Junior Backend Engineer" })}
                 value={currentRole}
                 onChange={(e) => setCurrentRole(e.target.value)}
               />
               <Button type="submit" disabled={generating} className="mt-1 w-full">
-                {generating ? "Generating…" : "Generate roadmap"}
+                {generating ? t("web:career.roadmap.generating", { defaultValue: "Generating…" }) : t("web:career.roadmap.generateRoadmap", { defaultValue: "Generate roadmap" })}
               </Button>
             </form>
           )}
@@ -138,10 +144,10 @@ export default function CareerRoadmapPage() {
           {roadmap && (
             <div className="flex flex-col gap-4">
               <div className="rounded-card border border-border bg-surface-2 p-5">
-                <h2 className="font-semibold text-primary">Toward: {roadmap.target_role}</h2>
+                <h2 className="font-semibold text-primary">{t("web:career.roadmap.towardPrefix", { defaultValue: "Toward: {{role}}", role: roadmap.target_role })}</h2>
                 <p className="mt-1 text-sm text-hint">
-                  {roadmap.completed_count}/{roadmap.total_count} milestones completed
-                  {roadmap.is_complete ? " — complete!" : ""}
+                  {t("web:career.roadmap.milestonesCompleted", { defaultValue: "{{completed}}/{{total}} milestones completed", completed: roadmap.completed_count, total: roadmap.total_count })}
+                  {roadmap.is_complete ? t("web:career.roadmap.completeSuffix", { defaultValue: " — complete!" }) : ""}
                 </p>
               </div>
               <div className="flex flex-col gap-3">
@@ -156,7 +162,7 @@ export default function CareerRoadmapPage() {
                     </div>
                     {step.status === "current" && (
                       <Button size="sm" variant="outline" onClick={() => handleComplete(step.order)}>
-                        Mark done
+                        {t("web:career.roadmap.markDone", { defaultValue: "Mark done" })}
                       </Button>
                     )}
                   </div>

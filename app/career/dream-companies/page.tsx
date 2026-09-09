@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -27,6 +28,7 @@ interface DreamCompany {
 }
 
 export default function DreamCompaniesPage() {
+  const { t } = useTranslation();
   const [companies, setCompanies] = useState<DreamCompany[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
@@ -43,13 +45,14 @@ export default function DreamCompaniesPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setPremiumRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't load your dream companies.");
+        setError(apiErr.message || t("web:career.dreamCompanies.loadFailedDefault", { defaultValue: "Couldn't load your dream companies." }));
       }
     }
   }
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleAdd(e: React.FormEvent) {
@@ -63,7 +66,7 @@ export default function DreamCompaniesPage() {
       setRole("");
       await load();
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't add that company right now.");
+      setError((err as ApiError).message || t("web:career.dreamCompanies.addFailedDefault", { defaultValue: "Couldn't add that company right now." }));
     } finally {
       setAdding(false);
     }
@@ -93,15 +96,18 @@ export default function DreamCompaniesPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-3xl flex-col gap-8 pb-10">
-          <PageHeader title="Dream Companies" subtitle="Track target companies with AI research and a real readiness score." />
+          <PageHeader
+            title={t("web:career.dreamCompanies.title", { defaultValue: "Dream Companies" })}
+            subtitle={t("web:career.dreamCompanies.subtitle", { defaultValue: "Track target companies with AI research and a real readiness score." })}
+          />
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">Dream Companies is a Premium feature</h2>
-              <p className="text-sm text-hint">Upgrade your plan to track companies and get AI research on each.</p>
+              <h2 className="font-semibold text-primary">{t("web:career.dreamCompanies.premiumRequiredTitle", { defaultValue: "Dream Companies is a Premium feature" })}</h2>
+              <p className="text-sm text-hint">{t("web:career.dreamCompanies.premiumRequiredSubtitle", { defaultValue: "Upgrade your plan to track companies and get AI research on each." })}</p>
             </div>
           )}
 
@@ -110,19 +116,30 @@ export default function DreamCompaniesPage() {
           {!premiumRequired && (
             <form onSubmit={handleAdd} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-end">
               <div className="flex-1">
-                <TextField label="Company" placeholder="e.g. Acme Corp" value={company} onChange={(e) => setCompany(e.target.value)} required />
+                <TextField
+                  label={t("web:career.dreamCompanies.companyLabel", { defaultValue: "Company" })}
+                  placeholder={t("web:career.dreamCompanies.companyPlaceholder", { defaultValue: "e.g. Acme Corp" })}
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  required
+                />
               </div>
               <div className="flex-1">
-                <TextField label="Target role (optional)" placeholder="e.g. Product Manager" value={role} onChange={(e) => setRole(e.target.value)} />
+                <TextField
+                  label={t("web:career.dreamCompanies.targetRoleLabel", { defaultValue: "Target role (optional)" })}
+                  placeholder={t("web:career.dreamCompanies.targetRolePlaceholder", { defaultValue: "e.g. Product Manager" })}
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                />
               </div>
               <Button type="submit" disabled={adding || !company.trim()}>
-                {adding ? "Adding…" : "Add"}
+                {adding ? t("web:career.dreamCompanies.adding", { defaultValue: "Adding…" }) : t("web:career.dreamCompanies.add", { defaultValue: "Add" })}
               </Button>
             </form>
           )}
 
           {companies && companies.length === 0 && !premiumRequired && (
-            <p className="text-sm text-hint">No companies tracked yet — add one above to get started.</p>
+            <p className="text-sm text-hint">{t("web:career.dreamCompanies.empty", { defaultValue: "No companies tracked yet — add one above to get started." })}</p>
           )}
 
           {companies && companies.length > 0 && (
@@ -139,17 +156,22 @@ export default function DreamCompaniesPage() {
                         {c.is_top_choice && <EvaIcon name="star" size={14} className="ml-1.5 inline text-brand" />}
                       </h3>
                       <p className="text-sm text-hint">
-                        {c.target_role || "No target role set"} · {c.research_pending ? "Researching…" : `${c.readiness_score}% ready`}
+                        {c.target_role || t("web:career.dreamCompanies.noTargetRole", { defaultValue: "No target role set" })} ·{" "}
+                        {c.research_pending
+                          ? t("web:career.dreamCompanies.researching", { defaultValue: "Researching…" })
+                          : t("web:career.dreamCompanies.readyPercent", { defaultValue: "{{score}}% ready", score: c.readiness_score })}
                       </p>
                       {c.intel?.overview && <p className="mt-1 max-w-md text-xs text-hint">{c.intel.overview.slice(0, 140)}…</p>}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button size="sm" variant="outline" onClick={() => handleTogglePriority(c)}>
-                      {c.is_top_choice ? "Unmark top choice" : "Mark top choice"}
+                      {c.is_top_choice
+                        ? t("web:career.dreamCompanies.unmarkTopChoice", { defaultValue: "Unmark top choice" })
+                        : t("web:career.dreamCompanies.markTopChoice", { defaultValue: "Mark top choice" })}
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => handleRemove(c.id)}>
-                      Remove
+                      {t("web:career.dreamCompanies.remove", { defaultValue: "Remove" })}
                     </Button>
                   </div>
                 </div>

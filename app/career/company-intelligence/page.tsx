@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -24,6 +25,7 @@ interface Intel {
 }
 
 export default function CompanyIntelligencePage() {
+  const { t } = useTranslation();
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,7 +45,7 @@ export default function CompanyIntelligencePage() {
       });
       setIntel(data);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't research that company right now.");
+      setError((err as ApiError).message || t("web:career.companyIntelligence.researchFailedDefault", { defaultValue: "Couldn't research that company right now." }));
     } finally {
       setLoading(false);
     }
@@ -53,14 +55,28 @@ export default function CompanyIntelligencePage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="Company Intelligence" subtitle="AI research on a target company before your interview." />
+          <PageHeader
+            title={t("web:career.companyIntelligence.title", { defaultValue: "Company Intelligence" })}
+            subtitle={t("web:career.companyIntelligence.subtitle", { defaultValue: "AI research on a target company before your interview." })}
+          />
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-            <TextField label="Company" placeholder="e.g. Acme Corp" value={company} onChange={(e) => setCompany(e.target.value)} required />
-            <TextField label="Role (optional)" placeholder="e.g. Product Manager" value={role} onChange={(e) => setRole(e.target.value)} />
+            <TextField
+              label={t("web:career.companyIntelligence.companyLabel", { defaultValue: "Company" })}
+              placeholder={t("web:career.companyIntelligence.companyPlaceholder", { defaultValue: "e.g. Acme Corp" })}
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              required
+            />
+            <TextField
+              label={t("web:career.companyIntelligence.roleLabel", { defaultValue: "Role (optional)" })}
+              placeholder={t("web:career.companyIntelligence.rolePlaceholder", { defaultValue: "e.g. Product Manager" })}
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            />
             {error && <p className="text-sm text-danger">{error}</p>}
             <Button type="submit" disabled={loading || !company.trim()} className="mt-1 w-full">
-              {loading ? "Researching…" : "Research company"}
+              {loading ? t("web:career.companyIntelligence.researching", { defaultValue: "Researching…" }) : t("web:career.companyIntelligence.researchCompany", { defaultValue: "Research company" })}
             </Button>
           </form>
 
@@ -72,25 +88,29 @@ export default function CompanyIntelligencePage() {
               </div>
 
               {intel.recent_developments?.length > 0 && (
-                <Section title="Recent developments" items={intel.recent_developments} />
+                <Section title={t("web:career.companyIntelligence.recentDevelopments", { defaultValue: "Recent developments" })} items={intel.recent_developments} />
               )}
               {intel.culture_notes && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
-                  <h3 className="text-sm font-semibold text-primary">Culture notes</h3>
+                  <h3 className="text-sm font-semibold text-primary">{t("web:career.companyIntelligence.cultureNotes", { defaultValue: "Culture notes" })}</h3>
                   <p className="mt-2 text-sm text-hint">{intel.culture_notes}</p>
                 </div>
               )}
-              {intel.likely_questions?.length > 0 && <Section title="Likely interview questions" items={intel.likely_questions} />}
-              {intel.talking_points?.length > 0 && <Section title="Talking points" items={intel.talking_points} />}
+              {intel.likely_questions?.length > 0 && (
+                <Section title={t("web:career.companyIntelligence.likelyQuestions", { defaultValue: "Likely interview questions" })} items={intel.likely_questions} />
+              )}
+              {intel.talking_points?.length > 0 && (
+                <Section title={t("web:career.companyIntelligence.talkingPoints", { defaultValue: "Talking points" })} items={intel.talking_points} />
+              )}
               {intel.salary_range && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
-                  <h3 className="text-sm font-semibold text-primary">Salary range</h3>
+                  <h3 className="text-sm font-semibold text-primary">{t("web:career.companyIntelligence.salaryRange", { defaultValue: "Salary range" })}</h3>
                   <p className="mt-2 text-sm text-hint">{intel.salary_range}</p>
                 </div>
               )}
               {intel.interview_process && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
-                  <h3 className="text-sm font-semibold text-primary">Interview process</h3>
+                  <h3 className="text-sm font-semibold text-primary">{t("web:career.companyIntelligence.interviewProcess", { defaultValue: "Interview process" })}</h3>
                   <p className="mt-2 text-sm text-hint">{intel.interview_process}</p>
                 </div>
               )}

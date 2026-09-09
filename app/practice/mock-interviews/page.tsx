@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -20,7 +21,7 @@ const INTERVIEW_TYPES = [
   "government", "consulting", "executive", "graduate", "internship", "sports",
 ];
 
-function labelFor(type: string) {
+function fallbackLabelFor(type: string) {
   return type
     .split("_")
     .map((w) => w[0]?.toUpperCase() + w.slice(1))
@@ -37,6 +38,7 @@ interface SessionResult {
 }
 
 export default function MockInterviewSetupPage() {
+  const { t } = useTranslation();
   const [type, setType] = useState("behavioral");
   const [role, setRole] = useState("");
   const [company, setCompany] = useState("");
@@ -44,6 +46,10 @@ export default function MockInterviewSetupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<SessionResult | null>(null);
+
+  function labelFor(t2: string) {
+    return t(`web:practice.mockInterviews.types.${t2}`, { defaultValue: fallbackLabelFor(t2) });
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,7 +69,7 @@ export default function MockInterviewSetupPage() {
       const message =
         err && typeof err === "object" && "message" in err
           ? String((err as { message: unknown }).message)
-          : "Couldn't start a session. Please try again.";
+          : t("web:practice.mockInterviews.startFailedDefault", { defaultValue: "Couldn't start a session. Please try again." });
       setError(message);
     } finally {
       setLoading(false);
@@ -75,39 +81,47 @@ export default function MockInterviewSetupPage() {
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
           <PageHeader
-            title="Mock Interview"
-            subtitle="Set up a session and practice with an AI interviewer."
+            title={t("web:practice.mockInterviews.title", { defaultValue: "Mock Interview" })}
+            subtitle={t("web:practice.mockInterviews.subtitle", { defaultValue: "Set up a session and practice with an AI interviewer." })}
           />
 
           {!session && (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-              <SelectField label="Interview type" value={type} onChange={(e) => setType(e.target.value)}>
-                {INTERVIEW_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {labelFor(t)}
+              <SelectField
+                label={t("web:practice.mockInterviews.interviewTypeLabel", { defaultValue: "Interview type" })}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                {INTERVIEW_TYPES.map((it) => (
+                  <option key={it} value={it}>
+                    {labelFor(it)}
                   </option>
                 ))}
               </SelectField>
               <TextField
-                label="Target role (optional)"
-                placeholder="e.g. Senior Backend Engineer"
+                label={t("web:practice.mockInterviews.targetRoleLabel", { defaultValue: "Target role (optional)" })}
+                placeholder={t("web:practice.mockInterviews.targetRolePlaceholder", { defaultValue: "e.g. Senior Backend Engineer" })}
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
               />
               <TextField
-                label="Target company (optional)"
-                placeholder="e.g. Acme Corp"
+                label={t("web:practice.mockInterviews.targetCompanyLabel", { defaultValue: "Target company (optional)" })}
+                placeholder={t("web:practice.mockInterviews.targetCompanyPlaceholder", { defaultValue: "e.g. Acme Corp" })}
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
               />
-              <SelectField label="Difficulty" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
+              <SelectField
+                label={t("web:practice.mockInterviews.difficultyLabel", { defaultValue: "Difficulty" })}
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+              >
+                <option value="easy">{t("web:practice.difficulty.easy", { defaultValue: "Easy" })}</option>
+                <option value="medium">{t("web:practice.difficulty.medium", { defaultValue: "Medium" })}</option>
+                <option value="hard">{t("web:practice.difficulty.hard", { defaultValue: "Hard" })}</option>
               </SelectField>
               {error && <p className="text-sm text-danger">{error}</p>}
               <Button type="submit" disabled={loading} className="mt-1 w-full">
-                {loading ? "Starting…" : "Start session"}
+                {loading ? t("web:practice.mockInterviews.startingLabel", { defaultValue: "Starting…" }) : t("web:practice.mockInterviews.startSession", { defaultValue: "Start session" })}
               </Button>
             </form>
           )}
@@ -119,30 +133,34 @@ export default function MockInterviewSetupPage() {
                   <EvaIcon name="checkmark-circle-2-outline" size={22} />
                 </span>
                 <div>
-                  <h2 className="font-semibold text-primary">Session created</h2>
+                  <h2 className="font-semibold text-primary">{t("web:practice.mockInterviews.sessionCreated", { defaultValue: "Session created" })}</h2>
                   <p className="text-sm text-hint">
                     {labelFor(session.type)}
                     {session.role ? ` · ${session.role}` : ""}
-                    {session.company ? ` · ${session.company}` : ""} · Session #{session.id}
+                    {session.company ? ` · ${session.company}` : ""} ·{" "}
+                    {t("web:practice.mockInterviews.sessionNumber", { defaultValue: "Session #{{id}}", id: session.id })}
                   </p>
                 </div>
               </div>
 
               {session.first_question ? (
                 <div className="rounded-lg bg-surface-1 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-hint">First question</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-hint">
+                    {t("web:practice.mockInterviews.firstQuestionLabel", { defaultValue: "First question" })}
+                  </p>
                   <p className="mt-1.5 text-sm text-primary">{session.first_question}</p>
                 </div>
               ) : null}
 
               <div className="rounded-lg border border-dashed border-border p-4 text-center text-sm text-hint">
-                This is where the live interview session would run — real-time Q&amp;A with your AI interviewer,
-                voice/video mode, and instant feedback at the end. That experience is coming to the web app in a
-                future pass; for now, this session is saved to your account the same as a mobile session.
+                {t("web:practice.mockInterviews.livePlaceholder", {
+                  defaultValue:
+                    "This is where the live interview session would run — real-time Q&A with your AI interviewer, voice/video mode, and instant feedback at the end. That experience is coming to the web app in a future pass; for now, this session is saved to your account the same as a mobile session.",
+                })}
               </div>
 
               <Button variant="outline" onClick={() => setSession(null)}>
-                Start another session
+                {t("web:practice.mockInterviews.startAnother", { defaultValue: "Start another session" })}
               </Button>
             </div>
           )}
