@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -95,74 +96,76 @@ export default function CareerRoadmapPage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-        <PageHeader title="Career Roadmap" subtitle="An AI-planned, step-by-step path toward your target role." />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+          <PageHeader title="Career Roadmap" subtitle="An AI-planned, step-by-step path toward your target role." />
 
-        {premiumRequired && (
-          <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-              <EvaIcon name="lock-outline" size={20} />
-            </span>
-            <h2 className="font-semibold text-primary">Career Roadmap is a Premium feature</h2>
-            <p className="text-sm text-hint">Upgrade your plan to generate and track a personalized roadmap.</p>
-          </div>
-        )}
-
-        {error && <p className="text-sm text-danger">{error}</p>}
-        {roadmap === undefined && !premiumRequired && <p className="text-sm text-hint">Loading…</p>}
-
-        {roadmap === null && !premiumRequired && (
-          <form onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-            <TextField
-              label="Target role"
-              placeholder="e.g. Senior Backend Engineer"
-              value={targetRole}
-              onChange={(e) => setTargetRole(e.target.value)}
-              required
-            />
-            <TextField
-              label="Current role (optional)"
-              placeholder="e.g. Junior Backend Engineer"
-              value={currentRole}
-              onChange={(e) => setCurrentRole(e.target.value)}
-            />
-            <Button type="submit" disabled={generating} className="mt-1 w-full">
-              {generating ? "Generating…" : "Generate roadmap"}
-            </Button>
-          </form>
-        )}
-
-        {roadmap && (
-          <div className="flex flex-col gap-4">
-            <div className="rounded-card border border-border bg-surface-2 p-5">
-              <h2 className="font-semibold text-primary">Toward: {roadmap.target_role}</h2>
-              <p className="mt-1 text-sm text-hint">
-                {roadmap.completed_count}/{roadmap.total_count} milestones completed
-                {roadmap.is_complete ? " — complete!" : ""}
-              </p>
+          {premiumRequired && (
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="lock-outline" size={20} />
+              </span>
+              <h2 className="font-semibold text-primary">Career Roadmap is a Premium feature</h2>
+              <p className="text-sm text-hint">Upgrade your plan to generate and track a personalized roadmap.</p>
             </div>
-            <div className="flex flex-col gap-3">
-              {roadmap.steps.map((step) => (
-                <div key={step.order} className="flex items-start gap-4 rounded-card border border-border bg-surface-2 p-4">
-                  <span className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${statusStyles[step.status] ?? "bg-surface-3 text-hint"}`}>
-                    {step.status === "completed" ? <EvaIcon name="checkmark-outline" size={16} /> : step.order}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-primary">{step.title}</h3>
-                    {step.description && <p className="mt-1 text-sm text-hint">{step.description}</p>}
+          )}
+
+          {error && <p className="text-sm text-danger">{error}</p>}
+          {roadmap === undefined && !premiumRequired && <p className="text-sm text-hint">Loading…</p>}
+
+          {roadmap === null && !premiumRequired && (
+            <form onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+              <TextField
+                label="Target role"
+                placeholder="e.g. Senior Backend Engineer"
+                value={targetRole}
+                onChange={(e) => setTargetRole(e.target.value)}
+                required
+              />
+              <TextField
+                label="Current role (optional)"
+                placeholder="e.g. Junior Backend Engineer"
+                value={currentRole}
+                onChange={(e) => setCurrentRole(e.target.value)}
+              />
+              <Button type="submit" disabled={generating} className="mt-1 w-full">
+                {generating ? "Generating…" : "Generate roadmap"}
+              </Button>
+            </form>
+          )}
+
+          {roadmap && (
+            <div className="flex flex-col gap-4">
+              <div className="rounded-card border border-border bg-surface-2 p-5">
+                <h2 className="font-semibold text-primary">Toward: {roadmap.target_role}</h2>
+                <p className="mt-1 text-sm text-hint">
+                  {roadmap.completed_count}/{roadmap.total_count} milestones completed
+                  {roadmap.is_complete ? " — complete!" : ""}
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                {roadmap.steps.map((step) => (
+                  <div key={step.order} className="flex items-start gap-4 rounded-card border border-border bg-surface-2 p-4">
+                    <span className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${statusStyles[step.status] ?? "bg-surface-3 text-hint"}`}>
+                      {step.status === "completed" ? <EvaIcon name="checkmark-outline" size={16} /> : step.order}
+                    </span>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-primary">{step.title}</h3>
+                      {step.description && <p className="mt-1 text-sm text-hint">{step.description}</p>}
+                    </div>
+                    {step.status === "current" && (
+                      <Button size="sm" variant="outline" onClick={() => handleComplete(step.order)}>
+                        Mark done
+                      </Button>
+                    )}
                   </div>
-                  {step.status === "current" && (
-                    <Button size="sm" variant="outline" onClick={() => handleComplete(step.order)}>
-                      Mark done
-                    </Button>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </AppShell>
+          )}
+        </div>
+      </AppShell>
+    </RequireAuth>
   );
 }

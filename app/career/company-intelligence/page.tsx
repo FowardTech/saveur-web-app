@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -49,53 +50,55 @@ export default function CompanyIntelligencePage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-        <PageHeader title="Company Intelligence" subtitle="AI research on a target company before your interview." />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+          <PageHeader title="Company Intelligence" subtitle="AI research on a target company before your interview." />
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-          <TextField label="Company" placeholder="e.g. Acme Corp" value={company} onChange={(e) => setCompany(e.target.value)} required />
-          <TextField label="Role (optional)" placeholder="e.g. Product Manager" value={role} onChange={(e) => setRole(e.target.value)} />
-          {error && <p className="text-sm text-danger">{error}</p>}
-          <Button type="submit" disabled={loading || !company.trim()} className="mt-1 w-full">
-            {loading ? "Researching…" : "Research company"}
-          </Button>
-        </form>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <TextField label="Company" placeholder="e.g. Acme Corp" value={company} onChange={(e) => setCompany(e.target.value)} required />
+            <TextField label="Role (optional)" placeholder="e.g. Product Manager" value={role} onChange={(e) => setRole(e.target.value)} />
+            {error && <p className="text-sm text-danger">{error}</p>}
+            <Button type="submit" disabled={loading || !company.trim()} className="mt-1 w-full">
+              {loading ? "Researching…" : "Research company"}
+            </Button>
+          </form>
 
-        {intel && (
-          <div className="flex flex-col gap-4">
-            <div className="rounded-card border border-border bg-surface-2 p-5">
-              <h2 className="font-semibold text-primary">{intel.company}</h2>
-              <p className="mt-2 text-sm text-hint">{intel.overview}</p>
+          {intel && (
+            <div className="flex flex-col gap-4">
+              <div className="rounded-card border border-border bg-surface-2 p-5">
+                <h2 className="font-semibold text-primary">{intel.company}</h2>
+                <p className="mt-2 text-sm text-hint">{intel.overview}</p>
+              </div>
+
+              {intel.recent_developments?.length > 0 && (
+                <Section title="Recent developments" items={intel.recent_developments} />
+              )}
+              {intel.culture_notes && (
+                <div className="rounded-card border border-border bg-surface-2 p-5">
+                  <h3 className="text-sm font-semibold text-primary">Culture notes</h3>
+                  <p className="mt-2 text-sm text-hint">{intel.culture_notes}</p>
+                </div>
+              )}
+              {intel.likely_questions?.length > 0 && <Section title="Likely interview questions" items={intel.likely_questions} />}
+              {intel.talking_points?.length > 0 && <Section title="Talking points" items={intel.talking_points} />}
+              {intel.salary_range && (
+                <div className="rounded-card border border-border bg-surface-2 p-5">
+                  <h3 className="text-sm font-semibold text-primary">Salary range</h3>
+                  <p className="mt-2 text-sm text-hint">{intel.salary_range}</p>
+                </div>
+              )}
+              {intel.interview_process && (
+                <div className="rounded-card border border-border bg-surface-2 p-5">
+                  <h3 className="text-sm font-semibold text-primary">Interview process</h3>
+                  <p className="mt-2 text-sm text-hint">{intel.interview_process}</p>
+                </div>
+              )}
             </div>
-
-            {intel.recent_developments?.length > 0 && (
-              <Section title="Recent developments" items={intel.recent_developments} />
-            )}
-            {intel.culture_notes && (
-              <div className="rounded-card border border-border bg-surface-2 p-5">
-                <h3 className="text-sm font-semibold text-primary">Culture notes</h3>
-                <p className="mt-2 text-sm text-hint">{intel.culture_notes}</p>
-              </div>
-            )}
-            {intel.likely_questions?.length > 0 && <Section title="Likely interview questions" items={intel.likely_questions} />}
-            {intel.talking_points?.length > 0 && <Section title="Talking points" items={intel.talking_points} />}
-            {intel.salary_range && (
-              <div className="rounded-card border border-border bg-surface-2 p-5">
-                <h3 className="text-sm font-semibold text-primary">Salary range</h3>
-                <p className="mt-2 text-sm text-hint">{intel.salary_range}</p>
-              </div>
-            )}
-            {intel.interview_process && (
-              <div className="rounded-card border border-border bg-surface-2 p-5">
-                <h3 className="text-sm font-semibold text-primary">Interview process</h3>
-                <p className="mt-2 text-sm text-hint">{intel.interview_process}</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </AppShell>
+          )}
+        </div>
+      </AppShell>
+    </RequireAuth>
   );
 }
 

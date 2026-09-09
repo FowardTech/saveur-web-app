@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
@@ -87,75 +88,77 @@ export default function JobAlertsPage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-3xl flex-col gap-8 pb-10">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeader title="Job Alerts" subtitle="Daily matches for your target roles." />
-          <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing || proRequired}>
-            {refreshing ? "Refreshing…" : "Refresh alerts"}
-          </Button>
-        </div>
-
-        {proRequired && (
-          <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-              <EvaIcon name="lock-outline" size={20} />
-            </span>
-            <h2 className="font-semibold text-primary">Job Alerts requires a paid plan</h2>
-            <p className="text-sm text-hint">Upgrade to Saveur Basic or above to get daily job matches.</p>
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-3xl flex-col gap-8 pb-10">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <PageHeader title="Job Alerts" subtitle="Daily matches for your target roles." />
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing || proRequired}>
+              {refreshing ? "Refreshing…" : "Refresh alerts"}
+            </Button>
           </div>
-        )}
 
-        {error && <p className="text-sm text-danger">{error}</p>}
+          {proRequired && (
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="lock-outline" size={20} />
+              </span>
+              <h2 className="font-semibold text-primary">Job Alerts requires a paid plan</h2>
+              <p className="text-sm text-hint">Upgrade to Saveur Basic or above to get daily job matches.</p>
+            </div>
+          )}
 
-        <form onSubmit={handleSavePreferences} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-end">
-          <label className="flex flex-1 flex-col gap-1.5">
-            <span className="text-sm font-medium text-primary">Target roles (comma-separated)</span>
-            <input
-              type="text"
-              value={rolesText}
-              onChange={(e) => setRolesText(e.target.value)}
-              placeholder="e.g. Backend Engineer, Product Manager"
-              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-            />
-          </label>
-          <Button type="submit" size="md" disabled={savingPrefs}>
-            {savingPrefs ? "Saving…" : "Save"}
-          </Button>
-        </form>
+          {error && <p className="text-sm text-danger">{error}</p>}
 
-        {alerts && alerts.length === 0 && !proRequired && (
-          <p className="text-sm text-hint">No job alerts yet — check back after your next refresh.</p>
-        )}
+          <form onSubmit={handleSavePreferences} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-end">
+            <label className="flex flex-1 flex-col gap-1.5">
+              <span className="text-sm font-medium text-primary">Target roles (comma-separated)</span>
+              <input
+                type="text"
+                value={rolesText}
+                onChange={(e) => setRolesText(e.target.value)}
+                placeholder="e.g. Backend Engineer, Product Manager"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+            </label>
+            <Button type="submit" size="md" disabled={savingPrefs}>
+              {savingPrefs ? "Saving…" : "Save"}
+            </Button>
+          </form>
 
-        {alerts && alerts.length > 0 && (
-          <div className="flex flex-col gap-3">
-            {alerts.map((a) => (
-              <a
-                key={a.id}
-                href={a.apply_url || "#"}
-                target={a.apply_url ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text font-semibold">
-                    {a.company?.[0]?.toUpperCase() || "?"}
-                  </span>
-                  <div>
-                    <h3 className="font-medium text-primary">{a.title}</h3>
-                    <p className="text-sm text-hint">
-                      {a.company}
-                      {a.location ? ` · ${a.location}` : ""}
-                    </p>
+          {alerts && alerts.length === 0 && !proRequired && (
+            <p className="text-sm text-hint">No job alerts yet — check back after your next refresh.</p>
+          )}
+
+          {alerts && alerts.length > 0 && (
+            <div className="flex flex-col gap-3">
+              {alerts.map((a) => (
+                <a
+                  key={a.id}
+                  href={a.apply_url || "#"}
+                  target={a.apply_url ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text font-semibold">
+                      {a.company?.[0]?.toUpperCase() || "?"}
+                    </span>
+                    <div>
+                      <h3 className="font-medium text-primary">{a.title}</h3>
+                      <p className="text-sm text-hint">
+                        {a.company}
+                        {a.location ? ` · ${a.location}` : ""}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                {a.pinned && <EvaIcon name="star" size={16} className="shrink-0 text-brand" />}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </AppShell>
+                  {a.pinned && <EvaIcon name="star" size={16} className="shrink-0 text-brand" />}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </AppShell>
+    </RequireAuth>
   );
 }

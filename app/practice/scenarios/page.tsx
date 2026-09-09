@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { SelectField } from "@/components/ui/SelectField";
@@ -58,80 +59,82 @@ export default function PracticalScenariosSetupPage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-        <PageHeader
-          title="Practical Scenarios"
-          subtitle="Hands-on, multi-step judgment scenarios for non-engineering roles."
-        />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+          <PageHeader
+            title="Practical Scenarios"
+            subtitle="Hands-on, multi-step judgment scenarios for non-engineering roles."
+          />
 
-        {addonRequired && (
-          <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-              <EvaIcon name="lock-outline" size={20} />
-            </span>
-            <h2 className="font-semibold text-primary">Practical Scenarios is a paid add-on</h2>
-            <p className="text-sm text-hint">
-              Purchase the Practical Scenarios add-on from your account to unlock this practice mode.
-            </p>
-          </div>
-        )}
-
-        {!step && !addonRequired && (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-            <SelectField label="Scenario type" value={type} onChange={(e) => setType(e.target.value)}>
-              {PRACTICAL_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {labelFor(t)}
-                </option>
-              ))}
-            </SelectField>
-            <TextField
-              label="Role (optional)"
-              placeholder="e.g. Registered Nurse, Account Executive"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            {error && <p className="text-sm text-danger">{error}</p>}
-            <Button type="submit" disabled={loading} className="mt-1 w-full">
-              {loading ? "Starting…" : "Start scenario"}
-            </Button>
-          </form>
-        )}
-
-        {step && (
-          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-            <div className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
-                <EvaIcon name="checkmark-circle-2-outline" size={22} />
+          {addonRequired && (
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">Scenario started</h2>
+              <h2 className="font-semibold text-primary">Practical Scenarios is a paid add-on</h2>
+              <p className="text-sm text-hint">
+                Purchase the Practical Scenarios add-on from your account to unlock this practice mode.
+              </p>
             </div>
+          )}
 
-            <div className="rounded-lg bg-surface-1 p-4">
-              <p className="text-sm text-primary">{step.situation}</p>
+          {!step && !addonRequired && (
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+              <SelectField label="Scenario type" value={type} onChange={(e) => setType(e.target.value)}>
+                {PRACTICAL_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {labelFor(t)}
+                  </option>
+                ))}
+              </SelectField>
+              <TextField
+                label="Role (optional)"
+                placeholder="e.g. Registered Nurse, Account Executive"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              />
+              {error && <p className="text-sm text-danger">{error}</p>}
+              <Button type="submit" disabled={loading} className="mt-1 w-full">
+                {loading ? "Starting…" : "Start scenario"}
+              </Button>
+            </form>
+          )}
+
+          {step && (
+            <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
+                  <EvaIcon name="checkmark-circle-2-outline" size={22} />
+                </span>
+                <h2 className="font-semibold text-primary">Scenario started</h2>
+              </div>
+
+              <div className="rounded-lg bg-surface-1 p-4">
+                <p className="text-sm text-primary">{step.situation}</p>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {step.choices.map((c) => (
+                  <div key={c.id} className="rounded-lg border border-border px-3.5 py-2.5 text-sm text-primary">
+                    <span className="font-medium uppercase text-hint">{c.id}.</span> {c.text}
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-lg border border-dashed border-border p-4 text-center text-sm text-hint">
+                This is where the interactive scenario would continue — choosing an option here would advance the
+                story and eventually produce a judgment-quality assessment. That full interactive flow is coming to
+                the web app in a future pass; the session above is saved to your account the same as on mobile.
+              </div>
+
+              <Button variant="outline" onClick={() => setStep(null)}>
+                Start another scenario
+              </Button>
             </div>
-
-            <div className="flex flex-col gap-2">
-              {step.choices.map((c) => (
-                <div key={c.id} className="rounded-lg border border-border px-3.5 py-2.5 text-sm text-primary">
-                  <span className="font-medium uppercase text-hint">{c.id}.</span> {c.text}
-                </div>
-              ))}
-            </div>
-
-            <div className="rounded-lg border border-dashed border-border p-4 text-center text-sm text-hint">
-              This is where the interactive scenario would continue — choosing an option here would advance the
-              story and eventually produce a judgment-quality assessment. That full interactive flow is coming to
-              the web app in a future pass; the session above is saved to your account the same as on mobile.
-            </div>
-
-            <Button variant="outline" onClick={() => setStep(null)}>
-              Start another scenario
-            </Button>
-          </div>
-        )}
-      </div>
-    </AppShell>
+          )}
+        </div>
+      </AppShell>
+    </RequireAuth>
   );
 }

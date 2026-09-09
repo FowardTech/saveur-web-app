@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ActionCard } from "@/components/ui/ActionCard";
 
@@ -28,15 +29,17 @@ const settingsLinks = [
 
 export default function SettingsPage() {
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
-        <PageHeader title="Settings" subtitle="Manage your account, billing, and security." />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {settingsLinks.map((link) => (
-            <ActionCard key={link.href} href={link.href} icon={link.icon} title={link.title} description={link.description} tint={link.tint} />
-          ))}
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+          <PageHeader title="Settings" subtitle="Manage your account, billing, and security." />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {settingsLinks.map((link) => (
+              <ActionCard key={link.href} href={link.href} icon={link.icon} title={link.title} description={link.description} tint={link.tint} />
+            ))}
+          </div>
         </div>
-      </div>
-    </AppShell>
+      </AppShell>
+    </RequireAuth>
   );
 }

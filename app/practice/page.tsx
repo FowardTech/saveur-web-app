@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ActionCard } from "@/components/ui/ActionCard";
 
@@ -28,25 +29,27 @@ const modes = [
 
 export default function PracticeHubPage() {
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
-        <PageHeader
-          title="Practice"
-          subtitle="Choose a mode to sharpen your skills before the real thing."
-        />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {modes.map((mode) => (
-            <ActionCard
-              key={mode.href}
-              href={mode.href}
-              icon={mode.icon}
-              title={mode.title}
-              description={mode.description}
-              tint={mode.tint}
-            />
-          ))}
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+          <PageHeader
+            title="Practice"
+            subtitle="Choose a mode to sharpen your skills before the real thing."
+          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {modes.map((mode) => (
+              <ActionCard
+                key={mode.href}
+                href={mode.href}
+                icon={mode.icon}
+                title={mode.title}
+                description={mode.description}
+                tint={mode.tint}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </AppShell>
+      </AppShell>
+    </RequireAuth>
   );
 }

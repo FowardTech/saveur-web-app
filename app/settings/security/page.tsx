@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -84,48 +85,50 @@ export default function SecuritySettingsPage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
-        <PageHeader title="Security" subtitle="Protect your account with email-code two-factor authentication." />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
+          <PageHeader title="Security" subtitle="Protect your account with email-code two-factor authentication." />
 
-        {error && <p className="text-sm text-danger">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
-        <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
-              <EvaIcon name="shield-outline" size={20} />
-            </span>
-            <div>
-              <h2 className="font-semibold text-primary">Two-factor authentication</h2>
-              <p className="text-sm text-hint">
-                {enabled === null ? "Loading…" : enabled ? "Enabled — a code is sent to your email at login." : "Not enabled."}
-              </p>
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
+                <EvaIcon name="shield-outline" size={20} />
+              </span>
+              <div>
+                <h2 className="font-semibold text-primary">Two-factor authentication</h2>
+                <p className="text-sm text-hint">
+                  {enabled === null ? "Loading…" : enabled ? "Enabled — a code is sent to your email at login." : "Not enabled."}
+                </p>
+              </div>
             </div>
-          </div>
 
-          {enabled === true && (
-            <Button variant="outline" onClick={handleDisable} disabled={disabling} className="w-fit">
-              {disabling ? "Disabling…" : "Disable 2FA"}
-            </Button>
-          )}
-
-          {enabled === false && !emailHint && (
-            <Button onClick={handleSendCode} disabled={sending} className="w-fit">
-              {sending ? "Sending…" : "Enable 2FA"}
-            </Button>
-          )}
-
-          {enabled === false && emailHint && (
-            <form onSubmit={handleVerify} className="flex flex-col gap-3">
-              <p className="text-sm text-hint">Enter the code sent to {emailHint}.</p>
-              <TextField label="Verification code" value={code} onChange={(e) => setCode(e.target.value)} required />
-              <Button type="submit" disabled={verifying || !code.trim()} className="w-fit">
-                {verifying ? "Verifying…" : "Verify & enable"}
+            {enabled === true && (
+              <Button variant="outline" onClick={handleDisable} disabled={disabling} className="w-fit">
+                {disabling ? "Disabling…" : "Disable 2FA"}
               </Button>
-            </form>
-          )}
+            )}
+
+            {enabled === false && !emailHint && (
+              <Button onClick={handleSendCode} disabled={sending} className="w-fit">
+                {sending ? "Sending…" : "Enable 2FA"}
+              </Button>
+            )}
+
+            {enabled === false && emailHint && (
+              <form onSubmit={handleVerify} className="flex flex-col gap-3">
+                <p className="text-sm text-hint">Enter the code sent to {emailHint}.</p>
+                <TextField label="Verification code" value={code} onChange={(e) => setCode(e.target.value)} required />
+                <Button type="submit" disabled={verifying || !code.trim()} className="w-fit">
+                  {verifying ? "Verifying…" : "Verify & enable"}
+                </Button>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
-    </AppShell>
+      </AppShell>
+    </RequireAuth>
   );
 }

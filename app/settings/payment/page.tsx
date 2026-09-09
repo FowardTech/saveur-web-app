@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
@@ -34,31 +35,33 @@ export default function PaymentSettingsPage() {
   const isPaidSubscriber = profile?.subscriptionTier && profile.subscriptionTier !== "free";
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
-        <PageHeader title="Payment Method" subtitle="Manage your subscription and billing details." />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
+          <PageHeader title="Payment Method" subtitle="Manage your subscription and billing details." />
 
-        <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-              <EvaIcon name="credit-card-outline" size={20} />
-            </span>
-            <div>
-              <h2 className="font-semibold text-primary">
-                {isPaidSubscriber ? `You're on the ${profile?.subscriptionTier} plan` : "You're on the free plan"}
-              </h2>
-              <p className="text-sm text-hint">Manage your payment method, invoices, and plan through Stripe's secure billing portal.</p>
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="credit-card-outline" size={20} />
+              </span>
+              <div>
+                <h2 className="font-semibold text-primary">
+                  {isPaidSubscriber ? `You're on the ${profile?.subscriptionTier} plan` : "You're on the free plan"}
+                </h2>
+                <p className="text-sm text-hint">Manage your payment method, invoices, and plan through Stripe's secure billing portal.</p>
+              </div>
             </div>
+            {error && <p className="text-sm text-danger">{error}</p>}
+            <Button onClick={handleManageBilling} disabled={busy} className="w-fit">
+              {busy ? "Opening…" : "Manage billing"}
+            </Button>
+            <Link href="/subscription" className="text-sm text-link hover:underline">
+              View plans &amp; pricing
+            </Link>
           </div>
-          {error && <p className="text-sm text-danger">{error}</p>}
-          <Button onClick={handleManageBilling} disabled={busy} className="w-fit">
-            {busy ? "Opening…" : "Manage billing"}
-          </Button>
-          <Link href="/subscription" className="text-sm text-link hover:underline">
-            View plans &amp; pricing
-          </Link>
         </div>
-      </div>
-    </AppShell>
+      </AppShell>
+    </RequireAuth>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -80,52 +81,54 @@ export default function ResumeVariantsPage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-        <PageHeader title="Resume Variants" subtitle="Save multiple AI-tailored resumes side by side, one per target role or company." />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+          <PageHeader title="Resume Variants" subtitle="Save multiple AI-tailored resumes side by side, one per target role or company." />
 
-        {premiumRequired && (
-          <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-              <EvaIcon name="lock-outline" size={20} />
-            </span>
-            <h2 className="font-semibold text-primary">Creating variants is a Premium feature</h2>
-            <p className="text-sm text-hint">Upgrade your plan to save multiple tailored resume variants.</p>
-          </div>
-        )}
+          {premiumRequired && (
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="lock-outline" size={20} />
+              </span>
+              <h2 className="font-semibold text-primary">Creating variants is a Premium feature</h2>
+              <p className="text-sm text-hint">Upgrade your plan to save multiple tailored resume variants.</p>
+            </div>
+          )}
 
-        {error && <p className="text-sm text-danger">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
-        <form onSubmit={handleCreate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-          <TextField label="Label" placeholder="e.g. Backend @ Startups" value={label} onChange={(e) => setLabel(e.target.value)} required />
-          <TextField label="Target role" placeholder="e.g. Senior Backend Engineer" value={targetRole} onChange={(e) => setTargetRole(e.target.value)} required />
-          <TextField label="Target company (optional)" placeholder="e.g. Acme Corp" value={targetCompany} onChange={(e) => setTargetCompany(e.target.value)} />
-          <Button type="submit" disabled={creating || !label.trim() || !targetRole.trim()} className="mt-1 w-full">
-            {creating ? "Creating…" : "Create variant"}
-          </Button>
-        </form>
+          <form onSubmit={handleCreate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <TextField label="Label" placeholder="e.g. Backend @ Startups" value={label} onChange={(e) => setLabel(e.target.value)} required />
+            <TextField label="Target role" placeholder="e.g. Senior Backend Engineer" value={targetRole} onChange={(e) => setTargetRole(e.target.value)} required />
+            <TextField label="Target company (optional)" placeholder="e.g. Acme Corp" value={targetCompany} onChange={(e) => setTargetCompany(e.target.value)} />
+            <Button type="submit" disabled={creating || !label.trim() || !targetRole.trim()} className="mt-1 w-full">
+              {creating ? "Creating…" : "Create variant"}
+            </Button>
+          </form>
 
-        {variants && variants.length === 0 && <p className="text-sm text-hint">No variants yet — create one above.</p>}
+          {variants && variants.length === 0 && <p className="text-sm text-hint">No variants yet — create one above.</p>}
 
-        {variants && variants.length > 0 && (
-          <div className="flex flex-col gap-3">
-            {variants.map((v) => (
-              <div key={v.id} className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4">
-                <div>
-                  <h3 className="font-medium text-primary">{v.label}</h3>
-                  <p className="text-sm text-hint">
-                    {v.target_role}
-                    {v.target_company ? ` · ${v.target_company}` : ""}
-                  </p>
+          {variants && variants.length > 0 && (
+            <div className="flex flex-col gap-3">
+              {variants.map((v) => (
+                <div key={v.id} className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4">
+                  <div>
+                    <h3 className="font-medium text-primary">{v.label}</h3>
+                    <p className="text-sm text-hint">
+                      {v.target_role}
+                      {v.target_company ? ` · ${v.target_company}` : ""}
+                    </p>
+                  </div>
+                  <Button size="sm" variant="ghost" onClick={() => handleDelete(v.id)}>
+                    Delete
+                  </Button>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => handleDelete(v.id)}>
-                  Delete
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </AppShell>
+              ))}
+            </div>
+          )}
+        </div>
+      </AppShell>
+    </RequireAuth>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -55,46 +56,48 @@ export default function CoverLetterPage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-        <PageHeader title="Cover Letter Generator" subtitle="Generate a tailored cover letter from your resume and a target role." />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+          <PageHeader title="Cover Letter Generator" subtitle="Generate a tailored cover letter from your resume and a target role." />
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <TextField label="Company" placeholder="e.g. Acme Corp" value={company} onChange={(e) => setCompany(e.target.value)} />
-            <TextField label="Role" placeholder="e.g. Product Manager" value={role} onChange={(e) => setRole(e.target.value)} />
-          </div>
-          <TextField
-            label="Hiring manager (optional)"
-            placeholder="e.g. Jane Smith"
-            value={hiringManager}
-            onChange={(e) => setHiringManager(e.target.value)}
-          />
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-primary">Job description (optional)</span>
-            <textarea
-              rows={4}
-              placeholder="Paste a job posting — company/role can be left blank if it's here"
-              value={jdText}
-              onChange={(e) => setJdText(e.target.value)}
-              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <TextField label="Company" placeholder="e.g. Acme Corp" value={company} onChange={(e) => setCompany(e.target.value)} />
+              <TextField label="Role" placeholder="e.g. Product Manager" value={role} onChange={(e) => setRole(e.target.value)} />
+            </div>
+            <TextField
+              label="Hiring manager (optional)"
+              placeholder="e.g. Jane Smith"
+              value={hiringManager}
+              onChange={(e) => setHiringManager(e.target.value)}
             />
-          </label>
-          {error && <p className="text-sm text-danger">{error}</p>}
-          <Button type="submit" disabled={loading || !canSubmit} className="mt-1 w-full">
-            {loading ? "Generating…" : "Generate cover letter"}
-          </Button>
-        </form>
-
-        {letter && (
-          <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-primary">{letter}</p>
-            <Button variant="outline" size="sm" onClick={handleCopy} className="w-fit">
-              {copied ? "Copied!" : "Copy letter"}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-primary">Job description (optional)</span>
+              <textarea
+                rows={4}
+                placeholder="Paste a job posting — company/role can be left blank if it's here"
+                value={jdText}
+                onChange={(e) => setJdText(e.target.value)}
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+            </label>
+            {error && <p className="text-sm text-danger">{error}</p>}
+            <Button type="submit" disabled={loading || !canSubmit} className="mt-1 w-full">
+              {loading ? "Generating…" : "Generate cover letter"}
             </Button>
-          </div>
-        )}
-      </div>
-    </AppShell>
+          </form>
+
+          {letter && (
+            <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-primary">{letter}</p>
+              <Button variant="outline" size="sm" onClick={handleCopy} className="w-fit">
+                {copied ? "Copied!" : "Copy letter"}
+              </Button>
+            </div>
+          )}
+        </div>
+      </AppShell>
+    </RequireAuth>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
@@ -46,22 +47,24 @@ export default function ProfileSettingsPage() {
   }
 
   return (
-    <AppShell>
-      <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
-        <PageHeader title="Profile" subtitle="Update your account details." />
+    <RequireAuth>
+      <AppShell>
+        <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
+          <PageHeader title="Profile" subtitle="Update your account details." />
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-          <TextField label="Full name" value={name} onChange={(e) => setName(e.target.value)} required />
-          <TextField label="Email" value={profile?.email || ""} disabled className="opacity-60" />
-          <TextField label="Phone number" placeholder="Optional" value={phone} onChange={(e) => setPhone(e.target.value)} />
-          <TextField label="Home address" placeholder="Optional" value={address} onChange={(e) => setAddress(e.target.value)} />
-          {error && <p className="text-sm text-danger">{error}</p>}
-          {saved && <p className="text-sm text-success-text">Saved.</p>}
-          <Button type="submit" disabled={saving} className="mt-1 w-full">
-            {saving ? "Saving…" : "Save changes"}
-          </Button>
-        </form>
-      </div>
-    </AppShell>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <TextField label="Full name" value={name} onChange={(e) => setName(e.target.value)} required />
+            <TextField label="Email" value={profile?.email || ""} disabled className="opacity-60" />
+            <TextField label="Phone number" placeholder="Optional" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <TextField label="Home address" placeholder="Optional" value={address} onChange={(e) => setAddress(e.target.value)} />
+            {error && <p className="text-sm text-danger">{error}</p>}
+            {saved && <p className="text-sm text-success-text">Saved.</p>}
+            <Button type="submit" disabled={saving} className="mt-1 w-full">
+              {saving ? "Saving…" : "Save changes"}
+            </Button>
+          </form>
+        </div>
+      </AppShell>
+    </RequireAuth>
   );
 }
