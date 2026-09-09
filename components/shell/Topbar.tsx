@@ -7,6 +7,10 @@ import { UserMenu } from "./UserMenu";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { LinkButton } from "@/components/ui/Button";
 
+// No wordmark here — the Sidebar (visible on desktop, one tap away via the
+// hamburger on mobile) is the app's single source of branding now, so this
+// bar doesn't repeat "Saveur." next to it.
+
 export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: () => void; showMenuButton?: boolean }) {
   const { firebaseUser, loading } = useAuth();
   const isSignedIn = !!firebaseUser;
@@ -24,9 +28,6 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
             <EvaIcon name="menu-outline" size={20} />
           </button>
         )}
-        <Link href={isSignedIn ? "/dashboard" : "/"} className="text-lg font-bold tracking-tight text-primary">
-          Saveur<span className="text-brand">.</span>
-        </Link>
       </div>
 
       <div className="flex items-center gap-2">
