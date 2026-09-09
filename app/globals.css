@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/* Class-based dark mode (toggled by next-themes on <html>), instead of
+   Tailwind v4's default prefers-color-scheme-driven `dark:` variant. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------
+ * Design tokens — mirrors the mobile app's palette 1:1 (see UI Kitten
+ * theme files in the Saveur mobile repo). Light values live on :root,
+ * dark overrides live on .dark. Every token is re-exposed to Tailwind
+ * below via @theme inline so classes like bg-page / text-primary /
+ * bg-brand / rounded-card work the same in both modes.
+ * --------------------------------------------------------------------- */
+:root {
+  /* brand / base palette — identical in both modes */
+  --brand: #0063f8;
+  --brand-600: #004fc6;
+  --brand-700: #0040a1;
+  --success: #00d65b;
+  --danger: #fa4169;
+  --warning: #fe9870;
+  --accent-purple: #8b5cf6;
+
+  /* light mode */
+  --page: #f5f5f6;
+  --surface-1: #f6faf8;
+  --surface-2: #ffffff;
+  --surface-3: #f0f0f0;
+  --surface-4: #e0e0e0;
+  --border: #e7e7f0;
+  --text-primary: #272755;
+  --text-hint: #5c5c78;
+  --text-link: #0063f8;
+  --success-text: #047857;
+
+  --tint-orange: #fff1e7;
+  --tint-orange-text: #f2994a;
+  --tint-mint: #e1f9ef;
+  --tint-mint-text: #047857;
+  --tint-rose: #ffeaf1;
+  --tint-rose-text: #f2679c;
+  --tint-purple: #f3eeff;
+  --tint-purple-text: #7c3aed;
+}
+
+.dark {
+  --page: #12121f;
+  --surface-1: #1b1b2e;
+  --surface-2: #2a2a42;
+  --surface-3: #3a3a57;
+  --surface-4: #3a3a57;
+  --border: #3a3a57;
+  --text-primary: #f5f5fa;
+  --text-hint: #9393aa;
+  --text-link: #8fb4ff;
+  --success-text: #6ee7b7;
+
+  --tint-orange: #3a2a1c;
+  --tint-orange-text: #ffb870;
+  --tint-mint: #123625;
+  --tint-mint-text: #6ee7b7;
+  --tint-rose: #3a1f2a;
+  --tint-rose-text: #ff9dc0;
+  --tint-purple: #2a2140;
+  --tint-purple-text: #c4b5fd;
+}
+
+@theme inline {
+  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --color-page: var(--page);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
+  --color-border: var(--border);
+
+  --color-primary: var(--text-primary);
+  --color-hint: var(--text-hint);
+  --color-link: var(--text-link);
+
+  --color-brand: var(--brand);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+
+  --color-success: var(--success);
+  --color-success-text: var(--success-text);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-accent-purple: var(--accent-purple);
+
+  --color-tint-orange: var(--tint-orange);
+  --color-tint-orange-text: var(--tint-orange-text);
+  --color-tint-mint: var(--tint-mint);
+  --color-tint-mint-text: var(--tint-mint-text);
+  --color-tint-rose: var(--tint-rose);
+  --color-tint-rose-text: var(--tint-rose-text);
+  --color-tint-purple: var(--tint-purple);
+  --color-tint-purple-text: var(--tint-purple-text);
+
+  --radius-card: 12px;
+  --radius-pill: 999px;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--page);
+    color: var(--text-primary);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

@@ -1,0 +1,153 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AppShell } from "@/components/shell/AppShell";
+import { Button } from "@/components/ui/Button";
+import { EvaIcon } from "@/components/icons/EvaIcon";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { getPlans, createCheckoutSession, createPortalSession } from "@/lib/billingService";
+import { formatPrice, type BillingPlan } from "@/lib/types";
+
+export default function SubscriptionPage() {
+  const router = useRouter();
+  const { firebaseUser, profile } = useAuth();
+  const [plans, setPlans] = useState<BillingPlan[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+  const [plansError, setPlansError] = useState<string | null>(null);
+  const [busyCode, setBusyCode] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getPlans();
+        if (!cancelled) setPlans(data);
+      } catch {
+        if (!cancelled) setPlansError("Couldn't load plans right now. Please try again in a moment.");
+      } finally {
+        if (!cancelled) setLoadingPlans(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleSubscribe(plan: BillingPlan) {
+    if (!firebaseUser) {
+      router.push("/login");
+      return;
+    }
+    if (!plan.code) return;
+    setBusyCode(plan.code);
+    setActionError(null);
+    try {
+      const origin = window.location.origin;
+      const url = await createCheckoutSession({
+        planCode: plan.code,
+        successUrl: `${origin}/subscription/success`,
+        cancelUrl: `${origin}/subscription`,
+      });
+      window.location.assign(url);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Couldn't start checkout. Please try again.";
+      setActionError(message);
+      setBusyCode(null);
+    }
+  }
+
+  async function handleManageBilling() {
+    setBusyCode("__portal__");
+    setActionError(null);
+    try {
+      const url = await createPortalSession(`${window.location.origin}/subscription`);
+      window.location.assign(url);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Couldn't open the billing portal. Please try again.";
+      setActionError(message);
+      setBusyCode(null);
+    }
+  }
+
+  const isPaidSubscriber = profile?.subscriptionTier && profile.subscriptionTier !== "free";
+
+  return (
+    <AppShell>
+      <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+        <div className="flex flex-col gap-2 text-center">
+          <h1 className="text-3xl font-bold text-primary">Plans built for every stage of your search</h1>
+          <p className="text-sm text-hint">Upgrade any time — cancel or switch plans whenever you need to.</p>
+        </div>
+
+        {isPaidSubscriber && (
+          <div className="flex items-center justify-between rounded-card border border-border bg-surface-2 px-5 py-4">
+            <div className="flex items-center gap-3">
+              <EvaIcon name="credit-card-outline" size={18} className="text-brand" />
+              <p className="text-sm text-primary">You&apos;re currently on the {profile?.subscriptionTier} plan.</p>
+            </div>
+            <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={busyCode === "__portal__"}>
+              {busyCode === "__portal__" ? "Opening…" : "Manage billing"}
+            </Button>
+          </div>
+        )}
+
+        {loadingPlans && <p className="text-center text-sm text-hint">Loading plans…</p>}
+        {plansError && <p className="text-center text-sm text-danger">{plansError}</p>}
+        {actionError && <p className="text-center text-sm text-danger">{actionError}</p>}
+
+        {!loadingPlans && !plansError && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {plans.map((plan) => (
+              <div
+                key={plan.id}
+                className={`flex flex-col gap-4 rounded-card border p-6 ${
+                  plan.recommended ? "border-brand shadow-md" : "border-border"
+                } bg-surface-2`}
+              >
+                {plan.recommended && (
+                  <span className="w-fit rounded-pill bg-brand px-3 py-1 text-xs font-semibold text-white">
+                    Most popular
+                  </span>
+                )}
+                <div>
+                  <h3 className="text-lg font-bold text-primary">{plan.name}</h3>
+                  <p className="mt-1 flex items-baseline gap-1">
+                    <span className="text-3xl font-bold text-primary">{formatPrice(plan.amount, plan.currency)}</span>
+                    {plan.interval && <span className="text-sm text-hint">/{plan.interval === "month" ? "mo" : "yr"}</span>}
+                  </p>
+                </div>
+                <ul className="flex flex-1 flex-col gap-2">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2 text-sm text-hint">
+                      <EvaIcon name="checkmark-outline" size={14} className="mt-0.5 shrink-0 text-success-text" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                {plan.isCurrent ? (
+                  <Button variant="secondary" disabled className="w-full">
+                    Current plan
+                  </Button>
+                ) : plan.code ? (
+                  <Button onClick={() => handleSubscribe(plan)} disabled={busyCode === plan.code} className="w-full">
+                    {busyCode === plan.code ? "Redirecting…" : "Subscribe"}
+                  </Button>
+                ) : (
+                  <Button variant="secondary" disabled className="w-full">
+                    Free
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!loadingPlans && !plansError && plans.length === 0 && (
+          <p className="text-center text-sm text-hint">Plans aren&apos;t available right now — check back soon.</p>
+        )}
+      </div>
+    </AppShell>
+  );
+}

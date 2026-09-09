@@ -1,0 +1,61 @@
+"use client";
+
+import Link from "next/link";
+import { EvaIcon } from "@/components/icons/EvaIcon";
+import { ThemeToggle } from "./ThemeToggle";
+import { UserMenu } from "./UserMenu";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { LinkButton } from "@/components/ui/Button";
+
+export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: () => void; showMenuButton?: boolean }) {
+  const { firebaseUser, loading } = useAuth();
+  const isSignedIn = !!firebaseUser;
+
+  return (
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-surface-2/80 px-4 backdrop-blur sm:px-6">
+      <div className="flex items-center gap-3">
+        {showMenuButton && (
+          <button
+            type="button"
+            onClick={onMenuClick}
+            aria-label="Toggle sidebar"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-primary hover:bg-surface-3 lg:hidden"
+          >
+            <EvaIcon name="menu-outline" size={20} />
+          </button>
+        )}
+        <Link href={isSignedIn ? "/dashboard" : "/"} className="text-lg font-bold tracking-tight text-primary">
+          Saveur<span className="text-brand">.</span>
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {!loading && !isSignedIn && (
+          <>
+            <ThemeToggle />
+            <LinkButton href="/login" variant="ghost" size="sm">
+              Sign In
+            </LinkButton>
+            <LinkButton href="/register" variant="primary" size="sm">
+              Register
+            </LinkButton>
+          </>
+        )}
+
+        {!loading && isSignedIn && (
+          <>
+            <ThemeToggle />
+            <Link
+              href="/settings"
+              aria-label="Notifications"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-hint transition hover:bg-surface-3 hover:text-primary"
+            >
+              <EvaIcon name="bell-outline" size={18} />
+            </Link>
+            <UserMenu />
+          </>
+        )}
+      </div>
+    </header>
+  );
+}
