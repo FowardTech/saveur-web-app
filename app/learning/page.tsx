@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -36,6 +37,7 @@ interface ProgressByCourse {
 }
 
 export default function LearningPage() {
+  const { t } = useTranslation();
   const [curriculum, setCurriculum] = useState<Curriculum | null | undefined>(undefined);
   const [byCourse, setByCourse] = useState<ProgressByCourse>({});
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +54,7 @@ export default function LearningPage() {
       setCurriculum(curr.curriculum);
       setByCourse(prog.by_course || {});
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't load your learning progress.");
+      setError((err as ApiError).message || t("web:learning.loadFailedDefault", { defaultValue: "Couldn't load your learning progress." }));
       setCurriculum(null);
     }
   }
@@ -74,7 +76,7 @@ export default function LearningPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setPremiumRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't build a curriculum right now.");
+        setError(apiErr.message || t("web:learning.buildFailedDefault", { defaultValue: "Couldn't build a curriculum right now." }));
       }
     } finally {
       setGenerating(false);
@@ -87,32 +89,35 @@ export default function LearningPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="Learning Courses" subtitle="An AI-built, week-by-week curriculum toward your career goal." />
+          <PageHeader
+            title={t("web:learning.title", { defaultValue: "Learning Courses" })}
+            subtitle={t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal." })}
+          />
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {curriculum === undefined && <p className="text-sm text-hint">Loading…</p>}
+          {curriculum === undefined && <p className="text-sm text-hint">{t("web:learning.loading", { defaultValue: "Loading…" })}</p>}
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">Building a curriculum is a Premium feature</h2>
-              <p className="text-sm text-hint">Upgrade your plan to generate a guided, multi-week learning plan.</p>
+              <h2 className="font-semibold text-primary">{t("web:learning.premiumRequiredTitle", { defaultValue: "Building a curriculum is a Premium feature" })}</h2>
+              <p className="text-sm text-hint">{t("web:learning.premiumRequiredSubtitle", { defaultValue: "Upgrade your plan to generate a guided, multi-week learning plan." })}</p>
             </div>
           )}
 
           {curriculum === null && !premiumRequired && (
             <form onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
               <TextField
-                label="Career goal"
-                placeholder="e.g. Become a backend engineer"
+                label={t("web:learning.careerGoalLabel", { defaultValue: "Career goal" })}
+                placeholder={t("web:learning.careerGoalPlaceholder", { defaultValue: "e.g. Become a backend engineer" })}
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 required
               />
               <Button type="submit" disabled={generating || !goal.trim()} className="mt-1 w-full">
-                {generating ? "Building…" : "Build my curriculum"}
+                {generating ? t("web:learning.building", { defaultValue: "Building…" }) : t("web:learning.buildCurriculum", { defaultValue: "Build my curriculum" })}
               </Button>
             </form>
           )}
@@ -120,7 +125,7 @@ export default function LearningPage() {
           {curriculum && (
             <div className="flex flex-col gap-4">
               <div className="rounded-card border border-border bg-surface-2 p-5">
-                <h2 className="font-semibold text-primary">Goal: {curriculum.goal}</h2>
+                <h2 className="font-semibold text-primary">{t("web:learning.goalPrefix", { defaultValue: "Goal: {{goal}}", goal: curriculum.goal })}</h2>
               </div>
               <div className="flex flex-col gap-3">
                 {curriculum.weeks.map((w) => (
@@ -135,9 +140,9 @@ export default function LearningPage() {
                     <div className="flex-1">
                       <h3 className="font-medium text-primary">{w.topic}</h3>
                       <p className="text-xs text-hint">
-                        Week {w.week}
+                        {t("web:learning.weekLabel", { defaultValue: "Week {{week}}", week: w.week })}
                         {w.level ? ` · ${w.level}` : ""}
-                        {!w.unlocked && !w.completed ? " · Locked" : ""}
+                        {!w.unlocked && !w.completed ? ` · ${t("web:learning.locked", { defaultValue: "Locked" })}` : ""}
                       </p>
                     </div>
                   </div>
@@ -148,11 +153,13 @@ export default function LearningPage() {
 
           {courseIds.length > 0 && (
             <div className="flex flex-col gap-3">
-              <h2 className="text-lg font-bold text-primary">Course progress</h2>
+              <h2 className="text-lg font-bold text-primary">{t("web:learning.courseProgressTitle", { defaultValue: "Course progress" })}</h2>
               {courseIds.map((courseId) => (
                 <div key={courseId} className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4">
                   <span className="text-sm text-primary capitalize">{courseId.split("::")[0].replace(/-/g, " ")}</span>
-                  <span className="text-xs text-hint">{byCourse[courseId].completed_modules} module(s) completed</span>
+                  <span className="text-xs text-hint">
+                    {t("web:learning.modulesCompleted", { defaultValue: "{{count}} module(s) completed", count: byCourse[courseId].completed_modules })}
+                  </span>
                 </div>
               ))}
             </div>

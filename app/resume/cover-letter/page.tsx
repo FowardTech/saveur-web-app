@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -12,6 +13,7 @@ import apiClient, { type ApiError } from "@/lib/apiClient";
 //   POST /api/v1/resume/cover-letter -> {cover_letter: str}
 //   body: {company?, role?, hiring_manager?, jd_text?} — at least one of company/role/jd_text required
 export default function CoverLetterPage() {
+  const { t } = useTranslation();
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [hiringManager, setHiringManager] = useState("");
@@ -38,7 +40,7 @@ export default function CoverLetterPage() {
       });
       setLetter(data.cover_letter);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't generate a cover letter right now.");
+      setError((err as ApiError).message || t("web:resume.coverLetter.generateFailedDefault", { defaultValue: "Couldn't generate a cover letter right now." }));
     } finally {
       setLoading(false);
     }
@@ -59,24 +61,37 @@ export default function CoverLetterPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="Cover Letter Generator" subtitle="Generate a tailored cover letter from your resume and a target role." />
+          <PageHeader
+            title={t("web:resume.coverLetter.title", { defaultValue: "Cover Letter Generator" })}
+            subtitle={t("web:resume.coverLetter.subtitle", { defaultValue: "Generate a tailored cover letter from your resume and a target role." })}
+          />
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <TextField label="Company" placeholder="e.g. Acme Corp" value={company} onChange={(e) => setCompany(e.target.value)} />
-              <TextField label="Role" placeholder="e.g. Product Manager" value={role} onChange={(e) => setRole(e.target.value)} />
+              <TextField
+                label={t("web:resume.coverLetter.companyLabel", { defaultValue: "Company" })}
+                placeholder={t("web:resume.coverLetter.companyPlaceholder", { defaultValue: "e.g. Acme Corp" })}
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+              />
+              <TextField
+                label={t("web:resume.coverLetter.roleLabel", { defaultValue: "Role" })}
+                placeholder={t("web:resume.coverLetter.rolePlaceholder", { defaultValue: "e.g. Product Manager" })}
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              />
             </div>
             <TextField
-              label="Hiring manager (optional)"
-              placeholder="e.g. Jane Smith"
+              label={t("web:resume.coverLetter.hiringManagerLabel", { defaultValue: "Hiring manager (optional)" })}
+              placeholder={t("web:resume.coverLetter.hiringManagerPlaceholder", { defaultValue: "e.g. Jane Smith" })}
               value={hiringManager}
               onChange={(e) => setHiringManager(e.target.value)}
             />
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-primary">Job description (optional)</span>
+              <span className="text-sm font-medium text-primary">{t("web:resume.coverLetter.jdLabel", { defaultValue: "Job description (optional)" })}</span>
               <textarea
                 rows={4}
-                placeholder="Paste a job posting — company/role can be left blank if it's here"
+                placeholder={t("web:resume.coverLetter.jdPlaceholder", { defaultValue: "Paste a job posting — company/role can be left blank if it's here" })}
                 value={jdText}
                 onChange={(e) => setJdText(e.target.value)}
                 className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
@@ -84,7 +99,7 @@ export default function CoverLetterPage() {
             </label>
             {error && <p className="text-sm text-danger">{error}</p>}
             <Button type="submit" disabled={loading || !canSubmit} className="mt-1 w-full">
-              {loading ? "Generating…" : "Generate cover letter"}
+              {loading ? t("web:resume.coverLetter.generating", { defaultValue: "Generating…" }) : t("web:resume.coverLetter.generateCoverLetter", { defaultValue: "Generate cover letter" })}
             </Button>
           </form>
 
@@ -92,7 +107,7 @@ export default function CoverLetterPage() {
             <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-primary">{letter}</p>
               <Button variant="outline" size="sm" onClick={handleCopy} className="w-fit">
-                {copied ? "Copied!" : "Copy letter"}
+                {copied ? t("web:resume.coverLetter.copied", { defaultValue: "Copied!" }) : t("web:resume.coverLetter.copyLetter", { defaultValue: "Copy letter" })}
               </Button>
             </div>
           )}

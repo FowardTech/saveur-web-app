@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -28,6 +29,7 @@ interface JobAlert {
 }
 
 export default function JobAlertsPage() {
+  const { t } = useTranslation();
   const { profile, updateProfile } = useAuth();
   const [alerts, setAlerts] = useState<JobAlert[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +51,7 @@ export default function JobAlertsPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setProRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't load your job alerts.");
+        setError(apiErr.message || t("web:jobAlerts.loadFailedDefault", { defaultValue: "Couldn't load your job alerts." }));
       }
     }
   }
@@ -65,7 +67,7 @@ export default function JobAlertsPage() {
       await apiClient.post("/api/v1/job-alerts/refresh");
       await load();
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't refresh alerts right now.");
+      setError((err as ApiError).message || t("web:jobAlerts.refreshFailedDefault", { defaultValue: "Couldn't refresh alerts right now." }));
     } finally {
       setRefreshing(false);
     }
@@ -81,7 +83,7 @@ export default function JobAlertsPage() {
         .filter(Boolean);
       await updateProfile({ desiredRoles: roles });
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't save your preferences.");
+      setError((err as ApiError).message || t("web:jobAlerts.saveFailedDefault", { defaultValue: "Couldn't save your preferences." }));
     } finally {
       setSavingPrefs(false);
     }
@@ -92,9 +94,12 @@ export default function JobAlertsPage() {
       <AppShell>
         <div className="mx-auto flex max-w-3xl flex-col gap-8 pb-10">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <PageHeader title="Job Alerts" subtitle="Daily matches for your target roles." />
+            <PageHeader
+              title={t("web:jobAlerts.title", { defaultValue: "Job Alerts" })}
+              subtitle={t("web:jobAlerts.subtitle", { defaultValue: "Daily matches for your target roles." })}
+            />
             <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing || proRequired}>
-              {refreshing ? "Refreshing…" : "Refresh alerts"}
+              {refreshing ? t("web:jobAlerts.refreshing", { defaultValue: "Refreshing…" }) : t("web:jobAlerts.refreshAlerts", { defaultValue: "Refresh alerts" })}
             </Button>
           </div>
 
@@ -103,8 +108,8 @@ export default function JobAlertsPage() {
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">Job Alerts requires a paid plan</h2>
-              <p className="text-sm text-hint">Upgrade to Saveur Basic or above to get daily job matches.</p>
+              <h2 className="font-semibold text-primary">{t("web:jobAlerts.proRequiredTitle", { defaultValue: "Job Alerts requires a paid plan" })}</h2>
+              <p className="text-sm text-hint">{t("web:jobAlerts.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to get daily job matches." })}</p>
             </div>
           )}
 
@@ -112,22 +117,22 @@ export default function JobAlertsPage() {
 
           <form onSubmit={handleSavePreferences} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-end">
             <label className="flex flex-1 flex-col gap-1.5">
-              <span className="text-sm font-medium text-primary">Target roles (comma-separated)</span>
+              <span className="text-sm font-medium text-primary">{t("web:jobAlerts.targetRolesLabel", { defaultValue: "Target roles (comma-separated)" })}</span>
               <input
                 type="text"
                 value={rolesText}
                 onChange={(e) => setRolesText(e.target.value)}
-                placeholder="e.g. Backend Engineer, Product Manager"
+                placeholder={t("web:jobAlerts.targetRolesPlaceholder", { defaultValue: "e.g. Backend Engineer, Product Manager" })}
                 className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
             </label>
             <Button type="submit" size="md" disabled={savingPrefs}>
-              {savingPrefs ? "Saving…" : "Save"}
+              {savingPrefs ? t("web:jobAlerts.saving", { defaultValue: "Saving…" }) : t("web:jobAlerts.save", { defaultValue: "Save" })}
             </Button>
           </form>
 
           {alerts && alerts.length === 0 && !proRequired && (
-            <p className="text-sm text-hint">No job alerts yet — check back after your next refresh.</p>
+            <p className="text-sm text-hint">{t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })}</p>
           )}
 
           {alerts && alerts.length > 0 && (

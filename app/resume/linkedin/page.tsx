@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -29,6 +30,7 @@ interface OptimizeResult {
 }
 
 export default function LinkedInOptimizerPage() {
+  const { t } = useTranslation();
   const [headline, setHeadline] = useState("");
   const [about, setAbout] = useState("");
   const [bulletsText, setBulletsText] = useState("");
@@ -63,7 +65,7 @@ export default function LinkedInOptimizerPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setPremiumRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't optimize your profile right now.");
+        setError(apiErr.message || t("web:resume.linkedin.optimizeFailedDefault", { defaultValue: "Couldn't optimize your profile right now." }));
       }
     } finally {
       setLoading(false);
@@ -74,37 +76,50 @@ export default function LinkedInOptimizerPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
-          <PageHeader title="LinkedIn Optimizer" subtitle="Paste your current profile text for an AI critique and rewrite." />
+          <PageHeader
+            title={t("web:resume.linkedin.title", { defaultValue: "LinkedIn Optimizer" })}
+            subtitle={t("web:resume.linkedin.subtitle", { defaultValue: "Paste your current profile text for an AI critique and rewrite." })}
+          />
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">LinkedIn Optimizer is a Premium feature</h2>
-              <p className="text-sm text-hint">Upgrade your plan to get AI feedback on your LinkedIn profile.</p>
+              <h2 className="font-semibold text-primary">{t("web:resume.linkedin.premiumRequiredTitle", { defaultValue: "LinkedIn Optimizer is a Premium feature" })}</h2>
+              <p className="text-sm text-hint">{t("web:resume.linkedin.premiumRequiredSubtitle", { defaultValue: "Upgrade your plan to get AI feedback on your LinkedIn profile." })}</p>
             </div>
           )}
 
           {!premiumRequired && (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-              <TextField label="Target role (optional)" placeholder="e.g. Product Manager" value={targetRole} onChange={(e) => setTargetRole(e.target.value)} />
-              <TextField label="Current headline" placeholder="Paste your current LinkedIn headline" value={headline} onChange={(e) => setHeadline(e.target.value)} />
+              <TextField
+                label={t("web:resume.linkedin.targetRoleLabel", { defaultValue: "Target role (optional)" })}
+                placeholder={t("web:resume.linkedin.targetRolePlaceholder", { defaultValue: "e.g. Product Manager" })}
+                value={targetRole}
+                onChange={(e) => setTargetRole(e.target.value)}
+              />
+              <TextField
+                label={t("web:resume.linkedin.currentHeadlineLabel", { defaultValue: "Current headline" })}
+                placeholder={t("web:resume.linkedin.currentHeadlinePlaceholder", { defaultValue: "Paste your current LinkedIn headline" })}
+                value={headline}
+                onChange={(e) => setHeadline(e.target.value)}
+              />
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-primary">Current about section</span>
+                <span className="text-sm font-medium text-primary">{t("web:resume.linkedin.currentAboutLabel", { defaultValue: "Current about section" })}</span>
                 <textarea
                   rows={4}
-                  placeholder="Paste your current About section"
+                  placeholder={t("web:resume.linkedin.currentAboutPlaceholder", { defaultValue: "Paste your current About section" })}
                   value={about}
                   onChange={(e) => setAbout(e.target.value)}
                   className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-primary">Experience bullets (one per line)</span>
+                <span className="text-sm font-medium text-primary">{t("web:resume.linkedin.bulletsLabel", { defaultValue: "Experience bullets (one per line)" })}</span>
                 <textarea
                   rows={4}
-                  placeholder={"Led a team of 5 engineers...\nShipped a redesign that grew signups 20%..."}
+                  placeholder={t("web:resume.linkedin.bulletsPlaceholder", { defaultValue: "Led a team of 5 engineers...\nShipped a redesign that grew signups 20%..." })}
                   value={bulletsText}
                   onChange={(e) => setBulletsText(e.target.value)}
                   className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
@@ -112,7 +127,7 @@ export default function LinkedInOptimizerPage() {
               </label>
               {error && <p className="text-sm text-danger">{error}</p>}
               <Button type="submit" disabled={loading || !canSubmit} className="mt-1 w-full">
-                {loading ? "Analyzing…" : "Optimize my profile"}
+                {loading ? t("web:resume.linkedin.analyzing", { defaultValue: "Analyzing…" }) : t("web:resume.linkedin.optimizeProfile", { defaultValue: "Optimize my profile" })}
               </Button>
             </form>
           )}
@@ -121,14 +136,16 @@ export default function LinkedInOptimizerPage() {
             <div className="flex flex-col gap-4">
               <div className="rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-5">
                 <p className="text-sm font-medium text-primary">
-                  {result.profile_strength_score != null ? `Profile strength: ${result.profile_strength_score}/100` : ""}
+                  {result.profile_strength_score != null
+                    ? t("web:resume.linkedin.profileStrength", { defaultValue: "Profile strength: {{score}}/100", score: result.profile_strength_score })
+                    : ""}
                 </p>
                 <p className="mt-2 text-sm text-hint">{result.overall_feedback}</p>
               </div>
 
               {result.headline && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
-                  <h3 className="text-sm font-semibold text-primary">Headline</h3>
+                  <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.headlineLabel", { defaultValue: "Headline" })}</h3>
                   <p className="mt-2 text-sm text-primary">{result.headline.suggestion}</p>
                   <p className="mt-1.5 text-xs text-hint">{result.headline.feedback}</p>
                 </div>
@@ -136,7 +153,7 @@ export default function LinkedInOptimizerPage() {
 
               {result.about && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
-                  <h3 className="text-sm font-semibold text-primary">About</h3>
+                  <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.aboutLabel", { defaultValue: "About" })}</h3>
                   <p className="mt-2 whitespace-pre-wrap text-sm text-primary">{result.about.suggestion}</p>
                   <p className="mt-1.5 text-xs text-hint">{result.about.feedback}</p>
                 </div>
@@ -144,7 +161,7 @@ export default function LinkedInOptimizerPage() {
 
               {result.experience_bullets?.length > 0 && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
-                  <h3 className="text-sm font-semibold text-primary">Experience bullets</h3>
+                  <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.experienceBulletsLabel", { defaultValue: "Experience bullets" })}</h3>
                   <div className="mt-2 flex flex-col gap-3">
                     {result.experience_bullets.map((b, i) => (
                       <div key={i} className="text-sm">
