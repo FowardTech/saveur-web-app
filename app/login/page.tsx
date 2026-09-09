@@ -9,6 +9,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { GoogleButton } from "@/components/auth/GoogleButton";
+import { LinkedInButton } from "@/components/auth/LinkedInButton";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 
@@ -84,7 +85,10 @@ export default function LoginPage() {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <GoogleButton />
+      <div className="flex flex-col gap-3">
+        <GoogleButton />
+        <LinkedInButton />
+      </div>
     </AuthLayout>
   );
 }

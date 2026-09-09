@@ -6,6 +6,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { ActionCard } from "@/components/ui/ActionCard";
 import { LinkButton } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { HomeBanner } from "@/components/dashboard/HomeBanner";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
 import { quickActions, tintCycle } from "@/lib/navigation";
@@ -59,6 +60,9 @@ export default function DashboardPage() {
           </h1>
           <p className="mt-1 text-sm text-hint">Here&apos;s what&apos;s next on your career journey.</p>
         </div>
+
+        {/* Home banner */}
+        <HomeBanner />
 
         {/* Promo banner */}
         <div className="flex flex-col items-start gap-4 rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-6 sm:flex-row sm:items-center sm:justify-between">

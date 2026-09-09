@@ -1,7 +1,7 @@
 import { AppShell } from "@/components/shell/AppShell";
 import { ActionCard } from "@/components/ui/ActionCard";
 import { LinkButton } from "@/components/ui/Button";
-import { GoogleButton } from "@/components/auth/GoogleButton";
+import { HeroBanner } from "@/components/landing/HeroBanner";
 import { CookieBar } from "@/components/landing/CookieBar";
 import { WelcomeModal } from "@/components/landing/WelcomeModal";
 import { EvaIcon } from "@/components/icons/EvaIcon";
@@ -39,27 +39,9 @@ export default function LandingPage() {
     <AppShell>
       <div className="mx-auto flex max-w-6xl flex-col gap-14 pb-16">
         {/* Hero */}
-        <section className="flex flex-col items-start gap-6 pt-6 sm:pt-10">
-          <h1 className="text-4xl font-bold leading-tight text-primary sm:text-5xl">
-            Land your next role faster
-            <br />
-            with an AI career coach in your corner.
-          </h1>
-          <p className="max-w-xl text-base text-hint sm:text-lg">
-            Saveur pairs realistic AI mock interviews, coding practice, and resume tools with a personalized roadmap
-            and daily job matching — everything you need to go from job search to offer.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <LinkButton href="/register" size="lg">
-              Get Started
-              <EvaIcon name="arrow-forward-outline" size={16} />
-            </LinkButton>
-            <div className="flex items-center gap-3">
-              <span className="text-xs uppercase tracking-wide text-hint">Or Continue With</span>
-              <GoogleButton label="Google" />
-            </div>
-          </div>
-        </section>
+        <div className="pt-6 sm:pt-10">
+          <HeroBanner />
+        </div>
 
         {/* Stat pills */}
         <section className="flex flex-wrap gap-3">
