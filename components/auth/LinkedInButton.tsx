@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "@/lib/apiClient";
 import { getErrorMessage } from "@/lib/errors";
 import { EvaIcon } from "@/components/icons/EvaIcon";
@@ -14,18 +15,21 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
  * redirects back to the backend's /callback, which 302s the browser to
  * /auth/linkedin/callback?token=...&is_new_user=... on this app — see that
  * page for the rest of the flow. */
-export function LinkedInButton({ label = "Continue with LinkedIn" }: { label?: string }) {
+export function LinkedInButton({ label }: { label?: string }) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const resolvedLabel = label ?? t("web:auth.continueWithLinkedIn", { defaultValue: "Continue with LinkedIn" });
+  const unavailableMessage = t("web:auth.linkedinUnavailableDefault", { defaultValue: "LinkedIn sign-in isn't available right now. Please try again later." });
 
   async function handleClick() {
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(`${API_BASE_URL}/api/v1/auth/linkedin/start?platform=web`);
-      if (!res.ok) throw new Error("LinkedIn sign-in isn't available right now. Please try again later.");
+      if (!res.ok) throw new Error(unavailableMessage);
       const data = await res.json();
-      if (!data?.url) throw new Error("LinkedIn sign-in isn't available right now. Please try again later.");
+      if (!data?.url) throw new Error(unavailableMessage);
       window.location.href = data.url;
     } catch (err: unknown) {
       // A raw "Failed to fetch" TypeError (as opposed to an HTTP error
@@ -35,9 +39,9 @@ export function LinkedInButton({ label = "Continue with LinkedIn" }: { label?: s
       // or a genuine connectivity problem. Neither is meaningful to a user,
       // so swap it for the same "check your connection" wording apiClient
       // uses for the equivalent case elsewhere in the app.
-      const raw = getErrorMessage(err, "LinkedIn sign-in failed. Please try again.");
+      const raw = getErrorMessage(err, t("web:auth.linkedinFailedDefault", { defaultValue: "LinkedIn sign-in failed. Please try again." }));
       const message = raw === "Failed to fetch"
-        ? "Couldn't reach the server. Please check your connection and try again."
+        ? t("web:auth.linkedinConnectionError", { defaultValue: "Couldn't reach the server. Please check your connection and try again." })
         : raw;
       setError(message);
       setLoading(false);
@@ -53,7 +57,7 @@ export function LinkedInButton({ label = "Continue with LinkedIn" }: { label?: s
         className="inline-flex items-center justify-center gap-2 rounded-pill border border-border bg-[#0A66C2] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#0958a8] disabled:opacity-60"
       >
         <EvaIcon name="linkedin" size={16} />
-        {loading ? "Redirecting…" : label}
+        {loading ? t("web:auth.redirecting", { defaultValue: "Redirecting…" }) : resolvedLabel}
       </button>
       {error && <p className="text-xs text-danger">{error}</p>}
     </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -60,6 +61,9 @@ interface MinimalSpeechRecognition {
 }
 
 export default function AiCoachPage() {
+  const { t } = useTranslation();
+  const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
+  const coachGreetingHeadline = t("common:coach.greetingHeadline", { defaultValue: COACH_GREETING_HEADLINE });
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [proRequired, setProRequired] = useState(false);
@@ -86,13 +90,13 @@ export default function AiCoachPage() {
   async function load() {
     try {
       const data = await apiClient.get<{ messages: CoachMessage[] }>("/api/v1/coach/messages");
-      setMessages(data.messages.length > 0 ? data.messages : [GREETING_MESSAGE]);
+      setMessages(data.messages.length > 0 ? data.messages : [{ ...GREETING_MESSAGE, text: coachGreetingText }]);
     } catch (err) {
       const apiErr = err as ApiError;
       if (apiErr.status === 402 || apiErr.status === 403) {
         setProRequired(true);
       } else {
-        setError(apiErr.message || "Couldn't load your conversation.");
+        setError(apiErr.message || t("web:aiCoach.loadFailedDefault", { defaultValue: "Couldn't load your conversation." }));
       }
     } finally {
       setLoaded(true);
@@ -158,7 +162,7 @@ export default function AiCoachPage() {
       if (apiErr.status === 402 || apiErr.status === 403) {
         setProRequired(true);
       } else {
-        setError(apiErr.message || "The coach couldn't reply right now. Please try again.");
+        setError(apiErr.message || t("web:aiCoach.replyFailedDefault", { defaultValue: "The coach couldn't reply right now. Please try again." }));
       }
     } finally {
       setSending(false);
@@ -176,7 +180,7 @@ export default function AiCoachPage() {
   async function handleClear() {
     try {
       await apiClient.delete("/api/v1/coach/messages");
-      setMessages([GREETING_MESSAGE]);
+      setMessages([{ ...GREETING_MESSAGE, text: coachGreetingText }]);
     } catch {
       // no-op
     }
@@ -200,7 +204,7 @@ export default function AiCoachPage() {
       (window as unknown as { webkitSpeechRecognition?: new () => MinimalSpeechRecognition }).webkitSpeechRecognition;
 
     if (!SpeechRecognitionCtor) {
-      setVoiceUnsupported("Voice input isn't supported in this browser yet — try Chrome or Edge.");
+      setVoiceUnsupported(t("web:aiCoach.voiceUnsupported", { defaultValue: "Voice input isn't supported in this browser yet — try Chrome or Edge." }));
       return;
     }
 
@@ -228,10 +232,13 @@ export default function AiCoachPage() {
       <AppShell>
         <div className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col gap-4 pb-4">
           <div className="flex items-center justify-between">
-            <PageHeader title="AI Coach" subtitle="Ask anything about your job search, interviews, or career." />
+            <PageHeader
+              title={t("web:aiCoach.title", { defaultValue: "AI Coach" })}
+              subtitle={t("web:aiCoach.subtitle", { defaultValue: "Ask anything about your job search, interviews, or career." })}
+            />
             {messages.length > 0 && (
               <Button variant="ghost" size="sm" onClick={handleClear}>
-                Clear chat
+                {t("web:aiCoach.clearChat", { defaultValue: "Clear chat" })}
               </Button>
             )}
           </div>
@@ -241,8 +248,8 @@ export default function AiCoachPage() {
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">AI Coach requires a paid plan</h2>
-              <p className="text-sm text-hint">Upgrade your plan to chat with your AI career coach.</p>
+              <h2 className="font-semibold text-primary">{t("web:aiCoach.proRequiredTitle", { defaultValue: "AI Coach requires a paid plan" })}</h2>
+              <p className="text-sm text-hint">{t("web:aiCoach.proRequiredSubtitle", { defaultValue: "Upgrade your plan to chat with your AI career coach." })}</p>
             </div>
           )}
 
@@ -256,7 +263,7 @@ export default function AiCoachPage() {
                   // included) takes over below.
                   <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
                     <Image src="/coach-chat-icon.png" alt="" width={88} height={88} priority />
-                    <p className="max-w-xs text-base font-semibold text-primary">{COACH_GREETING_HEADLINE}</p>
+                    <p className="max-w-xs text-base font-semibold text-primary">{coachGreetingHeadline}</p>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-3">
@@ -281,13 +288,13 @@ export default function AiCoachPage() {
                           </div>
                           {m.suggested_course_topic && (
                             <span className="rounded-pill bg-tint-mint px-3 py-1 text-xs font-medium text-tint-mint-text">
-                              Learn more about {m.suggested_course_topic}
+                              {t("web:aiCoach.learnMoreAbout", { defaultValue: "Learn more about {{topic}}", topic: m.suggested_course_topic })}
                             </span>
                           )}
                         </div>
                       </div>
                     ))}
-                    {sending && <div className="text-sm text-hint">Coach is typing…</div>}
+                    {sending && <div className="text-sm text-hint">{t("web:aiCoach.coachTyping", { defaultValue: "Coach is typing…" })}</div>}
                     <div ref={bottomRef} />
                   </div>
                 )}
@@ -295,22 +302,34 @@ export default function AiCoachPage() {
 
               {error && <p className="text-sm text-danger">{error}</p>}
               {voiceUnsupported && <p className="text-sm text-danger">{voiceUnsupported}</p>}
-              {listening && <p className="text-sm text-hint">Listening…</p>}
-              {speaking && <p className="text-sm text-hint">Speaking… (tap the mic to stop)</p>}
+              {listening && <p className="text-sm text-hint">{t("web:aiCoach.listening", { defaultValue: "Listening…" })}</p>}
+              {speaking && <p className="text-sm text-hint">{t("web:aiCoach.speakingHint", { defaultValue: "Speaking… (tap the mic to stop)" })}</p>}
 
               <form onSubmit={handleSend} className="flex items-center gap-3">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask your AI coach…"
+                  placeholder={t("web:aiCoach.inputPlaceholder", { defaultValue: "Ask your AI coach…" })}
                   className="w-full rounded-pill border border-border bg-surface-1 px-4 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                 />
                 <button
                   type="button"
                   onClick={toggleVoiceInput}
-                  aria-label={speaking ? "Stop speaking" : listening ? "Stop listening" : "Ask by voice"}
-                  title={speaking ? "Stop speaking" : listening ? "Stop listening" : "Ask by voice"}
+                  aria-label={
+                    speaking
+                      ? t("web:aiCoach.stopSpeaking", { defaultValue: "Stop speaking" })
+                      : listening
+                      ? t("web:aiCoach.stopListening", { defaultValue: "Stop listening" })
+                      : t("web:aiCoach.askByVoice", { defaultValue: "Ask by voice" })
+                  }
+                  title={
+                    speaking
+                      ? t("web:aiCoach.stopSpeaking", { defaultValue: "Stop speaking" })
+                      : listening
+                      ? t("web:aiCoach.stopListening", { defaultValue: "Stop listening" })
+                      : t("web:aiCoach.askByVoice", { defaultValue: "Ask by voice" })
+                  }
                   className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition ${
                     listening || speaking
                       ? "border-danger bg-danger/10 text-danger"
@@ -320,7 +339,7 @@ export default function AiCoachPage() {
                   <EvaIcon name={speaking ? "close-circle-outline" : "mic-outline"} size={18} className={listening ? "animate-pulse" : ""} />
                 </button>
                 <Button type="submit" disabled={sending || !input.trim()}>
-                  Send
+                  {t("common:actions.send", { defaultValue: "Send" })}
                 </Button>
               </form>
             </>

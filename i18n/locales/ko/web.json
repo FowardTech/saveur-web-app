@@ -1,1 +1,137 @@
-{}
+{
+  "aiCoach": {
+    "askByVoice": "음성으로 질문하기",
+    "clearChat": "대화 지우기",
+    "coachTyping": "코치가 입력 중입니다…",
+    "inputPlaceholder": "AI 코치에게 질문하기…",
+    "learnMoreAbout": "{{topic}}에 대해 더 알아보기",
+    "listening": "듣는 중…",
+    "loadFailedDefault": "대화를 불러올 수 없습니다.",
+    "proRequiredSubtitle": "플랜을 업그레이드하여 AI 커리어 코치와 채팅하세요.",
+    "proRequiredTitle": "AI 코치는 유료 플랜이 필요합니다",
+    "replyFailedDefault": "코치가 지금 답변할 수 없습니다. 다시 시도해 주세요.",
+    "speakingHint": "말하는 중… (마이크를 탭하면 중지)",
+    "stopListening": "듣기 중지",
+    "stopSpeaking": "음성 중지",
+    "subtitle": "구직 활동, 면접, 커리어에 관해 무엇이든 물어보세요.",
+    "title": "AI 코치",
+    "voiceUnsupported": "이 브라우저는 아직 음성 입력을 지원하지 않습니다 — Chrome 또는 Edge를 사용해 보세요."
+  },
+  "auth": {
+    "continueWithGoogle": "Google로 계속하기",
+    "continueWithLinkedIn": "LinkedIn으로 계속하기",
+    "firebaseNotConfigured": "Firebase가 아직 설정되지 않았습니다 — 필요한 두 가지 값은 README.md를 확인하세요.",
+    "googleSignInFailedDefault": "Google 로그인에 실패했습니다. 다시 시도해 주세요.",
+    "linkedinConnectionError": "서버에 연결할 수 없습니다. 연결 상태를 확인하고 다시 시도해 주세요.",
+    "linkedinFailedDefault": "LinkedIn 로그인에 실패했습니다. 다시 시도해 주세요.",
+    "linkedinUnavailableDefault": "현재 LinkedIn 로그인을 사용할 수 없습니다. 잠시 후 다시 시도해 주세요.",
+    "loginSubtitle": "로그인하여 커리어 준비를 계속하세요.",
+    "redirecting": "리디렉션 중…",
+    "registerSubtitle": "몇 분 안에 AI 커리어 코치와 함께 연습을 시작하세요.",
+    "registrationFailedDefault": "회원가입에 실패했습니다. 다시 시도해 주세요.",
+    "signInFailedDefault": "로그인에 실패했습니다. 입력 정보를 확인하고 다시 시도해 주세요."
+  },
+  "cookieBar": {
+    "accept": "동의",
+    "dismiss": "닫기",
+    "message": "로그인 상태를 유지하고 Saveur의 이용 현황을 파악하기 위해 쿠키를 사용합니다. 자세한 내용은 개인정보 처리방침을 참고하세요."
+  },
+  "dashboard": {
+    "defaultName": "친구",
+    "greetingAfternoon": "좋은 오후예요",
+    "greetingEvening": "좋은 저녁이에요",
+    "greetingHello": "안녕하세요",
+    "greetingMorning": "좋은 아침이에요",
+    "homeBannerSubtitle": "오늘 모의 면접을 연습해 보세요 — AI 면접관 매칭과 즉각적인 피드백은 보통 10분도 채 걸리지 않습니다.",
+    "homeBannerTitle": "이 기세를 계속 이어가세요.",
+    "loading": "대시보드를 불러오는 중…",
+    "promoCta": "지금 시작하기",
+    "promoSubtitle": "목표 직무에 맞는 AI 면접관과 매칭되어 몇 분 안에 피드백을 받을 수 있습니다.",
+    "promoTitle": "오늘 모의 면접을 연습해 보세요",
+    "quickActions": {
+      "aiCoach": "커리어 고민 나누기",
+      "careerRoadmap": "나만의 맞춤 커리어 경로 확인하기",
+      "codingPractice": "기술 역량 갈고닦기",
+      "jobAlerts": "매일 새로운 채용 정보 매칭받기",
+      "learningCourses": "가이드 강좌로 실력 향상하기",
+      "mockInterview": "AI 면접관과 실시간으로 연습하기",
+      "practicalScenarios": "실제 업무 상황 다루어보기",
+      "resumeBuilder": "ATS 친화적인 이력서 만들기"
+    },
+    "quickActionsTitle": "빠른 작업",
+    "subtitle": "커리어 여정의 다음 단계를 확인하세요."
+  },
+  "landing": {
+    "bottomCtaButton": "무료 계정 만들기",
+    "bottomCtaSubtitle": "무료 계정을 만들고 몇 분 안에 첫 AI 모의 면접을 진행해 보세요.",
+    "bottomCtaTitle": "연습을 시작할 준비가 되셨나요?",
+    "heroGetStarted": "시작하기",
+    "heroSubtitle": "Saveur는 현실감 있는 AI 모의 면접, 코딩 연습, 이력서 도구를 맞춤형 로드맵 및 매일 제공되는 채용 매칭과 결합합니다 — 구직 활동부터 합격 통보까지 필요한 모든 것을 제공합니다.",
+    "heroTitleLine1": "더 빠르게 다음 직장을 구하세요",
+    "heroTitleLine2": "AI 커리어 코치가 당신 곁에 있습니다.",
+    "howItWorksTitle": "이용 방법",
+    "popularTools": "인기 도구",
+    "searchPlaceholder": "모의 면접, 강좌, 도구 검색…",
+    "statInterviews": "10,000회 이상의 모의 면접 진행",
+    "statJobs": "5,000건 이상의 채용 매칭",
+    "statResumes": "8,500건 이상의 이력서 작성",
+    "step1Description": "2분짜리 온보딩을 통해 목표, 희망 직무, 희망 국가를 공유해 주세요.",
+    "step1Title": "원하는 방향을 알려주세요",
+    "step2Description": "모의 면접, 코딩 연습, 실전 시나리오를 진행하고 매 세션 후 피드백을 받아보세요.",
+    "step2Title": "AI 코치와 함께 연습하기",
+    "step3Description": "더 탄탄한 이력서를 만들고, 매일 채용 알림을 받고, 하나의 로드맵으로 진행 상황을 추적하세요.",
+    "step3Title": "자신 있게 지원하기",
+    "stepLabel": "{{step}}단계"
+  },
+  "onboarding": {
+    "goals": {
+      "getPromoted": "승진하기",
+      "newJob": "새로운 직장 구하기",
+      "prepInterviews": "면접 준비하기",
+      "switchCareers": "커리어 전환하기"
+    },
+    "saveFailedDefault": "프로필을 저장하는 중 문제가 발생했습니다. 다시 시도해 주세요.",
+    "step0": {
+      "subtitle": "이름을 알려주시면 코칭 세션을 맞춤 설정하는 데 도움이 됩니다.",
+      "title": "어떻게 불러드릴까요?"
+    },
+    "step1": {
+      "subtitle": "해당하는 항목을 모두 선택하세요 — 로드맵에 반영됩니다.",
+      "title": "주된 목표는 무엇인가요?"
+    },
+    "step2": {
+      "added": "{{count}}/{{max}}개 추가됨",
+      "placeholder": "직무를 입력하고 Enter를 누르세요",
+      "removeAria": "{{role}} 삭제",
+      "subtitle": "최대 {{max}}개의 직무를 추가하세요 (예: \"프로덕트 매니저\").",
+      "title": "어떤 직무를 목표로 하고 있나요?"
+    },
+    "step3": {
+      "subtitle": "고려 중인 국가를 모두 선택하세요 — 선택 사항입니다.",
+      "title": "어디에서 일하고 싶으신가요?"
+    }
+  },
+  "requireAuth": {
+    "loading": "로딩 중…"
+  },
+  "shell": {
+    "closeMenu": "메뉴 닫기",
+    "notifications": "알림",
+    "profile": "프로필",
+    "toggleSidebar": "사이드바 전환"
+  },
+  "welcomeModal": {
+    "cta": "시작해 볼까요",
+    "description": "Saveur는 AI 코치와 실용적인 도구 — 면접, 이력서, 로드맵, 채용 매칭 — 를 결합하여 구직 활동의 모든 단계가 추측이 아닌 데이터를 기반으로 이루어지도록 합니다.",
+    "group1Item1": "즉각적인 피드백이 제공되는 현실감 있는 AI 모의 면접",
+    "group1Item2": "목표에 맞춰 구성된 맞춤형 커리어 로드맵",
+    "group1Item3": "이력서, 자기소개서, LinkedIn 도구를 한 곳에서 제공",
+    "group1Title": "이용 혜택",
+    "group2Item1": "희망 직무에 맞는 매일 채용 알림",
+    "group2Item2": "코딩 연습과 실전 시나리오 훈련",
+    "group2Item3": "역량 격차를 줄여주는 가이드 학습 강좌",
+    "group2Title": "구직 활동을 위해 설계됨",
+    "heading": "다음 직장을 구하기 위한 AI 부조종사",
+    "title": "Saveur에 오신 것을 환영합니다"
+  }
+}

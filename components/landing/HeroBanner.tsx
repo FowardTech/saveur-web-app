@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { LinkButton } from "@/components/ui/Button";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LinkedInButton } from "@/components/auth/LinkedInButton";
@@ -10,6 +13,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
  * topbar also has Sign In/Register — that duplication matches the
  * reference's own hero, since a signed-out visitor lands here first. */
 export function HeroBanner() {
+  const { t } = useTranslation();
   return (
     <section className="relative overflow-hidden rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-6 py-12 sm:px-10 sm:py-16">
       {/* Decorative soft blurred color blobs */}
@@ -44,22 +48,24 @@ export function HeroBanner() {
 
       <div className="relative flex max-w-xl flex-col items-start gap-6">
         <h1 className="text-4xl font-bold leading-tight text-primary sm:text-5xl">
-          Land your next role faster
+          {t("web:landing.heroTitleLine1", { defaultValue: "Land your next role faster" })}
           <br />
-          with an AI career coach in your corner.
+          {t("web:landing.heroTitleLine2", { defaultValue: "with an AI career coach in your corner." })}
         </h1>
         <p className="max-w-xl text-base text-hint sm:text-lg">
-          Saveur pairs realistic AI mock interviews, coding practice, and resume tools with a personalized roadmap
-          and daily job matching — everything you need to go from job search to offer.
+          {t("web:landing.heroSubtitle", {
+            defaultValue:
+              "Saveur pairs realistic AI mock interviews, coding practice, and resume tools with a personalized roadmap and daily job matching — everything you need to go from job search to offer.",
+          })}
         </p>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <LinkButton href="/register" size="lg">
-            Get Started
+            {t("web:landing.heroGetStarted", { defaultValue: "Get Started" })}
             <EvaIcon name="arrow-forward-outline" size={16} />
           </LinkButton>
         </div>
         <div className="flex flex-col gap-2.5">
-          <span className="text-xs uppercase tracking-wide text-hint">Or Continue With</span>
+          <span className="text-xs uppercase tracking-wide text-hint">{t("common:auth.orContinueWith", { defaultValue: "Or Continue With" })}</span>
           <div className="flex flex-wrap items-center gap-3">
             <GoogleButton label="Google" />
             <LinkedInButton label="LinkedIn" />

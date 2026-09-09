@@ -1,1 +1,137 @@
-{}
+{
+  "aiCoach": {
+    "askByVoice": "语音提问",
+    "clearChat": "清空聊天记录",
+    "coachTyping": "教练正在输入…",
+    "inputPlaceholder": "向你的AI教练提问…",
+    "learnMoreAbout": "了解更多关于{{topic}}的内容",
+    "listening": "正在聆听…",
+    "loadFailedDefault": "无法加载你的对话。",
+    "proRequiredSubtitle": "升级你的方案即可与AI职业教练聊天。",
+    "proRequiredTitle": "AI教练需要付费方案",
+    "replyFailedDefault": "教练暂时无法回复，请重试。",
+    "speakingHint": "正在说话…（点击麦克风停止）",
+    "stopListening": "停止聆听",
+    "stopSpeaking": "停止播放语音",
+    "subtitle": "有关求职、面试或职业发展的任何问题都可以问我。",
+    "title": "AI教练",
+    "voiceUnsupported": "此浏览器暂不支持语音输入——请尝试使用 Chrome 或 Edge。"
+  },
+  "auth": {
+    "continueWithGoogle": "使用 Google 继续",
+    "continueWithLinkedIn": "使用 LinkedIn 继续",
+    "firebaseNotConfigured": "Firebase 尚未配置——请查看 README.md 了解还需要的两个配置项。",
+    "googleSignInFailedDefault": "使用 Google 登录失败，请重试。",
+    "linkedinConnectionError": "无法连接到服务器，请检查网络连接后重试。",
+    "linkedinFailedDefault": "LinkedIn 登录失败，请重试。",
+    "linkedinUnavailableDefault": "LinkedIn 登录目前不可用，请稍后再试。",
+    "loginSubtitle": "登录以继续你的求职准备。",
+    "redirecting": "正在跳转…",
+    "registerSubtitle": "几分钟内即可开始与你的AI职业教练一起练习。",
+    "registrationFailedDefault": "注册失败，请重试。",
+    "signInFailedDefault": "登录失败，请检查你的信息后重试。"
+  },
+  "cookieBar": {
+    "accept": "接受",
+    "dismiss": "关闭",
+    "message": "我们使用 Cookie 来保持你的登录状态，并了解 Saveur 的使用情况。详情请查看我们的隐私政策。"
+  },
+  "dashboard": {
+    "defaultName": "朋友",
+    "greetingAfternoon": "下午好",
+    "greetingEvening": "晚上好",
+    "greetingHello": "你好",
+    "greetingMorning": "早上好",
+    "homeBannerSubtitle": "今天就练习一次模拟面试——匹配AI面试官并获得即时反馈通常不到10分钟。",
+    "homeBannerTitle": "保持你的势头。",
+    "loading": "正在加载你的主页…",
+    "promoCta": "立即开始",
+    "promoSubtitle": "我们会为你匹配针对目标职位的AI面试官，几分钟内即可获得反馈。",
+    "promoTitle": "今天就练习一次模拟面试",
+    "quickActions": {
+      "aiCoach": "畅聊你的职业问题",
+      "careerRoadmap": "查看你的个性化发展路径",
+      "codingPractice": "提升你的技术能力",
+      "jobAlerts": "每天获取匹配的新职位",
+      "learningCourses": "通过引导课程持续提升",
+      "mockInterview": "与AI面试官进行实时练习",
+      "practicalScenarios": "应对真实的职场情境",
+      "resumeBuilder": "打造一份适配ATS系统的简历"
+    },
+    "quickActionsTitle": "快捷操作",
+    "subtitle": "这是你职业旅程的下一步。"
+  },
+  "landing": {
+    "bottomCtaButton": "创建免费账户",
+    "bottomCtaSubtitle": "创建一个免费账户，几分钟内完成你的第一次AI模拟面试。",
+    "bottomCtaTitle": "准备好开始练习了吗？",
+    "heroGetStarted": "开始使用",
+    "heroSubtitle": "Saveur将真实的AI模拟面试、编程练习和简历工具与个性化路线图及每日职位匹配相结合——从求职到拿到offer所需的一切都在这里。",
+    "heroTitleLine1": "更快找到你的下一份工作",
+    "heroTitleLine2": "有AI职业教练在你身边助力。",
+    "howItWorksTitle": "使用方式",
+    "popularTools": "热门工具",
+    "searchPlaceholder": "搜索模拟面试、课程、工具…",
+    "statInterviews": "已完成10,000+次模拟面试",
+    "statJobs": "已匹配5,000+个职位",
+    "statResumes": "已生成8,500+份简历",
+    "step1Description": "通过两分钟的引导流程，分享你的目标、意向职位和目标国家。",
+    "step1Title": "告诉我们你的目标方向",
+    "step2Description": "进行模拟面试、编程练习和真实场景演练——每次练习后都会获得反馈。",
+    "step2Title": "与你的AI教练一起练习",
+    "step3Description": "打磨更出色的简历，接收每日职位提醒，并在同一个路线图中跟踪进度。",
+    "step3Title": "自信地投递申请",
+    "stepLabel": "第 {{step}} 步"
+  },
+  "onboarding": {
+    "goals": {
+      "getPromoted": "获得晋升",
+      "newJob": "找到新工作",
+      "prepInterviews": "准备面试",
+      "switchCareers": "转换职业方向"
+    },
+    "saveFailedDefault": "保存个人资料时出错，请重试。",
+    "step0": {
+      "subtitle": "你的名字有助于我们个性化你的辅导内容。",
+      "title": "我们该怎么称呼你？"
+    },
+    "step1": {
+      "subtitle": "选择所有符合的选项——这将决定你的路线图。",
+      "title": "你的主要目标是什么？"
+    },
+    "step2": {
+      "added": "已添加 {{count}}/{{max}}",
+      "placeholder": "输入职位并按回车",
+      "removeAria": "移除 {{role}}",
+      "subtitle": "最多可添加 {{max}} 个职位，例如“产品经理”。",
+      "title": "你想申请哪些职位？"
+    },
+    "step3": {
+      "subtitle": "选择你考虑的所有国家——可选。",
+      "title": "你想在哪里工作？"
+    }
+  },
+  "requireAuth": {
+    "loading": "加载中…"
+  },
+  "shell": {
+    "closeMenu": "关闭菜单",
+    "notifications": "通知",
+    "profile": "个人资料",
+    "toggleSidebar": "切换侧边栏"
+  },
+  "welcomeModal": {
+    "cta": "开始使用",
+    "description": "Saveur将AI教练与实用工具结合——面试、简历、路线图和职位匹配——让你求职的每一步都有数据支撑，而不是凭猜测。",
+    "group1Item1": "真实的AI模拟面试，附即时反馈",
+    "group1Item2": "根据你的目标定制的个性化职业路线图",
+    "group1Item3": "简历、求职信和LinkedIn工具一站式集成",
+    "group1Title": "你将获得",
+    "group2Item1": "匹配意向职位的每日职位提醒",
+    "group2Item2": "编程练习和真实场景演练",
+    "group2Item3": "引导式课程，帮你补齐技能短板",
+    "group2Title": "专为你的求职而设计",
+    "heading": "助你拿下下一份工作的AI副驾驶",
+    "title": "欢迎使用 Saveur"
+  }
+}

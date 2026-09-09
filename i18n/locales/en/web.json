@@ -1,1 +1,137 @@
-{}
+{
+  "aiCoach": {
+    "askByVoice": "Ask by voice",
+    "clearChat": "Clear chat",
+    "coachTyping": "Coach is typing…",
+    "inputPlaceholder": "Ask your AI coach…",
+    "learnMoreAbout": "Learn more about {{topic}}",
+    "listening": "Listening…",
+    "loadFailedDefault": "Couldn't load your conversation.",
+    "proRequiredSubtitle": "Upgrade your plan to chat with your AI career coach.",
+    "proRequiredTitle": "AI Coach requires a paid plan",
+    "replyFailedDefault": "The coach couldn't reply right now. Please try again.",
+    "speakingHint": "Speaking… (tap the mic to stop)",
+    "stopListening": "Stop listening",
+    "stopSpeaking": "Stop speaking",
+    "subtitle": "Ask anything about your job search, interviews, or career.",
+    "title": "AI Coach",
+    "voiceUnsupported": "Voice input isn't supported in this browser yet — try Chrome or Edge."
+  },
+  "auth": {
+    "continueWithGoogle": "Continue with Google",
+    "continueWithLinkedIn": "Continue with LinkedIn",
+    "firebaseNotConfigured": "Firebase isn't configured yet — see README.md for the two values still needed.",
+    "googleSignInFailedDefault": "Google sign-in failed. Please try again.",
+    "linkedinConnectionError": "Couldn't reach the server. Please check your connection and try again.",
+    "linkedinFailedDefault": "LinkedIn sign-in failed. Please try again.",
+    "linkedinUnavailableDefault": "LinkedIn sign-in isn't available right now. Please try again later.",
+    "loginSubtitle": "Sign in to continue your career prep.",
+    "redirecting": "Redirecting…",
+    "registerSubtitle": "Start practicing with your AI career coach in minutes.",
+    "registrationFailedDefault": "Registration failed. Please try again.",
+    "signInFailedDefault": "Sign in failed. Please check your details and try again."
+  },
+  "cookieBar": {
+    "accept": "Accept",
+    "dismiss": "Dismiss",
+    "message": "We use cookies to keep you signed in and to understand how Saveur is used. See our Privacy Policy for details."
+  },
+  "dashboard": {
+    "defaultName": "there",
+    "greetingAfternoon": "Good afternoon",
+    "greetingEvening": "Good evening",
+    "greetingHello": "Hello",
+    "greetingMorning": "Good morning",
+    "homeBannerSubtitle": "Try a mock interview today — matching you with an AI interviewer and instant feedback usually takes less than 10 minutes.",
+    "homeBannerTitle": "Keep building momentum.",
+    "loading": "Loading your dashboard…",
+    "promoCta": "Start now",
+    "promoSubtitle": "Get matched with an AI interviewer for your target role and receive feedback in minutes.",
+    "promoTitle": "Try a mock interview today",
+    "quickActions": {
+      "aiCoach": "Chat through your career questions",
+      "careerRoadmap": "See your personalized path forward",
+      "codingPractice": "Sharpen your technical skills",
+      "jobAlerts": "Get matched to new openings daily",
+      "learningCourses": "Level up with guided courses",
+      "mockInterview": "Practice live with an AI interviewer",
+      "practicalScenarios": "Work through real on-the-job situations",
+      "resumeBuilder": "Build an ATS-friendly resume"
+    },
+    "quickActionsTitle": "Quick actions",
+    "subtitle": "Here's what's next on your career journey."
+  },
+  "landing": {
+    "bottomCtaButton": "Create your free account",
+    "bottomCtaSubtitle": "Create a free account and run your first AI mock interview in minutes.",
+    "bottomCtaTitle": "Ready to start practicing?",
+    "heroGetStarted": "Get Started",
+    "heroSubtitle": "Saveur pairs realistic AI mock interviews, coding practice, and resume tools with a personalized roadmap and daily job matching — everything you need to go from job search to offer.",
+    "heroTitleLine1": "Land your next role faster",
+    "heroTitleLine2": "with an AI career coach in your corner.",
+    "howItWorksTitle": "How it works",
+    "popularTools": "Popular Tools",
+    "searchPlaceholder": "Search mock interviews, courses, tools…",
+    "statInterviews": "10,000+ interviews practiced",
+    "statJobs": "5,000+ jobs matched",
+    "statResumes": "8,500+ resumes built",
+    "step1Description": "Share your goals, desired roles, and target countries in a two-minute onboarding.",
+    "step1Title": "Tell us where you're headed",
+    "step2Description": "Run mock interviews, coding drills, and real scenarios — with feedback after every session.",
+    "step2Title": "Practice with your AI coach",
+    "step3Description": "Ship a stronger resume, get daily job alerts, and track your progress on one roadmap.",
+    "step3Title": "Apply with confidence",
+    "stepLabel": "Step {{step}}"
+  },
+  "onboarding": {
+    "goals": {
+      "getPromoted": "Get promoted",
+      "newJob": "Land a new job",
+      "prepInterviews": "Prep for interviews",
+      "switchCareers": "Switch careers"
+    },
+    "saveFailedDefault": "Something went wrong saving your profile. Please try again.",
+    "step0": {
+      "subtitle": "Your name helps us personalize your coaching sessions.",
+      "title": "What should we call you?"
+    },
+    "step1": {
+      "subtitle": "Pick everything that applies — this shapes your roadmap.",
+      "title": "What's your primary goal?"
+    },
+    "step2": {
+      "added": "{{count}}/{{max}} added",
+      "placeholder": "Type a role and press Enter",
+      "removeAria": "Remove {{role}}",
+      "subtitle": "Add up to {{max}} roles, e.g. \"Product Manager\".",
+      "title": "What roles are you targeting?"
+    },
+    "step3": {
+      "subtitle": "Select every country you'd consider — optional.",
+      "title": "Where are you looking to work?"
+    }
+  },
+  "requireAuth": {
+    "loading": "Loading…"
+  },
+  "shell": {
+    "closeMenu": "Close menu",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "toggleSidebar": "Toggle sidebar"
+  },
+  "welcomeModal": {
+    "cta": "Let's get started",
+    "description": "Saveur pairs an AI coach with practical tools — interviews, resumes, roadmaps, and job matching — so every step of your search is backed by data, not guesswork.",
+    "group1Item1": "Realistic AI mock interviews with instant feedback",
+    "group1Item2": "A personalized career roadmap built around your goals",
+    "group1Item3": "Resume, cover letter, and LinkedIn tools in one place",
+    "group1Title": "What you get",
+    "group2Item1": "Daily job alerts matched to your desired roles",
+    "group2Item2": "Coding practice and real-world scenario drills",
+    "group2Item3": "Guided learning courses to close skill gaps",
+    "group2Title": "Built for your search",
+    "heading": "Your AI-powered co-pilot for landing the next role",
+    "title": "Welcome to Saveur"
+  }
+}

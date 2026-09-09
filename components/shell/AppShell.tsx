@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { EvaIcon } from "@/components/icons/EvaIcon";
@@ -9,6 +10,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
  * /dashboard, /subscription. Sidebar is fixed on desktop (lg+) and becomes a
  * slide-over drawer on smaller screens, toggled from the Topbar's hamburger. */
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -29,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                aria-label="Close menu"
+                aria-label={t("web:shell.closeMenu", { defaultValue: "Close menu" })}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-full text-hint hover:bg-surface-3"
               >
                 <EvaIcon name="close-outline" size={18} />

@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 export function UserMenu() {
+  const { t } = useTranslation();
   const { profile, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -43,7 +45,7 @@ export function UserMenu() {
             className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-primary hover:bg-surface-3"
           >
             <EvaIcon name="person-outline" size={16} />
-            Profile
+            {t("web:shell.profile", { defaultValue: "Profile" })}
           </Link>
           <Link
             href="/settings"
@@ -51,7 +53,7 @@ export function UserMenu() {
             className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-primary hover:bg-surface-3"
           >
             <EvaIcon name="settings-2-outline" size={16} />
-            Settings
+            {t("common:nav.settings", { defaultValue: "Settings" })}
           </Link>
           <button
             type="button"
@@ -62,7 +64,7 @@ export function UserMenu() {
             className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-danger hover:bg-surface-3"
           >
             <EvaIcon name="log-out-outline" size={16} />
-            Sign out
+            {t("common:actions.signOut", { defaultValue: "Sign out" })}
           </button>
         </div>
       )}

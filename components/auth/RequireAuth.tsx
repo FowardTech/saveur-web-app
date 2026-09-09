@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
@@ -19,6 +20,7 @@ import { needsOnboarding } from "@/lib/types";
  * its own `<AppShell>` for the loading/redirect state, so nesting the other
  * way would double up the sidebar/topbar. */
 export function RequireAuth({ children, label }: { children: React.ReactNode; label?: string }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { firebaseUser, profile, loading } = useAuth();
 
@@ -34,7 +36,9 @@ export function RequireAuth({ children, label }: { children: React.ReactNode; la
   if (loading || !firebaseUser) {
     return (
       <AppShell>
-        <div className="flex h-64 items-center justify-center text-sm text-hint">{label ?? "Loading…"}</div>
+        <div className="flex h-64 items-center justify-center text-sm text-hint">
+          {label ?? t("web:requireAuth.loading", { defaultValue: "Loading…" })}
+        </div>
       </AppShell>
     );
   }

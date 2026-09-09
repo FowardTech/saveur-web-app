@@ -1,1 +1,137 @@
-{}
+{
+  "aiCoach": {
+    "askByVoice": "音声で質問する",
+    "clearChat": "チャットを消去",
+    "coachTyping": "コーチが入力しています…",
+    "inputPlaceholder": "AIコーチに質問する…",
+    "learnMoreAbout": "{{topic}}について詳しく見る",
+    "listening": "聞き取り中…",
+    "loadFailedDefault": "会話を読み込めませんでした。",
+    "proRequiredSubtitle": "プランをアップグレードして、AIキャリアコーチとチャットしましょう。",
+    "proRequiredTitle": "AIコーチの利用には有料プランが必要です",
+    "replyFailedDefault": "コーチは今すぐ返信できませんでした。もう一度お試しください。",
+    "speakingHint": "読み上げ中…（マイクをタップすると停止します）",
+    "stopListening": "聞き取りを停止",
+    "stopSpeaking": "読み上げを停止",
+    "subtitle": "転職活動、面接、キャリアについて何でも聞いてください。",
+    "title": "AIコーチ",
+    "voiceUnsupported": "このブラウザは音声入力にまだ対応していません — Chrome または Edge をお試しください。"
+  },
+  "auth": {
+    "continueWithGoogle": "Googleで続ける",
+    "continueWithLinkedIn": "LinkedInで続ける",
+    "firebaseNotConfigured": "Firebase がまだ設定されていません — 必要な2つの値については README.md をご確認ください。",
+    "googleSignInFailedDefault": "Googleでのサインインに失敗しました。もう一度お試しください。",
+    "linkedinConnectionError": "サーバーに接続できませんでした。接続を確認してもう一度お試しください。",
+    "linkedinFailedDefault": "LinkedInでのサインインに失敗しました。もう一度お試しください。",
+    "linkedinUnavailableDefault": "現在LinkedInサインインはご利用いただけません。しばらくしてからもう一度お試しください。",
+    "loginSubtitle": "サインインしてキャリア準備を続けましょう。",
+    "redirecting": "リダイレクトしています…",
+    "registerSubtitle": "数分でAIキャリアコーチとの練習を始められます。",
+    "registrationFailedDefault": "登録に失敗しました。もう一度お試しください。",
+    "signInFailedDefault": "サインインに失敗しました。入力内容を確認してもう一度お試しください。"
+  },
+  "cookieBar": {
+    "accept": "同意する",
+    "dismiss": "閉じる",
+    "message": "サインイン状態を維持し、Saveurの利用状況を把握するためにCookieを使用しています。詳しくはプライバシーポリシーをご覧ください。"
+  },
+  "dashboard": {
+    "defaultName": "あなた",
+    "greetingAfternoon": "こんにちは",
+    "greetingEvening": "こんばんは",
+    "greetingHello": "こんにちは",
+    "greetingMorning": "おはようございます",
+    "homeBannerSubtitle": "今日、模擬面接を試してみましょう — AI面接官とのマッチングと即時フィードバックは通常10分もかかりません。",
+    "homeBannerTitle": "この勢いを維持しましょう。",
+    "loading": "ダッシュボードを読み込んでいます…",
+    "promoCta": "今すぐ始める",
+    "promoSubtitle": "目指す職種に合わせたAI面接官とマッチングし、数分でフィードバックを受け取れます。",
+    "promoTitle": "今日、模擬面接を試してみましょう",
+    "quickActions": {
+      "aiCoach": "キャリアの疑問について話す",
+      "careerRoadmap": "あなた専用の今後の道筋を見る",
+      "codingPractice": "技術力を磨く",
+      "jobAlerts": "毎日新着求人のマッチングを受け取る",
+      "learningCourses": "ガイド付きコースでスキルアップする",
+      "mockInterview": "AI面接官とリアルタイムで練習する",
+      "practicalScenarios": "実際の職場のシナリオに取り組む",
+      "resumeBuilder": "ATS対応の履歴書を作成する"
+    },
+    "quickActionsTitle": "クイックアクション",
+    "subtitle": "あなたのキャリアの次のステップをご紹介します。"
+  },
+  "landing": {
+    "bottomCtaButton": "無料アカウントを作成",
+    "bottomCtaSubtitle": "無料アカウントを作成して、数分で最初のAI模擬面接を体験しましょう。",
+    "bottomCtaTitle": "練習を始める準備はできましたか？",
+    "heroGetStarted": "はじめる",
+    "heroSubtitle": "Saveurは、リアルなAI模擬面接、コーディング練習、履歴書ツールに加え、パーソナライズされたロードマップと毎日の求人マッチングを提供します — 転職活動から内定獲得まで必要なものがすべて揃っています。",
+    "heroTitleLine1": "次の仕事をもっと早く見つけよう",
+    "heroTitleLine2": "AIキャリアコーチがあなたの味方です。",
+    "howItWorksTitle": "利用の流れ",
+    "popularTools": "人気のツール",
+    "searchPlaceholder": "模擬面接、コース、ツールを検索…",
+    "statInterviews": "10,000件以上の模擬面接を実施",
+    "statJobs": "5,000件以上の求人をマッチング",
+    "statResumes": "8,500件以上の履歴書を作成",
+    "step1Description": "2分間のオンボーディングで、目標・希望職種・希望する国を教えてください。",
+    "step1Title": "目指す方向を教えてください",
+    "step2Description": "模擬面接、コーディング演習、実践シナリオに取り組み、毎回のセッション後にフィードバックを受け取れます。",
+    "step2Title": "AIコーチと一緒に練習する",
+    "step3Description": "履歴書をブラッシュアップし、毎日求人アラートを受け取り、1つのロードマップで進捗を管理できます。",
+    "step3Title": "自信を持って応募する",
+    "stepLabel": "ステップ{{step}}"
+  },
+  "onboarding": {
+    "goals": {
+      "getPromoted": "昇進する",
+      "newJob": "新しい仕事を見つける",
+      "prepInterviews": "面接の準備をする",
+      "switchCareers": "キャリアを転換する"
+    },
+    "saveFailedDefault": "プロフィールの保存中に問題が発生しました。もう一度お試しください。",
+    "step0": {
+      "subtitle": "お名前を教えていただくと、コーチングをよりパーソナライズできます。",
+      "title": "お呼びする名前を教えてください"
+    },
+    "step1": {
+      "subtitle": "当てはまるものをすべて選んでください — ロードマップに反映されます。",
+      "title": "あなたの主な目標は何ですか？"
+    },
+    "step2": {
+      "added": "{{count}}/{{max}} 件追加済み",
+      "placeholder": "職種を入力してEnterキーを押してください",
+      "removeAria": "{{role}}を削除",
+      "subtitle": "最大{{max}}件まで職種を追加できます（例：「プロダクトマネージャー」）。",
+      "title": "どの職種を目指していますか？"
+    },
+    "step3": {
+      "subtitle": "検討している国をすべて選択してください — 任意です。",
+      "title": "どこで働きたいですか？"
+    }
+  },
+  "requireAuth": {
+    "loading": "読み込み中…"
+  },
+  "shell": {
+    "closeMenu": "メニューを閉じる",
+    "notifications": "通知",
+    "profile": "プロフィール",
+    "toggleSidebar": "サイドバーを切り替え"
+  },
+  "welcomeModal": {
+    "cta": "始めましょう",
+    "description": "Saveurは、AIコーチと実践的なツール — 面接、履歴書、ロードマップ、求人マッチング — を組み合わせ、転職活動のあらゆるステップを勘ではなくデータに基づいて進められるようにします。",
+    "group1Item1": "即時フィードバック付きのリアルなAI模擬面接",
+    "group1Item2": "あなたの目標に合わせたパーソナライズされたキャリアロードマップ",
+    "group1Item3": "履歴書・カバーレター・LinkedInのツールを一箇所に集約",
+    "group1Title": "得られるもの",
+    "group2Item1": "希望職種に合わせた毎日の求人アラート",
+    "group2Item2": "コーディング練習と実践的なシナリオ演習",
+    "group2Item3": "スキルギャップを埋めるガイド付き学習コース",
+    "group2Title": "転職活動のために設計",
+    "heading": "次の仕事を掴むためのAI副操縦士",
+    "title": "Saveurへようこそ"
+  }
+}

@@ -1,1 +1,137 @@
-{}
+{
+  "aiCoach": {
+    "askByVoice": "Per Sprache fragen",
+    "clearChat": "Chat löschen",
+    "coachTyping": "Der Coach schreibt…",
+    "inputPlaceholder": "Frag deinen KI-Coach…",
+    "learnMoreAbout": "Mehr über {{topic}} erfahren",
+    "listening": "Hört zu…",
+    "loadFailedDefault": "Deine Unterhaltung konnte nicht geladen werden.",
+    "proRequiredSubtitle": "Upgrade deinen Plan, um mit deinem KI-Karriere-Coach zu chatten.",
+    "proRequiredTitle": "Der KI-Coach erfordert einen kostenpflichtigen Plan",
+    "replyFailedDefault": "Der Coach konnte gerade nicht antworten. Bitte versuche es erneut.",
+    "speakingHint": "Spricht… (Mikrofon antippen, um zu stoppen)",
+    "stopListening": "Zuhören stoppen",
+    "stopSpeaking": "Sprachausgabe stoppen",
+    "subtitle": "Frag alles zu deiner Jobsuche, Vorstellungsgesprächen oder deiner Karriere.",
+    "title": "KI-Coach",
+    "voiceUnsupported": "Spracheingabe wird von diesem Browser noch nicht unterstützt — versuche es mit Chrome oder Edge."
+  },
+  "auth": {
+    "continueWithGoogle": "Weiter mit Google",
+    "continueWithLinkedIn": "Weiter mit LinkedIn",
+    "firebaseNotConfigured": "Firebase ist noch nicht konfiguriert — die beiden noch fehlenden Werte findest du in der README.md.",
+    "googleSignInFailedDefault": "Die Anmeldung mit Google ist fehlgeschlagen. Bitte versuche es erneut.",
+    "linkedinConnectionError": "Der Server konnte nicht erreicht werden. Bitte überprüfe deine Verbindung und versuche es erneut.",
+    "linkedinFailedDefault": "Die LinkedIn-Anmeldung ist fehlgeschlagen. Bitte versuche es erneut.",
+    "linkedinUnavailableDefault": "Die LinkedIn-Anmeldung ist derzeit nicht verfügbar. Bitte versuche es später erneut.",
+    "loginSubtitle": "Melde dich an, um mit deiner Karrierevorbereitung fortzufahren.",
+    "redirecting": "Weiterleitung…",
+    "registerSubtitle": "Beginne in wenigen Minuten mit deinem KI-Karriere-Coach zu üben.",
+    "registrationFailedDefault": "Registrierung fehlgeschlagen. Bitte versuche es erneut.",
+    "signInFailedDefault": "Anmeldung fehlgeschlagen. Bitte überprüfe deine Angaben und versuche es erneut."
+  },
+  "cookieBar": {
+    "accept": "Akzeptieren",
+    "dismiss": "Schließen",
+    "message": "Wir verwenden Cookies, um dich angemeldet zu halten und zu verstehen, wie Saveur genutzt wird. Details findest du in unserer Datenschutzrichtlinie."
+  },
+  "dashboard": {
+    "defaultName": "Freund",
+    "greetingAfternoon": "Guten Tag",
+    "greetingEvening": "Guten Abend",
+    "greetingHello": "Hallo",
+    "greetingMorning": "Guten Morgen",
+    "homeBannerSubtitle": "Übe heute ein Vorstellungsgespräch — die Vermittlung an einen KI-Interviewer samt sofortigem Feedback dauert meist weniger als 10 Minuten.",
+    "homeBannerTitle": "Bleib am Ball.",
+    "loading": "Dein Dashboard wird geladen…",
+    "promoCta": "Jetzt starten",
+    "promoSubtitle": "Wir vermitteln dir einen KI-Interviewer für deine Zielrolle und du erhältst in Minuten Feedback.",
+    "promoTitle": "Übe heute ein Vorstellungsgespräch",
+    "quickActions": {
+      "aiCoach": "Sprich über deine Karrierefragen",
+      "careerRoadmap": "Sieh deinen persönlichen Weg nach vorn",
+      "codingPractice": "Verbessere deine technischen Fähigkeiten",
+      "jobAlerts": "Erhalte täglich passende neue Stellen",
+      "learningCourses": "Komm mit geführten Kursen weiter",
+      "mockInterview": "Live mit einem KI-Interviewer üben",
+      "practicalScenarios": "Arbeite reale Arbeitssituationen durch",
+      "resumeBuilder": "Erstelle einen ATS-freundlichen Lebenslauf"
+    },
+    "quickActionsTitle": "Schnellzugriffe",
+    "subtitle": "Das steht als Nächstes auf deinem Karriereweg an."
+  },
+  "landing": {
+    "bottomCtaButton": "Kostenloses Konto erstellen",
+    "bottomCtaSubtitle": "Erstelle ein kostenloses Konto und führe in wenigen Minuten dein erstes KI-Übungsinterview durch.",
+    "bottomCtaTitle": "Bereit, mit dem Üben zu beginnen?",
+    "heroGetStarted": "Loslegen",
+    "heroSubtitle": "Saveur kombiniert realistische KI-Übungsinterviews, Coding-Übungen und Lebenslauf-Tools mit einer persönlichen Roadmap und täglichem Job-Matching — alles, was du von der Jobsuche bis zum Angebot brauchst.",
+    "heroTitleLine1": "Finde deinen nächsten Job schneller",
+    "heroTitleLine2": "mit einem KI-Karriere-Coach an deiner Seite.",
+    "howItWorksTitle": "So funktioniert's",
+    "popularTools": "Beliebte Tools",
+    "searchPlaceholder": "Übungsinterviews, Kurse, Tools durchsuchen…",
+    "statInterviews": "Über 10.000 geübte Interviews",
+    "statJobs": "Über 5.000 vermittelte Jobs",
+    "statResumes": "Über 8.500 erstellte Lebensläufe",
+    "step1Description": "Teile deine Ziele, gewünschten Rollen und Zielländer in einem zweiminütigen Onboarding.",
+    "step1Title": "Sag uns, wo die Reise hingeht",
+    "step2Description": "Führe Übungsinterviews, Coding-Übungen und reale Szenarien durch — mit Feedback nach jeder Sitzung.",
+    "step2Title": "Übe mit deinem KI-Coach",
+    "step3Description": "Verbessere deinen Lebenslauf, erhalte tägliche Job-Benachrichtigungen und verfolge deinen Fortschritt auf einer Roadmap.",
+    "step3Title": "Bewirb dich mit Zuversicht",
+    "stepLabel": "Schritt {{step}}"
+  },
+  "onboarding": {
+    "goals": {
+      "getPromoted": "Befördert werden",
+      "newJob": "Einen neuen Job finden",
+      "prepInterviews": "Mich auf Vorstellungsgespräche vorbereiten",
+      "switchCareers": "Karriere wechseln"
+    },
+    "saveFailedDefault": "Beim Speichern deines Profils ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+    "step0": {
+      "subtitle": "Dein Name hilft uns, deine Coaching-Sitzungen zu personalisieren.",
+      "title": "Wie sollen wir dich nennen?"
+    },
+    "step1": {
+      "subtitle": "Wähle alles Zutreffende aus — das prägt deine Roadmap.",
+      "title": "Was ist dein Hauptziel?"
+    },
+    "step2": {
+      "added": "{{count}}/{{max}} hinzugefügt",
+      "placeholder": "Rolle eingeben und Enter drücken",
+      "removeAria": "{{role}} entfernen",
+      "subtitle": "Füge bis zu {{max}} Rollen hinzu, z. B. „Product Manager“.",
+      "title": "Welche Stellen strebst du an?"
+    },
+    "step3": {
+      "subtitle": "Wähle alle Länder aus, die für dich infrage kommen — optional.",
+      "title": "Wo möchtest du arbeiten?"
+    }
+  },
+  "requireAuth": {
+    "loading": "Wird geladen…"
+  },
+  "shell": {
+    "closeMenu": "Menü schließen",
+    "notifications": "Benachrichtigungen",
+    "profile": "Profil",
+    "toggleSidebar": "Seitenleiste umschalten"
+  },
+  "welcomeModal": {
+    "cta": "Los geht's",
+    "description": "Saveur kombiniert einen KI-Coach mit praktischen Tools — Interviews, Lebensläufe, Roadmaps und Job-Matching —, damit jeder Schritt deiner Suche auf Daten statt auf Vermutungen beruht.",
+    "group1Item1": "Realistische KI-Übungsinterviews mit sofortigem Feedback",
+    "group1Item2": "Eine auf deine Ziele zugeschnittene, persönliche Karriere-Roadmap",
+    "group1Item3": "Lebenslauf-, Anschreiben- und LinkedIn-Tools an einem Ort",
+    "group1Title": "Das bekommst du",
+    "group2Item1": "Tägliche Job-Benachrichtigungen passend zu deinen Wunschrollen",
+    "group2Item2": "Coding-Übungen und reale Szenario-Übungen",
+    "group2Item3": "Geführte Lernkurse, um Wissenslücken zu schließen",
+    "group2Title": "Für deine Suche gemacht",
+    "heading": "Dein KI-Co-Pilot für deinen nächsten Job",
+    "title": "Willkommen bei Saveur"
+  }
+}

@@ -1,1 +1,137 @@
-{}
+{
+  "aiCoach": {
+    "askByVoice": "Perguntar por voz",
+    "clearChat": "Limpar conversa",
+    "coachTyping": "O coach está digitando…",
+    "inputPlaceholder": "Pergunte ao seu coach de IA…",
+    "learnMoreAbout": "Saiba mais sobre {{topic}}",
+    "listening": "Ouvindo…",
+    "loadFailedDefault": "Não foi possível carregar sua conversa.",
+    "proRequiredSubtitle": "Faça upgrade do seu plano para conversar com seu coach de carreira com IA.",
+    "proRequiredTitle": "O Coach de IA exige um plano pago",
+    "replyFailedDefault": "O coach não conseguiu responder agora. Tente novamente.",
+    "speakingHint": "Falando… (toque no microfone para parar)",
+    "stopListening": "Parar de ouvir",
+    "stopSpeaking": "Parar de falar",
+    "subtitle": "Pergunte qualquer coisa sobre sua busca de emprego, entrevistas ou carreira.",
+    "title": "Coach de IA",
+    "voiceUnsupported": "A entrada por voz ainda não é compatível com este navegador — tente o Chrome ou o Edge."
+  },
+  "auth": {
+    "continueWithGoogle": "Continuar com o Google",
+    "continueWithLinkedIn": "Continuar com o LinkedIn",
+    "firebaseNotConfigured": "O Firebase ainda não está configurado — veja o README.md para os dois valores que faltam.",
+    "googleSignInFailedDefault": "O login com o Google falhou. Tente novamente.",
+    "linkedinConnectionError": "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.",
+    "linkedinFailedDefault": "O login com o LinkedIn falhou. Tente novamente.",
+    "linkedinUnavailableDefault": "O login com o LinkedIn não está disponível agora. Tente novamente mais tarde.",
+    "loginSubtitle": "Entre para continuar sua preparação de carreira.",
+    "redirecting": "Redirecionando…",
+    "registerSubtitle": "Comece a praticar com seu coach de carreira com IA em minutos.",
+    "registrationFailedDefault": "Não foi possível concluir o cadastro. Tente novamente.",
+    "signInFailedDefault": "Não foi possível entrar. Verifique seus dados e tente novamente."
+  },
+  "cookieBar": {
+    "accept": "Aceitar",
+    "dismiss": "Dispensar",
+    "message": "Usamos cookies para manter você conectado e entender como o Saveur é usado. Consulte nossa Política de Privacidade para mais detalhes."
+  },
+  "dashboard": {
+    "defaultName": "de novo",
+    "greetingAfternoon": "Boa tarde",
+    "greetingEvening": "Boa noite",
+    "greetingHello": "Olá",
+    "greetingMorning": "Bom dia",
+    "homeBannerSubtitle": "Pratique uma entrevista simulada hoje — ser pareado com um entrevistador de IA e receber feedback instantâneo geralmente leva menos de 10 minutos.",
+    "homeBannerTitle": "Continue ganhando impulso.",
+    "loading": "Carregando seu painel…",
+    "promoCta": "Começar agora",
+    "promoSubtitle": "Você será pareado com um entrevistador de IA para o seu cargo desejado e receberá feedback em minutos.",
+    "promoTitle": "Pratique uma entrevista simulada hoje",
+    "quickActions": {
+      "aiCoach": "Converse sobre suas dúvidas de carreira",
+      "careerRoadmap": "Veja seu caminho personalizado a seguir",
+      "codingPractice": "Aprimore suas habilidades técnicas",
+      "jobAlerts": "Receba novas vagas todos os dias",
+      "learningCourses": "Evolua com cursos guiados",
+      "mockInterview": "Pratique em tempo real com um entrevistador de IA",
+      "practicalScenarios": "Trabalhe em situações reais do dia a dia",
+      "resumeBuilder": "Crie um currículo compatível com ATS"
+    },
+    "quickActionsTitle": "Ações rápidas",
+    "subtitle": "Veja o que vem a seguir na sua jornada de carreira."
+  },
+  "landing": {
+    "bottomCtaButton": "Crie sua conta gratuita",
+    "bottomCtaSubtitle": "Crie uma conta gratuita e faça sua primeira entrevista simulada com IA em minutos.",
+    "bottomCtaTitle": "Pronto para começar a praticar?",
+    "heroGetStarted": "Começar",
+    "heroSubtitle": "O Saveur combina entrevistas simuladas realistas com IA, prática de programação e ferramentas de currículo com um roteiro personalizado e vagas diárias — tudo o que você precisa para ir da busca de emprego à proposta.",
+    "heroTitleLine1": "Conquiste seu próximo cargo mais rápido",
+    "heroTitleLine2": "com um coach de carreira com IA do seu lado.",
+    "howItWorksTitle": "Como funciona",
+    "popularTools": "Ferramentas populares",
+    "searchPlaceholder": "Buscar entrevistas simuladas, cursos, ferramentas…",
+    "statInterviews": "Mais de 10.000 entrevistas praticadas",
+    "statJobs": "Mais de 5.000 vagas combinadas",
+    "statResumes": "Mais de 8.500 currículos criados",
+    "step1Description": "Compartilhe seus objetivos, cargos desejados e países de interesse em um onboarding de dois minutos.",
+    "step1Title": "Nos diga para onde você quer ir",
+    "step2Description": "Faça entrevistas simuladas, exercícios de código e cenários reais — com feedback após cada sessão.",
+    "step2Title": "Pratique com seu coach de IA",
+    "step3Description": "Melhore seu currículo, receba alertas de vagas diários e acompanhe seu progresso em um único roteiro.",
+    "step3Title": "Candidate-se com confiança",
+    "stepLabel": "Etapa {{step}}"
+  },
+  "onboarding": {
+    "goals": {
+      "getPromoted": "Conseguir uma promoção",
+      "newJob": "Conseguir um novo emprego",
+      "prepInterviews": "Me preparar para entrevistas",
+      "switchCareers": "Mudar de carreira"
+    },
+    "saveFailedDefault": "Ocorreu um erro ao salvar seu perfil. Tente novamente.",
+    "step0": {
+      "subtitle": "Seu nome nos ajuda a personalizar suas sessões de coaching.",
+      "title": "Como devemos te chamar?"
+    },
+    "step1": {
+      "subtitle": "Escolha tudo o que se aplica — isso molda seu roteiro.",
+      "title": "Qual é o seu principal objetivo?"
+    },
+    "step2": {
+      "added": "{{count}}/{{max}} adicionados",
+      "placeholder": "Digite um cargo e pressione Enter",
+      "removeAria": "Remover {{role}}",
+      "subtitle": "Adicione até {{max}} cargos, ex.: \"Product Manager\".",
+      "title": "Quais vagas você está buscando?"
+    },
+    "step3": {
+      "subtitle": "Selecione todos os países que consideraria — opcional.",
+      "title": "Onde você gostaria de trabalhar?"
+    }
+  },
+  "requireAuth": {
+    "loading": "Carregando…"
+  },
+  "shell": {
+    "closeMenu": "Fechar menu",
+    "notifications": "Notificações",
+    "profile": "Perfil",
+    "toggleSidebar": "Alternar barra lateral"
+  },
+  "welcomeModal": {
+    "cta": "Vamos começar",
+    "description": "O Saveur combina um coach de IA com ferramentas práticas — entrevistas, currículos, roteiros e pareamento de vagas — para que cada etapa da sua busca seja baseada em dados, não em suposições.",
+    "group1Item1": "Entrevistas simuladas realistas com IA e feedback instantâneo",
+    "group1Item2": "Um roteiro de carreira personalizado com base nos seus objetivos",
+    "group1Item3": "Ferramentas de currículo, carta de apresentação e LinkedIn em um só lugar",
+    "group1Title": "O que você recebe",
+    "group2Item1": "Alertas de vagas diários de acordo com os cargos desejados",
+    "group2Item2": "Prática de programação e exercícios de cenários reais",
+    "group2Item3": "Cursos guiados para fechar lacunas de habilidades",
+    "group2Title": "Feito para sua busca",
+    "heading": "Seu copiloto com IA para conquistar seu próximo cargo",
+    "title": "Bem-vindo ao Saveur"
+  }
+}

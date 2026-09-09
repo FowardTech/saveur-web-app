@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
@@ -12,6 +13,7 @@ import { LinkButton } from "@/components/ui/Button";
 // bar doesn't repeat "Saveur." next to it.
 
 export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: () => void; showMenuButton?: boolean }) {
+  const { t } = useTranslation();
   const { firebaseUser, loading } = useAuth();
   const isSignedIn = !!firebaseUser;
 
@@ -22,7 +24,7 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
           <button
             type="button"
             onClick={onMenuClick}
-            aria-label="Toggle sidebar"
+            aria-label={t("web:shell.toggleSidebar", { defaultValue: "Toggle sidebar" })}
             className="inline-flex h-9 w-9 items-center justify-center rounded-full text-primary hover:bg-surface-3 lg:hidden"
           >
             <EvaIcon name="menu-outline" size={20} />
@@ -35,10 +37,10 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
           <>
             <ThemeToggle />
             <LinkButton href="/login" variant="ghost" size="sm">
-              Sign In
+              {t("common:actions.signIn", { defaultValue: "Sign In" })}
             </LinkButton>
             <LinkButton href="/register" variant="primary" size="sm">
-              Register
+              {t("common:actions.register", { defaultValue: "Register" })}
             </LinkButton>
           </>
         )}
@@ -48,7 +50,7 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
             <ThemeToggle />
             <Link
               href="/settings"
-              aria-label="Notifications"
+              aria-label={t("web:shell.notifications", { defaultValue: "Notifications" })}
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-hint transition hover:bg-surface-3 hover:text-primary"
             >
               <EvaIcon name="bell-outline" size={18} />
