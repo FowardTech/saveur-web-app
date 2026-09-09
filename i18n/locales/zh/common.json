@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "添加",
+    "back": "返回",
+    "cancel": "取消",
+    "close": "关闭",
+    "continue": "继续",
+    "creatingAccount": "正在创建账户…",
+    "delete": "删除",
+    "done": "完成",
+    "edit": "编辑",
+    "finish": "完成",
+    "loading": "加载中…",
+    "next": "下一步",
+    "no": "否",
+    "ok": "确定",
+    "register": "注册",
+    "retry": "重试",
+    "save": "保存",
+    "saving": "保存中…",
+    "seeAll": "查看全部",
+    "send": "发送",
+    "signIn": "登录",
+    "signOut": "退出登录",
+    "signingIn": "正在登录…",
+    "submit": "提交",
+    "tryAgain": "重试",
+    "viewAll": "查看全部",
+    "yes": "是"
+  },
+  "auth": {
+    "alreadyHaveAccount": "已经有账户？",
+    "createAccount": "创建账户",
+    "dontHaveAccount": "还没有账户？",
+    "orContinueWith": "或继续使用",
+    "welcomeBack": "欢迎回来！"
+  },
+  "coach": {
+    "greeting": "你好，我是Saveur，你的AI职业教练。可以问我关于面试紧张、薪资谈判、简历、人脉拓展，或求职过程中任何其他问题——我会尽力为你指明正确的方向。",
+    "greetingHeadline": "今天我能如何帮助你的职业发展？"
+  },
+  "countries": {
+    "Canada": "加拿大",
+    "France": "法国",
+    "Germany": "德国",
+    "Remote": "远程",
+    "United Kingdom": "英国",
+    "United States": "美国"
+  },
+  "fields": {
+    "email": "电子邮件",
+    "fullName": "全名",
+    "name": "姓名",
+    "password": "密码"
+  },
+  "nav": {
+    "aiCoach": "AI 职业教练",
+    "careerDna": "职业基因",
+    "careerRoadmap": "AI 职业路线图",
+    "careerTools": "职业工具",
+    "codingPractice": "编程练习",
+    "companyIntelligence": "公司情报",
+    "coverLetterGenerator": "求职信生成器",
+    "dreamCompanies": "理想公司仪表盘",
+    "home": "首页",
+    "jobAlerts": "职位提醒",
+    "language": "语言",
+    "learningCourses": "学习课程",
+    "linkedinOptimizer": "LinkedIn 优化器",
+    "liveSupport": "在线客服",
+    "mockInterviews": "模拟面试",
+    "networkingAssistant": "人脉拓展助手",
+    "practicalScenarios": "实战场景",
+    "practice": "练习",
+    "referralProgram": "推荐计划",
+    "resumeBuilder": "简历生成器",
+    "resumeTools": "简历工具",
+    "resumeVariants": "简历进化",
+    "salaryNegotiation": "薪资谈判",
+    "settings": "设置",
+    "subscription": "订阅与付款"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "जोड़ें",
+    "back": "वापस",
+    "cancel": "रद्द करें",
+    "close": "बंद करें",
+    "continue": "जारी रखें",
+    "creatingAccount": "खाता बनाया जा रहा है…",
+    "delete": "हटाएं",
+    "done": "पूर्ण",
+    "edit": "संपादित करें",
+    "finish": "समाप्त करें",
+    "loading": "लोड हो रहा है…",
+    "next": "अगला",
+    "no": "नहीं",
+    "ok": "ठीक है",
+    "register": "साइन अप करें",
+    "retry": "पुनः प्रयास करें",
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है…",
+    "seeAll": "सभी देखें",
+    "send": "भेजें",
+    "signIn": "साइन इन करें",
+    "signOut": "लॉग आउट करें",
+    "signingIn": "साइन इन हो रहा है…",
+    "submit": "सबमिट करें",
+    "tryAgain": "फिर से कोशिश करें",
+    "viewAll": "सभी देखें",
+    "yes": "हाँ"
+  },
+  "auth": {
+    "alreadyHaveAccount": "पहले से खाता है? ",
+    "createAccount": "खाता बनाएं",
+    "dontHaveAccount": "खाता नहीं है? ",
+    "orContinueWith": "या इसके साथ जारी रखें",
+    "welcomeBack": "वापसी पर स्वागत है!"
+  },
+  "coach": {
+    "greeting": "नमस्ते, मैं Saveur हूं, आपका AI करियर कोच। मुझसे इंटरव्यू की घबराहट, सैलरी नेगोशिएशन, आपके रिज़्यूमे, नेटवर्किंग, या आपकी नौकरी की तलाश से जुड़ी किसी भी और बात के बारे में पूछें — मैं आपको सही दिशा दिखाने की पूरी कोशिश करूंगा।",
+    "greetingHeadline": "आज मैं आपके करियर में कैसे मदद कर सकता हूँ?"
+  },
+  "countries": {
+    "Canada": "कनाडा",
+    "France": "फ्रांस",
+    "Germany": "जर्मनी",
+    "Remote": "रिमोट",
+    "United Kingdom": "यूनाइटेड किंगडम",
+    "United States": "संयुक्त राज्य अमेरिका"
+  },
+  "fields": {
+    "email": "ईमेल",
+    "fullName": "पूरा नाम",
+    "name": "नाम",
+    "password": "पासवर्ड"
+  },
+  "nav": {
+    "aiCoach": "एआई करियर कोच",
+    "careerDna": "करियर DNA",
+    "careerRoadmap": "एआई करियर रोडमैप",
+    "careerTools": "करियर टूल्स",
+    "codingPractice": "कोडिंग अभ्यास",
+    "companyIntelligence": "कंपनी इंटेलिजेंस",
+    "coverLetterGenerator": "कवर लेटर जेनरेटर",
+    "dreamCompanies": "ड्रीम कंपनी डैशबोर्ड",
+    "home": "होम",
+    "jobAlerts": "नौकरी अलर्ट",
+    "language": "भाषा",
+    "learningCourses": "लर्निंग कोर्स",
+    "linkedinOptimizer": "लिंक्डइन ऑप्टिमाइज़र",
+    "liveSupport": "लाइव सहायता",
+    "mockInterviews": "मॉक इंटरव्यू",
+    "networkingAssistant": "नेटवर्किंग सहायक",
+    "practicalScenarios": "व्यावहारिक परिदृश्य",
+    "practice": "अभ्यास",
+    "referralProgram": "रेफ़रल प्रोग्राम",
+    "resumeBuilder": "रिज़्यूमे बिल्डर",
+    "resumeTools": "रिज़्यूमे टूल्स",
+    "resumeVariants": "रिज़्यूमे एवोल्यूशन",
+    "salaryNegotiation": "वेतन बातचीत",
+    "settings": "सेटिंग्स",
+    "subscription": "सदस्यता और भुगतान"
+  }
+}

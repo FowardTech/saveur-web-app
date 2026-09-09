@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "Agregar",
+    "back": "Atrás",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "continue": "Continuar",
+    "creatingAccount": "Creando cuenta…",
+    "delete": "Eliminar",
+    "done": "Listo",
+    "edit": "Editar",
+    "finish": "Finalizar",
+    "loading": "Cargando…",
+    "next": "Siguiente",
+    "no": "No",
+    "ok": "OK",
+    "register": "Registrarse",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "seeAll": "Ver todo",
+    "send": "Enviar",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "signingIn": "Iniciando sesión…",
+    "submit": "Enviar",
+    "tryAgain": "Intentar de nuevo",
+    "viewAll": "Ver todo",
+    "yes": "Sí"
+  },
+  "auth": {
+    "alreadyHaveAccount": "¿Ya tienes una cuenta? ",
+    "createAccount": "Crear una cuenta",
+    "dontHaveAccount": "¿No tienes una cuenta? ",
+    "orContinueWith": "O continuar con",
+    "welcomeBack": "¡Bienvenido de nuevo!"
+  },
+  "coach": {
+    "greeting": "Hola, soy Saveur, tu coach de carrera con IA. Pregúntame sobre los nervios antes de una entrevista, la negociación salarial, tu currículum, el networking o cualquier otra cosa sobre tu búsqueda de empleo — haré lo posible por orientarte en la dirección correcta.",
+    "greetingHeadline": "¿Cómo puedo ayudarte con tu carrera hoy?"
+  },
+  "countries": {
+    "Canada": "Canadá",
+    "France": "Francia",
+    "Germany": "Alemania",
+    "Remote": "Remoto",
+    "United Kingdom": "Reino Unido",
+    "United States": "Estados Unidos"
+  },
+  "fields": {
+    "email": "Correo electrónico",
+    "fullName": "Nombre completo",
+    "name": "Nombre",
+    "password": "Contraseña"
+  },
+  "nav": {
+    "aiCoach": "Coach de Carrera IA",
+    "careerDna": "ADN Profesional",
+    "careerRoadmap": "Ruta profesional con IA",
+    "careerTools": "Herramientas de carrera",
+    "codingPractice": "Práctica de programación",
+    "companyIntelligence": "Inteligencia de empresa",
+    "coverLetterGenerator": "Generador de cartas de presentación",
+    "dreamCompanies": "Panel de Empresas Soñadas",
+    "home": "Inicio",
+    "jobAlerts": "Alertas de empleo",
+    "language": "Idioma",
+    "learningCourses": "Cursos de aprendizaje",
+    "linkedinOptimizer": "Optimizador de LinkedIn",
+    "liveSupport": "Soporte en vivo",
+    "mockInterviews": "Entrevistas simuladas",
+    "networkingAssistant": "Asistente de networking",
+    "practicalScenarios": "Escenarios prácticos",
+    "practice": "Practicar",
+    "referralProgram": "Programa de referidos",
+    "resumeBuilder": "Creador de CV",
+    "resumeTools": "Herramientas de currículum",
+    "resumeVariants": "Evolución de currículum",
+    "salaryNegotiation": "Negociación Salarial",
+    "settings": "Configuración",
+    "subscription": "Suscripción y pago"
+  }
+}

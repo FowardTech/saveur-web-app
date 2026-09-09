@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "추가",
+    "back": "뒤로",
+    "cancel": "취소",
+    "close": "닫기",
+    "continue": "계속",
+    "creatingAccount": "계정 생성 중…",
+    "delete": "삭제",
+    "done": "완료",
+    "edit": "수정",
+    "finish": "완료",
+    "loading": "불러오는 중…",
+    "next": "다음",
+    "no": "아니요",
+    "ok": "확인",
+    "register": "가입하기",
+    "retry": "다시 시도",
+    "save": "저장",
+    "saving": "저장 중…",
+    "seeAll": "모두 보기",
+    "send": "보내기",
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "signingIn": "로그인 중…",
+    "submit": "제출",
+    "tryAgain": "다시 시도",
+    "viewAll": "전체 보기",
+    "yes": "예"
+  },
+  "auth": {
+    "alreadyHaveAccount": "이미 계정이 있으신가요? ",
+    "createAccount": "계정 만들기",
+    "dontHaveAccount": "계정이 없으신가요? ",
+    "orContinueWith": "또는 다음으로 계속하기",
+    "welcomeBack": "다시 오신 것을 환영합니다!"
+  },
+  "coach": {
+    "greeting": "안녕하세요, 저는 당신의 AI 커리어 코치 Saveur입니다. 면접 긴장, 연봉 협상, 이력서, 네트워킹 등 구직 활동에 관한 무엇이든 물어보세요 — 올바른 방향으로 안내해 드리기 위해 최선을 다하겠습니다.",
+    "greetingHeadline": "오늘 커리어에 어떤 도움을 드릴까요?"
+  },
+  "countries": {
+    "Canada": "캐나다",
+    "France": "프랑스",
+    "Germany": "독일",
+    "Remote": "원격",
+    "United Kingdom": "영국",
+    "United States": "미국"
+  },
+  "fields": {
+    "email": "이메일",
+    "fullName": "이름",
+    "name": "이름",
+    "password": "비밀번호"
+  },
+  "nav": {
+    "aiCoach": "AI 커리어 코치",
+    "careerDna": "커리어 DNA",
+    "careerRoadmap": "AI 커리어 로드맵",
+    "careerTools": "커리어 도구",
+    "codingPractice": "코딩 연습",
+    "companyIntelligence": "기업 인텔리전스",
+    "coverLetterGenerator": "자기소개서 생성기",
+    "dreamCompanies": "드림 컴퍼니 대시보드",
+    "home": "홈",
+    "jobAlerts": "채용 알림",
+    "language": "언어",
+    "learningCourses": "학습 코스",
+    "linkedinOptimizer": "링크드인 최적화",
+    "liveSupport": "실시간 지원",
+    "mockInterviews": "모의 면접",
+    "networkingAssistant": "네트워킹 도우미",
+    "practicalScenarios": "실전 시나리오",
+    "practice": "연습",
+    "referralProgram": "추천 프로그램",
+    "resumeBuilder": "이력서 작성 도구",
+    "resumeTools": "이력서 도구",
+    "resumeVariants": "이력서 에볼루션",
+    "salaryNegotiation": "연봉 협상",
+    "settings": "설정",
+    "subscription": "구독 및 결제"
+  }
+}

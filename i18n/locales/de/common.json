@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "Hinzufügen",
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "continue": "Weiter",
+    "creatingAccount": "Konto wird erstellt…",
+    "delete": "Löschen",
+    "done": "Fertig",
+    "edit": "Bearbeiten",
+    "finish": "Abschließen",
+    "loading": "Wird geladen…",
+    "next": "Weiter",
+    "no": "Nein",
+    "ok": "OK",
+    "register": "Registrieren",
+    "retry": "Wiederholen",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "seeAll": "Alle anzeigen",
+    "send": "Senden",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "signingIn": "Anmeldung läuft…",
+    "submit": "Absenden",
+    "tryAgain": "Erneut versuchen",
+    "viewAll": "Alle anzeigen",
+    "yes": "Ja"
+  },
+  "auth": {
+    "alreadyHaveAccount": "Bereits ein Konto? ",
+    "createAccount": "Konto erstellen",
+    "dontHaveAccount": "Noch kein Konto? ",
+    "orContinueWith": "Oder fortfahren mit",
+    "welcomeBack": "Willkommen zurück!"
+  },
+  "coach": {
+    "greeting": "Hallo, ich bin Saveur, dein KI-Karriere-Coach. Frag mich zu Interview-Nervosität, Gehaltsverhandlungen, deinem Lebenslauf, Networking oder allem anderen rund um deine Jobsuche — ich gebe mein Bestes, um dich in die richtige Richtung zu weisen.",
+    "greetingHeadline": "Wie kann ich dir heute bei deiner Karriere helfen?"
+  },
+  "countries": {
+    "Canada": "Kanada",
+    "France": "Frankreich",
+    "Germany": "Deutschland",
+    "Remote": "Remote / Homeoffice",
+    "United Kingdom": "Vereinigtes Königreich",
+    "United States": "Vereinigte Staaten"
+  },
+  "fields": {
+    "email": "E-Mail",
+    "fullName": "Vollständiger Name",
+    "name": "Name",
+    "password": "Passwort"
+  },
+  "nav": {
+    "aiCoach": "KI-Karriere-Coach",
+    "careerDna": "Karriere-DNA",
+    "careerRoadmap": "KI-Karriereplan",
+    "careerTools": "Karriere-Tools",
+    "codingPractice": "Coding-Übungen",
+    "companyIntelligence": "Unternehmensrecherche",
+    "coverLetterGenerator": "Anschreiben-Generator",
+    "dreamCompanies": "Traumfirmen-Dashboard",
+    "home": "Start",
+    "jobAlerts": "Job-Benachrichtigungen",
+    "language": "Sprache",
+    "learningCourses": "Lernkurse",
+    "linkedinOptimizer": "LinkedIn-Optimierer",
+    "liveSupport": "Live-Support",
+    "mockInterviews": "Übungsinterviews",
+    "networkingAssistant": "Networking-Assistent",
+    "practicalScenarios": "Praxisszenarien",
+    "practice": "Übung",
+    "referralProgram": "Empfehlungsprogramm",
+    "resumeBuilder": "Lebenslauf-Ersteller",
+    "resumeTools": "Lebenslauf-Tools",
+    "resumeVariants": "Lebenslauf-Entwicklung",
+    "salaryNegotiation": "Gehaltsverhandlung",
+    "settings": "Einstellungen",
+    "subscription": "Abonnement & Zahlung"
+  }
+}

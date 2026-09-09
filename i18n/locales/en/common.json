@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "Add",
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "continue": "Continue",
+    "creatingAccount": "Creating account…",
+    "delete": "Delete",
+    "done": "Done",
+    "edit": "Edit",
+    "finish": "Finish",
+    "loading": "Loading…",
+    "next": "Next",
+    "no": "No",
+    "ok": "OK",
+    "register": "Register",
+    "retry": "Retry",
+    "save": "Save",
+    "saving": "Saving…",
+    "seeAll": "See All",
+    "send": "Send",
+    "signIn": "Sign In",
+    "signOut": "Sign out",
+    "signingIn": "Signing in…",
+    "submit": "Submit",
+    "tryAgain": "Try again",
+    "viewAll": "View all",
+    "yes": "Yes"
+  },
+  "auth": {
+    "alreadyHaveAccount": "Already have an account? ",
+    "createAccount": "Create your account",
+    "dontHaveAccount": "Don't have an account? ",
+    "orContinueWith": "Or Continue With",
+    "welcomeBack": "Welcome back"
+  },
+  "coach": {
+    "greeting": "Hi, I'm Saveur, your AI career coach. Ask me about interview nerves, salary negotiation, your resume, networking, or anything else on your job search — I'll do my best to point you in the right direction.",
+    "greetingHeadline": "How can I support your career today?"
+  },
+  "countries": {
+    "Canada": "Canada",
+    "France": "France",
+    "Germany": "Germany",
+    "Remote": "Remote",
+    "United Kingdom": "United Kingdom",
+    "United States": "United States"
+  },
+  "fields": {
+    "email": "Email",
+    "fullName": "Full name",
+    "name": "Name",
+    "password": "Password"
+  },
+  "nav": {
+    "aiCoach": "AI Coach",
+    "careerDna": "Career DNA",
+    "careerRoadmap": "Career Roadmap",
+    "careerTools": "Career Tools",
+    "codingPractice": "Coding Practice",
+    "companyIntelligence": "Company Intelligence",
+    "coverLetterGenerator": "Cover Letter Generator",
+    "dreamCompanies": "Dream Companies",
+    "home": "Home",
+    "jobAlerts": "Job Alerts",
+    "language": "Language",
+    "learningCourses": "Learning Courses",
+    "linkedinOptimizer": "LinkedIn Optimizer",
+    "liveSupport": "Live Support",
+    "mockInterviews": "Mock Interviews",
+    "networkingAssistant": "Networking Assistant",
+    "practicalScenarios": "Practical Scenarios",
+    "practice": "Practice",
+    "referralProgram": "Referral Program",
+    "resumeBuilder": "Resume Builder",
+    "resumeTools": "Resume Tools",
+    "resumeVariants": "Resume Variants",
+    "salaryNegotiation": "Salary Negotiation",
+    "settings": "Settings",
+    "subscription": "Subscription"
+  }
+}

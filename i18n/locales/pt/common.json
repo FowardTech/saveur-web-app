@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "Adicionar",
+    "back": "Voltar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "continue": "Continuar",
+    "creatingAccount": "Criando conta…",
+    "delete": "Excluir",
+    "done": "Concluído",
+    "edit": "Editar",
+    "finish": "Concluir",
+    "loading": "Carregando…",
+    "next": "Próximo",
+    "no": "Não",
+    "ok": "OK",
+    "register": "Cadastre-se",
+    "retry": "Tentar novamente",
+    "save": "Salvar",
+    "saving": "Salvando…",
+    "seeAll": "Ver tudo",
+    "send": "Enviar",
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "signingIn": "Entrando…",
+    "submit": "Enviar",
+    "tryAgain": "Tentar novamente",
+    "viewAll": "Ver tudo",
+    "yes": "Sim"
+  },
+  "auth": {
+    "alreadyHaveAccount": "Já tem uma conta? ",
+    "createAccount": "Criar conta",
+    "dontHaveAccount": "Não tem uma conta? ",
+    "orContinueWith": "Ou continue com",
+    "welcomeBack": "Bem-vindo de volta!"
+  },
+  "coach": {
+    "greeting": "Olá, eu sou o Saveur, seu coach de carreira com IA. Pergunte-me sobre nervosismo em entrevistas, negociação salarial, seu currículo, networking ou qualquer outra coisa sobre sua busca de emprego — farei o possível para te orientar na direção certa.",
+    "greetingHeadline": "Como posso apoiar sua carreira hoje?"
+  },
+  "countries": {
+    "Canada": "Canadá",
+    "France": "França",
+    "Germany": "Alemanha",
+    "Remote": "Remoto",
+    "United Kingdom": "Reino Unido",
+    "United States": "Estados Unidos"
+  },
+  "fields": {
+    "email": "E-mail",
+    "fullName": "Nome completo",
+    "name": "Nome",
+    "password": "Senha"
+  },
+  "nav": {
+    "aiCoach": "Coach de Carreira IA",
+    "careerDna": "DNA de Carreira",
+    "careerRoadmap": "Roteiro de carreira com IA",
+    "careerTools": "Ferramentas de carreira",
+    "codingPractice": "Prática de programação",
+    "companyIntelligence": "Inteligência de empresa",
+    "coverLetterGenerator": "Gerador de Carta de Apresentação",
+    "dreamCompanies": "Painel de Empresas dos Sonhos",
+    "home": "Início",
+    "jobAlerts": "Alertas de vagas",
+    "language": "Idioma",
+    "learningCourses": "Cursos de aprendizagem",
+    "linkedinOptimizer": "Otimizador de LinkedIn",
+    "liveSupport": "Suporte ao vivo",
+    "mockInterviews": "Entrevistas simuladas",
+    "networkingAssistant": "Assistente de networking",
+    "practicalScenarios": "Cenários práticos",
+    "practice": "Prática",
+    "referralProgram": "Programa de indicação",
+    "resumeBuilder": "Criador de currículo",
+    "resumeTools": "Ferramentas de currículo",
+    "resumeVariants": "Evolução do currículo",
+    "salaryNegotiation": "Negociação Salarial",
+    "settings": "Configurações",
+    "subscription": "Assinatura e pagamento"
+  }
+}

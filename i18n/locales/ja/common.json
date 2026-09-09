@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "追加",
+    "back": "戻る",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "continue": "続ける",
+    "creatingAccount": "アカウントを作成中…",
+    "delete": "削除",
+    "done": "完了",
+    "edit": "編集",
+    "finish": "終了",
+    "loading": "読み込み中…",
+    "next": "次へ",
+    "no": "いいえ",
+    "ok": "OK",
+    "register": "登録する",
+    "retry": "再試行",
+    "save": "保存",
+    "saving": "保存中…",
+    "seeAll": "すべて見る",
+    "send": "送信",
+    "signIn": "ログイン",
+    "signOut": "ログアウト",
+    "signingIn": "サインイン中…",
+    "submit": "送信",
+    "tryAgain": "再試行",
+    "viewAll": "すべて表示",
+    "yes": "はい"
+  },
+  "auth": {
+    "alreadyHaveAccount": "既にアカウントをお持ちですか？",
+    "createAccount": "アカウントを作成",
+    "dontHaveAccount": "アカウントをお持ちでないですか？",
+    "orContinueWith": "または次で続ける",
+    "welcomeBack": "おかえりなさい！"
+  },
+  "coach": {
+    "greeting": "こんにちは、私はSaveur、あなたのAIキャリアコーチです。面接の緊張、給与交渉、履歴書、人脈作り、その他転職活動に関することなら何でも聞いてください——正しい方向に導けるよう全力を尽くします。",
+    "greetingHeadline": "今日はどのようにキャリアをサポートしましょうか？"
+  },
+  "countries": {
+    "Canada": "カナダ",
+    "France": "フランス",
+    "Germany": "ドイツ",
+    "Remote": "リモート",
+    "United Kingdom": "イギリス",
+    "United States": "アメリカ合衆国"
+  },
+  "fields": {
+    "email": "メールアドレス",
+    "fullName": "氏名",
+    "name": "名前",
+    "password": "パスワード"
+  },
+  "nav": {
+    "aiCoach": "AIキャリアコーチ",
+    "careerDna": "キャリアDNA",
+    "careerRoadmap": "AIキャリアロードマップ",
+    "careerTools": "キャリアツール",
+    "codingPractice": "コーディング練習",
+    "companyIntelligence": "企業インテリジェンス",
+    "coverLetterGenerator": "カバーレター作成",
+    "dreamCompanies": "憧れの企業ダッシュボード",
+    "home": "ホーム",
+    "jobAlerts": "求人アラート",
+    "language": "言語",
+    "learningCourses": "学習コース",
+    "linkedinOptimizer": "LinkedIn最適化",
+    "liveSupport": "ライブサポート",
+    "mockInterviews": "模擬面接",
+    "networkingAssistant": "ネットワーキングアシスタント",
+    "practicalScenarios": "実践シナリオ",
+    "practice": "練習",
+    "referralProgram": "紹介プログラム",
+    "resumeBuilder": "履歴書作成ツール",
+    "resumeTools": "履歴書ツール",
+    "resumeVariants": "レジュメ・エボリューション",
+    "salaryNegotiation": "給与交渉",
+    "settings": "設定",
+    "subscription": "サブスクリプションと支払い"
+  }
+}

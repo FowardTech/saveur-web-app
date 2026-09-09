@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "Ajouter",
+    "back": "Retour",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "continue": "Continuer",
+    "creatingAccount": "Création du compte…",
+    "delete": "Supprimer",
+    "done": "Terminé",
+    "edit": "Modifier",
+    "finish": "Terminer",
+    "loading": "Chargement…",
+    "next": "Suivant",
+    "no": "Non",
+    "ok": "OK",
+    "register": "S'inscrire",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "seeAll": "Tout voir",
+    "send": "Envoyer",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "signingIn": "Connexion en cours…",
+    "submit": "Soumettre",
+    "tryAgain": "Réessayer",
+    "viewAll": "Tout voir",
+    "yes": "Oui"
+  },
+  "auth": {
+    "alreadyHaveAccount": "Vous avez déjà un compte ? ",
+    "createAccount": "Créer un compte",
+    "dontHaveAccount": "Vous n'avez pas de compte ? ",
+    "orContinueWith": "Ou continuer avec",
+    "welcomeBack": "Content de vous revoir !"
+  },
+  "coach": {
+    "greeting": "Bonjour, je suis Saveur, votre coach de carrière IA. Posez-moi vos questions sur le trac avant un entretien, la négociation salariale, votre CV, le networking, ou tout autre sujet lié à votre recherche d'emploi — je ferai de mon mieux pour vous orienter dans la bonne direction.",
+    "greetingHeadline": "Comment puis-je vous aider dans votre carrière aujourd'hui ?"
+  },
+  "countries": {
+    "Canada": "Canada",
+    "France": "France",
+    "Germany": "Allemagne",
+    "Remote": "Télétravail",
+    "United Kingdom": "Royaume-Uni",
+    "United States": "États-Unis"
+  },
+  "fields": {
+    "email": "E-mail",
+    "fullName": "Nom complet",
+    "name": "Nom",
+    "password": "Mot de passe"
+  },
+  "nav": {
+    "aiCoach": "Coach de carrière IA",
+    "careerDna": "ADN de carrière",
+    "careerRoadmap": "Feuille de route IA",
+    "careerTools": "Outils de carrière",
+    "codingPractice": "Entraînement au code",
+    "companyIntelligence": "Intelligence entreprise",
+    "coverLetterGenerator": "Générateur de lettre de motivation",
+    "dreamCompanies": "Tableau de bord des entreprises de rêve",
+    "home": "Accueil",
+    "jobAlerts": "Alertes emploi",
+    "language": "Langue",
+    "learningCourses": "Cours d'apprentissage",
+    "linkedinOptimizer": "Optimiseur LinkedIn",
+    "liveSupport": "Assistance en direct",
+    "mockInterviews": "Entretiens simulés",
+    "networkingAssistant": "Assistant réseautage",
+    "practicalScenarios": "Mises en situation pratiques",
+    "practice": "Pratique",
+    "referralProgram": "Programme de parrainage",
+    "resumeBuilder": "Créateur de CV",
+    "resumeTools": "Outils de CV",
+    "resumeVariants": "Évolution du CV",
+    "salaryNegotiation": "Négociation salariale",
+    "settings": "Paramètres",
+    "subscription": "Abonnement et paiement"
+  }
+}

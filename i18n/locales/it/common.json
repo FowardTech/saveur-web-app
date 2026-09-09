@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "Aggiungi",
+    "back": "Indietro",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "continue": "Continua",
+    "creatingAccount": "Creazione dell'account…",
+    "delete": "Elimina",
+    "done": "Fatto",
+    "edit": "Modifica",
+    "finish": "Fine",
+    "loading": "Caricamento…",
+    "next": "Avanti",
+    "no": "No",
+    "ok": "OK",
+    "register": "Registrati",
+    "retry": "Riprova",
+    "save": "Salva",
+    "saving": "Salvataggio…",
+    "seeAll": "Vedi tutto",
+    "send": "Invia",
+    "signIn": "Accedi",
+    "signOut": "Esci",
+    "signingIn": "Accesso in corso…",
+    "submit": "Invia",
+    "tryAgain": "Riprova",
+    "viewAll": "Vedi tutto",
+    "yes": "Sì"
+  },
+  "auth": {
+    "alreadyHaveAccount": "Hai già un account? ",
+    "createAccount": "Crea un account",
+    "dontHaveAccount": "Non hai un account? ",
+    "orContinueWith": "Oppure continua con",
+    "welcomeBack": "Bentornato!"
+  },
+  "coach": {
+    "greeting": "Ciao, sono Saveur, il tuo coach di carriera basato sull'IA. Chiedimi pure dell'ansia da colloquio, della negoziazione salariale, del tuo curriculum, del networking o di qualsiasi altra cosa riguardo alla tua ricerca di lavoro — farò del mio meglio per indirizzarti nella direzione giusta.",
+    "greetingHeadline": "Come posso aiutarti con la tua carriera oggi?"
+  },
+  "countries": {
+    "Canada": "Canada",
+    "France": "Francia",
+    "Germany": "Germania",
+    "Remote": "Da remoto",
+    "United Kingdom": "Regno Unito",
+    "United States": "Stati Uniti"
+  },
+  "fields": {
+    "email": "E-mail",
+    "fullName": "Nome completo",
+    "name": "Nome",
+    "password": "Password"
+  },
+  "nav": {
+    "aiCoach": "Coach di Carriera IA",
+    "careerDna": "DNA di carriera",
+    "careerRoadmap": "Roadmap di carriera IA",
+    "careerTools": "Strumenti per la carriera",
+    "codingPractice": "Esercitazione di coding",
+    "companyIntelligence": "Intelligence aziendale",
+    "coverLetterGenerator": "Generatore di Lettera di Presentazione",
+    "dreamCompanies": "Dashboard delle aziende dei sogni",
+    "home": "Home",
+    "jobAlerts": "Avvisi di lavoro",
+    "language": "Lingua",
+    "learningCourses": "Corsi di apprendimento",
+    "linkedinOptimizer": "Ottimizzatore LinkedIn",
+    "liveSupport": "Assistenza dal vivo",
+    "mockInterviews": "Colloqui simulati",
+    "networkingAssistant": "Assistente di networking",
+    "practicalScenarios": "Scenari pratici",
+    "practice": "Pratica",
+    "referralProgram": "Programma di referral",
+    "resumeBuilder": "Creatore di CV",
+    "resumeTools": "Strumenti per il CV",
+    "resumeVariants": "Evoluzione del curriculum",
+    "salaryNegotiation": "Negoziazione Salariale",
+    "settings": "Impostazioni",
+    "subscription": "Abbonamento e pagamento"
+  }
+}

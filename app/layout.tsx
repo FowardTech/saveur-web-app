@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { AuthProvider } from "./providers/AuthProvider";
+import { I18nProvider } from "./providers/I18nProvider";
 
 // Plus Jakarta Sans, self-hosted via the @fontsource/plus-jakarta-sans
 // package (next/font/local reads its .woff2 files at build time — no
@@ -63,7 +64,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col font-sans bg-page text-primary">
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <I18nProvider>{children}</I18nProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "إضافة",
+    "back": "رجوع",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "continue": "متابعة",
+    "creatingAccount": "جارٍ إنشاء الحساب…",
+    "delete": "حذف",
+    "done": "تم",
+    "edit": "تعديل",
+    "finish": "إنهاء",
+    "loading": "جارٍ التحميل…",
+    "next": "التالي",
+    "no": "لا",
+    "ok": "موافق",
+    "register": "إنشاء حساب",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "seeAll": "عرض الكل",
+    "send": "إرسال",
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "signingIn": "جارٍ تسجيل الدخول…",
+    "submit": "إرسال",
+    "tryAgain": "أعد المحاولة",
+    "viewAll": "عرض الكل",
+    "yes": "نعم"
+  },
+  "auth": {
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟ ",
+    "createAccount": "إنشاء حساب",
+    "dontHaveAccount": "ليس لديك حساب؟ ",
+    "orContinueWith": "أو المتابعة باستخدام",
+    "welcomeBack": "مرحبًا بعودتك!"
+  },
+  "coach": {
+    "greeting": "مرحبًا، أنا Saveur، مدربك المهني بالذكاء الاصطناعي. اسألني عن التوتر قبل المقابلات، التفاوض على الراتب، سيرتك الذاتية، التواصل المهني، أو أي شيء آخر يتعلق ببحثك عن وظيفة — سأبذل قصارى جهدي لأوجهك في الاتجاه الصحيح.",
+    "greetingHeadline": "كيف يمكنني دعم مسيرتك المهنية اليوم؟"
+  },
+  "countries": {
+    "Canada": "كندا",
+    "France": "فرنسا",
+    "Germany": "ألمانيا",
+    "Remote": "عن بُعد",
+    "United Kingdom": "المملكة المتحدة",
+    "United States": "الولايات المتحدة"
+  },
+  "fields": {
+    "email": "البريد الإلكتروني",
+    "fullName": "الاسم الكامل",
+    "name": "الاسم",
+    "password": "كلمة المرور"
+  },
+  "nav": {
+    "aiCoach": "مدرب المسيرة المهنية بالذكاء الاصطناعي",
+    "careerDna": "الحمض النووي المهني",
+    "careerRoadmap": "خارطة طريق مهنية بالذكاء الاصطناعي",
+    "careerTools": "أدوات المسار المهني",
+    "codingPractice": "تدريب على البرمجة",
+    "companyIntelligence": "معلومات عن الشركة",
+    "coverLetterGenerator": "مولّد خطاب التقديم",
+    "dreamCompanies": "لوحة الشركات المستهدفة",
+    "home": "الرئيسية",
+    "jobAlerts": "تنبيهات الوظائف",
+    "language": "اللغة",
+    "learningCourses": "الدورات التعليمية",
+    "linkedinOptimizer": "محسّن لينكدإن",
+    "liveSupport": "الدعم المباشر",
+    "mockInterviews": "مقابلات تجريبية",
+    "networkingAssistant": "مساعد التواصل المهني",
+    "practicalScenarios": "سيناريوهات عملية",
+    "practice": "التدريب",
+    "referralProgram": "برنامج الإحالة",
+    "resumeBuilder": "منشئ السيرة الذاتية",
+    "resumeTools": "أدوات السيرة الذاتية",
+    "resumeVariants": "تطوّر السيرة الذاتية",
+    "salaryNegotiation": "التفاوض على الراتب",
+    "settings": "الإعدادات",
+    "subscription": "الاشتراك والدفع"
+  }
+}

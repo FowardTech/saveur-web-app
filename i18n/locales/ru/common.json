@@ -1,0 +1,83 @@
+{
+  "actions": {
+    "add": "Добавить",
+    "back": "Назад",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "continue": "Продолжить",
+    "creatingAccount": "Создание учётной записи…",
+    "delete": "Удалить",
+    "done": "Готово",
+    "edit": "Редактировать",
+    "finish": "Завершить",
+    "loading": "Загрузка…",
+    "next": "Далее",
+    "no": "Нет",
+    "ok": "ОК",
+    "register": "Зарегистрироваться",
+    "retry": "Повторить",
+    "save": "Сохранить",
+    "saving": "Сохранение…",
+    "seeAll": "Смотреть все",
+    "send": "Отправить",
+    "signIn": "Войти",
+    "signOut": "Выйти",
+    "signingIn": "Выполняется вход…",
+    "submit": "Отправить",
+    "tryAgain": "Повторить",
+    "viewAll": "Смотреть все",
+    "yes": "Да"
+  },
+  "auth": {
+    "alreadyHaveAccount": "Уже есть аккаунт? ",
+    "createAccount": "Создать аккаунт",
+    "dontHaveAccount": "Нет аккаунта? ",
+    "orContinueWith": "Или продолжить через",
+    "welcomeBack": "С возвращением!"
+  },
+  "coach": {
+    "greeting": "Привет, я Saveur, ваш карьерный ИИ-коуч. Спрашивайте меня о волнении перед собеседованием, переговорах о зарплате, вашем резюме, нетворкинге или о чём угодно ещё, связанном с поиском работы — я сделаю всё возможное, чтобы направить вас в нужную сторону.",
+    "greetingHeadline": "Чем я могу помочь вашей карьере сегодня?"
+  },
+  "countries": {
+    "Canada": "Канада",
+    "France": "Франция",
+    "Germany": "Германия",
+    "Remote": "Удалённо",
+    "United Kingdom": "Великобритания",
+    "United States": "США"
+  },
+  "fields": {
+    "email": "Эл. почта",
+    "fullName": "Полное имя",
+    "name": "Имя",
+    "password": "Пароль"
+  },
+  "nav": {
+    "aiCoach": "ИИ-карьерный коуч",
+    "careerDna": "Карьерная ДНК",
+    "careerRoadmap": "ИИ-план карьеры",
+    "careerTools": "Карьерные инструменты",
+    "codingPractice": "Практика по программированию",
+    "companyIntelligence": "Разведка о компании",
+    "coverLetterGenerator": "Генератор сопроводительного письма",
+    "dreamCompanies": "Панель компаний мечты",
+    "home": "Главная",
+    "jobAlerts": "Уведомления о вакансиях",
+    "language": "Язык",
+    "learningCourses": "Обучающие курсы",
+    "linkedinOptimizer": "Оптимизатор LinkedIn",
+    "liveSupport": "Онлайн-поддержка",
+    "mockInterviews": "Пробные собеседования",
+    "networkingAssistant": "Помощник по networking",
+    "practicalScenarios": "Практические сценарии",
+    "practice": "Практика",
+    "referralProgram": "Реферальная программа",
+    "resumeBuilder": "Конструктор резюме",
+    "resumeTools": "Инструменты для резюме",
+    "resumeVariants": "Эволюция резюме",
+    "salaryNegotiation": "Переговоры о зарплате",
+    "settings": "Настройки",
+    "subscription": "Подписка и оплата"
+  }
+}
