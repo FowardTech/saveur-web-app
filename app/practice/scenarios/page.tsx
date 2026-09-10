@@ -6,16 +6,29 @@ import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
-import { SelectField } from "@/components/ui/SelectField";
+import { Pill } from "@/components/ui/Pill";
 import { Button } from "@/components/ui/Button";
-import { EvaIcon } from "@/components/icons/EvaIcon";
+import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/practical.py
 //   GET  /api/v1/practical/types    -> {types: string[]}
 //   POST /api/v1/practical/sessions -> {session: {...}, step: {situation, choices, is_final}}
 // Gated behind the "practical_scenario" paid add-on (@require_addon).
-const PRACTICAL_TYPES = ["healthcare", "sales", "marketing", "finance", "consulting", "science"];
+//
+// Pill-based type selection ported from Saveur/src/practice/
+// PracticalScenarioSetup.tsx's ALL_TYPES/TYPE_ICONS/TYPE_LABEL_KEYS — this
+// screen has no constants/Data.ts DATA_ array of its own (unlike the mock
+// interview wizard's INTERVIEW_TYPES); mobile defines the 6 types + their
+// icons locally in that one file, mirrored here 1:1.
+const PRACTICAL_TYPES: { value: string; icon: EvaIconName }[] = [
+  { value: "healthcare", icon: "heart-outline" },
+  { value: "sales", icon: "trending-up-outline" },
+  { value: "marketing", icon: "bar-chart-2-outline" },
+  { value: "finance", icon: "pie-chart-outline" },
+  { value: "consulting", icon: "briefcase-outline" },
+  { value: "science", icon: "bulb-outline" },
+];
 
 function fallbackLabelFor(type: string) {
   return type[0].toUpperCase() + type.slice(1);
@@ -29,7 +42,7 @@ interface StepResult {
 
 export default function PracticalScenariosSetupPage() {
   const { t } = useTranslation();
-  const [type, setType] = useState(PRACTICAL_TYPES[0]);
+  const [type, setType] = useState(PRACTICAL_TYPES[0].value);
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,17 +102,18 @@ export default function PracticalScenariosSetupPage() {
 
           {!step && !addonRequired && (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-              <SelectField
-                label={t("web:practice.scenarios.scenarioTypeLabel", { defaultValue: "Scenario type" })}
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
-                {PRACTICAL_TYPES.map((pt) => (
-                  <option key={pt} value={pt}>
-                    {labelFor(pt)}
-                  </option>
-                ))}
-              </SelectField>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-primary">
+                  {t("web:practice.scenarios.scenarioTypeLabel", { defaultValue: "Choose a field" })}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {PRACTICAL_TYPES.map((pt) => (
+                    <Pill key={pt.value} selected={pt.value === type} icon={pt.icon} onClick={() => setType(pt.value)}>
+                      {labelFor(pt.value)}
+                    </Pill>
+                  ))}
+                </div>
+              </div>
               <TextField
                 label={t("web:practice.scenarios.roleLabel", { defaultValue: "Role (optional)" })}
                 placeholder={t("web:practice.scenarios.rolePlaceholder", { defaultValue: "e.g. Registered Nurse, Account Executive" })}
