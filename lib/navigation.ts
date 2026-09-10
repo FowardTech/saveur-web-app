@@ -98,6 +98,16 @@ export const primaryNav: NavItem[] = [
   // Basic-and-up job-search tool in its own right, same tier/prominence as
   // Job Alerts.
   { label: "Applications", labelKey: "applicationTracker", href: "/applications", icon: "award-outline" },
+  // Mobile: MoreSrc.tsx's "My Progress" row (title: t('more:my_progress'))
+  // sits immediately after "Applications" and before the Resume Tools rows
+  // in its flat DATA list — see that row's own comment for the "everything
+  // that used to be on Home now lives here" claim, which app/progress/
+  // page.tsx's own header comment explains is now stale (streak/XP/check-in
+  // moved again, to what mobile calls Leaderboard.tsx -> app/progress/
+  // leaderboard/page.tsx here). Placed at the same relative position here,
+  // right after Applications, since web's grouped nav sections don't have a
+  // literal "between these two rows" slot the way mobile's flat list does.
+  { label: "My Progress", labelKey: "myProgress", href: "/progress", icon: "trending-up-outline" },
 ];
 
 // Sidebar secondary / bottom section.

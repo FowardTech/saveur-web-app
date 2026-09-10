@@ -296,10 +296,16 @@
   },
   "onboarding": {
     "goals": {
-      "getPromoted": "Get promoted",
-      "newJob": "Land a new job",
-      "prepInterviews": "Prep for interviews",
-      "switchCareers": "Switch careers"
+      "careerChange": "Career Change",
+      "executive": "Executive Move",
+      "exploreOptions": "Explore My Options",
+      "growNetwork": "Grow My Network",
+      "internship": "Internship / Grad Job",
+      "newJob": "Land a New Job",
+      "promotion": "Promotion",
+      "relocate": "Relocate / Work Abroad",
+      "returnToWork": "Return to Work",
+      "startBusiness": "Start a Business"
     },
     "saveFailedDefault": "Something went wrong saving your profile. Please try again.",
     "step0": {
@@ -422,6 +428,74 @@
         "science": "Science"
       }
     }
+  },
+  "progress": {
+    "averageScore": "Average score",
+    "checkedInToday": "Checked in today",
+    "completeFirstInterview": "Complete your first mock interview to start tracking progress here.",
+    "dailyChallenge": {
+      "completed": "+{{xp}} XP earned",
+      "responsePlaceholder": "Type your response…",
+      "skip": "Skip today",
+      "submit": "Submit",
+      "title": "Today's Surprise Challenge",
+      "xpSuffix": "XP"
+    },
+    "dayStreak": "Day streak",
+    "goalProgressBuildRoadmap": "Build my roadmap →",
+    "goalProgressComplete": "You've completed every step — congratulations!",
+    "goalProgressCurrentStep": "Current step: {{step}}",
+    "goalProgressNoRoadmap": "Build a step-by-step roadmap to see your progress toward this goal.",
+    "goalProgressStepsOf": "{{completed}} of {{total}} steps complete",
+    "goalProgressTitle": "Progress toward your goal",
+    "goalProgressViewRoadmap": "View full roadmap →",
+    "leaderboard": "Leaderboard",
+    "leaderboardEmpty": "No leaderboard data yet.",
+    "leaderboardLoadFailedDefault": "Could not load the leaderboard.",
+    "leaderboardPage": {
+      "backToProgress": "My Progress",
+      "checkIn": "Check In",
+      "checkInFailed": "Couldn't check in — please try again in a moment.",
+      "checkedInToday": "Checked in",
+      "moreRankings": "More Rankings",
+      "new": "New",
+      "periodDaily": "Daily",
+      "periodMonthly": "Monthly",
+      "periodWeekly": "Weekly",
+      "subtitle": "See how your XP stacks up against the Saveur community.",
+      "title": "Leaderboard",
+      "unranked": "Unranked",
+      "yourStanding": "Your standing",
+      "yourStatsLine": "{{xp}} XP · {{days}}-day streak"
+    },
+    "loadFailedDefault": "Could not load your progress.",
+    "noCareerGoal": "You haven't set a career goal yet.",
+    "recentSessions": "Recent sessions",
+    "sessionsCompleted": "Sessions completed",
+    "skillHeatMapDescription": "Your average across every scored interview — see what to work on next.",
+    "skillHeatMapEmpty": "Complete a scored interview to see your skill breakdown here.",
+    "skillHeatMapTitle": "Skill Heat Map",
+    "streakDays": "{{count}}-day streak",
+    "subtitle": "Your real progress toward the career goal you set.",
+    "tabs": {
+      "history": "History",
+      "overview": "Overview",
+      "skills": "Skills"
+    },
+    "thisWeek": "This week",
+    "title": "My Progress",
+    "weekdayShort": {
+      "fri": "Fri",
+      "mon": "Mon",
+      "sat": "Sat",
+      "sun": "Sun",
+      "thu": "Thu",
+      "tue": "Tue",
+      "wed": "Wed"
+    },
+    "xpLabel": "XP",
+    "you": "You",
+    "yourCareerGoal": "Your career goal"
   },
   "referral": {
     "apply": "Apply",
