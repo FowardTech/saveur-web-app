@@ -122,6 +122,8 @@ export const apiClient = {
   },
   post: <T>(path: string, data?: unknown, opts?: { auth?: boolean }) =>
     request<T>(path, { method: "POST", body: JSON.stringify(data ?? {}), auth: opts?.auth }),
+  put: <T>(path: string, data?: unknown, opts?: { auth?: boolean }) =>
+    request<T>(path, { method: "PUT", body: JSON.stringify(data ?? {}), auth: opts?.auth }),
   patch: <T>(path: string, data?: unknown, opts?: { auth?: boolean }) =>
     request<T>(path, { method: "PATCH", body: JSON.stringify(data ?? {}), auth: opts?.auth }),
   delete: <T>(path: string, opts?: { auth?: boolean }) =>
