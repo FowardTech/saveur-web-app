@@ -5,11 +5,25 @@ coding practice, resume tools, career roadmap, job alerts, learning courses).
 Same backend, same users, same Firebase project — this is purely a new UI
 surface, built with Next.js (App Router) + TypeScript + Tailwind CSS.
 
-This first pass covers the **foundation only**: design system, app shell
-(sidebar + topbar), auth, onboarding, and the Home dashboard. The other 60+
-screens from the mobile app are intentionally not built yet — sidebar links to
-those sections (Mock Interviews, Coding Practice, Resume Builder, etc.) will
-404 until later passes fill them in.
+Every sidebar section has a real page wired to the actual backend (auth,
+onboarding, dashboard, AI Coach, Practice, Career Tools, Resume Tools,
+Learning, Job Alerts, Referral, Subscription, Settings, Live Support), backed
+by the same Firebase project and Flask API as mobile. A handful of screens are
+honest, deliberate placeholders rather than full ports of mobile's richest
+flows — most notably the live, real-time voice/video interview and
+interactive-scenario experiences (Mock Interviews / Practical Scenarios show
+the session was created and explain the full live flow is a future pass;
+Coding Practice lists real problems without in-browser code execution yet;
+Live Support is a static contact page, no chat backend exists for it yet on
+either platform). Everything else — AI Coach chat, Career Roadmap/DNA/Dream
+Companies, Resume Builder/Cover Letters/LinkedIn Optimizer/Variants,
+Salary Negotiation, Job Alerts, Referral, Subscription/Stripe billing,
+2FA, LinkedIn OAuth — is fully functional, not a stub.
+
+The app is also fully localized: 12 languages (English, Spanish, French,
+German, Italian, Portuguese, Russian, Arabic, Hindi, Japanese, Korean,
+Chinese) via `i18n/`, with a language switcher in the sidebar and RTL support
+for Arabic.
 
 ## Getting started
 
@@ -41,51 +55,74 @@ those are shared with the mobile app):
    ```
 6. Make sure **Email/Password** and **Google** sign-in are enabled under
    Authentication → Sign-in method (they should already be, since the mobile
-   app uses both).
+   app uses both). LinkedIn sign-in is a separate, hand-rolled OAuth flow
+   against the backend (`/api/v1/auth/linkedin/start` → LinkedIn → the
+   backend's `/callback` → this app's `/auth/linkedin/callback`), not a
+   Firebase-native provider — Firebase has no built-in LinkedIn provider.
 7. Under Authentication → Settings → **Authorized domains**, add
    `localhost` (usually already there) and, once deployed, your real domain
    — otherwise Google sign-in's popup flow will reject the request.
 
 ## Backend CORS
 
-The backend's `CORS_ORIGINS` env var currently defaults to `"*"`, so this app
-should be able to call `https://api.saveurnow.com` out of the box from
-`localhost`. Once you know the real domain this gets deployed to, it's worth
-confirming `CORS_ORIGINS` on the backend droplet either still allows `*` or
-explicitly includes that domain.
+The backend's `CORS_ORIGINS` env var controls which origins the Flask API
+will accept requests from at all — a request from an origin not in that list
+fails at the browser/network level (CORS preflight rejection) before it ever
+reaches Flask, which surfaces in this app as apiClient's "No internet
+connection" message (see `lib/apiClient.ts`'s `request()`), NOT as a normal
+HTTP error response. If AI-feature calls (or any API call) on the deployed
+site show that message even though the backend itself is healthy, the first
+thing to check is `CORS_ORIGINS` on the droplet — it needs to explicitly
+include this app's real deployed origin (defaulting to `"*"` only works for
+local dev / no-credential requests in most setups). This has been flagged
+before as a droplet configuration item, not a web app code issue.
 
 ## Project structure
 
 ```
 app/
-  page.tsx                landing page (/)
-  login/page.tsx           /login
-  register/page.tsx        /register
-  onboarding/page.tsx       /onboarding
-  dashboard/page.tsx        /dashboard (authenticated home)
-  subscription/page.tsx     /subscription (plans + checkout)
-  subscription/success/     /subscription/success (post-checkout redirect target)
-  providers/                AuthProvider, ThemeProvider
-  globals.css                design tokens (light/dark CSS variables) + Tailwind v4 @theme
+  page.tsx                    landing page (/)
+  login/, register/, onboarding/   auth + onboarding flow
+  auth/linkedin/callback/     lands here after the backend's LinkedIn OAuth redirect
+  dashboard/                  authenticated home
+  ai-coach/                   AI Coach chat (text + browser-voice mode)
+  practice/                   Mock Interviews, Coding Practice, Practical Scenarios
+  career/                     Roadmap, DNA, Networking, Dream Companies,
+                               Company Intelligence, Salary Negotiation
+  resume/                     Builder, Cover Letter, LinkedIn Optimizer, Variants
+  learning/, job-alerts/, referral/, support/
+  subscription/, subscription/success/   plans + checkout + post-checkout redirect
+  settings/                   hub, Profile, Payment Method, Security (2FA)
+  not-found.tsx, error.tsx    themed 404 / root error boundary
+  providers/                  AuthProvider, ThemeProvider, I18nProvider
+  globals.css                 design tokens (light/dark CSS variables) + Tailwind v4 @theme
 components/
-  shell/                    Sidebar, Topbar, AppShell, ThemeToggle, UserMenu
-  landing/                  CookieBar, WelcomeModal
-  auth/                     AuthLayout, GoogleButton
-  ui/                       Button, TextField, ActionCard
-  icons/                    EvaIcon.tsx (renders lib/eva-icons.generated.ts)
+  shell/                      Sidebar, Topbar, AppShell, ThemeToggle, UserMenu
+  landing/                    CookieBar, WelcomeModal, HeroBanner
+  auth/                       AuthLayout, RequireAuth, GoogleButton, LinkedInButton
+  ui/                         Button, TextField, SelectField, ActionCard, PageHeader
+  icons/                      EvaIcon.tsx (renders lib/eva-icons.generated.ts)
 lib/
-  firebase.ts                Firebase Web SDK init
-  apiClient.ts                fetch wrapper, attaches Firebase ID token
-  billingService.ts           plans / checkout / portal calls
-  types.ts                    UserProfile + wire<->camelCase translation
-  navigation.ts                sidebar + quick-action taxonomy
-  eva-icons.generated.ts       AUTO-GENERATED, see scripts/generate-icons.mjs
-scripts/generate-icons.mjs     regenerate the icon set above after adding a new EvaIcon name
+  firebase.ts                 Firebase Web SDK init
+  apiClient.ts                 fetch wrapper, attaches Firebase ID token, real error messages
+  errors.ts                    getErrorMessage() — surfaces real apiClient/Firebase error text
+  billingService.ts            plans / checkout / portal calls
+  types.ts                     UserProfile + wire<->camelCase translation
+  navigation.ts                 sidebar + quick-action taxonomy
+  eva-icons.generated.ts        AUTO-GENERATED, see scripts/generate-icons.mjs
+i18n/
+  config.ts                    i18next setup, supported/RTL language lists
+  locales/<lang>/               common.json + web.json per language (12 languages)
+scripts/generate-icons.mjs      regenerate the icon set above after adding a new EvaIcon name
 ```
 
 ## Design system
 
-- **Font**: Plus Jakarta Sans (`next/font/google`), the app's only typeface.
+- **Font**: Plus Jakarta Sans, self-hosted via `next/font/local` (the
+  `@fontsource/plus-jakarta-sans` package) rather than `next/font/google`, so
+  builds don't need network access to fonts.googleapis.com. Montserrat
+  Alternates (Black, 900) is a second, dedicated wordmark-only font for the
+  "Saveur" brand text (`font-brand`), matching mobile's `BrandWordmark`.
 - **Colors**: CSS variables on `:root` (light) / `.dark` (dark, default
   theme), re-exposed to Tailwind via `@theme inline` in `app/globals.css` —
   e.g. `bg-page`, `text-primary`, `text-hint`, `bg-brand`, `bg-surface-2`,
@@ -114,4 +151,5 @@ scripts/generate-icons.mjs     regenerate the icon set above after adding a new 
 
 ```bash
 npm run build
+npm run lint
 ```
