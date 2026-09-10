@@ -7,6 +7,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -138,6 +139,8 @@ export default function JobAlertsPage() {
               {savingPrefs ? t("web:jobAlerts.saving", { defaultValue: "Saving…" }) : t("web:jobAlerts.save", { defaultValue: "Save" })}
             </Button>
           </form>
+
+          {alerts === null && !proRequired && !error && <SkeletonRows count={5} />}
 
           {alerts && alerts.length === 0 && !proRequired && (
             <p className="text-sm text-hint">{t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })}</p>

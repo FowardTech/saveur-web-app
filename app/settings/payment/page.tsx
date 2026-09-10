@@ -8,6 +8,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { createPortalSession } from "@/lib/billingService";
 import apiClient, { type ApiError } from "@/lib/apiClient";
@@ -104,6 +105,15 @@ export default function PaymentSettingsPage() {
               {t("web:settings.payment.viewPlans", { defaultValue: "View plans & pricing" })}
             </Link>
           </div>
+
+          {payments === null && (
+            <div className="flex flex-col gap-3">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                {t("web:settings.payment.historyTitle", { defaultValue: "Payment history" })}
+              </h2>
+              <SkeletonRows count={3} />
+            </div>
+          )}
 
           {payments && payments.length > 0 && (
             <div className="flex flex-col gap-3">

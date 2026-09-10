@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/resume_variants.py
@@ -132,6 +133,8 @@ export default function ResumeVariantsPage() {
               {creating ? t("web:resume.variants.creating", { defaultValue: "Creating…" }) : t("web:resume.variants.createVariant", { defaultValue: "Create variant" })}
             </Button>
           </form>
+
+          {variants === null && !error && <SkeletonRows count={3} />}
 
           {variants && variants.length === 0 && <p className="text-sm text-hint">{t("web:resume.variants.empty", { defaultValue: "No variants yet — create one above." })}</p>}
 

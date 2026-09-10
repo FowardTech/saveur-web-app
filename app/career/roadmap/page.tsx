@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { Skeleton, SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/career_roadmap.py
@@ -121,7 +122,12 @@ export default function CareerRoadmapPage() {
           )}
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {roadmap === undefined && !premiumRequired && <p className="text-sm text-hint">{t("web:career.roadmap.loading", { defaultValue: "Loading…" })}</p>}
+          {roadmap === undefined && !premiumRequired && (
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-20 rounded-card" />
+              <SkeletonRows count={4} />
+            </div>
+          )}
 
           {roadmap === null && !premiumRequired && (
             <form onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">

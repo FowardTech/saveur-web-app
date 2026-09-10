@@ -8,6 +8,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonBubble } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py
@@ -38,8 +39,6 @@ interface CoachMessage {
 
 const COACH_GREETING_TEXT =
   "Hi, I'm Saveur, your AI career coach. Ask me about interview nerves, salary negotiation, your resume, networking, or anything else on your job search — I'll do my best to point you in the right direction.";
-const COACH_GREETING_HEADLINE = "How can I support your career today?";
-
 const GREETING_MESSAGE: CoachMessage = {
   id: "msg_greeting",
   role: "coach",
@@ -63,7 +62,6 @@ interface MinimalSpeechRecognition {
 export default function AiCoachPage() {
   const { t } = useTranslation();
   const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
-  const coachGreetingHeadline = t("common:coach.greetingHeadline", { defaultValue: COACH_GREETING_HEADLINE });
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [proRequired, setProRequired] = useState(false);
@@ -261,13 +259,13 @@ export default function AiCoachPage() {
             <>
               <div className="flex-1 overflow-y-auto rounded-card border border-border bg-surface-2 p-4">
                 {!loaded ? (
-                  // Mirrors mobile's brief centered icon+headline landing
-                  // state — shown only while GET /api/v1/coach/messages is
-                  // still in flight, before the real thread (greeting bubble
-                  // included) takes over below.
-                  <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-                    <Image src="/coach-chat-icon.png" alt="" width={88} height={88} priority />
-                    <p className="max-w-xs text-base font-semibold text-primary">{coachGreetingHeadline}</p>
+                  // Skeleton chat bubbles shaped like the real thread about
+                  // to render below, while GET /api/v1/coach/messages is
+                  // still in flight.
+                  <div className="flex flex-col gap-3">
+                    <SkeletonBubble align="start" width="w-3/4" />
+                    <SkeletonBubble align="end" width="w-1/2" />
+                    <SkeletonBubble align="start" width="w-2/3" />
                   </div>
                 ) : (
                   <div className="flex flex-col gap-3">

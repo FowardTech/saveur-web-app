@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonText } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { enableWebPush, currentNotificationPermission, isPushConfigured } from "@/lib/messaging";
@@ -167,13 +168,15 @@ export default function SecuritySettingsPage() {
               </span>
               <div>
                 <h2 className="font-semibold text-primary">{t("web:settings.security.twoFactorTitle", { defaultValue: "Two-factor authentication" })}</h2>
-                <p className="text-sm text-hint">
-                  {enabled === null
-                    ? t("common:actions.loading", { defaultValue: "Loading…" })
-                    : enabled
+                {enabled === null ? (
+                  <SkeletonText width="w-56" className="mt-1" />
+                ) : (
+                  <p className="text-sm text-hint">
+                    {enabled
                       ? t("web:settings.security.twoFactorEnabledDescription", { defaultValue: "Enabled — a code is sent to your email at login." })
                       : t("web:settings.security.twoFactorDisabledDescription", { defaultValue: "Not enabled." })}
-                </p>
+                  </p>
+                )}
               </div>
             </div>
 

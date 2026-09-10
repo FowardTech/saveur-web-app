@@ -7,6 +7,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/career_events.py
@@ -127,6 +128,8 @@ export default function CareerEventsPage() {
 
           {error && <p className="text-sm text-danger">{error}</p>}
           {refreshMessage && <p className="text-sm text-hint">{refreshMessage}</p>}
+
+          {events === null && !proRequired && !error && <SkeletonRows count={5} />}
 
           {events && events.length === 0 && !proRequired && (
             <p className="text-sm text-hint">{t("web:career.events.empty", { defaultValue: "No events matched yet — try refreshing, or check back after your next scan." })}</p>

@@ -7,6 +7,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/referrals.py
@@ -94,7 +95,17 @@ export default function ReferralProgramPage() {
           />
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {!info && !error && <p className="text-sm text-hint">{t("common:actions.loading", { defaultValue: "Loading…" })}</p>}
+
+          {!info && !error && (
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-3 gap-3">
+                <Skeleton className="h-20 rounded-card" />
+                <Skeleton className="h-20 rounded-card" />
+                <Skeleton className="h-20 rounded-card" />
+              </div>
+              <SkeletonCard className="h-28" />
+            </div>
+          )}
 
           {info && (
             <div className="flex flex-col gap-5">

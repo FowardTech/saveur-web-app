@@ -7,6 +7,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/career_dna.py
@@ -87,7 +88,16 @@ export default function CareerDnaPage() {
           )}
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {loading && !premiumRequired && <p className="text-sm text-hint">{t("web:career.dna.loading", { defaultValue: "Loading…" })}</p>}
+          {loading && !premiumRequired && (
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-28 rounded-card" />
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <SkeletonCard className="h-20" />
+                <SkeletonCard className="h-20" />
+                <SkeletonCard className="h-20" />
+              </div>
+            </div>
+          )}
 
           {profile && !profile.has_profile && !premiumRequired && (
             <div className="rounded-card border border-dashed border-border p-6 text-center text-sm text-hint">

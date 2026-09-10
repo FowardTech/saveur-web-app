@@ -6,6 +6,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/coding.py
@@ -86,7 +87,11 @@ export default function CodingPracticePage() {
           {error && <p className="text-sm text-danger">{error}</p>}
 
           {!addonRequired && !error && problems === null && (
-            <p className="text-sm text-hint">{t("web:practice.coding.loading", { defaultValue: "Loading problems…" })}</p>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
           )}
 
           {problems && problems.length === 0 && (

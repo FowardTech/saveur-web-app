@@ -9,6 +9,7 @@ import { LinkButton } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
+import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
 import { quickActions, tintCycle } from "@/lib/navigation";
@@ -50,8 +51,22 @@ export default function DashboardPage() {
   if (loading || !firebaseUser) {
     return (
       <AppShell>
-        <div className="flex h-64 items-center justify-center text-sm text-hint">
-          {t("web:dashboard.loading", { defaultValue: "Loading your dashboard…" })}
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-7 w-64" />
+            <Skeleton className="h-4 w-80" />
+          </div>
+          <Skeleton className="h-32 rounded-card" />
+          <Skeleton className="h-28 rounded-card" />
+          <div className="flex flex-col gap-4">
+            <Skeleton className="h-5 w-40" />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          </div>
         </div>
       </AppShell>
     );

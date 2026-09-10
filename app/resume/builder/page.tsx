@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/resume.py + resume_gen.py
@@ -142,6 +143,13 @@ export default function ResumeBuilderPage() {
               {generating ? t("web:resume.builder.generating", { defaultValue: "Generating…" }) : t("web:resume.builder.generateResume", { defaultValue: "Generate resume" })}
             </Button>
           </form>
+
+          {resume === null && !error && (
+            <div className="flex flex-col gap-4">
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          )}
 
           {resume && (
             <div className="flex flex-col gap-4">

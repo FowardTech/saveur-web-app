@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/learning.py
@@ -99,7 +100,7 @@ export default function LearningPage() {
           />
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {curriculum === undefined && <p className="text-sm text-hint">{t("web:learning.loading", { defaultValue: "Loading…" })}</p>}
+          {curriculum === undefined && <SkeletonRows count={4} />}
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">

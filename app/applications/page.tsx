@@ -9,6 +9,7 @@ import { TextField } from "@/components/ui/TextField";
 import { SelectField } from "@/components/ui/SelectField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/tracker.py
@@ -228,6 +229,8 @@ export default function ApplicationTrackerPage() {
           )}
 
           {error && <p className="text-sm text-danger">{error}</p>}
+
+          {applications === null && !proRequired && !error && <SkeletonRows count={4} />}
 
           {showAddForm && !proRequired && (
             <form onSubmit={handleAdd} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6 sm:flex-row sm:items-end sm:flex-wrap">

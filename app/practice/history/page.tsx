@@ -6,6 +6,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/interviews.py
@@ -92,6 +93,8 @@ export default function PracticeHistoryPage() {
           />
 
           {error && <p className="text-sm text-danger">{error}</p>}
+
+          {sessions === null && !error && <SkeletonRows count={4} />}
 
           {sessions && sessions.length > 0 && (
             <input

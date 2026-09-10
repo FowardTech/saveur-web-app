@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { getPlans, createCheckoutSession, createPortalSession } from "@/lib/billingService";
 import { formatPrice, type BillingPlan } from "@/lib/types";
@@ -102,7 +103,13 @@ export default function SubscriptionPage() {
           </div>
         )}
 
-        {loadingPlans && <p className="text-center text-sm text-hint">{t("web:subscription.loadingPlans", { defaultValue: "Loading plans…" })}</p>}
+        {loadingPlans && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <SkeletonCard key={i} className="h-64 p-6" />
+            ))}
+          </div>
+        )}
         {plansError && <p className="text-center text-sm text-danger">{plansError}</p>}
         {actionError && <p className="text-center text-sm text-danger">{actionError}</p>}
 

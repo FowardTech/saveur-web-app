@@ -7,6 +7,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { SkeletonInput } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import type { ApiError } from "@/lib/apiClient";
 
@@ -97,6 +98,23 @@ export default function ProfileSettingsPage() {
             subtitle={t("web:settings.profile.subtitle", { defaultValue: "Update your account details." })}
           />
 
+          {!profile && (
+            <>
+              <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+                <SkeletonInput />
+                <SkeletonInput />
+                <SkeletonInput />
+                <SkeletonInput />
+              </div>
+              <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+                <SkeletonInput />
+                <SkeletonInput />
+              </div>
+            </>
+          )}
+
+          {profile && (
+          <>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <TextField label={t("common:fields.fullName", { defaultValue: "Full name" })} value={name} onChange={(e) => setName(e.target.value)} required />
             <TextField label={t("common:fields.email", { defaultValue: "Email" })} value={profile?.email || ""} disabled className="opacity-60" />
@@ -160,6 +178,8 @@ export default function ProfileSettingsPage() {
               {savingPrefs ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("web:settings.profile.saveChanges", { defaultValue: "Save changes" })}
             </Button>
           </form>
+          </>
+          )}
         </div>
       </AppShell>
     </RequireAuth>
