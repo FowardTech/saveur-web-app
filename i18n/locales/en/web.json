@@ -563,7 +563,17 @@
       "title": "Profile"
     },
     "security": {
+      "browserPushDescription": "Get real-time alerts in this browser, even when Saveur isn't open in a tab.",
+      "browserPushTitle": "Browser push notifications",
       "codeSentTo": "Enter the code sent to {{email}}.",
+      "enablePush": "Enable browser push",
+      "enablingPush": "Enabling…",
+      "pushAlreadyGranted": "Browser notifications are allowed for this site.",
+      "pushEnableFailedDefault": "Couldn't enable push notifications right now.",
+      "pushEnabled": "Push notifications enabled for this browser.",
+      "pushNotConfigured": "Push notifications aren't configured yet — check back soon.",
+      "pushPermissionDenied": "Notifications are blocked for this site — enable them in your browser's site settings.",
+      "pushUnsupported": "Push notifications aren't supported in this browser.",
       "disable2fa": "Disable 2FA",
       "disableFailedDefault": "Couldn't disable two-factor authentication right now.",
       "disabling": "Disabling…",

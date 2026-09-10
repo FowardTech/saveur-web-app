@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { enableWebPush, currentNotificationPermission, isPushConfigured } from "@/lib/messaging";
 
 // Real backend contract — Saveur-Backend/app/api/two_factor.py
 //   GET  /api/v1/auth/2fa/status  -> {enabled}
@@ -27,6 +28,15 @@ export default function SecuritySettingsPage() {
   const [verifying, setVerifying] = useState(false);
   const [disabling, setDisabling] = useState(false);
   const [savingNotifications, setSavingNotifications] = useState(false);
+  const [browserPermission, setBrowserPermission] = useState<NotificationPermission | "unsupported" | null>(null);
+  const [enablingPush, setEnablingPush] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
+  const [pushEnabledJustNow, setPushEnabledJustNow] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setBrowserPermission(currentNotificationPermission());
+  }, []);
 
   async function load() {
     try {
@@ -108,6 +118,34 @@ export default function SecuritySettingsPage() {
       setError((err as ApiError).message || t("web:settings.security.toggleNotificationsFailedDefault", { defaultValue: "Couldn't update your notification preference right now." }));
     } finally {
       setSavingNotifications(false);
+    }
+  }
+
+  // Real browser push permission + FCM token registration — distinct from
+  // `profile.notificationsEnabled` above, which is just a server-side
+  // preference flag shared with mobile. A user can have the preference on
+  // but never have granted the browser permission (nothing to deliver to
+  // yet), or vice versa; this card and its own state track the browser side
+  // specifically. See lib/messaging.ts for the full flow and why
+  // `isPushConfigured` can be false (missing VAPID key).
+  async function handleEnablePush() {
+    setEnablingPush(true);
+    setPushError(null);
+    setPushEnabledJustNow(false);
+    try {
+      const result = await enableWebPush();
+      setBrowserPermission(currentNotificationPermission());
+      if (result.ok) {
+        setPushEnabledJustNow(true);
+      } else if (result.reason === "permission-denied") {
+        setPushError(t("web:settings.security.pushPermissionDenied", { defaultValue: "Notifications are blocked for this site — enable them in your browser's site settings." }));
+      } else if (result.reason === "unsupported") {
+        setPushError(t("web:settings.security.pushUnsupported", { defaultValue: "Push notifications aren't supported in this browser." }));
+      } else {
+        setPushError(t("web:settings.security.pushEnableFailedDefault", { defaultValue: "Couldn't enable push notifications right now." }));
+      }
+    } finally {
+      setEnablingPush(false);
     }
   }
 
@@ -199,6 +237,65 @@ export default function SecuritySettingsPage() {
                 }`}
               />
             </button>
+          </div>
+
+          {/* Real browser push (distinct from the preference toggle above)
+              — requests Notification permission, registers this browser
+              with FCM, and posts the device token to the backend. See
+              lib/messaging.ts's own comment for why this no-ops gracefully
+              when NEXT_PUBLIC_FIREBASE_VAPID_KEY isn't set yet. */}
+          <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="flash-outline" size={20} />
+              </span>
+              <div>
+                <h2 className="font-semibold text-primary">{t("web:settings.security.browserPushTitle", { defaultValue: "Browser push notifications" })}</h2>
+                <p className="text-sm text-hint">
+                  {t("web:settings.security.browserPushDescription", {
+                    defaultValue: "Get real-time alerts in this browser, even when Saveur isn't open in a tab.",
+                  })}
+                </p>
+              </div>
+            </div>
+
+            {!isPushConfigured && (
+              <p className="text-sm text-hint">
+                {t("web:settings.security.pushNotConfigured", { defaultValue: "Push notifications aren't configured yet — check back soon." })}
+              </p>
+            )}
+
+            {isPushConfigured && browserPermission === "granted" && !pushEnabledJustNow && (
+              <p className="text-sm text-hint">
+                {t("web:settings.security.pushAlreadyGranted", { defaultValue: "Browser notifications are allowed for this site." })}
+              </p>
+            )}
+
+            {isPushConfigured && pushEnabledJustNow && (
+              <p className="text-sm text-brand">{t("web:settings.security.pushEnabled", { defaultValue: "Push notifications enabled for this browser." })}</p>
+            )}
+
+            {isPushConfigured && browserPermission === "denied" && (
+              <p className="text-sm text-danger">
+                {t("web:settings.security.pushPermissionDenied", { defaultValue: "Notifications are blocked for this site — enable them in your browser's site settings." })}
+              </p>
+            )}
+
+            {pushError && browserPermission !== "denied" && <p className="text-sm text-danger">{pushError}</p>}
+
+            {isPushConfigured && browserPermission !== "denied" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEnablePush}
+                disabled={enablingPush || browserPermission === "unsupported"}
+                className="w-fit"
+              >
+                {enablingPush
+                  ? t("web:settings.security.enablingPush", { defaultValue: "Enabling…" })
+                  : t("web:settings.security.enablePush", { defaultValue: "Enable browser push" })}
+              </Button>
+            )}
           </div>
         </div>
       </AppShell>
