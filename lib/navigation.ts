@@ -55,12 +55,16 @@ export const primaryNav: NavItem[] = [
     children: [
       { label: "Career Roadmap", labelKey: "careerRoadmap", href: "/career/roadmap", icon: "compass-outline" },
       { label: "Career DNA", labelKey: "careerDna", href: "/career/dna", icon: "activity-outline" },
-      { label: "Networking Assistant", labelKey: "networkingAssistant", href: "/career/networking", icon: "people-outline" },
-      // Mobile drawer: "Career Events", lands on the Career Events tab of
-      // NetworkingAssistant.tsx (index 0) — a dedicated route here since the
-      // web Networking Assistant page is a single-purpose outreach-message
-      // form, not a tabbed screen.
-      { label: "Career Events", labelKey: "careerEvents", href: "/career/events", icon: "calendar-outline", badgeKey: "careerEvents" },
+      // Mobile: ONE "Networking Assistant" screen (src/more/
+      // NetworkingAssistant.tsx) with a 2-tab pill switcher — "Career
+      // Events" (index 0, default) and "Your Contacts" (index 1). This used
+      // to be two separate web pages/nav rows ("Networking Assistant" and
+      // "Career Events"); merged into one route (app/career/networking/
+      // page.tsx) with the same 2 tabs, so the redundant second nav entry
+      // is gone too. badgeKey stays "careerEvents" — same unread-count
+      // source the old standalone Career Events row used, now surfaced on
+      // this one row since Events is this page's default landing tab.
+      { label: "Networking Assistant", labelKey: "networkingAssistant", href: "/career/networking", icon: "people-outline", badgeKey: "careerEvents" },
       { label: "Dream Companies", labelKey: "dreamCompanies", href: "/career/dream-companies", icon: "star-outline" },
       { label: "Company Intelligence", labelKey: "companyIntelligence", href: "/career/company-intelligence", icon: "search-outline" },
       { label: "Salary Negotiation", labelKey: "salaryNegotiation", href: "/career/salary-negotiation", icon: "bar-chart-2-outline" },

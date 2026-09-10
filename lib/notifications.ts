@@ -51,7 +51,10 @@ export function notificationHref(n: AppNotification): string | undefined {
       // (src/home/Notification/index.tsx) does, rather than just the list.
       return n.job_alert?.id ? `/job-alerts/${n.job_alert.id}` : "/job-alerts";
     case "career_event":
-      return "/career/events";
+      // Career Events is now the default tab of the merged Networking
+      // Assistant screen (app/career/networking/page.tsx), not its own
+      // route — see that file's own comment.
+      return "/career/networking?tab=events";
     case "feedback_ready":
     case "video_ready":
     case "practical_feedback_ready":
