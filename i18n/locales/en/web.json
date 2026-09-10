@@ -552,20 +552,26 @@
     "payment": {
       "description": "Manage your payment method, invoices, and plan through Stripe's secure billing portal.",
       "freePlanLine": "You're on the free plan",
+      "historyTitle": "Payment history",
       "manageBilling": "Manage billing",
       "openPortalFailedDefault": "Couldn't open the billing portal. Please try again.",
       "opening": "Opening…",
       "paidPlanLine": "You're on the {{plan}} plan",
+      "paymentFallbackLabel": "Payment",
       "subtitle": "Manage your subscription and billing details.",
       "title": "Payment Method",
       "viewPlans": "View plans & pricing"
     },
     "profile": {
       "addressLabel": "Home address",
+      "jobPreferencesSubtitle": "Used for Job Alerts, Career Events, and your AI Career Roadmap.",
+      "jobPreferencesTitle": "Target roles & countries",
       "optional": "Optional",
       "phoneLabel": "Phone number",
+      "preferredCountriesLabel": "Preferred countries",
       "saveChanges": "Save changes",
       "saveFailedDefault": "Couldn't save your profile right now.",
+      "savePrefsFailedDefault": "Couldn't save your target roles/countries right now.",
       "saved": "Saved.",
       "subtitle": "Update your account details.",
       "title": "Profile"

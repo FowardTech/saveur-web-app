@@ -10,6 +10,12 @@ import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/app/providers/AuthProvider";
 import type { ApiError } from "@/lib/apiClient";
 
+// Same target-role/country list job onboarding & Job Alerts already use
+// (see mobile's JobPreferences.tsx and Saveur-Backend's app/api/users.py's
+// job_role_country_caps) — "change it later" for what SignupSecondStep
+// collects once at signup, which had no edit path on web at all before this.
+const COUNTRY_OPTIONS = ["United States", "United Kingdom", "Canada", "Germany", "France", "Remote"];
+
 // Edits name/phone/address via PATCH /api/v1/users/me (see
 // Saveur-Backend/app/api/users.py's update_me()) — mirrors mobile's
 // EditProfile.tsx field set. Email is read-only (tied to the Firebase
@@ -24,6 +30,11 @@ export default function ProfileSettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
+  const [rolesText, setRolesText] = useState("");
+  const [countries, setCountries] = useState<string[]>([]);
+  const [savingPrefs, setSavingPrefs] = useState(false);
+  const [prefsSaved, setPrefsSaved] = useState(false);
+
   useEffect(() => {
     // Syncs the form fields from the async-loaded profile once it arrives —
     // can't be a lazy useState initializer since `profile` is still null on
@@ -33,8 +44,33 @@ export default function ProfileSettingsPage() {
       setName(profile.name || "");
       setPhone(profile.phoneNumber || "");
       setAddress(profile.homeAddress || "");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRolesText((profile.desiredRoles || []).join(", "));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCountries(profile.preferredCountries || []);
     }
   }, [profile]);
+
+  function toggleCountry(country: string) {
+    setCountries((prev) => (prev.includes(country) ? prev.filter((c) => c !== country) : [...prev, country]));
+  }
+
+  async function handleSavePreferences(e: React.FormEvent) {
+    e.preventDefault();
+    setSavingPrefs(true);
+    setError(null);
+    setPrefsSaved(false);
+    try {
+      const roles = rolesText.split(",").map((r) => r.trim()).filter(Boolean);
+      await updateProfile({ desiredRoles: roles, preferredCountries: countries });
+      setPrefsSaved(true);
+      setTimeout(() => setPrefsSaved(false), 2500);
+    } catch (err) {
+      setError((err as ApiError).message || t("web:settings.profile.savePrefsFailedDefault", { defaultValue: "Couldn't save your target roles/countries right now." }));
+    } finally {
+      setSavingPrefs(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -80,6 +116,48 @@ export default function ProfileSettingsPage() {
             {saved && <p className="text-sm text-success-text">{t("web:settings.profile.saved", { defaultValue: "Saved." })}</p>}
             <Button type="submit" disabled={saving} className="mt-1 w-full">
               {saving ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("web:settings.profile.saveChanges", { defaultValue: "Save changes" })}
+            </Button>
+          </form>
+
+          {/* Mobile: src/more/JobPreferences.tsx — "change it later" for
+              the target roles/countries collected once at signup. Reuses
+              the same PATCH /api/v1/users/me desired_roles/
+              preferred_countries fields Job Alerts' own preferences form
+              already writes to (this is the fuller editor; Job Alerts'
+              is a quick inline shortcut to the same data). */}
+          <form onSubmit={handleSavePreferences} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <div>
+              <h2 className="font-semibold text-primary">{t("web:settings.profile.jobPreferencesTitle", { defaultValue: "Target roles & countries" })}</h2>
+              <p className="text-sm text-hint">{t("web:settings.profile.jobPreferencesSubtitle", { defaultValue: "Used for Job Alerts, Career Events, and your AI Career Roadmap." })}</p>
+            </div>
+            <TextField
+              label={t("web:jobAlerts.targetRolesLabel", { defaultValue: "Target roles (comma-separated)" })}
+              placeholder={t("web:jobAlerts.targetRolesPlaceholder", { defaultValue: "e.g. Backend Engineer, Product Manager" })}
+              value={rolesText}
+              onChange={(e) => setRolesText(e.target.value)}
+            />
+            <div className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-primary">{t("web:settings.profile.preferredCountriesLabel", { defaultValue: "Preferred countries" })}</span>
+              <div className="flex flex-wrap gap-2">
+                {COUNTRY_OPTIONS.map((country) => (
+                  <button
+                    key={country}
+                    type="button"
+                    onClick={() => toggleCountry(country)}
+                    className={`rounded-pill border px-3 py-1.5 text-sm transition ${
+                      countries.includes(country)
+                        ? "border-brand bg-brand/10 text-brand font-medium"
+                        : "border-border text-hint hover:bg-surface-3"
+                    }`}
+                  >
+                    {t(`common:countries.${country}`, { defaultValue: country })}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {prefsSaved && <p className="text-sm text-success-text">{t("web:settings.profile.saved", { defaultValue: "Saved." })}</p>}
+            <Button type="submit" disabled={savingPrefs} className="mt-1 w-fit">
+              {savingPrefs ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("web:settings.profile.saveChanges", { defaultValue: "Save changes" })}
             </Button>
           </form>
         </div>
