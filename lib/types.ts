@@ -87,6 +87,13 @@ export function profileFromWire(wire: UserProfileWire): UserProfile {
 export function profileToWirePatch(partial: Partial<UserProfile>): Record<string, unknown> {
   const wire: Record<string, unknown> = {};
   if (partial.name !== undefined) wire.name = partial.name;
+  // Custom username (product request item: "users have the option to
+  // either type in their desired username or generate a username from
+  // signup") — see components/auth/ChooseUsernameStep.tsx. Backend re-
+  // validates + re-checks availability server-side on every PATCH (see
+  // Saveur-Backend app/api/users.py's update_me()); this is never trusted
+  // as the final word, only the live-typing UX's optimistic check.
+  if (partial.username !== undefined) wire.username = partial.username;
   if (partial.locale !== undefined) wire.locale = partial.locale;
   if (partial.country !== undefined) wire.country = partial.country;
   if (partial.goals !== undefined) wire.goals = partial.goals;

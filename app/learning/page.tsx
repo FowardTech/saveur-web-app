@@ -96,7 +96,7 @@ const LEVEL_DEFAULTS: Record<CourseLevel, string> = {
 export default function LearningPage() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { profile, loading: authLoading } = useAuth();
+  const { profile, isPremium, loading: authLoading } = useAuth();
   const [curriculum, setCurriculum] = useState<Curriculum | null | undefined>(undefined);
   const [byCourse, setByCourse] = useState<ProgressByCourse>({});
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -235,10 +235,46 @@ export default function LearningPage() {
 
   const courseIds = Object.keys(byCourse);
 
+  // Was fully free with no page-level gate at all — mobile's
+  // LearningCourses.tsx gates the ENTIRE screen behind Premium, all-or-
+  // nothing, before rendering anything else (`if (!isPremium) return
+  // <ProLockGate variant="premium" .../>`), but this page never checked
+  // isPremium at the page level: only a REACTIVE 402/403 catch on the
+  // curriculum-build action (`premiumRequired` above), which left the
+  // career-path picker, topic-check, and tier Start/Continue buttons fully
+  // usable by a free-plan user. Same lock-screen pattern already
+  // established by app/news/page.tsx and app/whats-next/page.tsx (isPremium
+  // from useAuth(), checked before any real content renders).
+  if (!isPremium) {
+    return (
+      <RequireAuth>
+        <AppShell>
+          <div className="mx-auto flex max-w-6xl flex-col gap-6">
+            <PageHeader title={t("web:learning.title", { defaultValue: "Learning Courses" })} />
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="lock-outline" size={20} />
+              </span>
+              <h2 className="font-semibold text-primary">
+                {t("web:learning.premiumGateTitle", { defaultValue: "Learning Courses" })}
+              </h2>
+              <p className="text-sm text-hint">
+                {t("web:learning.premiumGateDescription", {
+                  defaultValue:
+                    "AI-taught, module-by-module courses on any career topic, with a badge on completion — Learning Courses is a Premium feature.",
+                })}
+              </p>
+            </div>
+          </div>
+        </AppShell>
+      </RequireAuth>
+    );
+  }
+
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:learning.title", { defaultValue: "Learning Courses" })}
             subtitle={t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal — or teach yourself anything." })}

@@ -13,8 +13,21 @@ import { CAREER_GOALS } from "@/lib/careerGoalLabels";
 import { COUNTRIES } from "@/lib/countries";
 import { CountryFlag } from "@/components/ui/CountryFlag";
 import { jobRoleCountryCaps } from "@/lib/jobPreferenceCaps";
+import { ChooseUsernameStep } from "@/components/auth/ChooseUsernameStep";
 
-const TOTAL_STEPS = 4;
+// Step 0 is the "choose your username" step (see ChooseUsernameStep) — ports
+// mobile's src/auth/Signup/ChooseUsername.tsx, which SignupThirdStep.tsx's
+// goToUsernameStep shows as a distinct screen immediately after account
+// creation, before the rest of the signup/onboarding wizard. Web's account
+// creation happens earlier (in /register, or the Google/LinkedIn button
+// handlers) and every one of those paths already routes a brand-new user
+// straight to /onboarding — rather than duplicating a username step at each
+// of those three separate call sites, it lives here as this wizard's first
+// step, which is the single point they all funnel through and matches the
+// "right after account creation, before the rest of onboarding" timing.
+// Steps 1-3 (previously 0-2) are the pre-existing name/goals/roles/countries
+// wizard, unchanged apart from shifting their step indices by one.
+const TOTAL_STEPS = 5;
 
 function Chip({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -157,7 +170,7 @@ export default function OnboardingPage() {
   }
 
   const canContinue =
-    step === 0 ? name.trim().length > 0 : step === 1 ? goals.length > 0 : step === 2 ? roles.length > 0 : true;
+    step === 1 ? name.trim().length > 0 : step === 2 ? goals.length > 0 : step === 3 ? roles.length > 0 : true;
 
   async function handleFinish() {
     setSubmitting(true);
@@ -185,7 +198,7 @@ export default function OnboardingPage() {
       </header>
 
       <div className="flex flex-1 items-center justify-center px-4 pb-16">
-        <div className="w-full max-w-lg rounded-card border border-border bg-surface-2 p-6 shadow-sm sm:p-8">
+        <div className="w-full max-w-2xl rounded-card border border-border bg-surface-2 p-6 shadow-sm sm:p-8">
           {/* progress */}
           <div className="mb-6 flex items-center gap-2">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -194,6 +207,10 @@ export default function OnboardingPage() {
           </div>
 
           {step === 0 && (
+            <ChooseUsernameStep onDone={() => setStep(1)} />
+          )}
+
+          {step === 1 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step0.title", { defaultValue: "What should we call you?" })}</h1>
@@ -209,7 +226,7 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {step === 1 && (
+          {step === 2 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step1.title", { defaultValue: "What's your primary goal?" })}</h1>
@@ -225,7 +242,7 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step2.title", { defaultValue: "What roles are you targeting?" })}</h1>
@@ -274,7 +291,7 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step3.title", { defaultValue: "Where are you looking to work?" })}</h1>
@@ -351,35 +368,42 @@ export default function OnboardingPage() {
 
           {error && <p className="mt-4 text-sm text-danger">{error}</p>}
 
-          <div className="mt-8 flex items-center justify-between gap-3">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => {
-                setCapMessage(null);
-                setStep((s) => Math.max(0, s - 1));
-              }}
-              className={step === 0 ? "invisible" : ""}
-            >
-              {t("common:actions.back", { defaultValue: "Back" })}
-            </Button>
-            {step < TOTAL_STEPS - 1 ? (
+          {/* Step 0 (username) has its own Skip/Continue actions built into
+              ChooseUsernameStep — it does its own async work (regenerate,
+              or validate+save a custom handle) before calling onDone(),
+              which this shared bottom nav can't drive, so it's hidden
+              rather than duplicated for that step. */}
+          {step > 0 && (
+            <div className="mt-8 flex items-center justify-between gap-3">
               <Button
                 type="button"
+                variant="ghost"
                 onClick={() => {
                   setCapMessage(null);
-                  setStep((s) => s + 1);
+                  setStep((s) => Math.max(0, s - 1));
                 }}
-                disabled={!canContinue}
+                className={step === 1 ? "invisible" : ""}
               >
-                {t("common:actions.continue", { defaultValue: "Continue" })}
+                {t("common:actions.back", { defaultValue: "Back" })}
               </Button>
-            ) : (
-              <Button type="button" onClick={handleFinish} disabled={submitting}>
-                {submitting ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("common:actions.finish", { defaultValue: "Finish" })}
-              </Button>
-            )}
-          </div>
+              {step < TOTAL_STEPS - 1 ? (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setCapMessage(null);
+                    setStep((s) => s + 1);
+                  }}
+                  disabled={!canContinue}
+                >
+                  {t("common:actions.continue", { defaultValue: "Continue" })}
+                </Button>
+              ) : (
+                <Button type="button" onClick={handleFinish} disabled={submitting}>
+                  {submitting ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("common:actions.finish", { defaultValue: "Finish" })}
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

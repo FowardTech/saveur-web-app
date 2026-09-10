@@ -73,6 +73,8 @@
     "updateFailedDefault": "Couldn't update that application right now."
   },
   "auth": {
+    "chooseUsernameDescription": "This is the only name other Saveur users ever see — on the Leaderboard and when sharing content with each other. It never shows your real name.",
+    "chooseUsernameTitle": "Pick your username",
     "continueWithGoogle": "Continue with Google",
     "continueWithLinkedIn": "Continue with LinkedIn",
     "firebaseNotConfigured": "Firebase isn't configured yet — see README.md for the two values still needed.",
@@ -84,7 +86,19 @@
     "redirecting": "Redirecting…",
     "registerSubtitle": "Start practicing with your AI career coach in minutes.",
     "registrationFailedDefault": "Registration failed. Please try again.",
-    "signInFailedDefault": "Sign in failed. Please check your details and try again."
+    "signInFailedDefault": "Sign in failed. Please check your details and try again.",
+    "usernameAvailable": "Username available",
+    "usernameChecking": "Checking availability…",
+    "usernameGenerateAnother": "Generate another",
+    "usernameInvalidFormat": "3-20 characters, starting with a letter — letters, numbers, and underscores only.",
+    "usernameLooksLikeName": "That looks too close to your real name — pick something more anonymous.",
+    "usernameModeCustom": "Type my own",
+    "usernameModeSuggested": "Use suggested",
+    "usernamePlaceholder": "yourusername",
+    "usernameRegenerateFailedDefault": "Couldn't generate a new username right now. Please try again.",
+    "usernameSaveFailedDefault": "Couldn't save that username right now. Please try again.",
+    "usernameTaken": "That username has already been taken",
+    "usernameYourHandle": "Your handle"
   },
   "career": {
     "companyIntelligence": {
