@@ -80,7 +80,7 @@ export default function PracticalScenariosSetupPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:practice.scenarios.title", { defaultValue: "Practical Scenarios" })}
             subtitle={t("web:practice.scenarios.subtitle", { defaultValue: "Hands-on, multi-step judgment scenarios for non-engineering roles." })}

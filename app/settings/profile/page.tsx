@@ -163,7 +163,7 @@ export default function ProfileSettingsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:settings.profile.title", { defaultValue: "Profile" })}
             subtitle={t("web:settings.profile.subtitle", { defaultValue: "Update your account details." })}

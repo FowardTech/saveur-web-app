@@ -120,7 +120,7 @@ function SalaryNegotiationPageInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:career.salaryNegotiation.title", { defaultValue: "Salary Negotiation" })}
             subtitle={t("web:career.salaryNegotiation.subtitle", { defaultValue: "Practice pushing back on an offer with a realistic recruiter simulation." })}

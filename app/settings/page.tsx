@@ -36,7 +36,7 @@ export default function SettingsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:settings.hub.title", { defaultValue: "Settings" })}
             subtitle={t("web:settings.hub.subtitle", { defaultValue: "Manage your account, billing, and security." })}

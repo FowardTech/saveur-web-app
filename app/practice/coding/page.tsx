@@ -80,7 +80,7 @@ export default function CodingPracticePage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:practice.coding.title", { defaultValue: "Coding Practice" })}
             subtitle={t("web:practice.coding.subtitle", { defaultValue: "Real problems, instant AI review." })}

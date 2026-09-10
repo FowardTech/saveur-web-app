@@ -170,7 +170,7 @@ export default function JDAnalyzerPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <PageHeader
             title={t("web:jdAnalyzer.title", { defaultValue: "JD Analyzer" })}
             subtitle={t("web:jdAnalyzer.subtitle", { defaultValue: "Paste a job description and see how your resume stacks up, with a matching resume generated for you." })}

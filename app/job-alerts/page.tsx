@@ -152,7 +152,7 @@ function JobAlertsPageInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-3xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <PageHeader
               title={t("web:jobAlerts.title", { defaultValue: "Job Alerts" })}

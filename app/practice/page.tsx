@@ -45,7 +45,7 @@ export default function PracticeHubPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:practice.hub.title", { defaultValue: "Practice" })}
             subtitle={t("web:practice.hub.subtitle", { defaultValue: "Choose a mode to sharpen your skills before the real thing." })}

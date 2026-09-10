@@ -85,7 +85,7 @@ export default function PaymentSettingsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:settings.payment.title", { defaultValue: "Payment Method" })}
             subtitle={t("web:settings.payment.subtitle", { defaultValue: "Manage your subscription and billing details." })}

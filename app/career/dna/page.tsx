@@ -74,7 +74,7 @@ export default function CareerDnaPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:career.dna.title", { defaultValue: "Career DNA" })}
             subtitle={t("web:career.dna.subtitle", { defaultValue: "An AI-built profile of your work style, built from your real activity in the app." })}

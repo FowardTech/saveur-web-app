@@ -118,7 +118,7 @@ export default function CodingProjectsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <Link href="/practice/coding" className="inline-flex w-fit items-center gap-1 text-sm font-medium text-hint hover:text-primary">
             <EvaIcon name="chevron-left-outline" size={16} />
             {t("web:practice.coding.detail.back", { defaultValue: "Back to Coding Practice" })}

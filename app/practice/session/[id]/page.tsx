@@ -170,7 +170,7 @@ export default function PracticeSessionDetailPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-3xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <div className="flex items-center justify-between gap-3">
             <Link href="/applications?tab=history" className="inline-flex w-fit items-center gap-1 text-sm font-medium text-hint hover:text-primary">
               <EvaIcon name="chevron-left-outline" size={16} />

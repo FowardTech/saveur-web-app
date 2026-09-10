@@ -257,7 +257,7 @@ export default function AiCoachPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col gap-4 pb-4">
+        <div className="mx-auto flex h-[calc(100vh-8rem)] max-w-3xl flex-col gap-4 pb-4">
           <div className="flex items-center justify-between">
             <PageHeader
               title={t("web:aiCoach.title", { defaultValue: "AI Coach" })}

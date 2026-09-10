@@ -91,7 +91,7 @@ export default function ReferralProgramPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:referral.title", { defaultValue: "Referral Program" })}
             subtitle={t("web:referral.subtitle", { defaultValue: "Share Saveur and earn rewards when your referrals subscribe." })}

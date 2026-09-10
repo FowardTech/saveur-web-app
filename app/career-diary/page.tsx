@@ -126,7 +126,7 @@ export default function CareerDiaryPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <PageHeader
             title={t("web:careerDiary.title", { defaultValue: "Career Diary" })}
             subtitle={t("web:careerDiary.subtitle", { defaultValue: "Log what you did, learned, or achieved today regarding a role, career, or job — a running record you can look back on." })}

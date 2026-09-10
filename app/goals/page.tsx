@@ -153,7 +153,7 @@ function GoalsPageInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:goals.title", { defaultValue: "Goals" })}
             subtitle={t("web:goals.subtitle", { defaultValue: "Your career goal, weekly targets, and streak — all in one place." })}

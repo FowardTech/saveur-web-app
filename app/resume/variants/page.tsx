@@ -132,7 +132,7 @@ export default function ResumeVariantsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:resume.variants.title", { defaultValue: "Resume Variants" })}
             subtitle={t("web:resume.variants.subtitle", { defaultValue: "Save multiple AI-tailored resumes side by side, one per target role or company." })}

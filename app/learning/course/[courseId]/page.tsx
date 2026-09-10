@@ -248,7 +248,7 @@ function CourseSessionInner() {
 
   if (premiumRequired) {
     return (
-      <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
         <BackLink href={backHref} t={t} />
         <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
           <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
@@ -271,7 +271,7 @@ function CourseSessionInner() {
     const nextLevelIdx = COURSE_LEVELS.indexOf(level) + 1;
     const nextLevel = COURSE_LEVELS[nextLevelIdx];
     return (
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 pb-10 text-center">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 pb-10 text-center">
         <BackLink href={backHref} t={t} />
         <span className="mt-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
           <EvaIcon name="award-outline" size={36} />
@@ -343,7 +343,7 @@ function CourseSessionInner() {
 
   if (hasResumed && showIntro) {
     return (
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 pb-10">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 pb-10">
         <div className="w-full">
           <BackLink href={backHref} t={t} />
         </div>
@@ -397,7 +397,7 @@ function CourseSessionInner() {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-5 pb-16">
+    <div className="mx-auto flex max-w-6xl flex-col gap-5 pb-16">
       <BackLink href={backHref} t={t} />
 
       <div className="flex items-center justify-between gap-3">
@@ -521,7 +521,7 @@ export default function CourseSessionPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <Suspense fallback={<div className="mx-auto max-w-2xl py-10 text-sm text-hint">Loading…</div>}>
+        <Suspense fallback={<div className="mx-auto max-w-6xl py-10 text-sm text-hint">Loading…</div>}>
           <CourseSessionInner />
         </Suspense>
       </AppShell>

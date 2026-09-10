@@ -86,7 +86,7 @@ export default function SubscriptionPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
         <div className="flex flex-col gap-2 text-center">
           <h1 className="text-3xl font-bold text-primary">{t("web:subscription.title", { defaultValue: "Plans built for every stage of your search" })}</h1>
           <p className="text-sm text-hint">

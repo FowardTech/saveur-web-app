@@ -292,7 +292,7 @@ function NetworkingAssistantInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-3xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <PageHeader
               title={t("web:career.networking.title", { defaultValue: "Networking Assistant" })}

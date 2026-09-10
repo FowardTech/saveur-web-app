@@ -51,7 +51,7 @@ export default function NewsPage() {
     return (
       <RequireAuth>
         <AppShell>
-          <div className="mx-auto flex max-w-2xl flex-col gap-6">
+          <div className="mx-auto flex max-w-6xl flex-col gap-6">
             <PageHeader title={t("web:news.title", { defaultValue: "Daily Industry News" })} />
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
@@ -69,7 +69,7 @@ export default function NewsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <PageHeader title={t("web:news.title", { defaultValue: "Daily Industry News" })} subtitle={t("web:news.subtitle", { defaultValue: "Today's headlines relevant to your industry and target roles." })} />
 
           {items === null && !error && <SkeletonRows count={3} />}

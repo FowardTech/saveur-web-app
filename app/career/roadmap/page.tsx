@@ -140,7 +140,7 @@ export default function CareerRoadmapPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:career.roadmap.title", { defaultValue: "Career Roadmap" })}
             subtitle={t("web:career.roadmap.subtitle", { defaultValue: "An AI-planned, step-by-step path toward your target role." })}

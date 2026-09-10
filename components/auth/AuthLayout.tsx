@@ -20,7 +20,7 @@ export function AuthLayout({
         </Link>
       </header>
       <div className="flex flex-1 items-center justify-center px-4 pb-16">
-        <div className="w-full max-w-sm rounded-card border border-border bg-surface-2 p-6 shadow-sm sm:p-8">
+        <div className="w-full max-w-xl rounded-card border border-border bg-surface-2 p-6 shadow-sm sm:p-8">
           <div className="mb-6">
             <BrandLockup size={32} textClassName="text-2xl" />
           </div>

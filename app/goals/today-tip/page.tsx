@@ -53,7 +53,7 @@ function TodayTipPageInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <PageHeader
             title={t("web:goalTip.title", { defaultValue: "Today's Goal Tips" })}
             subtitle={today}

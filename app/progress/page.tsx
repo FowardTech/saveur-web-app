@@ -258,7 +258,7 @@ function ProgressPageInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-3xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <PageHeader
             title={t("web:progress.title", { defaultValue: "My Progress" })}
             subtitle={t("web:progress.subtitle", { defaultValue: "Your real progress toward the career goal you set." })}

@@ -142,7 +142,7 @@ export default function JobAlertDetailsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <div className="flex items-center justify-between gap-3">
             <Link href="/job-alerts" className="inline-flex w-fit items-center gap-1 text-sm font-medium text-hint hover:text-primary">
               <EvaIcon name="chevron-left-outline" size={16} />

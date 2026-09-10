@@ -279,7 +279,7 @@ function GenerateResumeInner() {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
       <PageHeader title={title} subtitle={t("web:resume.generate.subtitle", { defaultValue: "Edit any section, then download as Word or PDF." })} />
 
       <div className="flex items-end gap-2 rounded-card border border-border bg-surface-2 p-4">
@@ -518,7 +518,7 @@ export default function GenerateResumePage() {
   return (
     <RequireAuth>
       <AppShell>
-        <Suspense fallback={<div className="mx-auto max-w-2xl py-10 text-sm text-hint">Loading…</div>}>
+        <Suspense fallback={<div className="mx-auto max-w-6xl py-10 text-sm text-hint">Loading…</div>}>
           <GenerateResumeInner />
         </Suspense>
       </AppShell>

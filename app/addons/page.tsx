@@ -63,7 +63,7 @@ export default function AddOnsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:addons.title", { defaultValue: "Add-ons" })}
             subtitle={t("web:addons.subtitle", { defaultValue: "Unlock extra practice tools with a one-time purchase — pay once, keep it forever." })}

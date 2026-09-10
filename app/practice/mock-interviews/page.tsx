@@ -298,7 +298,7 @@ function MockInterviewSetupInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:practice.mockInterviews.title", { defaultValue: "Mock Interview" })}
             subtitle={t("web:practice.mockInterviews.subtitle", { defaultValue: "Set up a session and practice with an AI interviewer." })}

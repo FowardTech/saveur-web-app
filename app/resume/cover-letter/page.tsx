@@ -103,7 +103,7 @@ function CoverLetterPageInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:resume.coverLetter.title", { defaultValue: "Cover Letter Generator" })}
             subtitle={t("web:resume.coverLetter.subtitle", { defaultValue: "Generate a tailored cover letter from your resume and a target role." })}

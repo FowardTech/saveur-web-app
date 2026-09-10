@@ -154,7 +154,7 @@ export default function SecuritySettingsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:settings.security.title", { defaultValue: "Security" })}
             subtitle={t("web:settings.security.subtitle", { defaultValue: "Protect your account with email-code two-factor authentication." })}

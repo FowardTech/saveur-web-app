@@ -123,7 +123,7 @@ function SharedWithMeInner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-3xl flex-col gap-6 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
           <PageHeader
             title={t("web:sharedWithMe.title", { defaultValue: "Shared with Me" })}
             subtitle={t("web:sharedWithMe.subtitle", { defaultValue: "Feedback, replays, and jobs other Saveur users have shared with you." })}

@@ -405,7 +405,7 @@ export default function VoiceCoachPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex h-[calc(100vh-8rem)] max-w-xl flex-col gap-6 pb-4">
+        <div className="mx-auto flex h-[calc(100vh-8rem)] max-w-2xl flex-col gap-6 pb-4">
           <div className="flex items-center gap-3">
             <Link
               href="/ai-coach"

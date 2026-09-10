@@ -88,7 +88,7 @@ export default function GeneratedDocumentsPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex max-w-2xl flex-col gap-8 pb-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
           <PageHeader
             title={t("web:documents.generated.title", { defaultValue: "Generated Documents" })}
             subtitle={t("web:documents.generated.subtitle", { defaultValue: "Every resume, cover letter, and tailored variant you've generated — redownload any of them anytime." })}
