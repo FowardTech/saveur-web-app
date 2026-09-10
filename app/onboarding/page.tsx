@@ -8,6 +8,7 @@ import { getErrorMessage } from "@/lib/errors";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
+import { BrandLockup } from "@/components/shell/BrandLockup";
 
 const MAX_ROLES = 5;
 const TOTAL_STEPS = 4;
@@ -115,9 +116,7 @@ export default function OnboardingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-page">
       <header className="px-6 py-5">
-        <span className="text-lg font-bold tracking-tight text-primary">
-          Saveur<span className="text-brand">.</span>
-        </span>
+        <BrandLockup size={28} textClassName="text-lg" />
       </header>
 
       <div className="flex flex-1 items-center justify-center px-4 pb-16">
