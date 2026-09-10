@@ -1,18 +1,39 @@
-import apiClient from "./apiClient";
+import apiClient, { type ApiError } from "./apiClient";
 
 // ---------------------------------------------------------------------------
-// learningService — web port of the pieces of Saveur/services/learningService.ts
-// that back the "Learn Anything" flow on app/learning/page.tsx (mobile:
-// src/more/LearningCourses.tsx). Real backend contracts, confirmed against
-// Saveur-Backend/app/api/learning.py:
-//   POST /api/v1/learning/topic-check -> {valid, canonical_topic, reason?, core_subtopics?}
-//   GET  /api/v1/learning/progress?course_id=... -> {by_course: {<course_id>: {completed_modules, last_module_index}}}
-// Course-level content generation (POST /api/v1/coach/advice via
-// generateModule/generateSyllabus on mobile) isn't ported here — there's no
-// per-module course-session viewer on web yet (CourseSession.tsx has no web
-// counterpart), so this stays scoped to what app/learning/page.tsx actually
-// renders: real AI topic validation + real tier progress.
+// learningService — web port of Saveur/services/learningService.ts, backing
+// both app/learning/page.tsx (the curriculum/tier overview, mobile:
+// LearningCourses.tsx) and app/learning/course/[courseId]/page.tsx (the real
+// module-by-module course session, mobile: CourseSession.tsx). Real backend
+// contracts, confirmed against Saveur-Backend/app/api/learning.py:
+//   POST /api/v1/learning/topic-check    -> {valid, canonical_topic, reason?, core_subtopics?}
+//   GET  /api/v1/learning/progress       -> {by_course: {<course_id>: {completed_modules, last_module_index}}}
+//   POST /api/v1/learning/progress       -> upserts one module's completion
+//   GET  /api/v1/learning/syllabus       -> {titles: string[] | null}  (first-write-wins cache)
+//   POST /api/v1/learning/syllabus       -> saves a generated syllabus
+//   GET  /api/v1/learning/module-content -> {content: {...} | null}     (first-write-wins cache)
+//   POST /api/v1/learning/module-content -> saves a generated module
+//   POST /api/v1/learning/certificates/issue -> re-verifies real progress, issues a badge
+//   POST /api/v1/learning/visual         -> {image_url} (best-effort illustration)
+//   POST /api/v1/coach/advice            -> {reply} (the actual content-generation call —
+//     module bodies, syllabus titles, and check-answer feedback are all generated through
+//     THIS endpoint, exactly like mobile's coachService.askOneOff, not through a
+//     dedicated /learning/module endpoint — see askCoachOneOff below)
 // ---------------------------------------------------------------------------
+
+function askCoachOneOff(prompt: string, language?: string): Promise<string> {
+  return apiClient
+    .post<{ reply?: string; message?: string; text?: string; response?: string }>("/api/v1/coach/advice", {
+      question: prompt,
+      history: [],
+      // Deliberately omitted: persist_to_history — these one-off generation
+      // calls (module text, syllabus titles, answer feedback) must never be
+      // written into the user's real Coach conversation thread, same
+      // reasoning mobile's askOneOff docstring gives.
+      language,
+    })
+    .then((data) => data.reply ?? data.message ?? data.response ?? data.text ?? "");
+}
 
 // Same curated career-path list as mobile's CAREER_PATHS — a fixed list
 // since the picker needs a finite dropdown, not a type-anything box (the
@@ -117,4 +138,307 @@ export async function getCourseProgress(courseId: string): Promise<CourseProgres
   } catch {
     return { completedModules: 0, lastModuleIndex: 0 };
   }
+}
+
+/**
+ * POST /api/v1/learning/progress — marks a module completed as the learner
+ * finishes it. Best-effort, same tolerance as mobile's markModuleProgress: a
+ * save hiccup shouldn't block moving to the next module, but that module
+ * then won't count toward resume or certificate eligibility until it's
+ * successfully recorded.
+ */
+export async function markModuleProgress(courseId: string, moduleIndex: number, completed = true): Promise<void> {
+  try {
+    await apiClient.post("/api/v1/learning/progress", { course_id: courseId, module_index: moduleIndex, completed });
+  } catch {
+    // best-effort
+  }
+}
+
+export interface CourseModule {
+  index: number;
+  title: string;
+  body: string;
+  checkQuestion?: string;
+}
+
+/**
+ * GET /api/v1/learning/syllabus?course_id=... — the syllabus already saved
+ * for this (user, course, language), if any. Checked before generateSyllabus
+ * so re-opening or reviewing a course always shows the same module list it
+ * started with, instead of regenerating fresh titles via AI on every visit.
+ */
+export async function getSavedSyllabus(courseId: string, language?: string): Promise<string[] | null> {
+  try {
+    const data = await apiClient.get<{ titles?: string[] | null }>("/api/v1/learning/syllabus", {
+      params: { course_id: courseId, language },
+    });
+    return data.titles && data.titles.length ? data.titles : null;
+  } catch {
+    return null;
+  }
+}
+
+/** POST /api/v1/learning/syllabus — first-write-wins server-side, so calling
+ * this redundantly is always safe. */
+export async function saveSyllabus(courseId: string, titles: string[], language?: string): Promise<void> {
+  try {
+    await apiClient.post("/api/v1/learning/syllabus", { course_id: courseId, titles, language });
+  } catch {
+    // best-effort — worst case the syllabus regenerates next visit
+  }
+}
+
+/**
+ * Asks the coach endpoint for a short numbered syllabus, exactly like
+ * mobile's generateSyllabus. `coreSubtopics` (from checkTopic) keeps the
+ * syllabus grounded in the topic's real professional subject matter rather
+ * than the AI free-associating under that name. Falls back to generic
+ * "Topic — Part N" titles on any failure or a short/malformed reply — never
+ * blocks starting the course over a syllabus-naming hiccup.
+ */
+export async function generateSyllabus(
+  topic: string,
+  totalModules: number,
+  level: CourseLevel = "basic",
+  coreSubtopics: string[] = [],
+  language?: string
+): Promise<string[]> {
+  const fallback = Array.from({ length: totalModules }, (_, i) => `${topic} — Part ${i + 1}`);
+  const levelDescription =
+    level === "basic"
+      ? "foundational, beginner-level"
+      : level === "intermediate"
+      ? "practical, intermediate-level"
+      : "in-depth, advanced/expert-level";
+  const subtopicsHint = coreSubtopics.length
+    ? ` Ground the modules specifically in these real professional subtopics of "${topic}": ${coreSubtopics.join(", ")}.`
+    : "";
+  try {
+    const prompt =
+      `Create a numbered list of exactly ${totalModules} short module titles (3-6 words each) ` +
+      `for a ${levelDescription} course teaching "${topic}" as a real professional/career skill.` +
+      subtopicsHint +
+      ` Reply with ONLY the numbered list, one title per line, no other commentary.`;
+    const reply = await askCoachOneOff(prompt, language);
+    const lines = reply
+      .split("\n")
+      .map((line) => line.replace(/^\s*\d+[.)]\s*/, "").trim())
+      .filter(Boolean);
+    if (lines.length >= totalModules) return lines.slice(0, totalModules);
+    return lines.length ? [...lines, ...fallback.slice(lines.length)] : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/**
+ * GET /api/v1/learning/module-content — the already-generated content for
+ * this module, if any. Checked before generateModule so a module already
+ * taught to this learner always shows the exact content (and check-question)
+ * they originally saw and answered against — never a freshly regenerated
+ * variant, even via Previous or re-opening a completed course.
+ */
+export async function getSavedModuleContent(
+  courseId: string,
+  moduleIndex: number,
+  language?: string
+): Promise<{ module: CourseModule; imageUrl: string | null } | null> {
+  try {
+    const data = await apiClient.get<{
+      content?: { title: string; body: string; check_question?: string | null; image_url?: string | null } | null;
+    }>("/api/v1/learning/module-content", {
+      params: { course_id: courseId, module_index: String(moduleIndex), language },
+    });
+    if (!data.content) return null;
+    return {
+      module: {
+        index: moduleIndex,
+        title: data.content.title,
+        body: data.content.body,
+        checkQuestion: data.content.check_question ?? undefined,
+      },
+      imageUrl: data.content.image_url ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** POST /api/v1/learning/module-content — first-write-wins server-side, same
+ * as saveSyllabus above. */
+export async function saveModuleContent(
+  courseId: string,
+  moduleIndex: number,
+  mod: CourseModule,
+  imageUrl?: string | null,
+  language?: string
+): Promise<void> {
+  try {
+    await apiClient.post("/api/v1/learning/module-content", {
+      course_id: courseId,
+      module_index: moduleIndex,
+      title: mod.title,
+      body: mod.body,
+      check_question: mod.checkQuestion ?? null,
+      image_url: imageUrl ?? null,
+      language,
+    });
+  } catch {
+    // best-effort — worst case this module regenerates next visit
+  }
+}
+
+/**
+ * Generates one module's actual teaching content through the real AI coach
+ * endpoint — the AI acting as instructor, not just answering a question.
+ * Mirrors mobile's generateModule exactly (same prompt shape), including the
+ * "last line ending in '?' becomes the check-understanding question"
+ * parsing convention.
+ *
+ * Unlike every other function in this file, this one does NOT swallow
+ * errors — a failure here (most commonly a 503 `llm_unavailable` from the
+ * upstream Lovable/OpenAI provider being out of quota or mid-billing-issue,
+ * see Saveur-Backend/app/__init__.py's LLMUnavailable handler) must reach
+ * the caller so the module viewer can show an honest "couldn't generate this
+ * lesson, try again" error state instead of silently failing or faking a
+ * placeholder success.
+ */
+export async function generateModule(
+  topic: string,
+  moduleIndex: number,
+  totalModules: number,
+  moduleTitle: string,
+  level: CourseLevel = "basic",
+  language?: string
+): Promise<CourseModule> {
+  const depthHint =
+    level === "basic"
+      ? "Assume no prior background — build fundamentals clearly."
+      : level === "intermediate"
+      ? "Assume the learner already knows the basics — go beyond definitions into real practical application."
+      : "Assume solid working knowledge already — go deep into expert-level nuance, trade-offs, and real-world edge cases professionals actually deal with.";
+  const prompt =
+    `You are an expert instructor teaching a structured ${level}-level course on "${topic}". This ` +
+    `is module ${moduleIndex + 1} of ${totalModules}, titled "${moduleTitle}". ${depthHint} Teach ` +
+    `this module clearly and step by step, assuming the student already completed the earlier ` +
+    `modules but nothing after this one. Include one concrete, worked example (real code if the ` +
+    `topic is technical/coding). End with exactly one short check-for-understanding question on ` +
+    `its own final line. Keep the whole response focused and roughly 150-250 words, formatted as ` +
+    `plain paragraphs (no numbered module headers, since the app already shows those separately).`;
+
+  const reply = await askCoachOneOff(prompt, language);
+  const lines = reply
+    .trim()
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+
+  let checkQuestion: string | undefined;
+  let bodyLines = lines;
+  if (lines.length > 1 && lines[lines.length - 1].endsWith("?")) {
+    checkQuestion = lines[lines.length - 1];
+    bodyLines = lines.slice(0, -1);
+  }
+
+  return {
+    index: moduleIndex,
+    title: moduleTitle,
+    body: bodyLines.join("\n\n") || reply,
+    checkQuestion,
+  };
+}
+
+/**
+ * Real interactivity for the module's check-for-understanding question — the
+ * learner types an answer, this asks the coach endpoint for brief feedback
+ * on it. Falls back to a plain acknowledgment on failure (unlike
+ * generateModule above), since a feedback hiccup shouldn't block moving to
+ * the next module the way a missing lesson body would.
+ */
+export async function getAnswerFeedback(
+  topic: string,
+  checkQuestion: string,
+  answer: string,
+  language?: string
+): Promise<string> {
+  try {
+    const prompt =
+      `You're teaching a course on "${topic}". You asked the student: "${checkQuestion}". ` +
+      `Their answer: "${answer}". In 2-3 sentences, tell them whether they've got it, and gently ` +
+      `correct anything they got wrong or incomplete. Be encouraging but specific.`;
+    const reply = await askCoachOneOff(prompt, language);
+    return reply.trim() || "Thanks for answering — let's keep going.";
+  } catch {
+    return "Thanks for answering — let's keep going.";
+  }
+}
+
+/**
+ * POST /api/v1/learning/visual — a best-effort illustrative image for the
+ * module (Lovable AI Gateway or OpenAI direct — see
+ * openai_service.generate_image). Returns null on any failure (including a
+ * transient provider outage) rather than throwing — the image is a bonus on
+ * top of the text lesson, never something the lesson should block on.
+ */
+export async function generateVisual(prompt: string): Promise<string | null> {
+  try {
+    const data = await apiClient.post<{ image_url?: string; url?: string }>("/api/v1/learning/visual", { prompt });
+    return data.image_url ?? data.url ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export interface Certificate {
+  topic: string;
+  code: string;
+  levelsCompleted: CourseLevel[];
+  issuedAt: number | null;
+}
+
+/**
+ * POST /api/v1/learning/certificates/issue — call once the learner finishes
+ * the final module of the Advanced tier. The backend independently
+ * re-verifies each tier's completion against real CourseProgress rows before
+ * issuing anything (see app/api/learning.py's issue_certificate), so this
+ * can't be spoofed by calling it early; returns null if a tier genuinely
+ * isn't complete yet.
+ */
+export async function issueCertificateIfEligible(topic: string): Promise<Certificate | null> {
+  try {
+    const tiers = COURSE_LEVELS.map((level) => ({
+      level,
+      course_id: courseIdFor(topic, level),
+      total_modules: MODULES_PER_LEVEL[level],
+    }));
+    const data = await apiClient.post<{
+      topic?: string;
+      code?: string;
+      levels_completed?: string[];
+      issued_at?: string | null;
+      error?: string;
+    }>("/api/v1/learning/certificates/issue", { topic, tiers });
+    if (!data.code) return null;
+    return {
+      topic: data.topic ?? topic,
+      code: data.code,
+      levelsCompleted: (data.levels_completed ?? []) as CourseLevel[],
+      issuedAt: data.issued_at ? new Date(data.issued_at).getTime() : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** True when an ApiError came from the backend's shared LLMUnavailable
+ * handler (Saveur-Backend/app/__init__.py) — an upstream AI provider
+ * (Lovable AI Gateway by default, or OpenAI direct) rejected the call, most
+ * commonly for billing/quota reasons. The handler already scrubs the raw
+ * provider error and returns a clean, human-readable `message`, so callers
+ * should just display `err.message` rather than inventing their own copy —
+ * this helper only exists to let the UI pick a distinct icon/tone for "AI is
+ * temporarily unavailable" vs. a generic network/validation error. */
+export function isLLMUnavailable(err: unknown): boolean {
+  return (err as ApiError | undefined)?.error === "llm_unavailable";
 }

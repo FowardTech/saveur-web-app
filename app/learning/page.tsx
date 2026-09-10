@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -50,6 +52,12 @@ import {
 //     topic ("a user cannot just be getting certificate on just anyhow
 //     topics"), taught across Basic -> Intermediate -> Advanced tiers, each
 //     unlocking once the previous tier's modules are genuinely completed.
+//     "Start"/"Continue"/"Review" now navigate into the real module-by-
+//     module viewer at app/learning/course/[courseId]/page.tsx (mobile:
+//     CourseSession.tsx) instead of the old "full course viewer is coming
+//     to the web app in a future pass" placeholder — see that route's own
+//     header comment for the investigation into why the placeholder existed
+//     (a missing web port, NOT a Lovable AI billing outage).
 interface Week {
   week: number;
   topic: string;
@@ -87,6 +95,7 @@ const LEVEL_DEFAULTS: Record<CourseLevel, string> = {
 
 export default function LearningPage() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const { profile, loading: authLoading } = useAuth();
   const [curriculum, setCurriculum] = useState<Curriculum | null | undefined>(undefined);
   const [byCourse, setByCourse] = useState<ProgressByCourse>({});
@@ -188,7 +197,6 @@ export default function LearningPage() {
   const [isCheckingTopic, setIsCheckingTopic] = useState(false);
   const [topicCheck, setTopicCheck] = useState<TopicCheckResult | null>(null);
   const [tierProgress, setTierProgress] = useState<Record<CourseLevel, CourseProgressSummary> | null>(null);
-  const [startedTier, setStartedTier] = useState<CourseLevel | null>(null);
 
   const effectiveTopic = careerPath ? (customTopic.trim() ? `${customTopic.trim()} (${careerPath})` : careerPath) : "";
 
@@ -199,7 +207,6 @@ export default function LearningPage() {
     setIsCheckingTopic(true);
     setTopicCheck(null);
     setTierProgress(null);
-    setStartedTier(null);
     try {
       const result = await checkTopic(topic, i18n.language);
       setTopicCheck(result);
@@ -343,14 +350,22 @@ export default function LearningPage() {
           {courseIds.length > 0 && (
             <div className="flex flex-col gap-3">
               <h2 className="text-lg font-bold text-primary">{t("web:learning.courseProgressTitle", { defaultValue: "Course progress" })}</h2>
-              {courseIds.map((courseId) => (
-                <div key={courseId} className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4">
-                  <span className="text-sm text-primary capitalize">{courseId.split("::")[0].replace(/-/g, " ")}</span>
-                  <span className="text-xs text-hint">
-                    {t("web:learning.modulesCompleted", { defaultValue: "{{count}} module(s) completed", count: byCourse[courseId].completed_modules })}
-                  </span>
-                </div>
-              ))}
+              {courseIds.map((courseId) => {
+                const slugTopic = courseId.split("::")[0].replace(/-/g, " ");
+                const displayTopic = slugTopic.replace(/\b\w/g, (c) => c.toUpperCase());
+                return (
+                  <Link
+                    key={courseId}
+                    href={`/learning/course/${encodeURIComponent(courseId)}?${new URLSearchParams({ topic: displayTopic }).toString()}`}
+                    className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 transition hover:bg-surface-3"
+                  >
+                    <span className="text-sm text-primary capitalize">{slugTopic}</span>
+                    <span className="text-xs text-hint">
+                      {t("web:learning.modulesCompleted", { defaultValue: "{{count}} module(s) completed", count: byCourse[courseId].completed_modules })}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           )}
 
@@ -453,7 +468,14 @@ export default function LearningPage() {
                         size="sm"
                         variant={unlocked ? "primary" : "outline"}
                         disabled={!unlocked}
-                        onClick={() => setStartedTier(level)}
+                        onClick={() => {
+                          if (!unlocked || !topicCheck) return;
+                          const courseId = courseIdFor(topicCheck.canonicalTopic, level);
+                          const subtopics = topicCheck.coreSubtopics.join("|");
+                          const qs = new URLSearchParams({ topic: topicCheck.canonicalTopic });
+                          if (subtopics) qs.set("subtopics", subtopics);
+                          router.push(`/learning/course/${encodeURIComponent(courseId)}?${qs.toString()}`);
+                        }}
                       >
                         {!unlocked
                           ? t("web:learning.locked", { defaultValue: "Locked" })
@@ -466,15 +488,6 @@ export default function LearningPage() {
                     </div>
                   );
                 })}
-
-                {startedTier && (
-                  <div className="rounded-lg border border-dashed border-border p-4 text-center text-sm text-hint">
-                    {t("web:learning.courseSessionPlaceholder", {
-                      defaultValue:
-                        "This is where the module-by-module lesson would open — real AI-taught content, one module at a time, with a check-for-understanding question after each. That full course viewer is coming to the web app in a future pass; this topic and tier are saved to your account the same as on mobile.",
-                    })}
-                  </div>
-                )}
               </div>
             )}
           </div>
