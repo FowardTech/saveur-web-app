@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -16,6 +17,7 @@ import { getAppConfig } from "@/lib/appConfigService";
 import * as billingService from "@/lib/billingService";
 import { searchCompany, type CompanySearchResult } from "@/lib/companySearchService";
 import { COMPANY_ANY, companiesForCountries, guessCompanyLogoUrl } from "@/lib/companyData";
+import { INTERVIEW_TYPES, interviewTypeFromSlug, interviewTypeSlug } from "@/lib/interviewData";
 
 // Real backend contract — ported from mobile's services/interviewService.ts
 // (TYPE_TO_WIRE/MODE_TO_WIRE/DIFFICULTY_TO_WIRE) and
@@ -23,31 +25,6 @@ import { COMPANY_ANY, companiesForCountries, guessCompanyLogoUrl } from "@/lib/c
 // missing entirely — see constants/Data.ts for the source pill data).
 //   POST /api/v1/interviews/sessions -> {id, type, role, company, difficulty,
 //     mode, status, first_question?, question_id?}
-interface InterviewTypeDef {
-  label: string;
-  wire: string;
-  icon: EvaIconName;
-}
-
-const INTERVIEW_TYPES: InterviewTypeDef[] = [
-  { label: "Behavioral", wire: "behavioral", icon: "message-square-outline" },
-  { label: "Technical", wire: "technical", icon: "settings-2-outline" },
-  { label: "Coding", wire: "coding", icon: "code-outline" },
-  { label: "System Design", wire: "system-design", icon: "grid-outline" },
-  { label: "Product Management", wire: "PM", icon: "briefcase-outline" },
-  { label: "Sales", wire: "sales", icon: "trending-up-outline" },
-  { label: "Marketing", wire: "marketing", icon: "pie-chart-outline" },
-  { label: "Finance", wire: "finance", icon: "credit-card-outline" },
-  { label: "Healthcare", wire: "healthcare", icon: "heart-outline" },
-  { label: "Customer Service", wire: "customer-service", icon: "headphones-outline" },
-  { label: "Government", wire: "government", icon: "shield-outline" },
-  { label: "Consulting", wire: "consulting", icon: "bulb-outline" },
-  { label: "Executive", wire: "executive", icon: "award-outline" },
-  { label: "Graduate", wire: "graduate", icon: "book-open-outline" },
-  { label: "Internship", wire: "internship", icon: "clipboard-outline" },
-  { label: "Sports", wire: "sports", icon: "activity-outline" },
-];
-
 const PRACTICE_MODES: { mode: "Voice" | "Text" | "Video"; icon: EvaIconName; description: string }[] = [
   { mode: "Voice", icon: "phone-call-outline", description: "Speak your answers, get spoken feedback" },
   { mode: "Text", icon: "edit-2-outline", description: "Type your answers at your own pace" },
@@ -74,9 +51,10 @@ interface SessionResult {
   first_question?: string;
 }
 
-export default function MockInterviewSetupPage() {
+function MockInterviewSetupInner() {
   const { t, i18n } = useTranslation();
   const { profile } = useAuth();
+  const searchParams = useSearchParams();
 
   // Pro Premium / Pro (Yearly) only — same gate mobile's isPremium applies
   // to Video mode + the persona picker (see entitlementsService.ts's
@@ -88,7 +66,11 @@ export default function MockInterviewSetupPage() {
   const isFreeTier = !profile?.subscriptionTier || profile.subscriptionTier === "free";
 
   const [mode, setMode] = useState<"Voice" | "Text" | "Video">("Voice");
-  const [interviewType, setInterviewType] = useState<InterviewTypeDef>(INTERVIEW_TYPES[0]);
+  // Prefills from the Practice hub's "Interview Types" quick grid (app/
+  // practice/page.tsx, ?type=<slug>) — mirrors mobile's FindScreen.tsx
+  // typesGrid jumping straight into MockInterviewSetup with a type
+  // pre-selected instead of always defaulting to Behavioral.
+  const [interviewType, setInterviewType] = useState(() => interviewTypeFromSlug(searchParams.get("type")) ?? INTERVIEW_TYPES[0]);
   const [role, setRole] = useState("");
   const [difficulty, setDifficulty] = useState<"Beginner" | "Intermediate" | "Advanced">("Intermediate");
   const [durationMin, setDurationMin] = useState(30);
@@ -228,8 +210,7 @@ export default function MockInterviewSetupPage() {
   }
 
   function labelFor(label: string) {
-    const key = label.toLowerCase().replace(/[^a-z]+/g, "_").replace(/^_|_$/g, "");
-    return t(`web:practice.mockInterviews.types.${key}`, { defaultValue: label });
+    return t(`web:practice.mockInterviews.types.${interviewTypeSlug(label)}`, { defaultValue: label });
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -571,5 +552,15 @@ export default function MockInterviewSetupPage() {
         </div>
       </AppShell>
     </RequireAuth>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary in the app router (same
+// pattern as app/auth/linkedin/callback/page.tsx and app/addons/success/page.tsx).
+export default function MockInterviewSetupPage() {
+  return (
+    <Suspense fallback={null}>
+      <MockInterviewSetupInner />
+    </Suspense>
   );
 }

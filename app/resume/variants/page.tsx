@@ -9,7 +9,8 @@ import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
-import apiClient, { type ApiError } from "@/lib/apiClient";
+import apiClient, { API_BASE_URL, type ApiError } from "@/lib/apiClient";
+import { firebaseAuth } from "@/lib/firebase";
 
 // Real backend contract — Saveur-Backend/app/api/resume_variants.py
 //   GET  /api/v1/resume/variants -> {items: ResumeVariant[]}
@@ -33,6 +34,7 @@ export default function ResumeVariantsPage() {
   const [targetRole, setTargetRole] = useState("");
   const [targetCompany, setTargetCompany] = useState("");
   const [creating, setCreating] = useState(false);
+  const [sharingId, setSharingId] = useState<number | null>(null);
 
   async function load() {
     try {
@@ -84,6 +86,42 @@ export default function ResumeVariantsPage() {
       setVariants((prev) => (prev ? prev.filter((v) => v.id !== id) : prev));
     } catch {
       // no-op
+    }
+  }
+
+  // "Share" on mobile (POST /resume/variants/<id>/export) downloads a real
+  // tailored PDF of this specific variant through the native share sheet —
+  // was previously missing here entirely (this button didn't exist at all).
+  // Web's equivalent of "share a file" is downloading it; apiClient's
+  // helpers only handle JSON bodies, so this does its own binary fetch.
+  async function handleShare(variant: ResumeVariant) {
+    if (sharingId) return;
+    setSharingId(variant.id);
+    setError(null);
+    try {
+      const idToken = await firebaseAuth.currentUser?.getIdToken();
+      const res = await fetch(`${API_BASE_URL}/api/v1/resume/variants/${variant.id}/export`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+        },
+        body: JSON.stringify({ format: "pdf" }),
+      });
+      if (!res.ok) throw new Error(`Export failed with status ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${variant.label || "resume"}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError(t("web:resume.variants.shareFailedDefault", { defaultValue: "Couldn't export that variant right now." }));
+    } finally {
+      setSharingId(null);
     }
   }
 
@@ -149,9 +187,14 @@ export default function ResumeVariantsPage() {
                       {v.target_company ? ` · ${v.target_company}` : ""}
                     </p>
                   </div>
-                  <Button size="sm" variant="ghost" onClick={() => handleDelete(v.id)}>
-                    {t("web:resume.variants.delete", { defaultValue: "Delete" })}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" disabled={sharingId === v.id} onClick={() => handleShare(v)}>
+                      {sharingId === v.id ? t("web:resume.variants.sharing", { defaultValue: "Sharing…" }) : t("web:resume.variants.share", { defaultValue: "Share" })}
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => handleDelete(v.id)}>
+                      {t("web:resume.variants.delete", { defaultValue: "Delete" })}
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>

@@ -8,15 +8,26 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/job_alerts.py
 //   GET  /api/v1/job-alerts -> {data: JobAlert[], next_cursor: string | null}
 //   POST /api/v1/job-alerts/refresh -> kicks a background discovery run
+//   POST /api/v1/job-alerts/read -> marks alerts read (mirrors career-events)
+//   POST /api/v1/job-alerts/<id>/pin -> {pinned?: bool} toggles pin
 // Preferences (target roles/countries) are edited via PATCH /api/v1/users/me
 // (desired_roles/preferred_countries) — same fields Settings > Profile uses,
 // per app/api/users.py's update_me() and job_role_country_caps' per-tier caps.
+//
+// Mobile parity (src/more/JobAlerts.tsx): cards ignored `company_logo_url`
+// entirely (generic letter-avatar instead of CompanyLogoAvatar, same class
+// of bug career events had), the pinned star used a nonexistent "star" icon
+// name (only "star-outline" is generated — see lib/eva-icons.generated.ts —
+// so this silently rendered the icon-not-found placeholder), and there was
+// no unread "New" badge/purple-border treatment or working pin toggle at
+// all despite the backend already supporting both.
 interface JobAlert {
   id: string;
   title: string;
@@ -38,6 +49,7 @@ export default function JobAlertsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [rolesText, setRolesText] = useState("");
   const [savingPrefs, setSavingPrefs] = useState(false);
+  const [togglingPinId, setTogglingPinId] = useState<string | null>(null);
 
   useEffect(() => {
     // Syncs the roles text field from the async-loaded profile once it
@@ -51,6 +63,10 @@ export default function JobAlertsPage() {
     try {
       const data = await apiClient.get<{ data: JobAlert[] }>("/api/v1/job-alerts");
       setAlerts(data.data);
+      const unreadIds = data.data.filter((a) => !a.read).map((a) => a.id);
+      if (unreadIds.length) {
+        apiClient.post("/api/v1/job-alerts/read", { ids: unreadIds }).catch(() => {});
+      }
     } catch (err) {
       const apiErr = err as ApiError;
       if (apiErr.status === 402 || apiErr.status === 403) {
@@ -79,6 +95,19 @@ export default function JobAlertsPage() {
       setError((err as ApiError).message || t("web:jobAlerts.refreshFailedDefault", { defaultValue: "Couldn't refresh alerts right now." }));
     } finally {
       setRefreshing(false);
+    }
+  }
+
+  async function handleTogglePin(alert: JobAlert) {
+    if (togglingPinId) return;
+    setTogglingPinId(alert.id);
+    try {
+      await apiClient.post(`/api/v1/job-alerts/${alert.id}/pin`, { pinned: !alert.pinned });
+      setAlerts((prev) => (prev ? prev.map((a) => (a.id === alert.id ? { ...a, pinned: !a.pinned } : a)) : prev));
+    } catch {
+      // no-op — the pin just stays as-is if this fails
+    } finally {
+      setTogglingPinId(null);
     }
   }
 
@@ -149,27 +178,37 @@ export default function JobAlertsPage() {
           {alerts && alerts.length > 0 && (
             <div className="flex flex-col gap-3">
               {alerts.map((a) => (
-                <a
+                <div
                   key={a.id}
-                  href={a.apply_url || "#"}
-                  target={a.apply_url ? "_blank" : undefined}
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className={`flex items-center justify-between gap-4 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                    !a.read ? "border-accent-purple" : "border-border"
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text font-semibold">
-                      {a.company?.[0]?.toUpperCase() || "?"}
-                    </span>
+                  <a href={a.apply_url || "#"} target={a.apply_url ? "_blank" : undefined} rel="noopener noreferrer" className="flex flex-1 items-center gap-3">
+                    <CompanyLogoAvatar logoUrl={a.company_logo_url ?? null} companyName={a.company} size={44} className="shrink-0 bg-tint-mint" />
                     <div>
+                      {!a.read && (
+                        <span className="mb-1 inline-block rounded-pill bg-accent-purple/15 px-2 py-0.5 text-xs font-semibold text-accent-purple">
+                          {t("web:jobAlerts.newBadge", { defaultValue: "New" })}
+                        </span>
+                      )}
                       <h3 className="font-medium text-primary">{a.title}</h3>
                       <p className="text-sm text-hint">
                         {a.company}
                         {a.location ? ` · ${a.location}` : ""}
                       </p>
                     </div>
-                  </div>
-                  {a.pinned && <EvaIcon name="star" size={16} className="shrink-0 text-brand" />}
-                </a>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleTogglePin(a)}
+                    disabled={togglingPinId === a.id}
+                    aria-label={t("web:jobAlerts.pinAria", { defaultValue: "Pin this alert" })}
+                    className="shrink-0 text-hint transition hover:text-brand disabled:opacity-50"
+                  >
+                    <EvaIcon name="star-outline" size={18} className={a.pinned ? "text-brand" : undefined} />
+                  </button>
+                </div>
               ))}
             </div>
           )}
