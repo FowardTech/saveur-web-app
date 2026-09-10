@@ -10,6 +10,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
 
 // Web counterpart to mobile's src/practice/InterviewFeedback.tsx — the
 // screen a completed Practice History row (PracticeSessionItem.tsx) taps
@@ -116,6 +117,7 @@ export default function PracticeSessionDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
   const [showTranscript, setShowTranscript] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const loadFeedback = useCallback(
     (id: string) => {
@@ -167,10 +169,23 @@ export default function PracticeSessionDetailPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-3xl flex-col gap-6 pb-10">
-          <Link href="/applications?tab=history" className="inline-flex w-fit items-center gap-1 text-sm font-medium text-hint hover:text-primary">
-            <EvaIcon name="chevron-left-outline" size={16} />
-            {t("web:practice.session.back", { defaultValue: "Back to Practice History" })}
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <Link href="/applications?tab=history" className="inline-flex w-fit items-center gap-1 text-sm font-medium text-hint hover:text-primary">
+              <EvaIcon name="chevron-left-outline" size={16} />
+              {t("web:practice.session.back", { defaultValue: "Back to Practice History" })}
+            </Link>
+            {sessionId && (
+              <button
+                type="button"
+                onClick={() => setShareModalOpen(true)}
+                aria-label={t("web:jobAlerts.details.shareToSaveurUser", { defaultValue: "Share with a Saveur user" })}
+                title={t("web:jobAlerts.details.shareToSaveurUser", { defaultValue: "Share with a Saveur user" })}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-hint hover:bg-surface-3 hover:text-primary"
+              >
+                <EvaIcon name="people-outline" size={18} />
+              </button>
+            )}
+          </div>
 
           {session === undefined && !error && (
             <div className="flex flex-col gap-4">
@@ -348,6 +363,14 @@ export default function PracticeSessionDetailPage() {
             </>
           )}
         </div>
+        {sessionId && (
+          <ShareToUserModal
+            open={shareModalOpen}
+            onClose={() => setShareModalOpen(false)}
+            contentType="feedback"
+            contentId={sessionId}
+          />
+        )}
       </AppShell>
     </RequireAuth>
   );
