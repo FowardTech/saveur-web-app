@@ -8,7 +8,6 @@ import { ActionCard } from "@/components/ui/ActionCard";
 import { LinkButton } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
-import { HomeBannerAd } from "@/components/dashboard/HomeBannerAd";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -82,16 +81,6 @@ export default function DashboardPage() {
           </h1>
           <p className="mt-1 text-sm text-hint">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
-
-        {/* Real admin-uploaded IMAGE banner (Advertisement, placement=
-            "home_banner" — see components/dashboard/HomeBannerAd.tsx's own
-            comment for the full disambiguation from the two banners below).
-            Renders nothing until the admin actually activates one. Leads
-            the stack — explicit repeated product ask was "above the Keep
-            building momentum card"; placed above the plain-text
-            AnnouncementBanner too since it's the more attention-grabbing,
-            purpose-designed visual promo of the two. */}
-        <HomeBannerAd />
 
         {/* Admin-authored announcement strip (policy changes, etc.) — above
             the decorative HomeBanner hero card per product ask. */}
