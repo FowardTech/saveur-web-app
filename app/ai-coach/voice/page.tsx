@@ -95,6 +95,19 @@ export default function VoiceCoachPage() {
   const sessionActiveRef = useRef(false);
   const silenceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const historyRef = useRef<HistoryTurn[]>([]);
+  // BUG FIX: a persistent "network" error (SpeechRecognition can't reach its
+  // underlying speech-to-text cloud service — common cause: a privacy
+  // browser like Brave blocking the request, or a firewall) used to show an
+  // error message but NOT stop the onend-triggered auto-restart loop below
+  // (phaseRef.current was still "listening", so onend called
+  // startRecognitionInternal() again), which immediately failed the same way
+  // and retried in a tight loop — looked frozen rather than clearly broken.
+  // Tracks consecutive immediate "network" failures; reset to 0 on any
+  // successful onresult (a real result means the service IS reachable) or a
+  // fresh manual start. After a few in a row, stop auto-restarting entirely
+  // and show a specific, actionable message instead of retrying forever.
+  const networkErrorStreakRef = useRef(0);
+  const NETWORK_ERROR_LIMIT = 3;
 
   useEffect(() => {
     phaseRef.current = phase;
@@ -147,6 +160,9 @@ export default function VoiceCoachPage() {
     recognition.maxAlternatives = 1;
 
     recognition.onresult = (event) => {
+      // A real result means the recognizer actually reached its
+      // speech-to-text service — clear any prior network-failure streak.
+      networkErrorStreakRef.current = 0;
       setLiveTranscript(transcriptFromEvent(event));
     };
     recognition.onerror = (event) => {
@@ -158,6 +174,32 @@ export default function VoiceCoachPage() {
       // onend follows right after and the restart logic there resumes
       // listening on its own, so nothing needs to happen here for it either.
       if (code === "aborted" || code === "no-speech") return;
+
+      if (code === "network") {
+        networkErrorStreakRef.current += 1;
+        if (networkErrorStreakRef.current >= NETWORK_ERROR_LIMIT) {
+          // Persistent, not a one-off hiccup — auto-restarting would just
+          // keep hitting the exact same failure immediately, forever. Stop
+          // for real and explain what's actually going on instead of a
+          // vague "network error, try again" that just repeats itself.
+          sessionActiveRef.current = false;
+          clearSilenceTimer();
+          setPhase("idle");
+          setErrorMsg(
+            t("web:aiCoach.voiceErrorNetworkPersistent", {
+              defaultValue:
+                "Can't reach the speech recognition service after several tries. If you're using a privacy-focused browser (like Brave), try disabling its shields/privacy blocking for this site, or try a different browser such as Chrome or Edge.",
+            })
+          );
+          return;
+        }
+        // First couple of failures: still say what happened, but let the
+        // existing onend -> restart logic below give it another try in case
+        // it was transient.
+        setErrorMsg(describeSpeechError(code, t));
+        return;
+      }
+
       const message = describeSpeechError(code, t);
       if (message) setErrorMsg(message);
       if (code === "not-allowed" || code === "service-not-allowed" || code === "audio-capture") {
@@ -281,6 +323,7 @@ export default function VoiceCoachPage() {
   const startSession = useCallback(() => {
     setErrorMsg(null);
     setProRequired(false);
+    networkErrorStreakRef.current = 0;
     sessionActiveRef.current = true;
     startRecognitionInternal();
   }, [startRecognitionInternal]);
