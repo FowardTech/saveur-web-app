@@ -20,6 +20,13 @@ export interface UserProfile {
   notificationsEnabled: boolean;
   jobAlertDailyLimit: number;
   country?: string | null;
+  // Account-level "has this user dismissed the first-login welcome modal
+  // yet" flag — see Saveur-Backend's app/models/user.py's
+  // has_seen_welcome_modal. Deliberately backend-persisted (not just a
+  // localStorage flag): "first login" is a one-time-per-account event, so a
+  // user who logs in from a second browser/device must not see the modal
+  // again either.
+  hasSeenWelcomeModal?: boolean;
 }
 
 // Wire (snake_case) shape as returned by the backend's User.to_dict() —
@@ -43,6 +50,7 @@ export interface UserProfileWire {
   notifications_enabled?: boolean;
   job_alert_daily_limit?: number;
   country?: string | null;
+  has_seen_welcome_modal?: boolean;
 }
 
 export function profileFromWire(wire: UserProfileWire): UserProfile {
@@ -70,6 +78,7 @@ export function profileFromWire(wire: UserProfileWire): UserProfile {
     notificationsEnabled: wire.notifications_enabled ?? true,
     jobAlertDailyLimit: wire.job_alert_daily_limit ?? 10,
     country: wire.country ?? null,
+    hasSeenWelcomeModal: wire.has_seen_welcome_modal ?? false,
   };
 }
 
@@ -88,6 +97,7 @@ export function profileToWirePatch(partial: Partial<UserProfile>): Record<string
   if (partial.jobAlertDailyLimit !== undefined) wire.job_alert_daily_limit = partial.jobAlertDailyLimit;
   if (partial.phoneNumber !== undefined) wire.phone_number = partial.phoneNumber;
   if (partial.homeAddress !== undefined) wire.home_address = partial.homeAddress;
+  if (partial.hasSeenWelcomeModal !== undefined) wire.has_seen_welcome_modal = partial.hasSeenWelcomeModal;
   return wire;
 }
 

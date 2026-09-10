@@ -9,6 +9,7 @@ import { LinkButton } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
+import { WelcomeModal } from "@/components/dashboard/WelcomeModal";
 import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
@@ -74,6 +75,7 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
+      <WelcomeModal />
       <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
         <div>
           <h1 className="text-2xl font-bold text-primary">
