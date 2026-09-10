@@ -1,0 +1,18 @@
+# Add this block to the droplet's real Caddyfile (commonly /etc/caddy/Caddyfile
+# — run `caddy validate --config /etc/caddy/Caddyfile` after editing, then
+# `systemctl reload caddy`). Caddy issues/renews the TLS cert for this
+# domain automatically the first time it's reloaded with this block present
+# — nothing else to run, unlike certbot.
+#
+# Assumes the api.saveurnow.com block already in that file looks something
+# like the one below it (shown for reference/comparison only — don't
+# duplicate it, it should already exist).
+
+app.saveurnow.com {
+	reverse_proxy 127.0.0.1:3000
+}
+
+# --- for reference: what the existing api block probably looks like -------
+# api.saveurnow.com {
+# 	reverse_proxy 127.0.0.1:5000
+# }

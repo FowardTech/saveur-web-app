@@ -1,0 +1,32 @@
+services:
+  web:
+    build:
+      context: .
+      # NEXT_PUBLIC_* values must be real at BUILD time (see Dockerfile's
+      # top comment) — `env_file:` below only reaches the running
+      # container's process env, which is too late for these. Docker
+      # Compose reads `.env` in this same directory automatically and
+      # substitutes ${VAR} references here, so a single `.env` file (copied
+      # from .env.production.example) is the only place you need to set
+      # these on the droplet.
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+        NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY}
+        NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID}
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}
+        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}
+        NEXT_PUBLIC_FIREBASE_VAPID_KEY: ${NEXT_PUBLIC_FIREBASE_VAPID_KEY}
+    restart: unless-stopped
+    # 127.0.0.1-only on purpose — same reasoning as Saveur-Backend's db/redis
+    # services having no published port at all: nothing outside this
+    # droplet should be able to hit port 3000 directly, only the reverse
+    # proxy (Caddy/nginx) on 80/443, reached over loopback. If Caddy or
+    # nginx runs in its OWN container rather than on the host, delete the
+    # "127.0.0.1:" prefix and instead put both services on a shared Docker
+    # network so the proxy can reach "web:3000" by service name (mirrors
+    # how Saveur-Backend's api/worker reach "db"/"redis" internally).
+    ports: ["127.0.0.1:3000:3000"]
+    env_file: .env

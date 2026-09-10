@@ -2,6 +2,13 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
+  // Docker deploy (droplet, alongside Saveur-Backend) needs a self-contained
+  // production server — "standalone" makes `next build` emit a minimal
+  // .next/standalone/ dir with only the node_modules this app actually
+  // uses, traced from its real import graph, plus a server.js entrypoint.
+  // Without this the image would need the full node_modules installed at
+  // runtime (much larger image, slower deploys). No effect on `next dev`.
+  output: "standalone",
   // Pins the workspace root to this project — without it, Next.js/Turbopack
   // gets confused by the sibling package-lock.json files that live one
   // level up in the shared ReactNativeProjects folder (unrelated projects,
