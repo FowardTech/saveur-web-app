@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import Link from "next/link";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import { guessCompanyLogoUrl } from "@/lib/companyData";
@@ -204,11 +205,14 @@ function JobAlertsPageInner() {
           {alerts === null && !proRequired && !error && <SkeletonRows count={5} />}
 
           {visibleAlerts && visibleAlerts.length === 0 && !proRequired && (
-            <p className="text-sm text-hint">
-              {companyFilter
-                ? t("web:jobAlerts.emptyForCompany", { defaultValue: "No open job alerts for {{company}} yet.", company: companyFilter })
-                : t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })}
-            </p>
+            <EmptyState
+              illustration={companyFilter ? "search" : "list"}
+              title={
+                companyFilter
+                  ? t("web:jobAlerts.emptyForCompany", { defaultValue: "No open job alerts for {{company}} yet.", company: companyFilter })
+                  : t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })
+              }
+            />
           )}
 
           {visibleAlerts && visibleAlerts.length > 0 && (

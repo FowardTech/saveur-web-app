@@ -9,6 +9,7 @@ import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import apiClient, { API_BASE_URL, type ApiError } from "@/lib/apiClient";
 import { firebaseAuth } from "@/lib/firebase";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -177,7 +178,9 @@ export default function ResumeVariantsPage() {
 
           {variants === null && !error && <SkeletonRows count={3} />}
 
-          {variants && variants.length === 0 && <p className="text-sm text-hint">{t("web:resume.variants.empty", { defaultValue: "No variants yet — create one above." })}</p>}
+          {variants && variants.length === 0 && (
+            <EmptyState illustration="list" title={t("web:resume.variants.empty", { defaultValue: "No variants yet — create one above." })} />
+          )}
 
           {variants && variants.length > 0 && (
             <div className="flex flex-col gap-3">

@@ -11,6 +11,7 @@ import { Pill } from "@/components/ui/Pill";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import * as sharesService from "@/lib/sharesService";
 import type { ReceivedShareProps, PendingConnectionRequest } from "@/lib/sharesService";
 import type { ApiError } from "@/lib/apiClient";
@@ -146,17 +147,13 @@ function SharedWithMeInner() {
               {shares === null && !loadError && <SkeletonRows count={3} />}
 
               {shares && shares.length === 0 && !loadError && (
-                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-                    <EvaIcon name="people-outline" size={20} />
-                  </span>
-                  <h2 className="font-semibold text-primary">{t("web:sharedWithMe.emptyTitle", { defaultValue: "Nothing shared yet" })}</h2>
-                  <p className="text-sm text-hint">
-                    {t("web:sharedWithMe.emptyBody", {
-                      defaultValue: "When another Saveur user shares feedback, a video replay, or a job with you, it shows up here.",
-                    })}
-                  </p>
-                </div>
+                <EmptyState
+                  illustration="inbox"
+                  title={t("web:sharedWithMe.emptyTitle", { defaultValue: "Nothing shared yet" })}
+                  description={t("web:sharedWithMe.emptyBody", {
+                    defaultValue: "When another Saveur user shares feedback, a video replay, or a job with you, it shows up here.",
+                  })}
+                />
               )}
 
               {shares &&
@@ -190,17 +187,13 @@ function SharedWithMeInner() {
               {requests === null && !requestsError && <SkeletonRows count={3} />}
 
               {requests && requests.length === 0 && !requestsError && (
-                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-                    <EvaIcon name="people-outline" size={20} />
-                  </span>
-                  <h2 className="font-semibold text-primary">{t("web:sharedWithMe.pendingEmptyTitle", { defaultValue: "No pending requests" })}</h2>
-                  <p className="text-sm text-hint">
-                    {t("web:sharedWithMe.pendingEmptyBody", {
-                      defaultValue: "When another Saveur user asks to connect with you, it shows up here — accept to start sharing with each other.",
-                    })}
-                  </p>
-                </div>
+                <EmptyState
+                  illustration="inbox"
+                  title={t("web:sharedWithMe.pendingEmptyTitle", { defaultValue: "No pending requests" })}
+                  description={t("web:sharedWithMe.pendingEmptyBody", {
+                    defaultValue: "When another Saveur user asks to connect with you, it shows up here — accept to start sharing with each other.",
+                  })}
+                />
               )}
 
               {requests &&

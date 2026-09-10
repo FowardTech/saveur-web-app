@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/SelectField";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import * as documentsService from "@/lib/documentsService";
 import type { DocumentRecord } from "@/lib/documentsService";
 import type { ApiError } from "@/lib/apiClient";
@@ -156,11 +157,12 @@ export default function DocumentsPage() {
           {documents === null && !loadError && <SkeletonRows count={3} />}
 
           {documents && documents.length === 0 && (
-            <p className="text-sm text-hint">
-              {t("web:documents.empty", {
+            <EmptyState
+              illustration="inbox"
+              title={t("web:documents.empty", {
                 defaultValue: "No documents yet — upload a resume, cover letter, certificate, or transcript above to keep it here for reuse across the app.",
               })}
-            </p>
+            />
           )}
 
           {documents && documents.length > 0 && (

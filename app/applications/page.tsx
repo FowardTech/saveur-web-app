@@ -13,6 +13,7 @@ import { Pill } from "@/components/ui/Pill";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { INTERVIEW_TYPES, interviewTypeSlug } from "@/lib/interviewData";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -405,7 +406,10 @@ function InterviewsPageInner() {
               )}
 
               {applications && applications.length === 0 && !proRequired && (
-                <p className="text-sm text-hint">{t("web:applications.empty", { defaultValue: "No applications tracked yet — add one above to get started." })}</p>
+                <EmptyState
+                  illustration="list"
+                  title={t("web:applications.empty", { defaultValue: "No applications tracked yet — add one above to get started." })}
+                />
               )}
 
               {[
@@ -493,11 +497,17 @@ function InterviewsPageInner() {
               )}
 
               {sessions && sessions.length === 0 && (
-                <p className="text-sm text-hint">{t("web:practice.history.empty", { defaultValue: "No sessions yet — start a mock interview to see it here." })}</p>
+                <EmptyState
+                  illustration="list"
+                  title={t("web:practice.history.empty", { defaultValue: "No sessions yet — start a mock interview to see it here." })}
+                />
               )}
 
               {sessions && sessions.length > 0 && filteredSessions.length === 0 && (
-                <p className="text-sm text-hint">{t("web:practice.history.noMatch", { defaultValue: "No sessions match your search." })}</p>
+                <EmptyState
+                  illustration="search"
+                  title={t("web:practice.history.noMatch", { defaultValue: "No sessions match your search." })}
+                />
               )}
 
               {upcomingSessions.length > 0 && (

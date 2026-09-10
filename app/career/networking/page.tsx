@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -346,9 +347,10 @@ function NetworkingAssistantInner() {
                   {events === null && !eventsError && <SkeletonRows count={5} />}
 
                   {events && events.length === 0 && (
-                    <p className="text-sm text-hint">
-                      {t("web:career.events.empty", { defaultValue: "No events matched yet — try refreshing, or check back after your next scan." })}
-                    </p>
+                    <EmptyState
+                      illustration="search"
+                      title={t("web:career.events.empty", { defaultValue: "No events matched yet — try refreshing, or check back after your next scan." })}
+                    />
                   )}
 
                   {events &&
@@ -380,9 +382,10 @@ function NetworkingAssistantInner() {
                   {contacts === null ? (
                     <SkeletonRows count={2} />
                   ) : contacts.length === 0 ? (
-                    <p className="py-6 text-center text-sm text-hint">
-                      {t("web:career.networking.noContacts", { defaultValue: "No contacts yet — add someone you met networking." })}
-                    </p>
+                    <EmptyState
+                      illustration="list"
+                      title={t("web:career.networking.noContacts", { defaultValue: "No contacts yet — add someone you met networking." })}
+                    />
                   ) : (
                     contacts.map((contact) => (
                       <div key={contact.id} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4">

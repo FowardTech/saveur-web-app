@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -146,11 +147,11 @@ export default function CareerDiaryPage() {
           {entries === null && !loadError && <SkeletonRows count={4} />}
 
           {entries && entries.length === 0 && (
-            <div className="flex flex-col items-center gap-2 py-10 text-center">
-              <EvaIcon name="edit-2-outline" size={22} className="text-hint" />
-              <p className="text-sm font-semibold text-primary">{t("web:careerDiary.emptyTitle", { defaultValue: "No entries yet" })}</p>
-              <p className="text-sm text-hint">{t("web:careerDiary.empty", { defaultValue: "Add your first one above." })}</p>
-            </div>
+            <EmptyState
+              illustration="list"
+              title={t("web:careerDiary.emptyTitle", { defaultValue: "No entries yet" })}
+              description={t("web:careerDiary.empty", { defaultValue: "Add your first one above." })}
+            />
           )}
 
           {groups.map((group) => (
