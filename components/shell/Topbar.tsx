@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
+import { NotificationBell } from "./NotificationBell";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { LinkButton } from "@/components/ui/Button";
 
@@ -48,13 +48,7 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
         {!loading && isSignedIn && (
           <>
             <ThemeToggle />
-            <Link
-              href="/settings"
-              aria-label={t("web:shell.notifications", { defaultValue: "Notifications" })}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-hint transition hover:bg-surface-3 hover:text-primary"
-            >
-              <EvaIcon name="bell-outline" size={18} />
-            </Link>
+            <NotificationBell />
             <UserMenu />
           </>
         )}

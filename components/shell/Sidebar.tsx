@@ -9,8 +9,32 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { primaryNav, secondaryNav, isNavGroup, type NavItem } from "@/lib/navigation";
 import { SUPPORTED_LANGUAGES, LOCALE_STORAGE_KEY, getLanguageNativeLabel } from "@/i18n/config";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { getMoreBadges, badgeCountFor, type MoreBadges } from "@/lib/moreBadges";
 
-function NavLink({ href, icon, label, active }: { href: string; icon: Parameters<typeof EvaIcon>[0]["name"]; label: string; active: boolean }) {
+/** Small unread-count pill — mirrors mobile MainDrawer.tsx's `styles.navBadge`
+ * (rounded, brand-colored background, white text) and its `item.badge > 9 ?
+ * '9+' : item.badge` convention. */
+function NavBadge({ count }: { count: number }) {
+  return (
+    <span className="ml-auto flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-pill bg-brand px-1.5 text-[11px] font-semibold text-white">
+      {count > 9 ? "9+" : count}
+    </span>
+  );
+}
+
+function NavLink({
+  href,
+  icon,
+  label,
+  active,
+  badge,
+}: {
+  href: string;
+  icon: Parameters<typeof EvaIcon>[0]["name"];
+  label: string;
+  active: boolean;
+  badge?: number;
+}) {
   return (
     <Link
       href={href}
@@ -20,14 +44,24 @@ function NavLink({ href, icon, label, active }: { href: string; icon: Parameters
     >
       <EvaIcon name={icon} size={18} />
       <span className="truncate">{label}</span>
+      {!!badge && <NavBadge count={badge} />}
     </Link>
   );
 }
 
-function NavGroupItem({ item, pathname }: { item: Extract<NavItem, { children: unknown[] }>; pathname: string }) {
+function NavGroupItem({
+  item,
+  pathname,
+  badges,
+}: {
+  item: Extract<NavItem, { children: unknown[] }>;
+  pathname: string;
+  badges: MoreBadges | null;
+}) {
   const { t } = useTranslation();
   const hasActiveChild = item.children.some((c) => pathname.startsWith(c.href));
   const [open, setOpen] = useState(hasActiveChild);
+  const groupBadge = item.children.reduce((sum, c) => sum + (badgeCountFor(c.badgeKey, badges) || 0), 0);
   return (
     <div>
       <button
@@ -41,6 +75,7 @@ function NavGroupItem({ item, pathname }: { item: Extract<NavItem, { children: u
         <span className="flex-1 truncate text-left">
           {item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label}
         </span>
+        {!open && !!groupBadge && <NavBadge count={groupBadge} />}
         <EvaIcon name="chevron-down-outline" size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
@@ -52,6 +87,7 @@ function NavGroupItem({ item, pathname }: { item: Extract<NavItem, { children: u
               icon={child.icon}
               label={child.labelKey ? t(`common:nav.${child.labelKey}`, { defaultValue: child.label }) : child.label}
               active={pathname === child.href}
+              badge={badgeCountFor(child.badgeKey, badges)}
             />
           ))}
         </div>
@@ -131,6 +167,22 @@ function LanguageMenu() {
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { firebaseUser } = useAuth();
+  const [badges, setBadges] = useState<MoreBadges | null>(null);
+
+  useEffect(() => {
+    if (!firebaseUser) {
+      setBadges(null);
+      return;
+    }
+    let cancelled = false;
+    getMoreBadges().then((result) => {
+      if (!cancelled) setBadges(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [firebaseUser]);
 
   return (
     <div className="flex h-full w-64 flex-col bg-surface-1">
@@ -145,7 +197,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <div className="flex flex-col gap-0.5">
           {primaryNav.map((item) =>
             isNavGroup(item) ? (
-              <NavGroupItem key={item.label} item={item} pathname={pathname} />
+              <NavGroupItem key={item.label} item={item} pathname={pathname} badges={badges} />
             ) : (
               <NavLink
                 key={item.href}
@@ -153,6 +205,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 icon={item.icon}
                 label={item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label}
                 active={pathname === item.href}
+                badge={badgeCountFor(item.badgeKey, badges)}
               />
             )
           )}
@@ -168,6 +221,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               icon={item.icon}
               label={item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label}
               active={pathname === item.href}
+              badge={badgeCountFor(item.badgeKey, badges)}
             />
           ))}
         </div>

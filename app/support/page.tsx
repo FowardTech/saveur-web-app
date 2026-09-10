@@ -19,7 +19,7 @@ export default function LiveSupportPage() {
         <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
           <EvaIcon name="headphones-outline" size={26} />
         </span>
-        <h1 className="text-2xl font-bold text-primary">{t("web:support.title", { defaultValue: "Live Support" })}</h1>
+        <h1 className="text-2xl font-bold text-primary">{t("web:support.title", { defaultValue: "Support" })}</h1>
         <p className="text-sm text-hint">
           {t("web:support.description", {
             defaultValue:

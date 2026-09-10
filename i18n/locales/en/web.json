@@ -17,6 +17,45 @@
     "title": "AI Coach",
     "voiceUnsupported": "Voice input isn't supported in this browser yet — try Chrome or Edge."
   },
+  "applications": {
+    "active": "Active",
+    "addApplication": "Add application",
+    "addFailedDefault": "Couldn't add that application right now.",
+    "addFromEmail": "Add from email",
+    "avgDaysToInterview": "Avg. days to interview",
+    "closed": "Closed",
+    "companyLabel": "Company",
+    "deleteFailedDefault": "Couldn't delete that application right now.",
+    "draftFailedDefault": "Couldn't generate a follow-up draft right now.",
+    "draftFollowup": "Draft follow-up",
+    "drafting": "Drafting…",
+    "emailCreatedNew": "Added a new application for {{company}}.",
+    "emailMatchedExisting": "Updated your existing {{company}} application to {{stage}}.",
+    "emailTextLabel": "Paste the application-related email",
+    "emailTextPlaceholder": "Paste a confirmation, interview invite, rejection, or offer email…",
+    "empty": "No applications tracked yet — add one above to get started.",
+    "loadFailedDefault": "Couldn't load your applications.",
+    "locationLabel": "Location (optional)",
+    "nextStepPrefix": "Next: {{step}}",
+    "parseEmail": "Parse email",
+    "parseEmailFailedDefault": "Couldn't read that email right now.",
+    "parsing": "Reading…",
+    "proRequiredSubtitle": "Upgrade to Saveur Basic or above to track applications, parse emails, and get AI follow-up drafts.",
+    "proRequiredTitle": "Application Tracker requires a paid plan",
+    "responseRate": "Response rate",
+    "roleLabel": "Role",
+    "staleApplications": "Gone quiet",
+    "stages": {
+      "applied": "Applied",
+      "interviewing": "Interviewing",
+      "offer": "Offer",
+      "rejected": "Rejected"
+    },
+    "subtitle": "Track every job you've applied for, all the way to offer.",
+    "title": "Application Tracker",
+    "totalTracked": "Tracked",
+    "updateFailedDefault": "Couldn't update that application right now."
+  },
   "auth": {
     "continueWithGoogle": "Continue with Google",
     "continueWithLinkedIn": "Continue with LinkedIn",
@@ -302,6 +341,17 @@
       "easy": "Easy",
       "hard": "Hard",
       "medium": "Medium"
+    },
+    "history": {
+      "durationMin": "{{min}} min",
+      "empty": "No sessions yet — start a mock interview to see it here.",
+      "loadFailedDefault": "Couldn't load your practice history.",
+      "noMatch": "No sessions match your search.",
+      "past": "Past",
+      "searchPlaceholder": "Search by type, mode, or company…",
+      "subtitle": "Every mock interview session you've run, upcoming and past.",
+      "title": "Recent Interviews",
+      "upcoming": "Upcoming"
     },
     "hub": {
       "codingDescription": "Work through real coding problems with instant AI review and feedback.",

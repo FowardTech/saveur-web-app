@@ -10,6 +10,10 @@ export interface NavLeaf {
   icon: EvaIconName;
   description?: string;
   descriptionKey?: string;
+  /** Key into the `/api/v1/more/badges` response (see lib/moreBadges.ts) —
+   * when set, Sidebar renders a small unread-count pill at the end of this
+   * row, mirroring mobile MainDrawer.tsx's per-row `badge` treatment. */
+  badgeKey?: "jobAlerts" | "careerEvents" | "settings";
 }
 
 export interface NavGroup {
@@ -37,6 +41,11 @@ export const primaryNav: NavItem[] = [
       { label: "Mock Interviews", labelKey: "mockInterviews", href: "/practice/mock-interviews", icon: "mic-outline" },
       { label: "Coding Practice", labelKey: "codingPractice", href: "/practice/coding", icon: "code-outline" },
       { label: "Practical Scenarios", labelKey: "practicalScenarios", href: "/practice/scenarios", icon: "clipboard-outline" },
+      // Mobile drawer: "Recent Interviews", lands on the Practice History
+      // tab of the Interviews screen (see MainDrawer.tsx) — here it's its
+      // own real route, sharing the same GET /api/v1/interviews/sessions
+      // history mobile's PracticeHistoryTab.tsx reads from.
+      { label: "Recent Interviews", labelKey: "recentInterviews", href: "/practice/history", icon: "clock-outline" },
     ],
   },
   {
@@ -47,6 +56,11 @@ export const primaryNav: NavItem[] = [
       { label: "Career Roadmap", labelKey: "careerRoadmap", href: "/career/roadmap", icon: "compass-outline" },
       { label: "Career DNA", labelKey: "careerDna", href: "/career/dna", icon: "activity-outline" },
       { label: "Networking Assistant", labelKey: "networkingAssistant", href: "/career/networking", icon: "people-outline" },
+      // Mobile drawer: "Career Events", lands on the Career Events tab of
+      // NetworkingAssistant.tsx (index 0) — a dedicated route here since the
+      // web Networking Assistant page is a single-purpose outreach-message
+      // form, not a tabbed screen.
+      { label: "Career Events", labelKey: "careerEvents", href: "/career/events", icon: "calendar-outline", badgeKey: "careerEvents" },
       { label: "Dream Companies", labelKey: "dreamCompanies", href: "/career/dream-companies", icon: "star-outline" },
       { label: "Company Intelligence", labelKey: "companyIntelligence", href: "/career/company-intelligence", icon: "search-outline" },
       { label: "Salary Negotiation", labelKey: "salaryNegotiation", href: "/career/salary-negotiation", icon: "bar-chart-2-outline" },
@@ -64,15 +78,30 @@ export const primaryNav: NavItem[] = [
     ],
   },
   { label: "Learning Courses", labelKey: "learningCourses", href: "/learning", icon: "book-open-outline" },
-  { label: "Job Alerts", labelKey: "jobAlerts", href: "/job-alerts", icon: "briefcase-outline" },
+  { label: "Job Alerts", labelKey: "jobAlerts", href: "/job-alerts", icon: "briefcase-outline", badgeKey: "jobAlerts" },
+  // Mobile: MoreSrc.tsx's "Applications" row / the Applications tab of the
+  // Interviews screen (src/requests/Applications/ApplicationsTab.tsx),
+  // backed by Saveur-Backend's app/api/tracker.py CRUD endpoints. Top-level
+  // here (not nested under Practice) since it's a Basic-and-up job-search
+  // tool in its own right, same tier/prominence as Job Alerts.
+  { label: "Application Tracker", labelKey: "applicationTracker", href: "/applications", icon: "award-outline" },
 ];
 
 // Sidebar secondary / bottom section.
 export const secondaryNav: NavLeaf[] = [
   { label: "Referral Program", labelKey: "referralProgram", href: "/referral", icon: "gift-outline" },
   { label: "Subscription", labelKey: "subscription", href: "/subscription", icon: "credit-card-outline" },
-  { label: "Settings", labelKey: "settings", href: "/settings", icon: "settings-2-outline" },
-  { label: "Live Support", labelKey: "liveSupport", href: "/support", icon: "headphones-outline" },
+  // badgeKey "settings" folds Daily Industry News + Weekly Career Report
+  // unread flags together (0/1/2) — same combined-row treatment mobile's
+  // drawer gives its own "More" row (see MainDrawer.tsx's `badge:` on the
+  // Profile item) now that neither of those two screens has its own web
+  // route/nav slot yet.
+  { label: "Settings", labelKey: "settings", href: "/settings", icon: "settings-2-outline", badgeKey: "settings" },
+  // Renamed from "Live Support" -> "Support" (product request) — labelKey
+  // stays `liveSupport` on purpose, to avoid invalidating the existing
+  // `common:nav.liveSupport` translation key across all 12 locales; only
+  // the literal English defaultValue text changes.
+  { label: "Support", labelKey: "liveSupport", href: "/support", icon: "headphones-outline" },
 ];
 
 // Quick-action cards shown on the dashboard — a flattened, curated subset of
