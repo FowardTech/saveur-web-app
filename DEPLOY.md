@@ -1,115 +1,114 @@
 # Deploying Saveur-Web to the droplet
 
-You've already added the DNS A record: `app.saveurnow.com -> 134.209.218.170`.
-Everything below runs **on the droplet itself over SSH** — I don't have SSH
-access to it, so these are copy-paste commands for you to run.
+DNS is already set: `app.saveurnow.com -> 134.209.218.170`.
 
-## 0. Confirm what's serving api.saveurnow.com today
+I don't have SSH access to the droplet, so this is a copy-paste runbook for
+you to run yourself: `ssh root@134.209.218.170`, then paste each block below
+in order.
+
+## 1. Check what's serving TLS today
 
 ```bash
 sudo ss -tlnp | grep -E ':80|:443'
 ```
 
-Look at the process name in the output — `caddy` or `nginx`. Use the
-matching section below. (If it's something else entirely, e.g. a managed
-load balancer, stop here and tell me what you see.)
+Look for `caddy` or `nginx` in the output. Use the matching step 4 below.
 
-## 1. Get the code onto the droplet
-
-Same pattern as Saveur-Backend presumably already used — clone as a sibling
-directory:
+## 2. Get the code onto the droplet
 
 ```bash
 cd ~
-git clone <your Saveur-Web repo URL/path> Saveur-Web
+git clone <your Saveur-Web repo URL> Saveur-Web   # or however Saveur-Backend got here — scp, etc.
 cd Saveur-Web
 ```
 
-(If Saveur-Backend was deployed by `scp`-ing a local copy instead of
-`git clone`, do the same here — whichever you used before.)
+## 3. Create the production env file and start the container
 
-## 2. Create the production env file
-
-```bash
-cp .env.production.example .env
-nano .env   # fill in NEXT_PUBLIC_FIREBASE_VAPID_KEY if you have it yet — see the file's own comment; everything else is already filled in correctly
-```
-
-## 3. Build and start the container
+Paste this whole block as one command — it writes `.env` with every real
+value already filled in (Firebase config + the VAPID key you just gave me),
+then builds and starts the container:
 
 ```bash
+cat > .env <<'EOF'
+NEXT_PUBLIC_API_BASE_URL=https://api.saveurnow.com
+NEXT_PUBLIC_SITE_URL=https://app.saveurnow.com
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=saveur-ac8ec.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=saveur-ac8ec
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=saveur-ac8ec.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=679326954548
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyCQ-hJKws1IHxBrKZ3V4Lk8Z0sbRvT7770
+NEXT_PUBLIC_FIREBASE_APP_ID=1:679326954548:web:3acc7f6cf84baef1024661
+NEXT_PUBLIC_FIREBASE_VAPID_KEY=BHjnmHvtNIsUU1ZRgxQ4lm87X0nYDq6HS8vtdUGV5YXfqVQW4HZ_eZKA--NDyV0sKW5r1NzLsQ23AWTDn5xvySU
+EOF
+
 docker compose build web
 docker compose up -d web
-docker compose logs -f web   # Ctrl+C once you see it listening on port 3000
+docker compose logs -f web
 ```
+
+Wait for a line like `Ready in ...ms` / `Listening on port 3000`, then
+Ctrl+C (the container keeps running in the background — `-f` just follows
+the log).
 
 ## 4. Point the reverse proxy at it
 
-### If it's Caddy
-Open `/etc/caddy/Caddyfile` and add the block from `deploy/Caddyfile.snippet`
-in this repo (just the `app.saveurnow.com { ... }` part). Then:
+**If step 1 showed Caddy:**
 
 ```bash
+sudo tee -a /etc/caddy/Caddyfile <<'EOF'
+
+app.saveurnow.com {
+	reverse_proxy 127.0.0.1:3000
+}
+EOF
 sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy
 ```
 
-Caddy issues the TLS certificate automatically on reload — nothing else to run.
+Caddy issues the TLS cert automatically on reload — nothing else to run.
 
-### If it's nginx
+**If step 1 showed nginx instead:**
+
 ```bash
-sudo cp deploy/nginx.app-saveurnow.conf /etc/nginx/sites-available/app.saveurnow.com
+sudo cp ~/Saveur-Web/deploy/nginx.app-saveurnow.conf /etc/nginx/sites-available/app.saveurnow.com
 sudo ln -s /etc/nginx/sites-available/app.saveurnow.com /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 sudo certbot --nginx -d app.saveurnow.com
 ```
 
-## 5. Update the backend so it trusts this new origin
+## 5. Update the backend to trust the new domain
 
-This is the step that actually fixes the CORS errors from earlier — without
-it, the site will load but every sign-in/API call will still fail with "No
-internet connection" exactly as before, just on the real domain instead of
-localhost.
-
-```bash
-cd ~/Saveur-Backend   # or wherever it lives on this droplet
-nano .env
-```
-
-Update (or add) these two lines:
-
-```
-CORS_ORIGINS=https://app.saveurnow.com
-WEB_APP_BASE_URL=https://app.saveurnow.com
-```
-
-If `CORS_ORIGINS` needs to allow more than one origin later (e.g. you keep
-testing from a LAN IP too), it's comma-separated: `CORS_ORIGINS=https://app.saveurnow.com,http://192.168.2.55:3000`.
-
-Then restart the backend so it picks up the change:
+This is the step that actually fixes the CORS errors from before — without
+it the site loads but every sign-in/API call still fails with "No internet
+connection," just on the real domain instead of localhost.
 
 ```bash
+cd ~/Saveur-Backend   # wherever it lives on this droplet
+grep -q '^CORS_ORIGINS=' .env && sed -i 's|^CORS_ORIGINS=.*|CORS_ORIGINS=https://app.saveurnow.com|' .env || echo 'CORS_ORIGINS=https://app.saveurnow.com' >> .env
+grep -q '^WEB_APP_BASE_URL=' .env && sed -i 's|^WEB_APP_BASE_URL=.*|WEB_APP_BASE_URL=https://app.saveurnow.com|' .env || echo 'WEB_APP_BASE_URL=https://app.saveurnow.com' >> .env
 docker compose restart api
 ```
 
-## 6. Tell Firebase about the new domain
+If you ever need more than one allowed origin (e.g. still testing from a LAN
+IP too), edit `.env` directly — it's comma-separated:
+`CORS_ORIGINS=https://app.saveurnow.com,http://192.168.2.55:3000`.
 
-Firebase Console -> your saveur-ac8ec project -> Authentication -> Settings ->
-Authorized domains -> Add domain -> `app.saveurnow.com`.
+## 6. Add the domain to Firebase
 
-Without this, Google/email sign-in will fail with
-`Firebase: Error (auth/unauthorized-domain)` on the live site — the same
-error seen earlier when testing from an unlisted dev origin.
+Firebase Console → project `saveur-ac8ec` → Authentication → Settings →
+Authorized domains → Add domain → `app.saveurnow.com`.
+
+Skipping this gives `Firebase: Error (auth/unauthorized-domain)` on Google
+sign-in on the live site.
 
 ## 7. Test
 
 Visit `https://app.saveurnow.com` and try: registering a new account, Google
-sign-in, LinkedIn sign-in, and confirm the new user shows up in the admin
-dashboard. All four were broken locally purely because of the CORS/domain
-issues above — they should all work now that the real domain is allow-listed
-end to end.
+sign-in, LinkedIn sign-in — and confirm the new user shows up in the admin
+dashboard. All of those were failing purely because of the CORS/domain
+issues above, not app bugs, so they should all work now.
 
-## Redeploying after future code changes
+## Redeploying later
 
 ```bash
 cd ~/Saveur-Web
@@ -118,6 +117,6 @@ docker compose build web
 docker compose up -d web
 ```
 
-Remember: any change to a `NEXT_PUBLIC_*` value in `.env` requires a rebuild
-(`docker compose build web`), not just a restart — see the Dockerfile's own
-comment for why.
+Any change to a value in `.env` needs a rebuild (`docker compose build
+web`), not just a restart — `NEXT_PUBLIC_*` values get baked into the
+JS bundle at build time.
