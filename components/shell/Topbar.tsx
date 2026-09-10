@@ -5,6 +5,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import { NotificationBell } from "./NotificationBell";
+import { SiteSearch } from "./SiteSearch";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { LinkButton } from "@/components/ui/Button";
 
@@ -18,7 +19,7 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
   const isSignedIn = !!firebaseUser;
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-surface-2/80 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-surface-2/80 px-4 backdrop-blur sm:px-6">
       <div className="flex items-center gap-3">
         {showMenuButton && (
           <button
@@ -32,7 +33,13 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      {!loading && isSignedIn && (
+        <div className="hidden flex-1 justify-center sm:flex">
+          <SiteSearch />
+        </div>
+      )}
+
+      <div className="ml-auto flex items-center gap-2">
         {!loading && !isSignedIn && (
           <>
             <ThemeToggle />
