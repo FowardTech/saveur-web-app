@@ -424,9 +424,17 @@
     }
   },
   "referral": {
+    "apply": "Apply",
+    "codeAppliedBody": "This referral has been recorded.",
+    "codeFailedBody": "It may be invalid, your own code, or you've already been referred.",
+    "codePlaceholder": "Enter referral code",
     "copied": "Copied!",
     "copy": "Copy",
+    "creditAutoApplied": "Automatically applied to your next Saveur invoice.",
+    "creditBonusDays": "Applied as free Saveur Basic access through {{date}}.",
+    "creditBonusDaysGeneric": "Applied as free Saveur Basic access days, on top of your App Store/Play Store subscription.",
     "earnCreditPerReferral": "Earn {{amount}} credit per referral who subscribes.",
+    "haveCode": "Have a code from a friend?",
     "loadFailedDefault": "Couldn't load your referral info.",
     "pending": "Pending",
     "referred": "Referred",
