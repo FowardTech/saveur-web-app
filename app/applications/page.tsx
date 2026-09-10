@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,12 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { INTERVIEW_TYPES, interviewTypeSlug } from "@/lib/interviewData";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
+import { getAppConfig, isFeatureEnabled } from "@/lib/appConfigService";
+import * as emailConnectionService from "@/lib/emailConnectionService";
+import { type EmailProvider, type EmailConnectionProps } from "@/lib/emailConnectionService";
+import * as calendarConnectionService from "@/lib/calendarConnectionService";
+import { type CalendarProvider, type CalendarConnectionProps } from "@/lib/calendarConnectionService";
 
 // Web counterpart to Saveur/src/requests/RequestsSrc.tsx: ONE "Interviews"
 // screen with a pill tab bar — Applications (index 0, default) and Practice
@@ -63,6 +69,21 @@ interface Analytics {
   stale_after_days: number;
   stale_applications: Array<{ id: number; company: string; role: string; stage: string; days_stale: number }>;
 }
+
+// Real Gmail/Outlook/Google Calendar/Outlook Calendar brand marks for the 4
+// "Connect ..." cards below, via the same geticon.dev per-domain favicon
+// lookup CompanyLogoAvatar already uses for employer logos elsewhere on web
+// — see Saveur/src/requests/Applications/AddFromEmail.tsx's identical
+// PROVIDER_LOGO_DOMAIN for the full "why per-product Google subdomains"
+// reasoning (mail.google.com vs calendar.google.com resolve to distinct
+// icons; Outlook doesn't split as cleanly, so both Outlook rows share one).
+const PROVIDER_LOGO_DOMAIN: Record<"gmail" | "outlook_mail" | "google_calendar" | "outlook_calendar", string> = {
+  gmail: "mail.google.com",
+  outlook_mail: "outlook.com",
+  google_calendar: "calendar.google.com",
+  outlook_calendar: "outlook.com",
+};
+const providerLogoUrl = (key: keyof typeof PROVIDER_LOGO_DOMAIN) => `https://geticon.dev/?url=${PROVIDER_LOGO_DOMAIN[key]}`;
 
 function stageLabel(t: (k: string, o?: Record<string, unknown>) => string, stage: string) {
   return t(`web:applications.stages.${stage.toLowerCase()}`, { defaultValue: stage });
@@ -151,6 +172,135 @@ function InterviewsPageInner() {
 
   const [draftFor, setDraftFor] = useState<number | null>(null);
   const [draft, setDraft] = useState<{ id: number; subject: string; body: string } | null>(null);
+
+  // ---- Connect inbox/calendar (Job Tracker auto-scan) ----
+  // Web counterpart to Saveur/src/requests/Applications/AddFromEmail.tsx's
+  // own connector cards — see lib/emailConnectionService.ts /
+  // lib/calendarConnectionService.ts for the OAuth flow. Each provider is
+  // independently controlled by an admin Feature Flags toggle
+  // (isFeatureEnabled below), matching mobile.
+  const [connectFlags, setConnectFlags] = useState<{
+    outlookMail: boolean;
+    gmail: boolean;
+    googleCalendar: boolean;
+    outlookCalendar: boolean;
+  } | null>(null);
+  const [emailConnections, setEmailConnections] = useState<EmailConnectionProps[] | null>(null);
+  const [calendarConnections, setCalendarConnections] = useState<CalendarConnectionProps[] | null>(null);
+  const [connectingEmailProvider, setConnectingEmailProvider] = useState<EmailProvider | null>(null);
+  const [disconnectingEmailProvider, setDisconnectingEmailProvider] = useState<EmailProvider | null>(null);
+  const [connectingCalendarProvider, setConnectingCalendarProvider] = useState<CalendarProvider | null>(null);
+  const [disconnectingCalendarProvider, setDisconnectingCalendarProvider] = useState<CalendarProvider | null>(null);
+  // Result banner after landing back here from a provider's OAuth consent
+  // page (see lib/emailConnectionService.ts's own header comment — the
+  // backend 302s straight to this page with ?email_connected=/
+  // ?calendar_connected=&ok=/&error=/&email= rather than a popup message).
+  const [connectResultBanner, setConnectResultBanner] = useState<{ ok: boolean; label: string; email?: string; errorCode?: string } | null>(null);
+
+  const loadConnections = useCallback(() => {
+    emailConnectionService.listConnections().then(setEmailConnections).catch(() => setEmailConnections([]));
+    calendarConnectionService.listConnections().then(setCalendarConnections).catch(() => setCalendarConnections([]));
+  }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    getAppConfig().then(() => {
+      setConnectFlags({
+        outlookMail: isFeatureEnabled("outlook_inbox_scan"),
+        gmail: isFeatureEnabled("gmail_inbox_scan"),
+        googleCalendar: isFeatureEnabled("google_calendar_scan"),
+        outlookCalendar: isFeatureEnabled("outlook_calendar_scan"),
+      });
+    });
+    loadConnections();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
+  // One-time read of the OAuth-callback redirect's query params (see this
+  // section's header comment) -- guarded so a later unrelated navigation
+  // that happens to keep `searchParams` referentially different doesn't
+  // re-show a stale banner. Strips the params from the URL once read so a
+  // page refresh doesn't re-trigger it.
+  const connectRedirectHandled = useRef(false);
+  useEffect(() => {
+    if (connectRedirectHandled.current) return;
+    const emailProvider = searchParams?.get("email_connected");
+    const calendarProvider = searchParams?.get("calendar_connected");
+    if (!emailProvider && !calendarProvider) return;
+    connectRedirectHandled.current = true;
+
+    const ok = searchParams?.get("ok") === "1";
+    const email = searchParams?.get("email") || undefined;
+    const errorCode = searchParams?.get("error") || undefined;
+    const label = emailProvider
+      ? emailProvider === "gmail"
+        ? t("web:applications.connectGmail", { defaultValue: "Gmail" })
+        : t("web:applications.connectOutlook", { defaultValue: "Outlook" })
+      : calendarProvider === "google"
+        ? t("web:applications.connectGoogleCalendar", { defaultValue: "Google Calendar" })
+        : t("web:applications.connectOutlookCalendar", { defaultValue: "Outlook Calendar" });
+    // One-time redirect-result handling (guarded by the `connectRedirectHandled`
+    // ref above), same pattern as app/auth/linkedin/callback/page.tsx's own
+    // one-shot query-param read.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setConnectResultBanner({ ok, label, email, errorCode });
+    loadConnections();
+
+    const url = new URL(window.location.href);
+    ["email_connected", "calendar_connected", "ok", "email", "error"].forEach((k) => url.searchParams.delete(k));
+    router.replace(url.pathname + url.search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  async function onConnectEmail(provider: EmailProvider) {
+    if (connectingEmailProvider) return;
+    setConnectingEmailProvider(provider);
+    try {
+      await emailConnectionService.connect(provider);
+      // Browser is navigating away to the provider's consent page now --
+      // no further state update needed (or reachable) here.
+    } catch (err) {
+      setConnectingEmailProvider(null);
+      setError((err as ApiError).message || t("web:applications.connectFailedDefault", { defaultValue: "Couldn't start that connection right now." }));
+    }
+  }
+
+  async function onDisconnectEmail(provider: EmailProvider) {
+    if (disconnectingEmailProvider) return;
+    setDisconnectingEmailProvider(provider);
+    try {
+      await emailConnectionService.disconnect(provider);
+      loadConnections();
+    } catch (err) {
+      setError((err as ApiError).message || t("web:applications.disconnectFailedDefault", { defaultValue: "Couldn't disconnect right now." }));
+    } finally {
+      setDisconnectingEmailProvider(null);
+    }
+  }
+
+  async function onConnectCalendar(provider: CalendarProvider) {
+    if (connectingCalendarProvider) return;
+    setConnectingCalendarProvider(provider);
+    try {
+      await calendarConnectionService.connect(provider);
+    } catch (err) {
+      setConnectingCalendarProvider(null);
+      setError((err as ApiError).message || t("web:applications.connectFailedDefault", { defaultValue: "Couldn't start that connection right now." }));
+    }
+  }
+
+  async function onDisconnectCalendar(provider: CalendarProvider) {
+    if (disconnectingCalendarProvider) return;
+    setDisconnectingCalendarProvider(provider);
+    try {
+      await calendarConnectionService.disconnect(provider);
+      loadConnections();
+    } catch (err) {
+      setError((err as ApiError).message || t("web:applications.disconnectFailedDefault", { defaultValue: "Couldn't disconnect right now." }));
+    } finally {
+      setDisconnectingCalendarProvider(null);
+    }
+  }
 
   async function loadApplications() {
     try {
@@ -340,6 +490,24 @@ function InterviewsPageInner() {
 
           {tab === "applications" ? (
             <>
+              {!proRequired && (
+                <ConnectInboxSection
+                  flags={connectFlags}
+                  emailConnections={emailConnections}
+                  calendarConnections={calendarConnections}
+                  connectingEmailProvider={connectingEmailProvider}
+                  disconnectingEmailProvider={disconnectingEmailProvider}
+                  connectingCalendarProvider={connectingCalendarProvider}
+                  disconnectingCalendarProvider={disconnectingCalendarProvider}
+                  onConnectEmail={onConnectEmail}
+                  onDisconnectEmail={onDisconnectEmail}
+                  onConnectCalendar={onConnectCalendar}
+                  onDisconnectCalendar={onDisconnectCalendar}
+                  resultBanner={connectResultBanner}
+                  onDismissBanner={() => setConnectResultBanner(null)}
+                />
+              )}
+
               {proRequired && (
                 <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
@@ -581,6 +749,207 @@ function SessionRow({ session, typeLabel }: { session: Session; typeLabel: (t: s
         </span>
       )}
     </Link>
+  );
+}
+
+// "Connect your inbox or calendar" — web counterpart to Saveur/src/requests/
+// Applications/AddFromEmail.tsx's connector cards (see that file's own
+// module comment for the full product history: real auto-detect on top of
+// the permanent paste-email fallback above/below this section). Self-hides
+// entirely if every provider's admin flag is off (fresh/not-yet-launched
+// install) or the flags haven't loaded yet, same as mobile's
+// `anyConnectRowVisible` gate.
+function ConnectInboxSection({
+  flags,
+  emailConnections,
+  calendarConnections,
+  connectingEmailProvider,
+  disconnectingEmailProvider,
+  connectingCalendarProvider,
+  disconnectingCalendarProvider,
+  onConnectEmail,
+  onDisconnectEmail,
+  onConnectCalendar,
+  onDisconnectCalendar,
+  resultBanner,
+  onDismissBanner,
+}: {
+  flags: { outlookMail: boolean; gmail: boolean; googleCalendar: boolean; outlookCalendar: boolean } | null;
+  emailConnections: EmailConnectionProps[] | null;
+  calendarConnections: CalendarConnectionProps[] | null;
+  connectingEmailProvider: EmailProvider | null;
+  disconnectingEmailProvider: EmailProvider | null;
+  connectingCalendarProvider: CalendarProvider | null;
+  disconnectingCalendarProvider: CalendarProvider | null;
+  onConnectEmail: (p: EmailProvider) => void;
+  onDisconnectEmail: (p: EmailProvider) => void;
+  onConnectCalendar: (p: CalendarProvider) => void;
+  onDisconnectCalendar: (p: CalendarProvider) => void;
+  resultBanner: { ok: boolean; label: string; email?: string; errorCode?: string } | null;
+  onDismissBanner: () => void;
+}) {
+  const { t } = useTranslation();
+
+  const rows: React.ReactNode[] = [];
+  if (flags?.outlookMail) {
+    const conn = emailConnections?.find((c) => c.provider === "outlook") ?? null;
+    rows.push(
+      <ConnectorCard
+        key="outlook"
+        logoKey="outlook_mail"
+        label={t("web:applications.connectOutlook", { defaultValue: "Outlook" })}
+        subtitle={t("web:applications.connectOutlookSubtitle", { defaultValue: "Automatically detect application updates in your Outlook inbox." })}
+        connectedAs={conn?.isActive ? conn.emailAddress : null}
+        isConnecting={connectingEmailProvider === "outlook"}
+        isDisconnecting={disconnectingEmailProvider === "outlook"}
+        onConnect={() => onConnectEmail("outlook")}
+        onDisconnect={() => onDisconnectEmail("outlook")}
+      />
+    );
+  }
+  if (flags?.gmail) {
+    const conn = emailConnections?.find((c) => c.provider === "gmail") ?? null;
+    rows.push(
+      <ConnectorCard
+        key="gmail"
+        logoKey="gmail"
+        label={t("web:applications.connectGmail", { defaultValue: "Gmail" })}
+        subtitle={t("web:applications.connectGmailSubtitle", { defaultValue: "Automatically detect application updates in your Gmail inbox." })}
+        connectedAs={conn?.isActive ? conn.emailAddress : null}
+        isConnecting={connectingEmailProvider === "gmail"}
+        isDisconnecting={disconnectingEmailProvider === "gmail"}
+        onConnect={() => onConnectEmail("gmail")}
+        onDisconnect={() => onDisconnectEmail("gmail")}
+      />
+    );
+  }
+  if (flags?.googleCalendar) {
+    const conn = calendarConnections?.find((c) => c.provider === "google") ?? null;
+    rows.push(
+      <ConnectorCard
+        key="google-calendar"
+        logoKey="google_calendar"
+        label={t("web:applications.connectGoogleCalendar", { defaultValue: "Google Calendar" })}
+        subtitle={t("web:applications.connectCalendarSubtitle", { defaultValue: "See interview invites and manage your schedule." })}
+        connectedAs={conn?.isActive ? conn.emailAddress : null}
+        isConnecting={connectingCalendarProvider === "google"}
+        isDisconnecting={disconnectingCalendarProvider === "google"}
+        onConnect={() => onConnectCalendar("google")}
+        onDisconnect={() => onDisconnectCalendar("google")}
+      />
+    );
+  }
+  if (flags?.outlookCalendar) {
+    const conn = calendarConnections?.find((c) => c.provider === "outlook") ?? null;
+    rows.push(
+      <ConnectorCard
+        key="outlook-calendar"
+        logoKey="outlook_calendar"
+        label={t("web:applications.connectOutlookCalendar", { defaultValue: "Outlook Calendar" })}
+        subtitle={t("web:applications.connectCalendarSubtitle", { defaultValue: "See interview invites and manage your schedule." })}
+        connectedAs={conn?.isActive ? conn.emailAddress : null}
+        isConnecting={connectingCalendarProvider === "outlook"}
+        isDisconnecting={disconnectingCalendarProvider === "outlook"}
+        onConnect={() => onConnectCalendar("outlook")}
+        onDisconnect={() => onDisconnectCalendar("outlook")}
+      />
+    );
+  }
+
+  if (rows.length === 0 && !resultBanner) return null;
+
+  return (
+    <div className="flex flex-col gap-3">
+      {resultBanner && (
+        <div
+          className={`flex items-start justify-between gap-3 rounded-card border p-4 text-sm ${
+            resultBanner.ok ? "border-tint-mint/40 bg-tint-mint/10 text-tint-mint-text" : "border-danger/40 bg-danger/10 text-danger"
+          }`}
+        >
+          <span>
+            {resultBanner.ok
+              ? t("web:applications.connectSucceeded", {
+                  defaultValue: "{{provider}} connected{{email}}.",
+                  provider: resultBanner.label,
+                  email: resultBanner.email ? ` — ${resultBanner.email}` : "",
+                })
+              : t("web:applications.connectFailed", {
+                  defaultValue: "Couldn't connect {{provider}}. {{code}}",
+                  provider: resultBanner.label,
+                  code: resultBanner.errorCode ?? "",
+                })}
+          </span>
+          <button type="button" onClick={onDismissBanner} aria-label={t("common:actions.dismiss", { defaultValue: "Dismiss" })} className="shrink-0 opacity-70 hover:opacity-100">
+            <EvaIcon name="close-outline" size={16} />
+          </button>
+        </div>
+      )}
+
+      {rows.length > 0 && (
+        <>
+          <div>
+            <h2 className="text-sm font-semibold text-primary">{t("web:applications.connectSectionTitle", { defaultValue: "Connect your inbox or calendar" })}</h2>
+            <p className="mt-1 text-sm text-hint">
+              {t("web:applications.connectSectionBody", {
+                defaultValue: "Automatically track application emails and interview invites as they arrive — no copy-pasting. We only read job-related messages/events; everything else is left alone.",
+              })}
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">{rows}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ConnectorCard({
+  logoKey,
+  label,
+  subtitle,
+  connectedAs,
+  isConnecting,
+  isDisconnecting,
+  onConnect,
+  onDisconnect,
+}: {
+  logoKey: keyof typeof PROVIDER_LOGO_DOMAIN;
+  label: string;
+  subtitle: string;
+  connectedAs: string | null | undefined;
+  isConnecting: boolean;
+  isDisconnecting: boolean;
+  onConnect: () => void;
+  onDisconnect: () => void;
+}) {
+  const { t } = useTranslation();
+  const isConnected = !!connectedAs;
+  return (
+    <div className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4">
+      <CompanyLogoAvatar logoUrl={providerLogoUrl(logoKey)} companyName={label} size={36} />
+      <div className="min-w-0 flex-1">
+        <h3 className="font-medium text-primary">{label}</h3>
+        <p className="truncate text-sm text-hint">
+          {isConnected
+            ? t("web:applications.connectedAs", { defaultValue: "Connected — {{email}}", email: connectedAs })
+            : subtitle}
+        </p>
+      </div>
+      {isConnected ? (
+        isDisconnecting ? (
+          <span className="inline-flex h-8 w-8 shrink-0 animate-spin items-center justify-center rounded-full border-2 border-hint border-t-transparent" />
+        ) : (
+          <Button variant="outline" size="sm" onClick={onDisconnect}>
+            {t("web:applications.disconnect", { defaultValue: "Disconnect" })}
+          </Button>
+        )
+      ) : isConnecting ? (
+        <span className="inline-flex h-8 w-8 shrink-0 animate-spin items-center justify-center rounded-full border-2 border-hint border-t-transparent" />
+      ) : (
+        <Button variant="outline" size="sm" onClick={onConnect}>
+          {t("web:applications.connect", { defaultValue: "Connect" })}
+        </Button>
+      )}
+    </div>
   );
 }
 

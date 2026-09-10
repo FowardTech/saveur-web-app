@@ -19,11 +19,29 @@ export interface HomeBannerConfig {
   link_label: string;
 }
 
+// Job Tracker inbox/calendar auto-scan admin kill-switches (Saveur-Backend's
+// app_config_service.py DEFAULTS["feature_flags"], Saveur/services/
+// configService.ts's own FeatureFlags interface) — the only feature_flags
+// keys the web app currently reads (gate the 4 "Connect ..." cards on
+// app/applications/page.tsx). Deliberately a narrow subset, not the mobile
+// app's full ~30-key FeatureFlags shape, matching this file's existing
+// "add sections as web grows to need them" convention. All 4 default to
+// false (fail CLOSED), same reasoning as mobile's DEFAULT_CONFIG: a
+// "Connect Gmail" button that's guaranteed to 503 isn't a better fallback
+// during a network hiccup than just hiding it.
+export interface FeatureFlags {
+  gmail_inbox_scan: boolean;
+  outlook_inbox_scan: boolean;
+  google_calendar_scan: boolean;
+  outlook_calendar_scan: boolean;
+}
+
 export interface AppConfig {
   home_banner: HomeBannerConfig;
-  // Other sections (feature_flags, release, faq, about, etc.) exist on the
-  // backend response too but aren't modeled here yet — add them as web
-  // grows to need them, same pattern as this one.
+  feature_flags: FeatureFlags;
+  // Other sections (release, faq, about, etc.) exist on the backend
+  // response too but aren't modeled here yet — add them as web grows to
+  // need them, same pattern as this one.
   [key: string]: unknown;
 }
 
@@ -33,6 +51,13 @@ const DEFAULT_HOME_BANNER: HomeBannerConfig = {
   message: "",
   link_url: "",
   link_label: "",
+};
+
+const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
+  gmail_inbox_scan: false,
+  outlook_inbox_scan: false,
+  google_calendar_scan: false,
+  outlook_calendar_scan: false,
 };
 
 // Module-scope cache — good enough for "no need to replicate mobile's pub/sub
@@ -58,14 +83,29 @@ export async function getAppConfig(language?: string): Promise<AppConfig> {
       cached = {
         ...data,
         home_banner: { ...DEFAULT_HOME_BANNER, ...data.home_banner },
+        feature_flags: { ...DEFAULT_FEATURE_FLAGS, ...data.feature_flags },
       } as AppConfig;
     } catch {
       // Network/backend unavailable — fail open with defaults so a config
-      // fetch failure never blocks the dashboard from rendering.
-      cached = { home_banner: DEFAULT_HOME_BANNER };
+      // fetch failure never blocks the dashboard from rendering. (The 4
+      // Job Tracker connect flags inside DEFAULT_FEATURE_FLAGS themselves
+      // fail CLOSED — see that const's own comment — this outer fail-open
+      // is only about the fetch itself, not what those individual flags
+      // default to.)
+      cached = { home_banner: DEFAULT_HOME_BANNER, feature_flags: DEFAULT_FEATURE_FLAGS };
     }
     return cached;
   })();
 
   return inFlight;
+}
+
+/** Synchronous read of whichever feature-flag section was last fetched by
+ * getAppConfig() (or DEFAULT_FEATURE_FLAGS if it hasn't resolved yet this
+ * session) — mirrors mobile's services/configService.ts isFeatureEnabled().
+ * Callers that need this to reflect a live fetch should await
+ * getAppConfig() first (e.g. on mount), then re-render off its result;
+ * this helper itself never triggers a fetch. */
+export function isFeatureEnabled(key: keyof FeatureFlags): boolean {
+  return (cached?.feature_flags ?? DEFAULT_FEATURE_FLAGS)[key] !== false;
 }
