@@ -69,6 +69,17 @@ export const primaryNav: NavItem[] = [
       { label: "Dream Companies", labelKey: "dreamCompanies", href: "/career/dream-companies", icon: "star-outline" },
       { label: "Company Intelligence", labelKey: "companyIntelligence", href: "/career/company-intelligence", icon: "search-outline" },
       { label: "Salary Negotiation", labelKey: "salaryNegotiation", href: "/career/salary-negotiation", icon: "bar-chart-2-outline" },
+      // Mobile: src/more/CareerDiary.tsx — a plain journal (did/learned/
+      // achieved) tied to a role/career/job. Nested here rather than
+      // top-level since it's a lower-frequency personal-record tool, same
+      // tier as the other Career Tools group members.
+      { label: "Career Diary", labelKey: "careerDiary", href: "/career-diary", icon: "edit-2-outline" },
+      // Mobile: src/more/WhatsNext.tsx — Premium post-offer guided journey
+      // (negotiation + pre-start checklist + 90-day plan). Reached from the
+      // Application Tracker's Offer stage (app/applications/page.tsx) too,
+      // but also belongs in Career Tools as its own standalone entry point,
+      // same as mobile's More menu row.
+      { label: "What's Next", labelKey: "whatsNext", href: "/whats-next", icon: "flag-outline" },
     ],
   },
   {
@@ -80,9 +91,26 @@ export const primaryNav: NavItem[] = [
       { label: "Cover Letter Generator", labelKey: "coverLetterGenerator", href: "/resume/cover-letter", icon: "file-text-outline" },
       { label: "LinkedIn Optimizer", labelKey: "linkedinOptimizer", href: "/resume/linkedin", icon: "linkedin-outline" },
       { label: "Resume Variants", labelKey: "resumeVariants", href: "/resume/variants", icon: "layers-outline" },
+      // Mobile: src/more/JDAnalyzer.tsx — the general-purpose "paste any JD,
+      // get a match score + build a tailored resume/cover letter" tool
+      // (distinct from components/jobAlerts/JobFitAnalysis.tsx, which
+      // auto-runs the same analysis against one specific job alert).
+      { label: "JD Analyzer", labelKey: "jdAnalyzer", href: "/jd-analyzer", icon: "search-outline" },
+      // Mobile: src/more/MyDocuments.tsx (uploaded source files) +
+      // src/more/GeneratedDocuments.tsx (redownload exported resumes/cover
+      // letters/variants) — grouped here since both are almost entirely
+      // resume-adjacent document management. app/documents/page.tsx itself
+      // links onward to /documents/generated.
+      { label: "My Documents", labelKey: "myDocuments", href: "/documents", icon: "layers-outline" },
     ],
   },
   { label: "Learning Courses", labelKey: "learningCourses", href: "/learning", icon: "book-open-outline" },
+  // Mobile: src/more/DailyIndustryNews.tsx — Premium, AI-curated daily news
+  // digest tailored to the learner's industries/desired roles. Was
+  // previously folded into Settings' badgeKey only (see that row's own
+  // comment) since it had no route of its own yet; now a real top-level
+  // entry, same prominence as Learning Courses/Job Alerts.
+  { label: "Daily Industry News", labelKey: "dailyIndustryNews", href: "/news", icon: "globe-outline" },
   { label: "Job Alerts", labelKey: "jobAlerts", href: "/job-alerts", icon: "briefcase-outline", badgeKey: "jobAlerts" },
   // Mobile: MoreSrc.tsx's "Applications" row, landing on the same real
   // "Interviews" screen (src/requests/RequestsSrc.tsx) as "Recent

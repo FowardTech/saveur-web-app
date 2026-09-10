@@ -93,6 +93,11 @@ const ICONS = [
   "bulb-outline",
   "phone-call-outline",
   "share-outline",
+  "upload-outline",
+  "download-outline",
+  "cloud-upload-outline",
+  "globe-outline",
+  "flag-outline",
 ];
 
 function extractInner(svg) {

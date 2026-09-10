@@ -1,16 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
-import { EvaIcon } from "@/components/icons/EvaIcon";
+import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { CircularProgress } from "@/components/ui/CircularProgress";
+import { DocumentPickerModal } from "@/components/documents/DocumentPickerModal";
+import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import * as resumeService from "@/lib/resumeService";
+import type { ImportedFileInfo, ResumeImportSourceKey } from "@/lib/resumeService";
+import type { DocumentRecord } from "@/lib/documentsService";
+
+// "Import from" grid — web port of Saveur (mobile)'s src/more/
+// ResumeBuilder.tsx import cards. Real backend: POST /api/v1/resume/upload
+// (source_key: resume|linkedin|portfolio|certificates|transcript), state
+// mirrored from GET /api/v1/resume's `sources`. A browser <input
+// type="file"> covers mobile's "choose from device"; "choose from My
+// Documents" reuses the same DocumentPickerModal JD Analyzer's tailor flow
+// uses.
+const IMPORT_OPTIONS: { key: ResumeImportSourceKey; labelKey: string; labelDefault: string; icon: EvaIconName }[] = [
+  { key: "resume", labelKey: "web:resume.builder.import.resume", labelDefault: "Resume", icon: "file-text-outline" },
+  { key: "linkedin", labelKey: "web:resume.builder.import.linkedin", labelDefault: "LinkedIn", icon: "linkedin-outline" },
+  { key: "portfolio", labelKey: "web:resume.builder.import.portfolio", labelDefault: "Portfolio", icon: "briefcase-outline" },
+  { key: "certificates", labelKey: "web:resume.builder.import.certificates", labelDefault: "Certificates", icon: "award-outline" },
+  { key: "transcript", labelKey: "web:resume.builder.import.transcript", labelDefault: "Transcript", icon: "book-open-outline" },
+];
 
 // Real backend contract — Saveur-Backend/app/api/resume.py + resume_gen.py.
 // Unlike mobile (whole ResumeBuilder.tsx screen wrapped in
@@ -48,6 +70,8 @@ function renderSectionValue(value: unknown): string {
 
 export default function ResumeBuilderPage() {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { profile } = useAuth();
   const [resume, setResume] = useState<ResumePayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [targetRole, setTargetRole] = useState("");
@@ -62,6 +86,57 @@ export default function ResumeBuilderPage() {
   const [bulletText, setBulletText] = useState("");
   const [rewriting, setRewriting] = useState(false);
   const [rewriteResult, setRewriteResult] = useState<{ rewritten: string; explanation: string } | null>(null);
+
+  // "Import from" grid state — see IMPORT_OPTIONS above.
+  const [imported, setImported] = useState<Record<string, ImportedFileInfo>>({});
+  const [importingKey, setImportingKey] = useState<ResumeImportSourceKey | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [documentPickerFor, setDocumentPickerFor] = useState<ResumeImportSourceKey | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingImportKey, setPendingImportKey] = useState<ResumeImportSourceKey | null>(null);
+
+  useEffect(() => {
+    resumeService.getImportedSources().then(setImported).catch(() => {});
+  }, []);
+
+  function onPickDeviceFile(key: ResumeImportSourceKey) {
+    setPendingImportKey(key);
+    fileInputRef.current?.click();
+  }
+
+  async function onDeviceFileChosen(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    const key = pendingImportKey;
+    setPendingImportKey(null);
+    if (!file || !key) return;
+    setImportingKey(key);
+    setImportError(null);
+    try {
+      await resumeService.importSource(key, file);
+      setImported((prev) => ({ ...prev, [key]: { name: file.name, sizeBytes: file.size, mimeType: file.type } }));
+    } catch (err) {
+      setImportError((err as ApiError).message || t("web:resume.builder.importFailedDefault", { defaultValue: "Upload failed. Please try again." }));
+    } finally {
+      setImportingKey(null);
+    }
+  }
+
+  async function onPickFromMyDocuments(doc: DocumentRecord) {
+    const key = documentPickerFor;
+    setDocumentPickerFor(null);
+    if (!key || !doc.url) return;
+    setImportingKey(key);
+    setImportError(null);
+    try {
+      await resumeService.importSourceFromUrl(key, doc.url, doc.name ?? t("web:resume.builder.documentFallbackName", { defaultValue: "Document" }).toString(), doc.mimeType);
+      setImported((prev) => ({ ...prev, [key]: { name: doc.name ?? "Document", sizeBytes: doc.sizeBytes, mimeType: doc.mimeType } }));
+    } catch (err) {
+      setImportError((err as ApiError).message || t("web:resume.builder.importFailedDefault", { defaultValue: "Upload failed. Please try again." }));
+    } finally {
+      setImportingKey(null);
+    }
+  }
 
   const SECTION_LABELS: Record<string, string> = {
     contact: t("web:resume.builder.sections.contact", { defaultValue: "Contact" }),
@@ -160,7 +235,79 @@ export default function ResumeBuilderPage() {
             subtitle={t("web:resume.builder.subtitle", { defaultValue: "Generate an AI-tailored resume, or check your current one's ATS score." })}
           />
 
+          <div className="flex flex-wrap gap-2">
+            <Link href="/documents" className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-primary hover:border-brand/40">
+              <EvaIcon name="layers-outline" size={14} />
+              {t("web:resume.builder.myDocumentsLink", { defaultValue: "My Documents" })}
+            </Link>
+            <Link href="/documents/generated" className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-primary hover:border-brand/40">
+              <EvaIcon name="download-outline" size={14} />
+              {t("web:resume.builder.generatedDocumentsLink", { defaultValue: "Generated Documents" })}
+            </Link>
+          </div>
+
           {error && <p className="text-sm text-danger">{error}</p>}
+          {importError && <p className="text-sm text-danger">{importError}</p>}
+
+          {/* "Import from" grid — mobile's ResumeBuilder.tsx equivalent
+              (device picker or "choose from My Documents") for the five
+              fixed source slots the backend tracks. */}
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <h2 className="font-semibold text-primary">{t("web:resume.builder.importFromTitle", { defaultValue: "Import from" })}</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {IMPORT_OPTIONS.map((opt) => {
+                const file = imported[opt.key];
+                const busy = importingKey === opt.key;
+                return (
+                  <div key={opt.key} className="flex flex-col items-center gap-2 rounded-lg border border-border bg-surface-1 p-4 text-center">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white">
+                      <EvaIcon name={opt.icon} size={16} />
+                    </span>
+                    <p className="text-sm font-semibold text-primary">{t(opt.labelKey, { defaultValue: opt.labelDefault })}</p>
+                    <p className={`truncate text-xs ${file ? "text-success-text" : "text-hint"}`} title={file?.name}>
+                      {busy ? t("web:resume.builder.uploading", { defaultValue: "Uploading…" }) : file ? file.name : t("web:resume.builder.tapToUpload", { defaultValue: "Tap to upload" })}
+                    </p>
+                    <div className="flex gap-1.5">
+                      <button type="button" disabled={busy} onClick={() => onPickDeviceFile(opt.key)} className="text-xs font-medium text-brand hover:underline disabled:opacity-50">
+                        {t("web:resume.builder.chooseDevice", { defaultValue: "Device" })}
+                      </button>
+                      <span className="text-xs text-hint">·</span>
+                      <button type="button" disabled={busy} onClick={() => setDocumentPickerFor(opt.key)} className="text-xs font-medium text-brand hover:underline disabled:opacity-50">
+                        {t("web:resume.builder.chooseMyDocuments", { defaultValue: "My Documents" })}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <input ref={fileInputRef} type="file" className="hidden" accept=".pdf,.doc,.docx,.txt,image/*" onChange={onDeviceFileChosen} />
+          <DocumentPickerModal
+            open={documentPickerFor !== null}
+            onClose={() => setDocumentPickerFor(null)}
+            onSelect={onPickFromMyDocuments}
+            title={t("web:resume.builder.chooseMyDocumentsTitle", { defaultValue: "Choose a file to import" }).toString()}
+          />
+
+          {/* "Create My CV" / "Generate Cover Letter" — mobile's
+              ResumeBuilder.tsx CTAs below the import grid. Reuses the same
+              /resume/generate screen JD Analyzer's "Build Resume" uses,
+              just with docType=cv. */}
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1"
+              onClick={() => router.push(`/resume/generate?docType=cv${targetRole.trim() ? `&role=${encodeURIComponent(targetRole.trim())}` : profile?.desiredRoles?.[0] ? `&role=${encodeURIComponent(profile.desiredRoles[0])}` : ""}`)}
+            >
+              {t("web:resume.builder.createMyCv", { defaultValue: "Create My CV" })}
+            </Button>
+            <Link href="/resume/cover-letter" className="flex-1">
+              <Button type="button" variant="outline" className="w-full">
+                {t("web:resume.builder.generateCoverLetter", { defaultValue: "Generate Cover Letter" })}
+              </Button>
+            </Link>
+          </div>
 
           <form onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <h2 className="font-semibold text-primary">{t("web:resume.builder.generateSectionTitle", { defaultValue: "Generate a tailored resume" })}</h2>
