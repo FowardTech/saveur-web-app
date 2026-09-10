@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -8,17 +8,32 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { CircularProgress } from "@/components/ui/CircularProgress";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/linkedin_optimizer.py
 //   POST /api/v1/linkedin/optimize -> {headline, about, experience_bullets, overall_feedback, profile_strength_score}
 //   body: {headline?, about?, experience_bullets?: string[], target_role?}
+//   GET  /api/v1/linkedin/history  -> {history: [{id, target_role, profile_strength_score, created_at}]}
 // Pro Premium-gated (@require_premium). Note: this critiques pasted profile
 // text — the backend can't read a live LinkedIn profile (see that file's
 // own docstring), so there's no auto-prefill from a connected account here.
+//
+// Mobile parity (src/more/LinkedInOptimizer.tsx): profile strength used to
+// render here as plain "Profile strength: N/100" text — mobile explicitly
+// redesigned this to a ring ("the one profile-quality score in this app not
+// already shown as a ring"). The "Score history" card (GET .../history) was
+// missing entirely even though the endpoint already exists.
 interface Suggestion {
   suggestion: string;
   feedback: string;
+}
+
+interface HistoryEntry {
+  id: number;
+  target_role: string | null;
+  profile_strength_score: number | null;
+  created_at: string | null;
 }
 
 interface OptimizeResult {
@@ -39,7 +54,16 @@ export default function LinkedInOptimizerPage() {
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
   const [result, setResult] = useState<OptimizeResult | null>(null);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
+  useEffect(() => {
+    apiClient
+      .get<{ history: HistoryEntry[] }>("/api/v1/linkedin/history")
+      .then((data) => setHistory(data.history ?? []))
+      .catch(() => {});
+  }, []);
+
+  const previousScore = history.find((h) => h.profile_strength_score != null)?.profile_strength_score ?? null;
   const canSubmit = headline.trim() || about.trim() || bulletsText.trim();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -60,6 +84,10 @@ export default function LinkedInOptimizerPage() {
         target_role: targetRole.trim() || undefined,
       });
       setResult(data);
+      apiClient
+        .get<{ history: HistoryEntry[] }>("/api/v1/linkedin/history")
+        .then((h) => setHistory(h.history ?? []))
+        .catch(() => {});
     } catch (err) {
       const apiErr = err as ApiError;
       if (apiErr.status === 402 || apiErr.status === 403) {
@@ -70,6 +98,13 @@ export default function LinkedInOptimizerPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function formatHistoryDate(iso: string | null) {
+    if (!iso) return "";
+    const ms = Date.parse(iso);
+    if (Number.isNaN(ms)) return "";
+    return new Date(ms).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
   }
 
   return (
@@ -88,6 +123,23 @@ export default function LinkedInOptimizerPage() {
               </span>
               <h2 className="font-semibold text-primary">{t("web:resume.linkedin.premiumRequiredTitle", { defaultValue: "LinkedIn Optimizer is a Premium feature" })}</h2>
               <p className="text-sm text-hint">{t("web:resume.linkedin.premiumRequiredSubtitle", { defaultValue: "Upgrade your plan to get AI feedback on your LinkedIn profile." })}</p>
+            </div>
+          )}
+
+          {!premiumRequired && history.length > 0 && (
+            <div className="rounded-card border border-border bg-surface-2 p-5">
+              <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.scoreHistory", { defaultValue: "Score history" })}</h3>
+              <div className="mt-2.5 flex flex-col gap-2">
+                {history.slice(0, 5).map((h) => (
+                  <div key={h.id} className="flex items-center justify-between text-sm">
+                    <span className="text-hint">
+                      {formatHistoryDate(h.created_at)}
+                      {h.target_role ? ` · ${h.target_role}` : ""}
+                    </span>
+                    <span className="font-semibold text-primary">{h.profile_strength_score != null ? `${h.profile_strength_score}%` : "—"}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -134,13 +186,23 @@ export default function LinkedInOptimizerPage() {
 
           {result && (
             <div className="flex flex-col gap-4">
-              <div className="rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-5">
-                <p className="text-sm font-medium text-primary">
-                  {result.profile_strength_score != null
-                    ? t("web:resume.linkedin.profileStrength", { defaultValue: "Profile strength: {{score}}/100", score: result.profile_strength_score })
-                    : ""}
-                </p>
-                <p className="mt-2 text-sm text-hint">{result.overall_feedback}</p>
+              {result.profile_strength_score != null && (
+                <div className="flex flex-col items-center gap-2 rounded-card border border-border bg-surface-2 p-6 text-center">
+                  <CircularProgress progress={result.profile_strength_score} size={88} strokeWidth={8}>
+                    <span className="text-xl font-bold text-primary">{result.profile_strength_score}%</span>
+                  </CircularProgress>
+                  <p className="text-xs text-hint">{t("web:resume.linkedin.currentProfileStrength", { defaultValue: "Current profile strength" })}</p>
+                  {previousScore != null && (
+                    <p className={`text-xs font-medium ${result.profile_strength_score >= previousScore ? "text-success-text" : "text-warning-text"}`}>
+                      {result.profile_strength_score >= previousScore
+                        ? t("web:resume.linkedin.scoreUp", { defaultValue: "+{{delta}} since last time", delta: result.profile_strength_score - previousScore })
+                        : t("web:resume.linkedin.scoreDown", { defaultValue: "{{delta}} since last time", delta: result.profile_strength_score - previousScore })}
+                    </p>
+                  )}
+                </div>
+              )}
+              <div className="rounded-card border border-border bg-surface-2 p-5">
+                <p className="text-sm text-hint">{result.overall_feedback}</p>
               </div>
 
               {result.headline && (

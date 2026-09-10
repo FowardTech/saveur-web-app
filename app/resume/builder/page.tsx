@@ -9,6 +9,7 @@ import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import { CircularProgress } from "@/components/ui/CircularProgress";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/resume.py + resume_gen.py
@@ -43,6 +44,12 @@ export default function ResumeBuilderPage() {
   const [generating, setGenerating] = useState(false);
   const [scoring, setScoring] = useState(false);
   const [atsResult, setAtsResult] = useState<{ score: number; suggestions: string[] } | null>(null);
+  // "Rewrite a Bullet with AI" — was entirely missing from this page (see
+  // mobile's src/more/ResumeBuilder.tsx, POST /api/v1/resume/rewrite-bullet)
+  // even though the backend endpoint already exists.
+  const [bulletText, setBulletText] = useState("");
+  const [rewriting, setRewriting] = useState(false);
+  const [rewriteResult, setRewriteResult] = useState<{ rewritten: string; explanation: string } | null>(null);
 
   const SECTION_LABELS: Record<string, string> = {
     contact: t("web:resume.builder.sections.contact", { defaultValue: "Contact" }),
@@ -107,6 +114,23 @@ export default function ResumeBuilderPage() {
     }
   }
 
+  async function handleRewriteBullet() {
+    if (!bulletText.trim() || rewriting) return;
+    setRewriting(true);
+    setRewriteResult(null);
+    try {
+      const data = await apiClient.post<{ rewritten: string; explanation: string }>("/api/v1/resume/rewrite-bullet", {
+        bullet: bulletText.trim(),
+        role: targetRole.trim() || undefined,
+      });
+      setRewriteResult(data);
+    } catch (err) {
+      setError((err as ApiError).message || t("web:resume.builder.rewriteFailedDefault", { defaultValue: "Couldn't rewrite that bullet right now." }));
+    } finally {
+      setRewriting(false);
+    }
+  }
+
   const sectionEntries = resume ? Object.entries(resume.sections || {}) : [];
 
   return (
@@ -156,12 +180,16 @@ export default function ResumeBuilderPage() {
               <div className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-5">
                 <div>
                   <h2 className="font-semibold text-primary">{t("web:resume.builder.yourResume", { defaultValue: "Your resume" })}</h2>
-                  <p className="text-sm text-hint">
-                    {resume.ats_score != null
-                      ? t("web:resume.builder.atsScoreLabel", { defaultValue: "ATS score: {{score}}/100", score: resume.ats_score })
-                      : t("web:resume.builder.noAtsScore", { defaultValue: "No ATS score yet" })}
-                  </p>
+                  {resume.ats_score == null && !atsResult && <p className="text-sm text-hint">{t("web:resume.builder.noAtsScore", { defaultValue: "No ATS score yet" })}</p>}
                 </div>
+                {/* Redesign parity (mobile's ResumeBuilder.tsx ProgressCard
+                    gradient ring) — this used to render the score as a
+                    plain "ATS score: N/100" text line. */}
+                {(atsResult?.score ?? resume.ats_score) != null && (
+                  <CircularProgress progress={atsResult?.score ?? resume.ats_score ?? 0} size={64} strokeWidth={6} progressClassName="text-brand">
+                    <span className="text-sm font-bold text-primary">{atsResult?.score ?? resume.ats_score}</span>
+                  </CircularProgress>
+                )}
                 <Button variant="outline" size="sm" onClick={handleAtsScore} disabled={scoring}>
                   {scoring ? t("web:resume.builder.scoring", { defaultValue: "Scoring…" }) : t("web:resume.builder.checkAtsScore", { defaultValue: "Check ATS score" })}
                 </Button>
@@ -169,7 +197,7 @@ export default function ResumeBuilderPage() {
 
               {atsResult && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
-                  <p className="font-semibold text-primary">{t("web:resume.builder.scoreLabel", { defaultValue: "Score: {{score}}/100", score: atsResult.score })}</p>
+                  <h3 className="text-sm font-semibold text-primary">{t("web:resume.builder.atsTips", { defaultValue: "Suggestions to improve your score" })}</h3>
                   <ul className="mt-2 flex flex-col gap-1.5">
                     {(atsResult.suggestions || []).map((s, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-hint">
@@ -195,6 +223,40 @@ export default function ResumeBuilderPage() {
                   ))}
                 </div>
               )}
+
+              {/* "Rewrite a Bullet with AI" — was entirely missing on web
+                  (see mobile's ResumeBuilder.tsx, same feature/endpoint). */}
+              <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
+                <div>
+                  <h3 className="font-semibold text-primary">{t("web:resume.builder.aiBulletRewrite", { defaultValue: "Rewrite a Bullet with AI" })}</h3>
+                  <p className="mt-1 text-sm text-hint">
+                    {t("web:resume.builder.aiBulletRewriteDescription", { defaultValue: "Paste a resume bullet — we'll tighten the wording and lead with a stronger verb." })}
+                  </p>
+                </div>
+                <textarea
+                  rows={3}
+                  value={bulletText}
+                  onChange={(e) => setBulletText(e.target.value)}
+                  placeholder={t("web:resume.builder.bulletPlaceholder", { defaultValue: "e.g. Responsible for managing the onboarding process for new hires" })}
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                />
+                <Button onClick={handleRewriteBullet} disabled={rewriting || !bulletText.trim()} className="w-fit">
+                  {rewriting ? t("web:resume.builder.rewriting", { defaultValue: "Rewriting…" }) : t("web:resume.builder.rewriteWithAi", { defaultValue: "Rewrite with AI" })}
+                </Button>
+                {rewriteResult && (
+                  <div className="flex flex-col gap-3">
+                    <div className="rounded-lg bg-surface-1 p-4">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-hint">{t("web:resume.builder.before", { defaultValue: "Before" })}</p>
+                      <p className="mt-1.5 text-sm text-primary">{bulletText.trim()}</p>
+                    </div>
+                    <div className="rounded-lg border border-brand bg-surface-1 p-4">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-success-text">{t("web:resume.builder.after", { defaultValue: "After" })}</p>
+                      <p className="mt-1.5 text-sm font-medium text-primary">{rewriteResult.rewritten}</p>
+                      {rewriteResult.explanation && <p className="mt-2 text-xs text-hint">{rewriteResult.explanation}</p>}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

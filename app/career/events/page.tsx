@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/career_events.py
@@ -140,9 +141,13 @@ export default function CareerEventsPage() {
               {events.map((ev) => (
                 <div key={ev.id} className="flex items-start justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm">
                   <a href={ev.url} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-start gap-3">
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
-                      <EvaIcon name="calendar-outline" size={20} />
-                    </span>
+                    {/* Real event/organizer logo (career_events.py's
+                        CareerEvent.to_dict() resolves logo_url the same way
+                        HomeSrc.tsx's CareerFairEventCard.tsx uses it) — this
+                        used to always render a generic calendar icon,
+                        ignoring `logo_url` entirely (the exact bug mobile's
+                        own comment on this describes fixing). */}
+                    <CompanyLogoAvatar logoUrl={ev.logo_url ?? null} companyName={ev.organizer || ev.title} size={44} className="shrink-0 bg-tint-orange" />
                     <div className="flex-1">
                       <h3 className="font-medium text-primary">{ev.title}</h3>
                       <p className="text-sm text-hint">
