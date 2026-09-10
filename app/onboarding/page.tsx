@@ -9,6 +9,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { BrandLockup } from "@/components/shell/BrandLockup";
+import { CAREER_GOALS } from "@/lib/careerGoalLabels";
 
 const MAX_ROLES = 5;
 const TOTAL_STEPS = 4;
@@ -34,12 +35,23 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { profile, loading, updateProfile } = useAuth();
 
-  const GOALS = [
-    t("web:onboarding.goals.newJob", { defaultValue: "Land a new job" }),
-    t("web:onboarding.goals.switchCareers", { defaultValue: "Switch careers" }),
-    t("web:onboarding.goals.getPromoted", { defaultValue: "Get promoted" }),
-    t("web:onboarding.goals.prepInterviews", { defaultValue: "Prep for interviews" }),
-  ];
+  // Real 10-option career-goal list — mirrors mobile's single source of
+  // truth (utils/careerGoalLabels.ts's CAREER_GOALS, used by both
+  // src/auth/Signup/SignupFirstStep.tsx and src/more/ChangeCareType/
+  // index.tsx), via lib/careerGoalLabels.ts's shared web port.
+  //
+  // BUG FIX (same class of bug mobile's own careerGoalLabels.ts header
+  // comment documents fixing there): each chip's VALUE (what gets toggled
+  // into `goals` state and persisted via updateProfile) must be the stable
+  // English `defaultValue`, never the already-translated `label` — a value
+  // baked into whatever language was active at save time could never be
+  // re-translated on a later language switch, and app/progress/page.tsx's
+  // goal chips (getCareerGoalLabel) depend on profile.goals containing this
+  // exact stable id to look the translated label back up.
+  const GOALS = CAREER_GOALS.map((g) => ({
+    value: g.defaultValue,
+    label: t(`web:onboarding.goals.${g.key}`, { defaultValue: g.defaultValue }),
+  }));
   const COUNTRIES = [
     t("common:countries.United States", { defaultValue: "United States" }),
     t("common:countries.United Kingdom", { defaultValue: "United Kingdom" }),
@@ -152,8 +164,8 @@ export default function OnboardingPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {GOALS.map((goal) => (
-                  <Chip key={goal} selected={goals.includes(goal)} onClick={() => toggleGoal(goal)}>
-                    {goal}
+                  <Chip key={goal.value} selected={goals.includes(goal.value)} onClick={() => toggleGoal(goal.value)}>
+                    {goal.label}
                   </Chip>
                 ))}
               </div>
