@@ -98,6 +98,15 @@ const ICONS = [
   "cloud-upload-outline",
   "globe-outline",
   "flag-outline",
+  "folder-outline",
+  "folder-add-outline",
+  "file-add-outline",
+  "play-circle-outline",
+  "save-outline",
+  "monitor-outline",
+  "refresh-outline",
+  "loader-outline",
+  "code-download-outline",
 ];
 
 function extractInner(svg) {
