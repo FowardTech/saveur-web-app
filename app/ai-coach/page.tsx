@@ -295,7 +295,7 @@ export default function AiCoachPage() {
 
           {!proRequired && (
             <>
-              <div className="flex-1 overflow-y-auto rounded-card border border-border bg-surface-2 p-4">
+              <div className="flex-1 overflow-y-auto scrollbar-hide rounded-card border border-border bg-surface-2 p-4">
                 {!loaded ? (
                   // Skeleton chat bubbles shaped like the real thread about
                   // to render below, while GET /api/v1/coach/messages is
