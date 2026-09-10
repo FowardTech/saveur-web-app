@@ -69,19 +69,16 @@ export default function ReferralProgramPage() {
     setRedeeming(true);
     setRedeemMessage(null);
     try {
-      const data = await apiClient.post<{ ok: boolean }>("/api/v1/referrals/redeem", { code });
-      if (data.ok) {
-        setRedeemMessage({ ok: true, text: t("web:referral.codeAppliedBody", { defaultValue: "This referral has been recorded." }) });
-        setRedeemCode("");
-        load();
-      } else {
-        setRedeemMessage({
-          ok: false,
-          text: t("web:referral.codeFailedBody", { defaultValue: "It may be invalid, your own code, or you've already been referred." }),
-        });
-      }
-    } catch (err) {
-      setRedeemMessage({ ok: false, text: (err as ApiError).message || t("web:referral.codeFailedBody", { defaultValue: "It may be invalid, your own code, or you've already been referred." }) });
+      // A rejected code (invalid/self-referral/already-referred) comes back
+      // as an HTTP 400 with {ok: false, reason}, not a 200 — apiClient
+      // throws for any non-2xx status, so success is the only path that
+      // reaches here; every failure mode lands in the catch below instead.
+      await apiClient.post("/api/v1/referrals/redeem", { code });
+      setRedeemMessage({ ok: true, text: t("web:referral.codeAppliedBody", { defaultValue: "This referral has been recorded." }) });
+      setRedeemCode("");
+      load();
+    } catch {
+      setRedeemMessage({ ok: false, text: t("web:referral.codeFailedBody", { defaultValue: "It may be invalid, your own code, or you've already been referred." }) });
     } finally {
       setRedeeming(false);
     }
