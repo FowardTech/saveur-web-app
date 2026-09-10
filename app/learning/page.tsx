@@ -25,6 +25,7 @@ import {
   type CourseProgressSummary,
   type TopicCheckResult,
 } from "@/lib/learningService";
+import { DATA_COURSES } from "@/lib/courseCatalog";
 
 // Real backend contract — Saveur-Backend/app/api/learning.py
 //   GET  /api/v1/learning/curriculum -> {curriculum: {goal, weeks: Week[]} | null}
@@ -526,6 +527,78 @@ export default function LearningPage() {
                 })}
               </div>
             )}
+          </div>
+
+          {/* Course catalog — web port of the pre-built catalog DATA_COURSES
+              from mobile's constants/Data.ts, rendered as a third section
+              below "AI Curriculum Builder" and "Learn Anything" (mobile:
+              LearningCourses.tsx lines ~763-818). Was completely missing on
+              web, so there was no entry point into the module-by-module
+              viewer besides the free-text "Learn Anything" flow. No section
+              header here, matching mobile — DATA_COURSES.map() sits directly
+              below the "Learn anything" card with nothing introducing it.
+              Progress is real (GET /api/v1/learning/progress's by_course,
+              already fetched above into `byCourse`), computed the same way
+              as mobile's catalogProgress() — courseIdFor(title, "basic") —
+              not a static mock number. */}
+          <div className="flex flex-col gap-3">
+            {DATA_COURSES.map((course) => {
+              const catalogCourseId = courseIdFor(course.title, "basic");
+              const completedModules = byCourse[catalogCourseId]?.completed_modules ?? 0;
+              const totalModules = course.totalModules;
+              const progressPct = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
+              const isCourseComplete = completedModules >= totalModules;
+              return (
+                <div key={course.id} className="rounded-card border border-border bg-surface-2 p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center rounded-pill bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">
+                      {course.category}
+                    </span>
+                    <span className="text-xs text-hint">
+                      {t("web:learning.catalog.durationMin", { defaultValue: "{{min}} min", min: course.durationMin })}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-semibold text-primary">{course.title}</h3>
+                  <p className="mt-1 text-sm text-hint">{course.description}</p>
+
+                  <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
+                    <div
+                      className={`h-1.5 rounded-full transition-all ${isCourseComplete ? "bg-success" : "bg-brand"}`}
+                      style={{ width: `${progressPct}%` }}
+                    />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-hint">
+                      {t("web:learning.catalog.modulesCount", {
+                        defaultValue: "{{completed}}/{{total}} modules",
+                        completed: completedModules,
+                        total: totalModules,
+                      })}
+                    </span>
+                    <span className={`text-xs font-semibold ${isCourseComplete ? "text-success" : "text-hint"}`}>
+                      {isCourseComplete ? t("web:learning.completed", { defaultValue: "Completed" }) : `${progressPct}%`}
+                    </span>
+                  </div>
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={isCourseComplete ? "outline" : "primary"}
+                    className="mt-4 w-full"
+                    onClick={() => {
+                      const qs = new URLSearchParams({ topic: course.title });
+                      router.push(`/learning/course/${encodeURIComponent(catalogCourseId)}?${qs.toString()}`);
+                    }}
+                  >
+                    {isCourseComplete
+                      ? t("web:learning.review", { defaultValue: "Review" })
+                      : completedModules > 0
+                      ? t("web:learning.continue", { defaultValue: "Continue" })
+                      : t("web:learning.start", { defaultValue: "Start" })}
+                  </Button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </AppShell>
