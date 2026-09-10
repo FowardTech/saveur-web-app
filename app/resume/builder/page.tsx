@@ -12,6 +12,17 @@ import { SkeletonCard } from "@/components/ui/Skeleton";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
+// Real backend contract — Saveur-Backend/app/api/resume.py + resume_gen.py.
+// Unlike mobile (whole ResumeBuilder.tsx screen wrapped in
+// `if (!isPro) return <ProLockGate variant="pro" .../>`), the backend only
+// actually enforces @require_pro on POST /api/v1/resume/generate — viewing
+// your resume (GET), the ATS score check, and the bullet rewrite are all
+// ungated at the API level (no @require_pro on resume.py's routes at all).
+// So rather than blocking the whole page (which would over-restrict a free
+// user away from features the backend genuinely lets them use), only the
+// "Generate a tailored resume" action shows the upsell — reactively, on the
+// real 402 from /generate — matching what the backend actually requires.
+
 // Real backend contract — Saveur-Backend/app/api/resume.py + resume_gen.py
 //   GET   /api/v1/resume         -> {sources, sections, ats_score}
 //   PATCH /api/v1/resume         -> saves {sections} merge-patch, returns the same shape
@@ -42,6 +53,7 @@ export default function ResumeBuilderPage() {
   const [targetRole, setTargetRole] = useState("");
   const [jdText, setJdText] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [proRequired, setProRequired] = useState(false);
   const [scoring, setScoring] = useState(false);
   const [atsResult, setAtsResult] = useState<{ score: number; suggestions: string[] } | null>(null);
   // "Rewrite a Bullet with AI" — was entirely missing from this page (see
@@ -86,6 +98,7 @@ export default function ResumeBuilderPage() {
     if (!targetRole.trim()) return;
     setGenerating(true);
     setError(null);
+    setProRequired(false);
     try {
       const sections = await apiClient.post<Sections>("/api/v1/resume/generate", {
         target_role: targetRole.trim(),
@@ -94,7 +107,12 @@ export default function ResumeBuilderPage() {
       const saved = await apiClient.patch<ResumePayload>("/api/v1/resume", { sections });
       setResume(saved);
     } catch (err) {
-      setError((err as ApiError).message || t("web:resume.builder.generateFailedDefault", { defaultValue: "Couldn't generate a resume right now." }));
+      const apiErr = err as ApiError;
+      if (apiErr.status === 402 || apiErr.status === 403) {
+        setProRequired(true);
+      } else {
+        setError(apiErr.message || t("web:resume.builder.generateFailedDefault", { defaultValue: "Couldn't generate a resume right now." }));
+      }
     } finally {
       setGenerating(false);
     }
@@ -163,6 +181,15 @@ export default function ResumeBuilderPage() {
                 className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
             </label>
+            {proRequired && (
+              <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-1 p-4">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                  <EvaIcon name="lock-outline" size={16} />
+                </span>
+                <p className="text-sm font-semibold text-primary">{t("web:resume.builder.proRequiredTitle", { defaultValue: "Generating a tailored resume is a Basic feature" })}</p>
+                <p className="text-sm text-hint">{t("web:resume.builder.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to unlock AI resume generation." })}</p>
+              </div>
+            )}
             <Button type="submit" disabled={generating || !targetRole.trim()} className="mt-1 w-full">
               {generating ? t("web:resume.builder.generating", { defaultValue: "Generating…" }) : t("web:resume.builder.generateResume", { defaultValue: "Generate resume" })}
             </Button>

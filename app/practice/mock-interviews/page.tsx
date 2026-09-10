@@ -53,17 +53,18 @@ interface SessionResult {
 
 function MockInterviewSetupInner() {
   const { t, i18n } = useTranslation();
-  const { profile } = useAuth();
+  const { profile, isPremium, isPro } = useAuth();
   const searchParams = useSearchParams();
 
   // Pro Premium / Pro (Yearly) only — same gate mobile's isPremium applies
   // to Video mode + the persona picker (see entitlementsService.ts's
-  // isPremiumTier). The web profile type declares subscriptionTier as
-  // "free" | "premium" | "premium_plus"; checking both non-free-highest
-  // values keeps this correct regardless of which one the backend actually
-  // sends for that tier.
-  const isPremium = profile?.subscriptionTier === "premium" || profile?.subscriptionTier === "premium_plus";
-  const isFreeTier = !profile?.subscriptionTier || profile.subscriptionTier === "free";
+  // isPremiumTier). BUG FIX: this used to derive from
+  // `profile.subscriptionTier`, a field Saveur-Backend's User.to_dict()
+  // never actually sends (always silently `undefined` -> free-tier
+  // fallback) — see lib/billingService.ts's header comment. Now reads the
+  // real GET /api/v1/billing/subscription-backed isPro/isPremium from
+  // AuthProvider.
+  const isFreeTier = !isPro;
 
   const [mode, setMode] = useState<"Voice" | "Text" | "Video">("Voice");
   // Prefills from the Practice hub's "Interview Types" quick grid (app/

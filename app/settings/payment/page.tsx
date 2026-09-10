@@ -37,7 +37,7 @@ function formatMoney(cents: number, currency: string) {
 // plan-comparison page.
 export default function PaymentSettingsPage() {
   const { t } = useTranslation();
-  const { profile } = useAuth();
+  const { isPro, subscriptionStatus } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
@@ -68,7 +68,18 @@ export default function PaymentSettingsPage() {
     }
   }
 
-  const isPaidSubscriber = profile?.subscriptionTier && profile.subscriptionTier !== "free";
+  // BUG FIX: was `profile?.subscriptionTier`, a field the backend never
+  // actually sends (see lib/billingService.ts's header comment) — this line
+  // always evaluated falsy for every real paid subscriber. `isPro` now
+  // comes from the real GET /api/v1/billing/subscription-backed
+  // AuthProvider state. Plan display name (not the raw tier code) mirrors
+  // entitlements_service.py's own naming ("pro" -> Saveur Basic, everything
+  // in PREMIUM_TIERS -> Saveur Premium).
+  const isPaidSubscriber = isPro;
+  const planDisplayName =
+    subscriptionStatus?.tier === "pro"
+      ? t("web:settings.payment.planNamePro", { defaultValue: "Saveur Basic" })
+      : t("web:settings.payment.planNamePremium", { defaultValue: "Saveur Premium" });
 
   return (
     <RequireAuth>
@@ -87,7 +98,7 @@ export default function PaymentSettingsPage() {
               <div>
                 <h2 className="font-semibold text-primary">
                   {isPaidSubscriber
-                    ? t("web:settings.payment.paidPlanLine", { defaultValue: "You're on the {{plan}} plan", plan: profile?.subscriptionTier })
+                    ? t("web:settings.payment.paidPlanLine", { defaultValue: "You're on the {{plan}} plan", plan: planDisplayName })
                     : t("web:settings.payment.freePlanLine", { defaultValue: "You're on the free plan" })}
                 </h2>
                 <p className="text-sm text-hint">

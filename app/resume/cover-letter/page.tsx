@@ -7,19 +7,29 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { EvaIcon } from "@/components/icons/EvaIcon";
+import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/resume_gen.py
 //   POST /api/v1/resume/cover-letter -> {cover_letter: str}
 //   body: {company?, role?, hiring_manager?, jd_text?} — at least one of company/role/jd_text required
+// @require_pro — matches mobile's src/more/CoverLetterGenerator.tsx AND
+// src/more/JDCoverLetterGenerator.tsx (both "a Basic feature", both merged
+// into this one page via the optional jd_text field). GATING GAP FIX: this
+// page used to swallow a 402 into the same generic "Couldn't generate a
+// cover letter right now" error as any other failure. Same preemptive-isPro
+// + reactive-402 pattern as app/career/company-intelligence/page.tsx.
 export default function CoverLetterPage() {
   const { t } = useTranslation();
+  const { isPro } = useAuth();
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [hiringManager, setHiringManager] = useState("");
   const [jdText, setJdText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [proRequired, setProRequired] = useState(false);
   const [letter, setLetter] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -40,7 +50,12 @@ export default function CoverLetterPage() {
       });
       setLetter(data.cover_letter);
     } catch (err) {
-      setError((err as ApiError).message || t("web:resume.coverLetter.generateFailedDefault", { defaultValue: "Couldn't generate a cover letter right now." }));
+      const apiErr = err as ApiError;
+      if (apiErr.status === 402 || apiErr.status === 403) {
+        setProRequired(true);
+      } else {
+        setError(apiErr.message || t("web:resume.coverLetter.generateFailedDefault", { defaultValue: "Couldn't generate a cover letter right now." }));
+      }
     } finally {
       setLoading(false);
     }
@@ -66,6 +81,18 @@ export default function CoverLetterPage() {
             subtitle={t("web:resume.coverLetter.subtitle", { defaultValue: "Generate a tailored cover letter from your resume and a target role." })}
           />
 
+          {(proRequired || !isPro) && (
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="lock-outline" size={20} />
+              </span>
+              <h2 className="font-semibold text-primary">{t("web:resume.coverLetter.proRequiredTitle", { defaultValue: "Cover Letter Generator is a Basic feature" })}</h2>
+              <p className="text-sm text-hint">{t("web:resume.coverLetter.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to generate a tailored cover letter from your resume." })}</p>
+            </div>
+          )}
+
+          {isPro && !proRequired && (
+          <>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <TextField
@@ -110,6 +137,8 @@ export default function CoverLetterPage() {
                 {copied ? t("web:resume.coverLetter.copied", { defaultValue: "Copied!" }) : t("web:resume.coverLetter.copyLetter", { defaultValue: "Copy letter" })}
               </Button>
             </div>
+          )}
+          </>
           )}
         </div>
       </AppShell>

@@ -15,7 +15,7 @@ import { getErrorMessage } from "@/lib/errors";
 export default function SubscriptionPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { firebaseUser, profile } = useAuth();
+  const { firebaseUser, isPro } = useAuth();
   const [plans, setPlans] = useState<BillingPlan[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
   const [plansError, setPlansError] = useState<string | null>(null);
@@ -75,7 +75,14 @@ export default function SubscriptionPage() {
     }
   }
 
-  const isPaidSubscriber = profile?.subscriptionTier && profile.subscriptionTier !== "free";
+  // BUG FIX: was `profile?.subscriptionTier` — a field the backend never
+  // actually sends (see lib/billingService.ts's header comment), so this
+  // banner never showed for any real paid subscriber. `isPro` now comes
+  // from the real GET /api/v1/billing/subscription-backed AuthProvider
+  // state; the plan NAME (not the raw tier code) comes from whichever
+  // catalog entry the backend already flagged `is_current` on.
+  const isPaidSubscriber = isPro;
+  const currentPlanName = plans.find((p) => p.isCurrent)?.name;
 
   return (
     <AppShell>
@@ -92,7 +99,7 @@ export default function SubscriptionPage() {
             <div className="flex items-center gap-3">
               <EvaIcon name="credit-card-outline" size={18} className="text-brand" />
               <p className="text-sm text-primary">
-                {t("web:subscription.currentPlanLine", { defaultValue: "You're currently on the {{plan}} plan.", plan: profile?.subscriptionTier })}
+                {t("web:subscription.currentPlanLine", { defaultValue: "You're currently on the {{plan}} plan.", plan: currentPlanName ?? t("web:subscription.paidPlanFallback", { defaultValue: "paid" }) })}
               </p>
             </div>
             <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={busyCode === "__portal__"}>

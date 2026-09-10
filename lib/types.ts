@@ -17,7 +17,6 @@ export interface UserProfile {
   avatarUrl?: string;
   phoneNumber?: string;
   homeAddress?: string;
-  subscriptionTier: "free" | "premium" | "premium_plus";
   notificationsEnabled: boolean;
   jobAlertDailyLimit: number;
   country?: string | null;
@@ -41,7 +40,6 @@ export interface UserProfileWire {
   avatar_url?: string;
   phone_number?: string;
   home_address?: string;
-  subscription_tier?: "free" | "premium" | "premium_plus";
   notifications_enabled?: boolean;
   job_alert_daily_limit?: number;
   country?: string | null;
@@ -62,7 +60,13 @@ export function profileFromWire(wire: UserProfileWire): UserProfile {
     avatarUrl: wire.avatar_url,
     phoneNumber: wire.phone_number ?? "",
     homeAddress: wire.home_address ?? "",
-    subscriptionTier: wire.subscription_tier ?? "free",
+    // subscriptionTier deliberately removed (see lib/billingService.ts's
+    // header comment) — Saveur-Backend's User.to_dict() has never sent a
+    // `subscription_tier` field, so this was always silently `undefined` ??
+    // "free" here regardless of the user's real plan. Real entitlement
+    // state now comes from GET /api/v1/billing/subscription via
+    // AuthProvider's isPro/isPremium (lib/billingService.ts's
+    // getSubscriptionStatus/isProTier/isPremiumTier).
     notificationsEnabled: wire.notifications_enabled ?? true,
     jobAlertDailyLimit: wire.job_alert_daily_limit ?? 10,
     country: wire.country ?? null,
@@ -98,7 +102,12 @@ export function needsOnboarding(profile: UserProfile | null): boolean {
 export interface BillingPlan {
   id: string;
   code: string | null;
-  tier: "free" | "premium" | "premium_plus";
+  // Real backend plan_tier values (Saveur-Backend/app/api/billing.py) —
+  // "pro" is Saveur Basic, "premium"/"team"/"enterprise" are all Saveur
+  // Premium-equivalent (see entitlements_service.py's PREMIUM_TIERS). This
+  // was missing "pro" entirely before, which every actual Basic-tier plan
+  // catalog row reports.
+  tier: "free" | "pro" | "premium" | "premium_plus" | "team" | "enterprise";
   name: string;
   amount: number; // minor currency unit
   currency: string;
@@ -111,7 +120,12 @@ export interface BillingPlan {
 export interface BillingPlanWire {
   id: string;
   code: string | null;
-  tier: "free" | "premium" | "premium_plus";
+  // Real backend plan_tier values (Saveur-Backend/app/api/billing.py) —
+  // "pro" is Saveur Basic, "premium"/"team"/"enterprise" are all Saveur
+  // Premium-equivalent (see entitlements_service.py's PREMIUM_TIERS). This
+  // was missing "pro" entirely before, which every actual Basic-tier plan
+  // catalog row reports.
+  tier: "free" | "pro" | "premium" | "premium_plus" | "team" | "enterprise";
   name: string;
   amount: number;
   currency: string;

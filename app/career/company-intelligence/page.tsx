@@ -7,11 +7,22 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { EvaIcon } from "@/components/icons/EvaIcon";
+import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/company_intel.py
 //   POST /api/v1/company-intel/research -> {company, overview, recent_developments,
 //     culture_notes, likely_questions, talking_points, salary_range, interview_process, sources}
+// @require_pro (Saveur-Backend/app/api/company_intel.py) — matches mobile's
+// src/more/CompanyIntelligence.tsx (`if (!isPro) return <ProLockGate .../>`,
+// variant="pro"/"Basic feature"). GATING GAP FIX: this page used to just
+// `catch` a 402 into the same generic "Couldn't research that company right
+// now" error text as any other failure — a free user got a confusing
+// message instead of an upsell. Now gated the same way job-alerts/
+// mock-interviews already established: preemptively via AuthProvider's real
+// `isPro` (so a free user never even fills out the form) with the POST's
+// 402 kept as a reactive fallback in case entitlement state is stale.
 interface Intel {
   company: string;
   overview: string;
@@ -26,10 +37,12 @@ interface Intel {
 
 export default function CompanyIntelligencePage() {
   const { t } = useTranslation();
+  const { isPro } = useAuth();
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [proRequired, setProRequired] = useState(false);
   const [intel, setIntel] = useState<Intel | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -45,7 +58,12 @@ export default function CompanyIntelligencePage() {
       });
       setIntel(data);
     } catch (err) {
-      setError((err as ApiError).message || t("web:career.companyIntelligence.researchFailedDefault", { defaultValue: "Couldn't research that company right now." }));
+      const apiErr = err as ApiError;
+      if (apiErr.status === 402 || apiErr.status === 403) {
+        setProRequired(true);
+      } else {
+        setError(apiErr.message || t("web:career.companyIntelligence.researchFailedDefault", { defaultValue: "Couldn't research that company right now." }));
+      }
     } finally {
       setLoading(false);
     }
@@ -60,6 +78,18 @@ export default function CompanyIntelligencePage() {
             subtitle={t("web:career.companyIntelligence.subtitle", { defaultValue: "AI research on a target company before your interview." })}
           />
 
+          {(proRequired || !isPro) && (
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="lock-outline" size={20} />
+              </span>
+              <h2 className="font-semibold text-primary">{t("web:career.companyIntelligence.proRequiredTitle", { defaultValue: "Company Intelligence is a Basic feature" })}</h2>
+              <p className="text-sm text-hint">{t("web:career.companyIntelligence.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to get real, AI-researched company facts and likely interview questions." })}</p>
+            </div>
+          )}
+
+          {isPro && !proRequired && (
+          <>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <TextField
               label={t("web:career.companyIntelligence.companyLabel", { defaultValue: "Company" })}
@@ -115,6 +145,8 @@ export default function CompanyIntelligencePage() {
                 </div>
               )}
             </div>
+          )}
+          </>
           )}
         </div>
       </AppShell>

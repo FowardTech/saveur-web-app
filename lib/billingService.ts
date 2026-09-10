@@ -19,6 +19,105 @@ export async function getPlans(): Promise<BillingPlan[]> {
   return (data ?? []).map(planFromWire);
 }
 
+// ---------------------------------------------------------------------------
+// Real entitlement source of truth (Saveur-Backend/app/api/billing.py's
+// GET /api/v1/billing/subscription -> _subscription_status_payload()).
+//
+// BUG FIX: every gated web page/component used to derive Pro/Premium status
+// from `profile.subscriptionTier` (lib/types.ts's UserProfile field, read
+// from a `subscription_tier` key on GET /api/users/me) — but
+// Saveur-Backend's User.to_dict() (app/models/user.py) has never sent a
+// `subscription_tier` field at all; the only subscription-adjacent field it
+// sends is a bare `"plan"` with no status, insufficient on its own (a
+// canceled/past-due paid plan should NOT count as entitled — see
+// entitlements_service.is_pro/is_premium's own ACTIVE_STATUSES check).
+// `profile.subscriptionTier` was therefore always `undefined` at runtime,
+// silently falling back to "free" (profileFromWire's `?? "free"`) for EVERY
+// user regardless of their real plan — every client-side isPremium/isPro
+// check built on it (app/practice/mock-interviews/page.tsx's Video-mode +
+// Interview Laboratory persona gates, app/subscription/page.tsx and
+// app/settings/payment/page.tsx's "current plan" display) was silently
+// broken, always reading as free-tier.
+//
+// This is the real fetch mobile's services/billingService.ts +
+// entitlementsService.ts (isProTier/isPremiumTier) use — GET
+// /api/v1/billing/subscription, which DOES include `status` alongside
+// `plan`/`tier`. Wired into AuthProvider (app/providers/AuthProvider.tsx) so
+// every page can read `isPro`/`isPremium` from `useAuth()` instead of each
+// screen re-deriving (or mis-deriving) it locally.
+// ---------------------------------------------------------------------------
+
+export interface SubscriptionStatus {
+  /** Backend plan_tier value — "free" | "pro" | "premium" | "premium_plus" |
+   * "team" | "enterprise". Never shown to users as-is (see
+   * entitlements_service.py's own docstring: "pro" -> "Saveur Basic",
+   * "premium" -> "Saveur Premium"). */
+  tier: string;
+  status: string;
+  provider?: string;
+  periodEnd: number | null;
+  cancelAtPeriodEnd: boolean;
+  sessionsUsed: number;
+  sessionsLimit: number | null;
+}
+
+interface SubscriptionStatusWire {
+  plan: string;
+  tier: string;
+  status: string;
+  provider?: string;
+  period_end: number | null;
+  cancel_at_period_end?: boolean;
+  sessions_used: number;
+  sessions_limit: number | null;
+}
+
+function subscriptionStatusFromWire(wire: SubscriptionStatusWire): SubscriptionStatus {
+  return {
+    tier: wire.tier ?? wire.plan ?? "free",
+    status: wire.status ?? "active",
+    provider: wire.provider,
+    periodEnd: wire.period_end ?? null,
+    cancelAtPeriodEnd: !!wire.cancel_at_period_end,
+    sessionsUsed: wire.sessions_used ?? 0,
+    sessionsLimit: wire.sessions_limit ?? null,
+  };
+}
+
+const ACTIVE_STATUSES = new Set(["active", "trialing"]);
+// Mirrors mobile's services/entitlementsService.ts UNLIMITED_TIERS /
+// Saveur-Backend's entitlements_service.py PREMIUM_TIERS exactly.
+const UNLIMITED_TIERS = new Set(["pro", "premium", "premium_plus", "team", "enterprise"]);
+const PREMIUM_TIERS = new Set(["premium", "team", "enterprise"]);
+
+/** GET /api/v1/billing/subscription. */
+export async function getSubscriptionStatus(): Promise<SubscriptionStatus> {
+  const data = await apiClient.get<SubscriptionStatusWire>("/api/v1/billing/subscription");
+  return subscriptionStatusFromWire(data);
+}
+
+/** Any active/trialing paid plan (Saveur Basic and up) — matches
+ * entitlements_service.py's is_pro / mobile's isProTier. Use this for
+ * anything gated by @require_pro on the backend (AI Coach, Job Alerts,
+ * Resume Builder, Cover Letter Generator, JD Analyzer, Networking
+ * Assistant, Company Intelligence, Salary Negotiation, Coding Practice add-on
+ * screen listing, etc.). */
+export function isProTier(status: SubscriptionStatus | null | undefined): boolean {
+  if (!status) return false;
+  return UNLIMITED_TIERS.has(status.tier) && ACTIVE_STATUSES.has(status.status);
+}
+
+/** Stricter check — true only for Saveur Premium/Premium (Yearly), matching
+ * entitlements_service.py's is_premium / mobile's isPremiumTier. A plain
+ * Basic (tier "pro") subscriber does NOT pass this. Use for anything gated
+ * by @require_premium on the backend (Career Roadmap, Learning Courses,
+ * LinkedIn Optimizer, Dream Companies, Career DNA, Resume Variants, Video
+ * interview mode, Interview Laboratory personas, etc.). */
+export function isPremiumTier(status: SubscriptionStatus | null | undefined): boolean {
+  if (!status) return false;
+  return PREMIUM_TIERS.has(status.tier) && ACTIVE_STATUSES.has(status.status);
+}
+
 export async function createCheckoutSession(params: {
   /** Mutually exclusive with addonCode — pass exactly one. */
   planCode?: string;

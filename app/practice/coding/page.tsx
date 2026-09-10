@@ -106,7 +106,7 @@ export default function CodingPracticePage() {
                     <span className={`rounded-pill px-2.5 py-1 text-xs font-medium ${difficultyTint[p.difficulty] ?? "bg-surface-3 text-hint"}`}>
                       {difficultyLabel(p.difficulty)}
                     </span>
-                    {p.bookmarked && <EvaIcon name="star" size={16} className="text-brand" />}
+                    {p.bookmarked && <EvaIcon name="star-outline" size={16} className="text-brand" />}
                   </div>
                   <div>
                     <h3 className="font-medium text-primary">{p.title}</h3>
