@@ -30,7 +30,31 @@ async function registerServiceWorker(): Promise<ServiceWorkerRegistration | unde
   const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "";
   const url = `/firebase-messaging-sw.js?apiKey=${encodeURIComponent(apiKey)}&appId=${encodeURIComponent(appId)}`;
   try {
-    return await navigator.serviceWorker.register(url);
+    const registration = await navigator.serviceWorker.register(url);
+    // BUG FIX (the real, concrete cause of the generic "Couldn't enable
+    // push notifications right now" failure): navigator.serviceWorker
+    // .register() resolves as soon as the registration OBJECT exists, not
+    // once the worker has actually finished installing and become active.
+    // On a genuinely first-ever visit to this browser (nothing previously
+    // registered at this scope — exactly the case a user clicking "Enable
+    // browser push" for the first time hits), the returned registration can
+    // still be `installing` when this function returns it. getToken() below
+    // is called with this exact registration passed in explicitly via
+    // `serviceWorkerRegistration` — per Firebase's own contract, giving it
+    // your own registration means it does NOT wait for that registration to
+    // become active before calling registration.pushManager.subscribe()
+    // internally (it only auto-waits for `navigator.serviceWorker.ready`
+    // when you DON'T pass one and let it self-register). Chrome's
+    // PushManager requires an ACTIVE service worker to subscribe — calling
+    // it against one still installing throws (surfaces here as getToken()
+    // rejecting, e.g. with "AbortError: Registration failed - push service
+    // error" or similar), which is exactly the generic reason: "error" path
+    // enableWebPush() below falls into. Awaiting `ready` closes that race —
+    // it resolves once a service worker at this scope is active, and
+    // resolves near-instantly on every later visit where it's already
+    // active, so this costs nothing once installed.
+    await navigator.serviceWorker.ready;
+    return registration;
   } catch (err) {
     console.warn("[messaging] service worker registration failed", err);
     return undefined;
