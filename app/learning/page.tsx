@@ -15,10 +15,16 @@ import apiClient, { type ApiError } from "@/lib/apiClient";
 //   GET  /api/v1/learning/curriculum -> {curriculum: {goal, weeks: Week[]} | null}
 //   POST /api/v1/learning/curriculum -> Curriculum (body: {goal, weeks_count?})  -- Premium-gated
 //   GET  /api/v1/learning/progress   -> {progress: [...], by_course: {course_id: {completed_modules, last_module_index}}}
+//   GET  /api/v1/learning/certificates -> {items: Certificate[]}
 // Learning Courses is "AI-taught, on any free-text topic" rather than a
 // fixed catalog (see coach.py's module docstring), so this page centers on
 // the learner's saved week-by-week Curriculum plus their course progress
 // summary, rather than a browsable list of pre-made courses.
+//
+// Mobile parity (src/more/LearningCourses.tsx): the "Your Badges" card
+// (tiered-topic completion certificates, GET .../certificates) was missing
+// entirely even though the endpoint already exists and mobile renders it
+// front and center, above the curriculum.
 interface Week {
   week: number;
   topic: string;
@@ -37,10 +43,17 @@ interface ProgressByCourse {
   [courseId: string]: { completed_modules: number; last_module_index: number };
 }
 
+interface Certificate {
+  code: string;
+  topic: string;
+  levels_completed?: string[];
+}
+
 export default function LearningPage() {
   const { t } = useTranslation();
   const [curriculum, setCurriculum] = useState<Curriculum | null | undefined>(undefined);
   const [byCourse, setByCourse] = useState<ProgressByCourse>({});
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
   const [goal, setGoal] = useState("");
@@ -48,12 +61,14 @@ export default function LearningPage() {
 
   async function load() {
     try {
-      const [curr, prog] = await Promise.all([
+      const [curr, prog, certs] = await Promise.all([
         apiClient.get<{ curriculum: Curriculum | null }>("/api/v1/learning/curriculum"),
         apiClient.get<{ by_course: ProgressByCourse }>("/api/v1/learning/progress"),
+        apiClient.get<{ items: Certificate[] }>("/api/v1/learning/certificates").catch(() => ({ items: [] })),
       ]);
       setCurriculum(curr.curriculum);
       setByCourse(prog.by_course || {});
+      setCertificates(certs.items || []);
     } catch (err) {
       setError((err as ApiError).message || t("web:learning.loadFailedDefault", { defaultValue: "Couldn't load your learning progress." }));
       setCurriculum(null);
@@ -101,6 +116,27 @@ export default function LearningPage() {
 
           {error && <p className="text-sm text-danger">{error}</p>}
           {curriculum === undefined && <SkeletonRows count={4} />}
+
+          {certificates.length > 0 && (
+            <div className="rounded-card border border-border bg-surface-2 p-5">
+              <h2 className="font-semibold text-primary">{t("web:learning.yourBadges", { defaultValue: "Your Badges" })}</h2>
+              <div className="mt-3 flex flex-col gap-3">
+                {certificates.map((c) => (
+                  <div key={c.code} className="flex items-center gap-3">
+                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
+                      <EvaIcon name="award-outline" size={18} />
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-primary">{c.topic}</p>
+                      <p className="text-xs text-hint">
+                        {t("web:learning.badgeTiersCode", { defaultValue: "Basic · Intermediate · Advanced — {{code}}", code: c.code })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
