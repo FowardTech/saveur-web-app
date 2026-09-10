@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import { guessCompanyLogoUrl } from "@/lib/companyData";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { JobFitAnalysis } from "@/components/jobAlerts/JobFitAnalysis";
+import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
 
 // Web counterpart to Saveur/src/more/JobAlertDetails.tsx — the landing
 // screen a tap on a Job Alerts list card (app/job-alerts/page.tsx) opens.
@@ -52,6 +54,8 @@ export default function JobAlertDetailsPage() {
   const [alert, setAlert] = useState<JobAlertDetail | null | undefined>(undefined);
   const [proRequired, setProRequired] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   useEffect(() => {
     if (!alertId) return;
@@ -94,16 +98,78 @@ export default function JobAlertDetailsPage() {
     window.open(alert.apply_url, "_blank", "noopener,noreferrer");
   }
 
+  // Web counterpart of mobile's jobShareService.shareJob (share-outline
+  // icon, plain OS share sheet). Mobile builds a deferred AppsFlyer OneLink
+  // (or a saveur:// / share.saveurnow.com/j/<id> fallback) because its
+  // recipient needs to land back in the NATIVE app after install+signup —
+  // that whole apparatus only makes sense for a mobile deep link. A web
+  // recipient just needs a URL they can open in a browser, so this shares
+  // this page's own URL directly via the real Web Share API where
+  // available (navigator.share — mobile Safari/Chrome, some desktop
+  // browsers), falling back to copying the link to the clipboard where
+  // it isn't (Firefox and most desktop browsers lack navigator.share).
+  async function onShareJob() {
+    if (!alert) return;
+    const shareData = {
+      title: alert.title,
+      text: `Check out this job: ${alert.title} at ${alert.company} — via Saveur.`,
+      url: window.location.href,
+    };
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // User dismissed the share sheet, or the browser rejected it — no
+        // action needed either way, same as mobile's Share.share().catch(() => {}).
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Clipboard API blocked (no HTTPS context, permission denied) —
+      // nothing more we can do without a real error UI for what's a
+      // low-stakes convenience action.
+    }
+  }
+
   const logoUrl = alert ? alert.company_logo_url ?? guessCompanyLogoUrl(alert.company) : null;
 
   return (
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-2xl flex-col gap-6 pb-10">
-          <Link href="/job-alerts" className="inline-flex w-fit items-center gap-1 text-sm font-medium text-hint hover:text-primary">
-            <EvaIcon name="chevron-left-outline" size={16} />
-            {t("web:jobAlerts.details.back", { defaultValue: "Back to Job Alerts" })}
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <Link href="/job-alerts" className="inline-flex w-fit items-center gap-1 text-sm font-medium text-hint hover:text-primary">
+              <EvaIcon name="chevron-left-outline" size={16} />
+              {t("web:jobAlerts.details.back", { defaultValue: "Back to Job Alerts" })}
+            </Link>
+            {alert && (
+              <div className="flex items-center gap-1.5">
+                {shareCopied && <span className="text-xs font-medium text-success-text">{t("web:jobAlerts.details.linkCopied", { defaultValue: "Link copied" })}</span>}
+                <button
+                  type="button"
+                  onClick={() => setShareModalOpen(true)}
+                  aria-label={t("web:jobAlerts.details.shareToSaveurUser", { defaultValue: "Share with a Saveur user" })}
+                  title={t("web:jobAlerts.details.shareToSaveurUser", { defaultValue: "Share with a Saveur user" })}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-hint hover:bg-surface-3 hover:text-primary"
+                >
+                  <EvaIcon name="people-outline" size={18} />
+                </button>
+                <button
+                  type="button"
+                  onClick={onShareJob}
+                  aria-label={t("web:jobAlerts.details.shareJob", { defaultValue: "Share this job" })}
+                  title={t("web:jobAlerts.details.shareJob", { defaultValue: "Share this job" })}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-hint hover:bg-surface-3 hover:text-primary"
+                >
+                  <EvaIcon name="share-outline" size={18} />
+                </button>
+              </div>
+            )}
+          </div>
 
           {alert === undefined && !proRequired && !error && (
             <div className="flex flex-col gap-4">
@@ -187,6 +253,12 @@ export default function JobAlertDetailsPage() {
                 </div>
               </div>
 
+              {/* "Analyzing this role's requirements…" — auto-runs on
+                  mount, silently hides itself on failure. See
+                  components/jobAlerts/JobFitAnalysis.tsx's own header
+                  comment for the full mobile-parity rationale. */}
+              <JobFitAnalysis applyUrl={alert.apply_url} jobTitle={alert.title} />
+
               <p className="text-center text-sm text-hint">
                 {alert.applied
                   ? t("web:jobAlerts.details.alreadyAppliedNote", {
@@ -211,6 +283,14 @@ export default function JobAlertDetailsPage() {
             </>
           )}
         </div>
+        {alert && (
+          <ShareToUserModal
+            open={shareModalOpen}
+            onClose={() => setShareModalOpen(false)}
+            contentType="job"
+            contentId={alert.id}
+          />
+        )}
       </AppShell>
     </RequireAuth>
   );

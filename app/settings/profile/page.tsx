@@ -77,12 +77,9 @@ export default function ProfileSettingsPage() {
       // allows (e.g. saved while on a higher tier, then downgraded).
       // Sliced to this account's real current-tier cap so this screen can
       // never display/re-save more than what's actually allowed right now.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRoles((profile.desiredRoles || []).slice(0, MAX_ROLES));
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCountries((profile.preferredCountries || []).slice(0, MAX_COUNTRIES));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile, MAX_ROLES, MAX_COUNTRIES]);
 
   function upsellSuffix(kind: "roles" | "countries") {

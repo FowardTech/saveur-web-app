@@ -92,6 +92,7 @@ const ICONS = [
   "heart-outline",
   "bulb-outline",
   "phone-call-outline",
+  "share-outline",
 ];
 
 function extractInner(svg) {
