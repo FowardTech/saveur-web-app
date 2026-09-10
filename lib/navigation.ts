@@ -120,6 +120,15 @@ export const primaryNav: NavItem[] = [
 // Sidebar secondary / bottom section.
 export const secondaryNav: NavLeaf[] = [
   { label: "Referral Program", labelKey: "referralProgram", href: "/referral", icon: "gift-outline" },
+  // Mobile: MoreSrc.tsx's More list places "Shared with Me" directly after
+  // "Refer & Earn" (src/more/MoreSrc.tsx) — same relative position here.
+  // Receiving side of the same in-app sharing system Job Alerts' "Share
+  // with a Saveur user" (ShareToUserModal) already uses — see
+  // lib/sharesService.ts and app/shared-with-me/page.tsx. No badgeKey:
+  // mobile's own row (src/more/MoreSrc.tsx) has no badgeCount/badgeDot for
+  // this either, and GET /api/v1/more/badges doesn't report an unread-shares
+  // or pending-connection-requests count today.
+  { label: "Shared with Me", labelKey: "sharedWithMe", href: "/shared-with-me", icon: "share-outline" },
   // Mobile drawer: MoreSrc.tsx places this row directly above Subscription
   // — a one-time-purchase catalog (Coding Practice, etc.) independent of
   // subscription tier, see src/more/AddOns.tsx.
