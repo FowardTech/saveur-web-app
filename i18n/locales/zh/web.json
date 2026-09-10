@@ -150,6 +150,7 @@
     "message": "我们使用 Cookie 来保持你的登录状态，并了解 Saveur 的使用情况。详情请查看我们的隐私政策。"
   },
   "dashboard": {
+    "announcementLearnMore": "了解更多",
     "defaultName": "朋友",
     "greetingAfternoon": "下午好",
     "greetingEvening": "晚上好",

@@ -150,6 +150,7 @@
     "message": "نستخدم ملفات تعريف الارتباط للحفاظ على تسجيل دخولك وفهم كيفية استخدام Saveur. راجع سياسة الخصوصية لدينا لمزيد من التفاصيل."
   },
   "dashboard": {
+    "announcementLearnMore": "معرفة المزيد",
     "defaultName": "صديقي",
     "greetingAfternoon": "مساء الخير",
     "greetingEvening": "مساء الخير",

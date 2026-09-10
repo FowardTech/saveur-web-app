@@ -62,6 +62,19 @@
       "title": "Career DNA",
       "versionLine": "Version {{version}} · built from {{count}} signal(s)"
     },
+    "events": {
+      "empty": "No events matched yet — try refreshing, or check back after your next scan.",
+      "loadFailedDefault": "Couldn't load career events.",
+      "markInterested": "Mark interested",
+      "proRequiredSubtitle": "Upgrade to Saveur Basic or above for AI-matched career events.",
+      "proRequiredTitle": "Career Events requires a paid plan",
+      "refreshEvents": "Refresh events",
+      "refreshFailedDefault": "Couldn't refresh events right now.",
+      "refreshing": "Refreshing…",
+      "saveFailedDefault": "Couldn't update that event right now.",
+      "subtitle": "Career fairs and networking events matched to your target roles and countries.",
+      "title": "Career Events"
+    },
     "dreamCompanies": {
       "add": "Add",
       "addFailedDefault": "Couldn't add that company right now.",
@@ -150,6 +163,7 @@
     "message": "We use cookies to keep you signed in and to understand how Saveur is used. See our Privacy Policy for details."
   },
   "dashboard": {
+    "announcementLearnMore": "Learn more",
     "defaultName": "there",
     "greetingAfternoon": "Good afternoon",
     "greetingEvening": "Good evening",
@@ -235,6 +249,11 @@
     "errorCodeLabel": "Error code: {{code}}",
     "finishingSignIn": "Finishing LinkedIn sign-in…",
     "title": "LinkedIn sign-in failed"
+  },
+  "notifications": {
+    "empty": "You're all caught up.",
+    "manage": "Manage",
+    "title": "Notifications"
   },
   "onboarding": {
     "goals": {
@@ -551,7 +570,7 @@
   "support": {
     "description": "In-app live chat support is coming to the web app in a future update. In the meantime, reach us directly and we'll get back to you as soon as we can.",
     "emailCta": "Email {{email}}",
-    "title": "Live Support"
+    "title": "Support"
   },
   "welcomeModal": {
     "cta": "Let's get started",

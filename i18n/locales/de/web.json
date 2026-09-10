@@ -150,6 +150,7 @@
     "message": "Wir verwenden Cookies, um dich angemeldet zu halten und zu verstehen, wie Saveur genutzt wird. Details findest du in unserer Datenschutzrichtlinie."
   },
   "dashboard": {
+    "announcementLearnMore": "Mehr erfahren",
     "defaultName": "Freund",
     "greetingAfternoon": "Guten Tag",
     "greetingEvening": "Guten Abend",

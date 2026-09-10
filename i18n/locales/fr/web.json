@@ -150,6 +150,7 @@
     "message": "Nous utilisons des cookies pour vous garder connecté et comprendre comment Saveur est utilisé. Consultez notre politique de confidentialité pour en savoir plus."
   },
   "dashboard": {
+    "announcementLearnMore": "En savoir plus",
     "defaultName": "ami",
     "greetingAfternoon": "Bon après-midi",
     "greetingEvening": "Bonsoir",

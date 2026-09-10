@@ -150,6 +150,7 @@
     "message": "Мы используем файлы cookie, чтобы сохранять вашу сессию и понимать, как используется Saveur. Подробности см. в нашей Политике конфиденциальности."
   },
   "dashboard": {
+    "announcementLearnMore": "Узнать больше",
     "defaultName": "друг",
     "greetingAfternoon": "Добрый день",
     "greetingEvening": "Добрый вечер",

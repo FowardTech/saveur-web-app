@@ -8,6 +8,7 @@ import { ActionCard } from "@/components/ui/ActionCard";
 import { LinkButton } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
+import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
 import { quickActions, tintCycle } from "@/lib/navigation";
@@ -65,6 +66,10 @@ export default function DashboardPage() {
           </h1>
           <p className="mt-1 text-sm text-hint">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
+
+        {/* Admin-authored announcement strip (policy changes, etc.) — above
+            the decorative HomeBanner hero card per product ask. */}
+        <AnnouncementBanner />
 
         {/* Home banner */}
         <HomeBanner />

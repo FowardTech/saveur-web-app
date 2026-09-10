@@ -150,6 +150,7 @@
     "message": "サインイン状態を維持し、Saveurの利用状況を把握するためにCookieを使用しています。詳しくはプライバシーポリシーをご覧ください。"
   },
   "dashboard": {
+    "announcementLearnMore": "詳しくはこちら",
     "defaultName": "あなた",
     "greetingAfternoon": "こんにちは",
     "greetingEvening": "こんばんは",

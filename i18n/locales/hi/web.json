@@ -150,6 +150,7 @@
     "message": "हम आपको साइन इन रखने और यह समझने के लिए कि Saveur का उपयोग कैसे किया जाता है, कुकीज़ का उपयोग करते हैं। विवरण के लिए हमारी गोपनीयता नीति देखें।"
   },
   "dashboard": {
+    "announcementLearnMore": "और जानें",
     "defaultName": "दोस्त",
     "greetingAfternoon": "नमस्कार",
     "greetingEvening": "शुभ संध्या",
