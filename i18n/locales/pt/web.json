@@ -230,6 +230,12 @@
     "title": "Cursos de Aprendizagem",
     "weekLabel": "Semana {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "Voltar para o login",
+    "errorCodeLabel": "Código de erro: {{code}}",
+    "finishingSignIn": "Concluindo o login com o LinkedIn…",
+    "title": "Falha no login com o LinkedIn"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "Conseguir uma promoção",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "Copiado!",
+    "copy": "Copiar",
+    "earnCreditPerReferral": "Ganhe {{amount}} de crédito para cada indicado que assinar.",
+    "loadFailedDefault": "Não foi possível carregar suas informações de indicação.",
+    "pending": "Pendentes",
+    "referred": "Indicados",
+    "rewarded": "Recompensados",
+    "subtitle": "Compartilhe o Saveur e ganhe recompensas quando seus indicados assinarem.",
+    "title": "Programa de Indicação",
+    "totalCreditEarned": "Crédito total ganho: {{amount}}",
+    "yourReferralLink": "Seu link de indicação"
+  },
   "requireAuth": {
     "loading": "Carregando…"
   },
@@ -442,11 +461,97 @@
       "title": "Variantes de Currículo"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "Gerencie sua assinatura e dados de cobrança.",
+      "paymentTitle": "Forma de Pagamento",
+      "profileDescription": "Atualize seu nome e veja o e-mail da sua conta.",
+      "profileTitle": "Perfil",
+      "securityDescription": "Autenticação em duas etapas e segurança da conta.",
+      "securityTitle": "Segurança",
+      "subtitle": "Gerencie sua conta, cobrança e segurança.",
+      "title": "Configurações"
+    },
+    "payment": {
+      "description": "Gerencie sua forma de pagamento, faturas e plano pelo portal seguro de cobrança da Stripe.",
+      "freePlanLine": "Você está no plano gratuito",
+      "manageBilling": "Gerenciar cobrança",
+      "openPortalFailedDefault": "Não foi possível abrir o portal de cobrança. Tente novamente.",
+      "opening": "Abrindo…",
+      "paidPlanLine": "Você está no plano {{plan}}",
+      "subtitle": "Gerencie sua assinatura e dados de cobrança.",
+      "title": "Forma de Pagamento",
+      "viewPlans": "Ver planos e preços"
+    },
+    "profile": {
+      "addressLabel": "Endereço residencial",
+      "optional": "Opcional",
+      "phoneLabel": "Número de telefone",
+      "saveChanges": "Salvar alterações",
+      "saveFailedDefault": "Não foi possível salvar seu perfil agora.",
+      "saved": "Salvo.",
+      "subtitle": "Atualize os dados da sua conta.",
+      "title": "Perfil"
+    },
+    "security": {
+      "codeSentTo": "Digite o código enviado para {{email}}.",
+      "disable2fa": "Desativar 2FA",
+      "disableFailedDefault": "Não foi possível desativar a autenticação em duas etapas agora.",
+      "disabling": "Desativando…",
+      "enable2fa": "Ativar 2FA",
+      "loadFailedDefault": "Não foi possível carregar suas configurações de segurança.",
+      "pushNotificationsDescription": "Notifique-me sobre vagas compatíveis, lembretes de entrevista e retornos do coach.",
+      "pushNotificationsTitle": "Notificações push",
+      "sendCodeFailedDefault": "Não foi possível enviar um código de verificação agora.",
+      "sending": "Enviando…",
+      "subtitle": "Proteja sua conta com autenticação em duas etapas por código de e-mail.",
+      "title": "Segurança",
+      "toggleNotificationsFailedDefault": "Não foi possível atualizar sua preferência de notificações agora.",
+      "twoFactorDisabledDescription": "Não ativada.",
+      "twoFactorEnabledDescription": "Ativada — um código é enviado para seu e-mail a cada login.",
+      "twoFactorTitle": "Autenticação em duas etapas",
+      "verificationCodeLabel": "Código de verificação",
+      "verifyAndEnable": "Verificar e ativar",
+      "verifyFailedDefault": "Esse código não funcionou — tente enviar um novo.",
+      "verifying": "Verificando…"
+    }
+  },
   "shell": {
     "closeMenu": "Fechar menu",
     "notifications": "Notificações",
     "profile": "Perfil",
-    "toggleSidebar": "Alternar barra lateral"
+    "toggleSidebar": "Alternar barra lateral",
+    "toggleTheme": "Alternar tema"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "Não foi possível iniciar o checkout. Tente novamente.",
+    "currentPlan": "Plano atual",
+    "currentPlanLine": "Você está atualmente no plano {{plan}}.",
+    "free": "Grátis",
+    "loadPlansFailedDefault": "Não foi possível carregar os planos agora. Tente novamente em instantes.",
+    "loadingPlans": "Carregando planos…",
+    "manageBilling": "Gerenciar cobrança",
+    "mostPopular": "Mais popular",
+    "noPlansAvailable": "Os planos não estão disponíveis agora — volte a conferir em breve.",
+    "opening": "Abrindo…",
+    "perMonth": "/mês",
+    "perYear": "/ano",
+    "portalFailedDefault": "Não foi possível abrir o portal de cobrança. Tente novamente.",
+    "redirecting": "Redirecionando…",
+    "subscribe": "Assinar",
+    "subtitle": "Faça upgrade quando quiser — cancele ou troque de plano sempre que precisar.",
+    "success": {
+      "backToPlans": "Voltar para os planos",
+      "description": "Sua assinatura está sendo confirmada. Pode levar um momento para refletir em toda a sua conta.",
+      "goToDashboard": "Ir para o painel",
+      "title": "Tudo pronto"
+    },
+    "title": "Planos para cada etapa da sua busca"
+  },
+  "support": {
+    "description": "O suporte por chat ao vivo dentro do app chega à versão web em uma atualização futura. Enquanto isso, fale diretamente conosco e responderemos o mais rápido possível.",
+    "emailCta": "Enviar e-mail para {{email}}",
+    "title": "Suporte ao Vivo"
   },
   "welcomeModal": {
     "cta": "Vamos começar",

@@ -230,6 +230,12 @@
     "title": "Cours d'Apprentissage",
     "weekLabel": "Semaine {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "Retour à la connexion",
+    "errorCodeLabel": "Code d'erreur : {{code}}",
+    "finishingSignIn": "Finalisation de la connexion LinkedIn…",
+    "title": "Échec de la connexion LinkedIn"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "Obtenir une promotion",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "Copié !",
+    "copy": "Copier",
+    "earnCreditPerReferral": "Gagnez {{amount}} de crédit pour chaque filleul qui s'abonne.",
+    "loadFailedDefault": "Impossible de charger vos informations de parrainage.",
+    "pending": "En attente",
+    "referred": "Parrainés",
+    "rewarded": "Récompensés",
+    "subtitle": "Partagez Saveur et gagnez des récompenses lorsque vos filleuls s'abonnent.",
+    "title": "Programme de parrainage",
+    "totalCreditEarned": "Crédit total gagné : {{amount}}",
+    "yourReferralLink": "Votre lien de parrainage"
+  },
   "requireAuth": {
     "loading": "Chargement…"
   },
@@ -442,11 +461,97 @@
       "title": "Variantes de CV"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "Gérez votre abonnement et vos informations de facturation.",
+      "paymentTitle": "Moyen de paiement",
+      "profileDescription": "Mettez à jour votre nom et consultez l'e-mail de votre compte.",
+      "profileTitle": "Profil",
+      "securityDescription": "Authentification à deux facteurs et sécurité du compte.",
+      "securityTitle": "Sécurité",
+      "subtitle": "Gérez votre compte, votre facturation et votre sécurité.",
+      "title": "Paramètres"
+    },
+    "payment": {
+      "description": "Gérez votre moyen de paiement, vos factures et votre forfait via le portail de facturation sécurisé de Stripe.",
+      "freePlanLine": "Vous êtes sur le forfait gratuit",
+      "manageBilling": "Gérer la facturation",
+      "openPortalFailedDefault": "Impossible d'ouvrir le portail de facturation. Veuillez réessayer.",
+      "opening": "Ouverture…",
+      "paidPlanLine": "Vous êtes sur le forfait {{plan}}",
+      "subtitle": "Gérez votre abonnement et vos informations de facturation.",
+      "title": "Moyen de paiement",
+      "viewPlans": "Voir les forfaits et tarifs"
+    },
+    "profile": {
+      "addressLabel": "Adresse",
+      "optional": "Facultatif",
+      "phoneLabel": "Numéro de téléphone",
+      "saveChanges": "Enregistrer les modifications",
+      "saveFailedDefault": "Impossible d'enregistrer votre profil pour le moment.",
+      "saved": "Enregistré.",
+      "subtitle": "Mettez à jour les informations de votre compte.",
+      "title": "Profil"
+    },
+    "security": {
+      "codeSentTo": "Entrez le code envoyé à {{email}}.",
+      "disable2fa": "Désactiver la 2FA",
+      "disableFailedDefault": "Impossible de désactiver l'authentification à deux facteurs pour le moment.",
+      "disabling": "Désactivation…",
+      "enable2fa": "Activer la 2FA",
+      "loadFailedDefault": "Impossible de charger vos paramètres de sécurité.",
+      "pushNotificationsDescription": "Prévenez-moi des offres correspondantes, des rappels d'entretien et des suivis du coach.",
+      "pushNotificationsTitle": "Notifications push",
+      "sendCodeFailedDefault": "Impossible d'envoyer un code de vérification pour le moment.",
+      "sending": "Envoi…",
+      "subtitle": "Protégez votre compte avec une authentification à deux facteurs par e-mail.",
+      "title": "Sécurité",
+      "toggleNotificationsFailedDefault": "Impossible de mettre à jour votre préférence de notifications pour le moment.",
+      "twoFactorDisabledDescription": "Non activée.",
+      "twoFactorEnabledDescription": "Activée — un code est envoyé à votre e-mail à chaque connexion.",
+      "twoFactorTitle": "Authentification à deux facteurs",
+      "verificationCodeLabel": "Code de vérification",
+      "verifyAndEnable": "Vérifier et activer",
+      "verifyFailedDefault": "Ce code n'a pas fonctionné — essayez d'en envoyer un nouveau.",
+      "verifying": "Vérification…"
+    }
+  },
   "shell": {
     "closeMenu": "Fermer le menu",
     "notifications": "Notifications",
     "profile": "Profil",
-    "toggleSidebar": "Afficher/masquer le menu latéral"
+    "toggleSidebar": "Afficher/masquer le menu latéral",
+    "toggleTheme": "Changer de thème"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "Impossible de démarrer le paiement. Veuillez réessayer.",
+    "currentPlan": "Forfait actuel",
+    "currentPlanLine": "Vous êtes actuellement sur le forfait {{plan}}.",
+    "free": "Gratuit",
+    "loadPlansFailedDefault": "Impossible de charger les forfaits pour le moment. Réessayez dans un instant.",
+    "loadingPlans": "Chargement des forfaits…",
+    "manageBilling": "Gérer la facturation",
+    "mostPopular": "Le plus populaire",
+    "noPlansAvailable": "Les forfaits ne sont pas disponibles pour le moment — revenez bientôt.",
+    "opening": "Ouverture…",
+    "perMonth": "/mois",
+    "perYear": "/an",
+    "portalFailedDefault": "Impossible d'ouvrir le portail de facturation. Veuillez réessayer.",
+    "redirecting": "Redirection…",
+    "subscribe": "S'abonner",
+    "subtitle": "Changez de forfait à tout moment — annulez ou changez dès que vous le souhaitez.",
+    "success": {
+      "backToPlans": "Retour aux forfaits",
+      "description": "Votre abonnement est en cours de confirmation. Cela peut prendre un instant avant de se refléter partout dans votre compte.",
+      "goToDashboard": "Aller au tableau de bord",
+      "title": "Tout est prêt"
+    },
+    "title": "Des forfaits adaptés à chaque étape de votre recherche"
+  },
+  "support": {
+    "description": "Le chat d'assistance en direct dans l'application arrivera sur le web dans une prochaine mise à jour. En attendant, contactez-nous directement et nous vous répondrons dès que possible.",
+    "emailCta": "Écrire à {{email}}",
+    "title": "Assistance en direct"
   },
   "welcomeModal": {
     "cta": "C'est parti",

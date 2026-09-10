@@ -230,6 +230,12 @@
     "title": "Lernkurse",
     "weekLabel": "Woche {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "Zurück zur Anmeldung",
+    "errorCodeLabel": "Fehlercode: {{code}}",
+    "finishingSignIn": "LinkedIn-Anmeldung wird abgeschlossen…",
+    "title": "LinkedIn-Anmeldung fehlgeschlagen"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "Befördert werden",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "Kopiert!",
+    "copy": "Kopieren",
+    "earnCreditPerReferral": "Verdiene {{amount}} Guthaben für jede geworbene Person, die ein Abo abschließt.",
+    "loadFailedDefault": "Deine Empfehlungsinfos konnten nicht geladen werden.",
+    "pending": "Ausstehend",
+    "referred": "Geworben",
+    "rewarded": "Belohnt",
+    "subtitle": "Teile Saveur und erhalte Prämien, wenn deine geworbenen Personen ein Abo abschließen.",
+    "title": "Empfehlungsprogramm",
+    "totalCreditEarned": "Insgesamt verdientes Guthaben: {{amount}}",
+    "yourReferralLink": "Dein Empfehlungslink"
+  },
   "requireAuth": {
     "loading": "Wird geladen…"
   },
@@ -442,11 +461,97 @@
       "title": "Lebenslauf-Varianten"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "Verwalte dein Abo und deine Rechnungsdetails.",
+      "paymentTitle": "Zahlungsmethode",
+      "profileDescription": "Aktualisiere deinen Namen und sieh dir die E-Mail deines Kontos an.",
+      "profileTitle": "Profil",
+      "securityDescription": "Zwei-Faktor-Authentifizierung und Kontosicherheit.",
+      "securityTitle": "Sicherheit",
+      "subtitle": "Verwalte dein Konto, deine Abrechnung und deine Sicherheit.",
+      "title": "Einstellungen"
+    },
+    "payment": {
+      "description": "Verwalte deine Zahlungsmethode, Rechnungen und dein Abo über das sichere Stripe-Kundenportal.",
+      "freePlanLine": "Du nutzt den kostenlosen Plan",
+      "manageBilling": "Abrechnung verwalten",
+      "openPortalFailedDefault": "Das Abrechnungsportal konnte nicht geöffnet werden. Bitte versuche es erneut.",
+      "opening": "Wird geöffnet…",
+      "paidPlanLine": "Du nutzt den {{plan}}-Plan",
+      "subtitle": "Verwalte dein Abo und deine Rechnungsdetails.",
+      "title": "Zahlungsmethode",
+      "viewPlans": "Pläne & Preise ansehen"
+    },
+    "profile": {
+      "addressLabel": "Wohnadresse",
+      "optional": "Optional",
+      "phoneLabel": "Telefonnummer",
+      "saveChanges": "Änderungen speichern",
+      "saveFailedDefault": "Dein Profil konnte gerade nicht gespeichert werden.",
+      "saved": "Gespeichert.",
+      "subtitle": "Aktualisiere deine Kontodaten.",
+      "title": "Profil"
+    },
+    "security": {
+      "codeSentTo": "Gib den Code ein, der an {{email}} gesendet wurde.",
+      "disable2fa": "2FA deaktivieren",
+      "disableFailedDefault": "Die Zwei-Faktor-Authentifizierung konnte gerade nicht deaktiviert werden.",
+      "disabling": "Wird deaktiviert…",
+      "enable2fa": "2FA aktivieren",
+      "loadFailedDefault": "Deine Sicherheitseinstellungen konnten nicht geladen werden.",
+      "pushNotificationsDescription": "Benachrichtige mich über Jobtreffer, Interview-Erinnerungen und Coach-Nachfassnachrichten.",
+      "pushNotificationsTitle": "Push-Benachrichtigungen",
+      "sendCodeFailedDefault": "Ein Bestätigungscode konnte gerade nicht gesendet werden.",
+      "sending": "Wird gesendet…",
+      "subtitle": "Schütze dein Konto mit Zwei-Faktor-Authentifizierung per E-Mail-Code.",
+      "title": "Sicherheit",
+      "toggleNotificationsFailedDefault": "Deine Benachrichtigungseinstellung konnte gerade nicht aktualisiert werden.",
+      "twoFactorDisabledDescription": "Nicht aktiviert.",
+      "twoFactorEnabledDescription": "Aktiviert — bei der Anmeldung wird ein Code an deine E-Mail gesendet.",
+      "twoFactorTitle": "Zwei-Faktor-Authentifizierung",
+      "verificationCodeLabel": "Bestätigungscode",
+      "verifyAndEnable": "Bestätigen & aktivieren",
+      "verifyFailedDefault": "Dieser Code hat nicht funktioniert — versuche, einen neuen zu senden.",
+      "verifying": "Wird bestätigt…"
+    }
+  },
   "shell": {
     "closeMenu": "Menü schließen",
     "notifications": "Benachrichtigungen",
     "profile": "Profil",
-    "toggleSidebar": "Seitenleiste umschalten"
+    "toggleSidebar": "Seitenleiste umschalten",
+    "toggleTheme": "Design umschalten"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "Der Bezahlvorgang konnte nicht gestartet werden. Bitte versuche es erneut.",
+    "currentPlan": "Aktueller Plan",
+    "currentPlanLine": "Du nutzt derzeit den {{plan}}-Plan.",
+    "free": "Kostenlos",
+    "loadPlansFailedDefault": "Die Pläne konnten gerade nicht geladen werden. Versuche es gleich noch einmal.",
+    "loadingPlans": "Pläne werden geladen…",
+    "manageBilling": "Abrechnung verwalten",
+    "mostPopular": "Am beliebtesten",
+    "noPlansAvailable": "Die Pläne sind gerade nicht verfügbar — schau bald wieder vorbei.",
+    "opening": "Wird geöffnet…",
+    "perMonth": "/Monat",
+    "perYear": "/Jahr",
+    "portalFailedDefault": "Das Abrechnungsportal konnte nicht geöffnet werden. Bitte versuche es erneut.",
+    "redirecting": "Weiterleitung…",
+    "subscribe": "Abonnieren",
+    "subtitle": "Jederzeit upgraden — kündige oder wechsle deinen Plan, wann immer du willst.",
+    "success": {
+      "backToPlans": "Zurück zu den Plänen",
+      "description": "Dein Abo wird gerade bestätigt. Es kann einen Moment dauern, bis es überall in deinem Konto sichtbar ist.",
+      "goToDashboard": "Zum Dashboard",
+      "title": "Alles bereit"
+    },
+    "title": "Pläne für jede Phase deiner Jobsuche"
+  },
+  "support": {
+    "description": "Live-Chat-Support in der App kommt mit einem zukünftigen Update auch für die Web-App. Kontaktiere uns in der Zwischenzeit direkt — wir melden uns so schnell wie möglich.",
+    "emailCta": "An {{email}} schreiben",
+    "title": "Live-Support"
   },
   "welcomeModal": {
     "cta": "Los geht's",

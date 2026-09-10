@@ -230,6 +230,12 @@
     "title": "دورات التعلم",
     "weekLabel": "الأسبوع {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "العودة إلى تسجيل الدخول",
+    "errorCodeLabel": "رمز الخطأ: {{code}}",
+    "finishingSignIn": "جارٍ إنهاء تسجيل الدخول عبر LinkedIn…",
+    "title": "فشل تسجيل الدخول عبر LinkedIn"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "الحصول على ترقية",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "تم النسخ!",
+    "copy": "نسخ",
+    "earnCreditPerReferral": "احصل على رصيد بقيمة {{amount}} عن كل شخص تحيله ويشترك.",
+    "loadFailedDefault": "تعذّر تحميل معلومات الإحالة الخاصة بك.",
+    "pending": "قيد الانتظار",
+    "referred": "تمت إحالتهم",
+    "rewarded": "تمت مكافأتهم",
+    "subtitle": "شارك Saveur واحصل على مكافآت عندما يشترك من تحيلهم.",
+    "title": "برنامج الإحالة",
+    "totalCreditEarned": "إجمالي الرصيد المكتسب: {{amount}}",
+    "yourReferralLink": "رابط الإحالة الخاص بك"
+  },
   "requireAuth": {
     "loading": "جارٍ التحميل…"
   },
@@ -442,11 +461,97 @@
       "title": "نسخ السيرة الذاتية"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "إدارة اشتراكك وتفاصيل الفوترة.",
+      "paymentTitle": "طريقة الدفع",
+      "profileDescription": "تحديث اسمك ومشاهدة البريد الإلكتروني لحسابك.",
+      "profileTitle": "الملف الشخصي",
+      "securityDescription": "المصادقة الثنائية وأمان الحساب.",
+      "securityTitle": "الأمان",
+      "subtitle": "إدارة حسابك والفوترة والأمان.",
+      "title": "الإعدادات"
+    },
+    "payment": {
+      "description": "أدر طريقة الدفع والفواتير والخطة من خلال بوابة الفوترة الآمنة الخاصة بـ Stripe.",
+      "freePlanLine": "أنت مشترك في الخطة المجانية",
+      "manageBilling": "إدارة الفوترة",
+      "openPortalFailedDefault": "تعذّر فتح بوابة الفوترة. يرجى المحاولة مرة أخرى.",
+      "opening": "جارٍ الفتح…",
+      "paidPlanLine": "أنت مشترك في خطة {{plan}}",
+      "subtitle": "إدارة اشتراكك وتفاصيل الفوترة.",
+      "title": "طريقة الدفع",
+      "viewPlans": "عرض الخطط والأسعار"
+    },
+    "profile": {
+      "addressLabel": "العنوان",
+      "optional": "اختياري",
+      "phoneLabel": "رقم الهاتف",
+      "saveChanges": "حفظ التغييرات",
+      "saveFailedDefault": "تعذّر حفظ ملفك الشخصي الآن.",
+      "saved": "تم الحفظ.",
+      "subtitle": "تحديث بيانات حسابك.",
+      "title": "الملف الشخصي"
+    },
+    "security": {
+      "codeSentTo": "أدخل الرمز المُرسَل إلى {{email}}.",
+      "disable2fa": "تعطيل المصادقة الثنائية",
+      "disableFailedDefault": "تعذّر تعطيل المصادقة الثنائية الآن.",
+      "disabling": "جارٍ التعطيل…",
+      "enable2fa": "تفعيل المصادقة الثنائية",
+      "loadFailedDefault": "تعذّر تحميل إعدادات الأمان الخاصة بك.",
+      "pushNotificationsDescription": "أعلمني بالوظائف المطابقة وتذكيرات المقابلات ومتابعات المدرب.",
+      "pushNotificationsTitle": "الإشعارات الفورية",
+      "sendCodeFailedDefault": "تعذّر إرسال رمز التحقق الآن.",
+      "sending": "جارٍ الإرسال…",
+      "subtitle": "احمِ حسابك بمصادقة ثنائية عبر رمز يُرسل إلى بريدك الإلكتروني.",
+      "title": "الأمان",
+      "toggleNotificationsFailedDefault": "تعذّر تحديث تفضيل الإشعارات الآن.",
+      "twoFactorDisabledDescription": "غير مُفعّلة.",
+      "twoFactorEnabledDescription": "مُفعّلة — يُرسل رمز إلى بريدك الإلكتروني عند تسجيل الدخول.",
+      "twoFactorTitle": "المصادقة الثنائية",
+      "verificationCodeLabel": "رمز التحقق",
+      "verifyAndEnable": "تحقق وفعّل",
+      "verifyFailedDefault": "لم يعمل هذا الرمز — جرّب إرسال رمز جديد.",
+      "verifying": "جارٍ التحقق…"
+    }
+  },
   "shell": {
     "closeMenu": "إغلاق القائمة",
     "notifications": "الإشعارات",
     "profile": "الملف الشخصي",
-    "toggleSidebar": "تبديل الشريط الجانبي"
+    "toggleSidebar": "تبديل الشريط الجانبي",
+    "toggleTheme": "تبديل المظهر"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "تعذّر بدء الدفع. يرجى المحاولة مرة أخرى.",
+    "currentPlan": "الخطة الحالية",
+    "currentPlanLine": "أنت مشترك حاليًا في خطة {{plan}}.",
+    "free": "مجانية",
+    "loadPlansFailedDefault": "تعذّر تحميل الخطط الآن. حاول مرة أخرى بعد قليل.",
+    "loadingPlans": "جارٍ تحميل الخطط…",
+    "manageBilling": "إدارة الفوترة",
+    "mostPopular": "الأكثر شيوعًا",
+    "noPlansAvailable": "الخطط غير متاحة حاليًا — يرجى التحقق لاحقًا.",
+    "opening": "جارٍ الفتح…",
+    "perMonth": "/شهريًا",
+    "perYear": "/سنويًا",
+    "portalFailedDefault": "تعذّر فتح بوابة الفوترة. يرجى المحاولة مرة أخرى.",
+    "redirecting": "جارٍ إعادة التوجيه…",
+    "subscribe": "اشترك",
+    "subtitle": "قم بالترقية في أي وقت — ألغِ اشتراكك أو غيّر خطتك متى احتجت.",
+    "success": {
+      "backToPlans": "العودة إلى الخطط",
+      "description": "يتم تأكيد اشتراكك حاليًا. قد يستغرق ظهوره في جميع أنحاء حسابك بعض الوقت.",
+      "goToDashboard": "الذهاب إلى لوحة التحكم",
+      "title": "كل شيء جاهز"
+    },
+    "title": "خطط لكل مرحلة من مراحل بحثك عن عمل"
+  },
+  "support": {
+    "description": "الدردشة المباشرة داخل التطبيق قادمة إلى نسخة الويب في تحديث مستقبلي. في هذه الأثناء، تواصل معنا مباشرة وسنرد عليك في أقرب وقت ممكن.",
+    "emailCta": "راسلنا عبر {{email}}",
+    "title": "الدعم المباشر"
   },
   "welcomeModal": {
     "cta": "لنبدأ",

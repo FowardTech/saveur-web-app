@@ -230,6 +230,12 @@
     "title": "Cursos de Aprendizaje",
     "weekLabel": "Semana {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "Volver a iniciar sesión",
+    "errorCodeLabel": "Código de error: {{code}}",
+    "finishingSignIn": "Terminando el inicio de sesión con LinkedIn…",
+    "title": "Error al iniciar sesión con LinkedIn"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "Conseguir un ascenso",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "¡Copiado!",
+    "copy": "Copiar",
+    "earnCreditPerReferral": "Gana {{amount}} de crédito por cada referido que se suscriba.",
+    "loadFailedDefault": "No se pudo cargar tu información de referidos.",
+    "pending": "Pendientes",
+    "referred": "Referidos",
+    "rewarded": "Recompensados",
+    "subtitle": "Comparte Saveur y gana recompensas cuando tus referidos se suscriban.",
+    "title": "Programa de Referidos",
+    "totalCreditEarned": "Crédito total ganado: {{amount}}",
+    "yourReferralLink": "Tu enlace de referido"
+  },
   "requireAuth": {
     "loading": "Cargando…"
   },
@@ -442,11 +461,97 @@
       "title": "Variantes de Currículum"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "Gestiona tu suscripción y datos de facturación.",
+      "paymentTitle": "Método de pago",
+      "profileDescription": "Actualiza tu nombre y consulta el correo de tu cuenta.",
+      "profileTitle": "Perfil",
+      "securityDescription": "Autenticación en dos pasos y seguridad de la cuenta.",
+      "securityTitle": "Seguridad",
+      "subtitle": "Gestiona tu cuenta, facturación y seguridad.",
+      "title": "Configuración"
+    },
+    "payment": {
+      "description": "Gestiona tu método de pago, facturas y plan a través del portal seguro de Stripe.",
+      "freePlanLine": "Estás en el plan gratuito",
+      "manageBilling": "Gestionar facturación",
+      "openPortalFailedDefault": "No se pudo abrir el portal de facturación. Inténtalo de nuevo.",
+      "opening": "Abriendo…",
+      "paidPlanLine": "Estás en el plan {{plan}}",
+      "subtitle": "Gestiona tu suscripción y datos de facturación.",
+      "title": "Método de pago",
+      "viewPlans": "Ver planes y precios"
+    },
+    "profile": {
+      "addressLabel": "Dirección",
+      "optional": "Opcional",
+      "phoneLabel": "Número de teléfono",
+      "saveChanges": "Guardar cambios",
+      "saveFailedDefault": "No se pudo guardar tu perfil en este momento.",
+      "saved": "Guardado.",
+      "subtitle": "Actualiza los datos de tu cuenta.",
+      "title": "Perfil"
+    },
+    "security": {
+      "codeSentTo": "Introduce el código enviado a {{email}}.",
+      "disable2fa": "Desactivar 2FA",
+      "disableFailedDefault": "No se pudo desactivar la autenticación en dos pasos en este momento.",
+      "disabling": "Desactivando…",
+      "enable2fa": "Activar 2FA",
+      "loadFailedDefault": "No se pudo cargar tu configuración de seguridad.",
+      "pushNotificationsDescription": "Notifícame sobre coincidencias de empleo, recordatorios de entrevistas y seguimientos del coach.",
+      "pushNotificationsTitle": "Notificaciones push",
+      "sendCodeFailedDefault": "No se pudo enviar un código de verificación en este momento.",
+      "sending": "Enviando…",
+      "subtitle": "Protege tu cuenta con autenticación en dos pasos por correo electrónico.",
+      "title": "Seguridad",
+      "toggleNotificationsFailedDefault": "No se pudo actualizar tu preferencia de notificaciones en este momento.",
+      "twoFactorDisabledDescription": "No está activada.",
+      "twoFactorEnabledDescription": "Activada — se envía un código a tu correo al iniciar sesión.",
+      "twoFactorTitle": "Autenticación en dos pasos",
+      "verificationCodeLabel": "Código de verificación",
+      "verifyAndEnable": "Verificar y activar",
+      "verifyFailedDefault": "Ese código no funcionó — prueba a enviar uno nuevo.",
+      "verifying": "Verificando…"
+    }
+  },
   "shell": {
     "closeMenu": "Cerrar menú",
     "notifications": "Notificaciones",
     "profile": "Perfil",
-    "toggleSidebar": "Alternar barra lateral"
+    "toggleSidebar": "Alternar barra lateral",
+    "toggleTheme": "Cambiar tema"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "No se pudo iniciar el pago. Inténtalo de nuevo.",
+    "currentPlan": "Plan actual",
+    "currentPlanLine": "Actualmente estás en el plan {{plan}}.",
+    "free": "Gratis",
+    "loadPlansFailedDefault": "No se pudieron cargar los planes en este momento. Inténtalo de nuevo en un momento.",
+    "loadingPlans": "Cargando planes…",
+    "manageBilling": "Gestionar facturación",
+    "mostPopular": "Más popular",
+    "noPlansAvailable": "Los planes no están disponibles en este momento — vuelve a intentarlo pronto.",
+    "opening": "Abriendo…",
+    "perMonth": "/mes",
+    "perYear": "/año",
+    "portalFailedDefault": "No se pudo abrir el portal de facturación. Inténtalo de nuevo.",
+    "redirecting": "Redirigiendo…",
+    "subscribe": "Suscribirse",
+    "subtitle": "Mejora tu plan cuando quieras — cancela o cambia de plan cuando lo necesites.",
+    "success": {
+      "backToPlans": "Volver a los planes",
+      "description": "Tu suscripción se está confirmando. Puede tardar un momento en reflejarse en toda tu cuenta.",
+      "goToDashboard": "Ir al panel",
+      "title": "Todo listo"
+    },
+    "title": "Planes para cada etapa de tu búsqueda"
+  },
+  "support": {
+    "description": "El chat de soporte en vivo dentro de la app llegará a la versión web en una futura actualización. Mientras tanto, contáctanos directamente y te responderemos lo antes posible.",
+    "emailCta": "Escribir a {{email}}",
+    "title": "Soporte en vivo"
   },
   "welcomeModal": {
     "cta": "Empecemos",

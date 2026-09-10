@@ -230,6 +230,12 @@
     "title": "학습 강좌",
     "weekLabel": "{{week}}주차"
   },
+  "linkedinCallback": {
+    "backToSignIn": "로그인으로 돌아가기",
+    "errorCodeLabel": "오류 코드: {{code}}",
+    "finishingSignIn": "LinkedIn 로그인을 완료하는 중…",
+    "title": "LinkedIn 로그인 실패"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "승진하기",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "복사됨!",
+    "copy": "복사",
+    "earnCreditPerReferral": "추천한 친구가 구독하면 {{amount}} 크레딧을 받으세요.",
+    "loadFailedDefault": "추천 정보를 불러올 수 없습니다.",
+    "pending": "대기 중",
+    "referred": "추천됨",
+    "rewarded": "보상 지급됨",
+    "subtitle": "Saveur를 공유하고 추천한 친구가 구독하면 보상을 받으세요.",
+    "title": "추천 프로그램",
+    "totalCreditEarned": "총 획득 크레딧: {{amount}}",
+    "yourReferralLink": "내 추천 링크"
+  },
   "requireAuth": {
     "loading": "로딩 중…"
   },
@@ -442,11 +461,97 @@
       "title": "이력서 버전"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "구독 및 결제 정보를 관리하세요.",
+      "paymentTitle": "결제 수단",
+      "profileDescription": "이름을 업데이트하고 계정 이메일을 확인하세요.",
+      "profileTitle": "프로필",
+      "securityDescription": "2단계 인증 및 계정 보안.",
+      "securityTitle": "보안",
+      "subtitle": "계정, 결제, 보안을 관리하세요.",
+      "title": "설정"
+    },
+    "payment": {
+      "description": "Stripe의 안전한 결제 포털에서 결제 수단, 청구서, 플랜을 관리하세요.",
+      "freePlanLine": "무료 플랜을 이용 중입니다",
+      "manageBilling": "결제 관리",
+      "openPortalFailedDefault": "결제 포털을 열 수 없습니다. 다시 시도해 주세요.",
+      "opening": "여는 중…",
+      "paidPlanLine": "{{plan}} 플랜을 이용 중입니다",
+      "subtitle": "구독 및 결제 정보를 관리하세요.",
+      "title": "결제 수단",
+      "viewPlans": "플랜 및 가격 보기"
+    },
+    "profile": {
+      "addressLabel": "집 주소",
+      "optional": "선택 사항",
+      "phoneLabel": "전화번호",
+      "saveChanges": "변경 사항 저장",
+      "saveFailedDefault": "지금은 프로필을 저장할 수 없습니다.",
+      "saved": "저장되었습니다.",
+      "subtitle": "계정 정보를 업데이트하세요.",
+      "title": "프로필"
+    },
+    "security": {
+      "codeSentTo": "{{email}}(으)로 전송된 코드를 입력하세요.",
+      "disable2fa": "2FA 비활성화",
+      "disableFailedDefault": "지금은 2단계 인증을 비활성화할 수 없습니다.",
+      "disabling": "비활성화하는 중…",
+      "enable2fa": "2FA 활성화",
+      "loadFailedDefault": "보안 설정을 불러올 수 없습니다.",
+      "pushNotificationsDescription": "채용 매칭, 면접 알림, 코치 후속 메시지를 알려드립니다.",
+      "pushNotificationsTitle": "푸시 알림",
+      "sendCodeFailedDefault": "지금은 인증 코드를 보낼 수 없습니다.",
+      "sending": "보내는 중…",
+      "subtitle": "이메일 코드 2단계 인증으로 계정을 보호하세요.",
+      "title": "보안",
+      "toggleNotificationsFailedDefault": "지금은 알림 설정을 업데이트할 수 없습니다.",
+      "twoFactorDisabledDescription": "비활성화됨.",
+      "twoFactorEnabledDescription": "활성화됨 — 로그인 시 이메일로 코드가 전송됩니다.",
+      "twoFactorTitle": "2단계 인증",
+      "verificationCodeLabel": "인증 코드",
+      "verifyAndEnable": "확인 및 활성화",
+      "verifyFailedDefault": "코드가 올바르지 않습니다 — 새 코드를 보내보세요.",
+      "verifying": "확인하는 중…"
+    }
+  },
   "shell": {
     "closeMenu": "메뉴 닫기",
     "notifications": "알림",
     "profile": "프로필",
-    "toggleSidebar": "사이드바 전환"
+    "toggleSidebar": "사이드바 전환",
+    "toggleTheme": "테마 전환"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",
+    "currentPlan": "현재 플랜",
+    "currentPlanLine": "현재 {{plan}} 플랜을 이용 중입니다.",
+    "free": "무료",
+    "loadPlansFailedDefault": "지금은 플랜을 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.",
+    "loadingPlans": "플랜을 불러오는 중…",
+    "manageBilling": "결제 관리",
+    "mostPopular": "가장 인기",
+    "noPlansAvailable": "지금은 플랜을 이용할 수 없습니다 — 곧 다시 확인해 주세요.",
+    "opening": "여는 중…",
+    "perMonth": "/월",
+    "perYear": "/년",
+    "portalFailedDefault": "결제 포털을 열 수 없습니다. 다시 시도해 주세요.",
+    "redirecting": "리디렉션 중…",
+    "subscribe": "구독하기",
+    "subtitle": "언제든지 업그레이드하고, 필요할 때 취소하거나 플랜을 변경하세요.",
+    "success": {
+      "backToPlans": "플랜으로 돌아가기",
+      "description": "구독이 확인되는 중입니다. 계정 전체에 반영되기까지 잠시 시간이 걸릴 수 있습니다.",
+      "goToDashboard": "대시보드로 이동",
+      "title": "모든 준비가 완료되었습니다"
+    },
+    "title": "구직의 모든 단계를 위한 플랜"
+  },
+  "support": {
+    "description": "앱 내 실시간 채팅 지원은 향후 업데이트에서 웹 앱에도 제공될 예정입니다. 그동안 직접 문의해 주시면 최대한 빨리 답변드리겠습니다.",
+    "emailCta": "{{email}}(으)로 이메일 보내기",
+    "title": "실시간 지원"
   },
   "welcomeModal": {
     "cta": "시작해 볼까요",

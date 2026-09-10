@@ -230,6 +230,12 @@
     "title": "学習コース",
     "weekLabel": "第{{week}}週"
   },
+  "linkedinCallback": {
+    "backToSignIn": "サインインに戻る",
+    "errorCodeLabel": "エラーコード：{{code}}",
+    "finishingSignIn": "LinkedInサインインを完了しています…",
+    "title": "LinkedInサインインに失敗しました"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "昇進する",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "コピーしました！",
+    "copy": "コピー",
+    "earnCreditPerReferral": "紹介した人が登録すると{{amount}}のクレジットを獲得できます。",
+    "loadFailedDefault": "紹介情報を読み込めませんでした。",
+    "pending": "保留中",
+    "referred": "紹介済み",
+    "rewarded": "報酬付与済み",
+    "subtitle": "Saveurをシェアして、紹介した人が登録すると報酬を獲得できます。",
+    "title": "紹介プログラム",
+    "totalCreditEarned": "獲得したクレジット合計：{{amount}}",
+    "yourReferralLink": "あなたの紹介リンク"
+  },
   "requireAuth": {
     "loading": "読み込み中…"
   },
@@ -442,11 +461,97 @@
       "title": "履歴書バリエーション"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "サブスクリプションと請求情報を管理します。",
+      "paymentTitle": "お支払い方法",
+      "profileDescription": "名前を更新したり、アカウントのメールアドレスを確認したりできます。",
+      "profileTitle": "プロフィール",
+      "securityDescription": "二段階認証とアカウントのセキュリティ。",
+      "securityTitle": "セキュリティ",
+      "subtitle": "アカウント、請求、セキュリティを管理します。",
+      "title": "設定"
+    },
+    "payment": {
+      "description": "Stripeの安全な請求ポータルから、お支払い方法、請求書、プランを管理できます。",
+      "freePlanLine": "現在は無料プランをご利用中です",
+      "manageBilling": "請求を管理",
+      "openPortalFailedDefault": "請求ポータルを開けませんでした。もう一度お試しください。",
+      "opening": "開いています…",
+      "paidPlanLine": "現在は{{plan}}プランをご利用中です",
+      "subtitle": "サブスクリプションと請求情報を管理します。",
+      "title": "お支払い方法",
+      "viewPlans": "プランと料金を見る"
+    },
+    "profile": {
+      "addressLabel": "住所",
+      "optional": "任意",
+      "phoneLabel": "電話番号",
+      "saveChanges": "変更を保存",
+      "saveFailedDefault": "現在プロフィールを保存できませんでした。",
+      "saved": "保存しました。",
+      "subtitle": "アカウント情報を更新します。",
+      "title": "プロフィール"
+    },
+    "security": {
+      "codeSentTo": "{{email}} に送信されたコードを入力してください。",
+      "disable2fa": "2段階認証を無効にする",
+      "disableFailedDefault": "現在二段階認証を無効にできませんでした。",
+      "disabling": "無効にしています…",
+      "enable2fa": "2段階認証を有効にする",
+      "loadFailedDefault": "セキュリティ設定を読み込めませんでした。",
+      "pushNotificationsDescription": "求人のマッチング、面接のリマインダー、コーチからのフォローアップを通知します。",
+      "pushNotificationsTitle": "プッシュ通知",
+      "sendCodeFailedDefault": "現在確認コードを送信できませんでした。",
+      "sending": "送信しています…",
+      "subtitle": "メールコードによる二段階認証でアカウントを保護します。",
+      "title": "セキュリティ",
+      "toggleNotificationsFailedDefault": "現在通知設定を更新できませんでした。",
+      "twoFactorDisabledDescription": "無効になっています。",
+      "twoFactorEnabledDescription": "有効 — ログイン時にメールへコードが送信されます。",
+      "twoFactorTitle": "二段階認証",
+      "verificationCodeLabel": "確認コード",
+      "verifyAndEnable": "確認して有効にする",
+      "verifyFailedDefault": "そのコードは無効でした — 新しいコードを送信してみてください。",
+      "verifying": "確認しています…"
+    }
+  },
   "shell": {
     "closeMenu": "メニューを閉じる",
     "notifications": "通知",
     "profile": "プロフィール",
-    "toggleSidebar": "サイドバーを切り替え"
+    "toggleSidebar": "サイドバーを切り替え",
+    "toggleTheme": "テーマを切り替え"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "チェックアウトを開始できませんでした。もう一度お試しください。",
+    "currentPlan": "現在のプラン",
+    "currentPlanLine": "現在{{plan}}プランをご利用中です。",
+    "free": "無料",
+    "loadPlansFailedDefault": "現在プランを読み込めませんでした。しばらくしてからもう一度お試しください。",
+    "loadingPlans": "プランを読み込んでいます…",
+    "manageBilling": "請求を管理",
+    "mostPopular": "一番人気",
+    "noPlansAvailable": "現在プランをご利用いただけません — またあとで確認してください。",
+    "opening": "開いています…",
+    "perMonth": "/月",
+    "perYear": "/年",
+    "portalFailedDefault": "請求ポータルを開けませんでした。もう一度お試しください。",
+    "redirecting": "リダイレクトしています…",
+    "subscribe": "登録する",
+    "subtitle": "いつでもアップグレードでき、必要なときにいつでもキャンセル・変更できます。",
+    "success": {
+      "backToPlans": "プラン一覧に戻る",
+      "description": "サブスクリプションは確認中です。アカウント全体に反映されるまで少し時間がかかる場合があります。",
+      "goToDashboard": "ダッシュボードへ",
+      "title": "準備が整いました"
+    },
+    "title": "求職のあらゆる段階に合わせたプラン"
+  },
+  "support": {
+    "description": "アプリ内のライブチャットサポートは、今後のアップデートでWeb版にも追加予定です。それまでは直接お問い合わせください。できるだけ早くご返信いたします。",
+    "emailCta": "{{email}} にメールする",
+    "title": "ライブサポート"
   },
   "welcomeModal": {
     "cta": "始めましょう",

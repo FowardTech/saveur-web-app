@@ -230,6 +230,12 @@
     "title": "学习课程",
     "weekLabel": "第 {{week}} 周"
   },
+  "linkedinCallback": {
+    "backToSignIn": "返回登录",
+    "errorCodeLabel": "错误代码：{{code}}",
+    "finishingSignIn": "正在完成 LinkedIn 登录…",
+    "title": "LinkedIn 登录失败"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "获得晋升",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "已复制！",
+    "copy": "复制",
+    "earnCreditPerReferral": "每有一位好友订阅，即可获得 {{amount}} 积分。",
+    "loadFailedDefault": "无法加载你的推荐信息。",
+    "pending": "待处理",
+    "referred": "已推荐",
+    "rewarded": "已奖励",
+    "subtitle": "分享 Saveur，好友订阅后即可获得奖励。",
+    "title": "推荐计划",
+    "totalCreditEarned": "已获得总积分：{{amount}}",
+    "yourReferralLink": "你的推荐链接"
+  },
   "requireAuth": {
     "loading": "加载中…"
   },
@@ -442,11 +461,97 @@
       "title": "简历变体"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "管理你的订阅和账单信息。",
+      "paymentTitle": "付款方式",
+      "profileDescription": "更新你的姓名并查看账户邮箱。",
+      "profileTitle": "个人资料",
+      "securityDescription": "双重身份验证与账户安全。",
+      "securityTitle": "安全",
+      "subtitle": "管理你的账户、账单和安全设置。",
+      "title": "设置"
+    },
+    "payment": {
+      "description": "通过 Stripe 的安全账单门户管理付款方式、账单和方案。",
+      "freePlanLine": "你当前使用免费方案",
+      "manageBilling": "管理账单",
+      "openPortalFailedDefault": "无法打开账单门户，请重试。",
+      "opening": "正在打开…",
+      "paidPlanLine": "你当前使用 {{plan}} 方案",
+      "subtitle": "管理你的订阅和账单信息。",
+      "title": "付款方式",
+      "viewPlans": "查看方案与价格"
+    },
+    "profile": {
+      "addressLabel": "家庭住址",
+      "optional": "选填",
+      "phoneLabel": "电话号码",
+      "saveChanges": "保存更改",
+      "saveFailedDefault": "暂时无法保存你的资料。",
+      "saved": "已保存。",
+      "subtitle": "更新你的账户信息。",
+      "title": "个人资料"
+    },
+    "security": {
+      "codeSentTo": "输入发送到 {{email}} 的验证码。",
+      "disable2fa": "关闭双重验证",
+      "disableFailedDefault": "暂时无法关闭双重身份验证。",
+      "disabling": "正在关闭…",
+      "enable2fa": "开启双重验证",
+      "loadFailedDefault": "无法加载你的安全设置。",
+      "pushNotificationsDescription": "在有职位匹配、面试提醒和教练跟进时通知我。",
+      "pushNotificationsTitle": "推送通知",
+      "sendCodeFailedDefault": "暂时无法发送验证码。",
+      "sending": "正在发送…",
+      "subtitle": "使用邮箱验证码双重验证保护你的账户。",
+      "title": "安全",
+      "toggleNotificationsFailedDefault": "暂时无法更新你的通知偏好设置。",
+      "twoFactorDisabledDescription": "未开启。",
+      "twoFactorEnabledDescription": "已开启——登录时会向你的邮箱发送验证码。",
+      "twoFactorTitle": "双重身份验证",
+      "verificationCodeLabel": "验证码",
+      "verifyAndEnable": "验证并开启",
+      "verifyFailedDefault": "该验证码无效——请尝试重新发送一个。",
+      "verifying": "正在验证…"
+    }
+  },
   "shell": {
     "closeMenu": "关闭菜单",
     "notifications": "通知",
     "profile": "个人资料",
-    "toggleSidebar": "切换侧边栏"
+    "toggleSidebar": "切换侧边栏",
+    "toggleTheme": "切换主题"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "无法开始结账，请重试。",
+    "currentPlan": "当前方案",
+    "currentPlanLine": "你目前使用的是 {{plan}} 方案。",
+    "free": "免费",
+    "loadPlansFailedDefault": "暂时无法加载方案，请稍后再试。",
+    "loadingPlans": "正在加载方案…",
+    "manageBilling": "管理账单",
+    "mostPopular": "最受欢迎",
+    "noPlansAvailable": "方案暂不可用——请稍后再来查看。",
+    "opening": "正在打开…",
+    "perMonth": "/月",
+    "perYear": "/年",
+    "portalFailedDefault": "无法打开账单门户，请重试。",
+    "redirecting": "正在跳转…",
+    "subscribe": "订阅",
+    "subtitle": "随时升级——可在需要时取消或更换方案。",
+    "success": {
+      "backToPlans": "返回方案列表",
+      "description": "你的订阅正在确认中，可能需要一点时间才能在账户各处生效。",
+      "goToDashboard": "前往主页",
+      "title": "一切就绪"
+    },
+    "title": "为求职的每个阶段量身打造的方案"
+  },
+  "support": {
+    "description": "应用内实时聊天支持将在未来的更新中登陆网页版。在此之前，请直接联系我们，我们会尽快回复你。",
+    "emailCta": "发送邮件至 {{email}}",
+    "title": "实时支持"
   },
   "welcomeModal": {
     "cta": "开始使用",

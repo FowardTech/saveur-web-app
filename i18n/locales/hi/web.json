@@ -230,6 +230,12 @@
     "title": "लर्निंग कोर्सेज़",
     "weekLabel": "सप्ताह {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "साइन इन पर वापस जाएं",
+    "errorCodeLabel": "एरर कोड: {{code}}",
+    "finishingSignIn": "LinkedIn साइन इन पूरा किया जा रहा है…",
+    "title": "LinkedIn साइन इन विफल रहा"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "पदोन्नति पाना",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "कॉपी हो गया!",
+    "copy": "कॉपी करें",
+    "earnCreditPerReferral": "आपके रेफर किए गए हर व्यक्ति के सब्सक्राइब करने पर {{amount}} क्रेडिट कमाएं।",
+    "loadFailedDefault": "आपकी रेफरल जानकारी लोड नहीं हो सकी।",
+    "pending": "लंबित",
+    "referred": "रेफर किए गए",
+    "rewarded": "पुरस्कृत",
+    "subtitle": "Saveur शेयर करें और जब आपके रेफर किए गए लोग सब्सक्राइब करें तो रिवॉर्ड कमाएं।",
+    "title": "रेफरल प्रोग्राम",
+    "totalCreditEarned": "कुल अर्जित क्रेडिट: {{amount}}",
+    "yourReferralLink": "आपका रेफरल लिंक"
+  },
   "requireAuth": {
     "loading": "लोड हो रहा है…"
   },
@@ -442,11 +461,97 @@
       "title": "रिज़्यूमे वेरिएंट्स"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "अपनी सदस्यता और बिलिंग जानकारी प्रबंधित करें।",
+      "paymentTitle": "भुगतान का तरीका",
+      "profileDescription": "अपना नाम अपडेट करें और अपने खाते का ईमेल देखें।",
+      "profileTitle": "प्रोफ़ाइल",
+      "securityDescription": "टू-फैक्टर ऑथेंटिकेशन और खाता सुरक्षा।",
+      "securityTitle": "सुरक्षा",
+      "subtitle": "अपना खाता, बिलिंग और सुरक्षा प्रबंधित करें।",
+      "title": "सेटिंग्स"
+    },
+    "payment": {
+      "description": "Stripe के सुरक्षित बिलिंग पोर्टल के ज़रिए अपना भुगतान तरीका, इनवॉइस और प्लान प्रबंधित करें।",
+      "freePlanLine": "आप फ्री प्लान पर हैं",
+      "manageBilling": "बिलिंग प्रबंधित करें",
+      "openPortalFailedDefault": "बिलिंग पोर्टल नहीं खुल सका। कृपया फिर से कोशिश करें।",
+      "opening": "खोला जा रहा है…",
+      "paidPlanLine": "आप {{plan}} प्लान पर हैं",
+      "subtitle": "अपनी सदस्यता और बिलिंग जानकारी प्रबंधित करें।",
+      "title": "भुगतान का तरीका",
+      "viewPlans": "प्लान और कीमतें देखें"
+    },
+    "profile": {
+      "addressLabel": "घर का पता",
+      "optional": "वैकल्पिक",
+      "phoneLabel": "फ़ोन नंबर",
+      "saveChanges": "बदलाव सहेजें",
+      "saveFailedDefault": "अभी आपकी प्रोफ़ाइल सहेजी नहीं जा सकी।",
+      "saved": "सहेजा गया।",
+      "subtitle": "अपने खाते की जानकारी अपडेट करें।",
+      "title": "प्रोफ़ाइल"
+    },
+    "security": {
+      "codeSentTo": "{{email}} पर भेजा गया कोड दर्ज करें।",
+      "disable2fa": "2FA बंद करें",
+      "disableFailedDefault": "अभी टू-फैक्टर ऑथेंटिकेशन बंद नहीं किया जा सका।",
+      "disabling": "बंद किया जा रहा है…",
+      "enable2fa": "2FA चालू करें",
+      "loadFailedDefault": "आपकी सुरक्षा सेटिंग्स लोड नहीं हो सकीं।",
+      "pushNotificationsDescription": "मुझे जॉब मैच, इंटरव्यू रिमाइंडर और कोच के फॉलो-अप के बारे में सूचित करें।",
+      "pushNotificationsTitle": "पुश नोटिफिकेशन",
+      "sendCodeFailedDefault": "अभी वेरिफिकेशन कोड नहीं भेजा जा सका।",
+      "sending": "भेजा जा रहा है…",
+      "subtitle": "ईमेल-कोड टू-फैक्टर ऑथेंटिकेशन से अपने खाते को सुरक्षित रखें।",
+      "title": "सुरक्षा",
+      "toggleNotificationsFailedDefault": "अभी आपकी नोटिफिकेशन प्राथमिकता अपडेट नहीं हो सकी।",
+      "twoFactorDisabledDescription": "चालू नहीं है।",
+      "twoFactorEnabledDescription": "चालू है — लॉगिन के समय आपके ईमेल पर एक कोड भेजा जाता है।",
+      "twoFactorTitle": "टू-फैक्टर ऑथेंटिकेशन",
+      "verificationCodeLabel": "वेरिफिकेशन कोड",
+      "verifyAndEnable": "वेरिफाई करें और चालू करें",
+      "verifyFailedDefault": "वह कोड काम नहीं आया — एक नया कोड भेजने की कोशिश करें।",
+      "verifying": "वेरिफाई किया जा रहा है…"
+    }
+  },
   "shell": {
     "closeMenu": "मेनू बंद करें",
     "notifications": "सूचनाएं",
     "profile": "प्रोफ़ाइल",
-    "toggleSidebar": "साइडबार टॉगल करें"
+    "toggleSidebar": "साइडबार टॉगल करें",
+    "toggleTheme": "थीम बदलें"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "चेकआउट शुरू नहीं हो सका। कृपया फिर से कोशिश करें।",
+    "currentPlan": "मौजूदा प्लान",
+    "currentPlanLine": "आप फ़िलहाल {{plan}} प्लान पर हैं।",
+    "free": "मुफ़्त",
+    "loadPlansFailedDefault": "अभी प्लान लोड नहीं हो सके। कृपया थोड़ी देर बाद फिर कोशिश करें।",
+    "loadingPlans": "प्लान लोड हो रहे हैं…",
+    "manageBilling": "बिलिंग प्रबंधित करें",
+    "mostPopular": "सबसे लोकप्रिय",
+    "noPlansAvailable": "अभी प्लान उपलब्ध नहीं हैं — जल्द ही फिर देखें।",
+    "opening": "खोला जा रहा है…",
+    "perMonth": "/माह",
+    "perYear": "/वर्ष",
+    "portalFailedDefault": "बिलिंग पोर्टल नहीं खुल सका। कृपया फिर से कोशिश करें।",
+    "redirecting": "रीडायरेक्ट हो रहा है…",
+    "subscribe": "सब्सक्राइब करें",
+    "subtitle": "कभी भी अपग्रेड करें — जब चाहें प्लान रद्द करें या बदलें।",
+    "success": {
+      "backToPlans": "प्लान पर वापस जाएं",
+      "description": "आपकी सदस्यता की पुष्टि की जा रही है। आपके खाते में हर जगह दिखने में थोड़ा समय लग सकता है।",
+      "goToDashboard": "डैशबोर्ड पर जाएं",
+      "title": "सब कुछ तैयार है"
+    },
+    "title": "आपकी नौकरी खोज के हर चरण के लिए प्लान"
+  },
+  "support": {
+    "description": "ऐप में लाइव चैट सपोर्ट भविष्य के अपडेट में वेब ऐप पर भी आएगा। तब तक, सीधे हमसे संपर्क करें और हम जल्द से जल्द जवाब देंगे।",
+    "emailCta": "{{email}} पर ईमेल करें",
+    "title": "लाइव सपोर्ट"
   },
   "welcomeModal": {
     "cta": "चलिए शुरू करते हैं",

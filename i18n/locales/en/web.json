@@ -230,6 +230,12 @@
     "title": "Learning Courses",
     "weekLabel": "Week {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "Back to sign in",
+    "errorCodeLabel": "Error code: {{code}}",
+    "finishingSignIn": "Finishing LinkedIn sign-in…",
+    "title": "LinkedIn sign-in failed"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "Get promoted",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "Copied!",
+    "copy": "Copy",
+    "earnCreditPerReferral": "Earn {{amount}} credit per referral who subscribes.",
+    "loadFailedDefault": "Couldn't load your referral info.",
+    "pending": "Pending",
+    "referred": "Referred",
+    "rewarded": "Rewarded",
+    "subtitle": "Share Saveur and earn rewards when your referrals subscribe.",
+    "title": "Referral Program",
+    "totalCreditEarned": "Total credit earned: {{amount}}",
+    "yourReferralLink": "Your referral link"
+  },
   "requireAuth": {
     "loading": "Loading…"
   },
@@ -442,11 +461,97 @@
       "title": "Resume Variants"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "Manage your subscription and billing details.",
+      "paymentTitle": "Payment Method",
+      "profileDescription": "Update your name and view your account email.",
+      "profileTitle": "Profile",
+      "securityDescription": "Two-factor authentication and account security.",
+      "securityTitle": "Security",
+      "subtitle": "Manage your account, billing, and security.",
+      "title": "Settings"
+    },
+    "payment": {
+      "description": "Manage your payment method, invoices, and plan through Stripe's secure billing portal.",
+      "freePlanLine": "You're on the free plan",
+      "manageBilling": "Manage billing",
+      "openPortalFailedDefault": "Couldn't open the billing portal. Please try again.",
+      "opening": "Opening…",
+      "paidPlanLine": "You're on the {{plan}} plan",
+      "subtitle": "Manage your subscription and billing details.",
+      "title": "Payment Method",
+      "viewPlans": "View plans & pricing"
+    },
+    "profile": {
+      "addressLabel": "Home address",
+      "optional": "Optional",
+      "phoneLabel": "Phone number",
+      "saveChanges": "Save changes",
+      "saveFailedDefault": "Couldn't save your profile right now.",
+      "saved": "Saved.",
+      "subtitle": "Update your account details.",
+      "title": "Profile"
+    },
+    "security": {
+      "codeSentTo": "Enter the code sent to {{email}}.",
+      "disable2fa": "Disable 2FA",
+      "disableFailedDefault": "Couldn't disable two-factor authentication right now.",
+      "disabling": "Disabling…",
+      "enable2fa": "Enable 2FA",
+      "loadFailedDefault": "Couldn't load your security settings.",
+      "pushNotificationsDescription": "Notify me about job matches, interview reminders, and coach follow-ups.",
+      "pushNotificationsTitle": "Push notifications",
+      "sendCodeFailedDefault": "Couldn't send a verification code right now.",
+      "sending": "Sending…",
+      "subtitle": "Protect your account with email-code two-factor authentication.",
+      "title": "Security",
+      "toggleNotificationsFailedDefault": "Couldn't update your notification preference right now.",
+      "twoFactorDisabledDescription": "Not enabled.",
+      "twoFactorEnabledDescription": "Enabled — a code is sent to your email at login.",
+      "twoFactorTitle": "Two-factor authentication",
+      "verificationCodeLabel": "Verification code",
+      "verifyAndEnable": "Verify & enable",
+      "verifyFailedDefault": "That code didn't work — try sending a new one.",
+      "verifying": "Verifying…"
+    }
+  },
   "shell": {
     "closeMenu": "Close menu",
     "notifications": "Notifications",
     "profile": "Profile",
-    "toggleSidebar": "Toggle sidebar"
+    "toggleSidebar": "Toggle sidebar",
+    "toggleTheme": "Toggle theme"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "Couldn't start checkout. Please try again.",
+    "currentPlan": "Current plan",
+    "currentPlanLine": "You're currently on the {{plan}} plan.",
+    "free": "Free",
+    "loadPlansFailedDefault": "Couldn't load plans right now. Please try again in a moment.",
+    "loadingPlans": "Loading plans…",
+    "manageBilling": "Manage billing",
+    "mostPopular": "Most popular",
+    "noPlansAvailable": "Plans aren't available right now — check back soon.",
+    "opening": "Opening…",
+    "perMonth": "/mo",
+    "perYear": "/yr",
+    "portalFailedDefault": "Couldn't open the billing portal. Please try again.",
+    "redirecting": "Redirecting…",
+    "subscribe": "Subscribe",
+    "subtitle": "Upgrade any time — cancel or switch plans whenever you need to.",
+    "success": {
+      "backToPlans": "Back to plans",
+      "description": "Your subscription is being confirmed. It may take a moment to reflect everywhere in your account.",
+      "goToDashboard": "Go to dashboard",
+      "title": "You're all set"
+    },
+    "title": "Plans built for every stage of your search"
+  },
+  "support": {
+    "description": "In-app live chat support is coming to the web app in a future update. In the meantime, reach us directly and we'll get back to you as soon as we can.",
+    "emailCta": "Email {{email}}",
+    "title": "Live Support"
   },
   "welcomeModal": {
     "cta": "Let's get started",

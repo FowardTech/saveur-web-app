@@ -230,6 +230,12 @@
     "title": "Corsi di Apprendimento",
     "weekLabel": "Settimana {{week}}"
   },
+  "linkedinCallback": {
+    "backToSignIn": "Torna all'accesso",
+    "errorCodeLabel": "Codice errore: {{code}}",
+    "finishingSignIn": "Completamento dell'accesso con LinkedIn…",
+    "title": "Accesso con LinkedIn non riuscito"
+  },
   "onboarding": {
     "goals": {
       "getPromoted": "Ottenere una promozione",
@@ -348,6 +354,19 @@
       }
     }
   },
+  "referral": {
+    "copied": "Copiato!",
+    "copy": "Copia",
+    "earnCreditPerReferral": "Guadagna {{amount}} di credito per ogni persona invitata che si abbona.",
+    "loadFailedDefault": "Impossibile caricare le informazioni sul tuo programma di invito.",
+    "pending": "In attesa",
+    "referred": "Invitati",
+    "rewarded": "Premiati",
+    "subtitle": "Condividi Saveur e guadagna premi quando le persone che inviti si abbonano.",
+    "title": "Programma di Invito",
+    "totalCreditEarned": "Credito totale guadagnato: {{amount}}",
+    "yourReferralLink": "Il tuo link di invito"
+  },
   "requireAuth": {
     "loading": "Caricamento…"
   },
@@ -442,11 +461,97 @@
       "title": "Varianti del CV"
     }
   },
+  "settings": {
+    "hub": {
+      "paymentDescription": "Gestisci il tuo abbonamento e i dati di fatturazione.",
+      "paymentTitle": "Metodo di pagamento",
+      "profileDescription": "Aggiorna il tuo nome e visualizza l'e-mail del tuo account.",
+      "profileTitle": "Profilo",
+      "securityDescription": "Autenticazione a due fattori e sicurezza dell'account.",
+      "securityTitle": "Sicurezza",
+      "subtitle": "Gestisci il tuo account, la fatturazione e la sicurezza.",
+      "title": "Impostazioni"
+    },
+    "payment": {
+      "description": "Gestisci il metodo di pagamento, le fatture e il piano tramite il portale di fatturazione sicuro di Stripe.",
+      "freePlanLine": "Sei sul piano gratuito",
+      "manageBilling": "Gestisci fatturazione",
+      "openPortalFailedDefault": "Impossibile aprire il portale di fatturazione. Riprova.",
+      "opening": "Apertura…",
+      "paidPlanLine": "Sei sul piano {{plan}}",
+      "subtitle": "Gestisci il tuo abbonamento e i dati di fatturazione.",
+      "title": "Metodo di pagamento",
+      "viewPlans": "Vedi piani e prezzi"
+    },
+    "profile": {
+      "addressLabel": "Indirizzo di casa",
+      "optional": "Facoltativo",
+      "phoneLabel": "Numero di telefono",
+      "saveChanges": "Salva modifiche",
+      "saveFailedDefault": "Impossibile salvare il tuo profilo al momento.",
+      "saved": "Salvato.",
+      "subtitle": "Aggiorna i dati del tuo account.",
+      "title": "Profilo"
+    },
+    "security": {
+      "codeSentTo": "Inserisci il codice inviato a {{email}}.",
+      "disable2fa": "Disattiva 2FA",
+      "disableFailedDefault": "Impossibile disattivare l'autenticazione a due fattori al momento.",
+      "disabling": "Disattivazione…",
+      "enable2fa": "Attiva 2FA",
+      "loadFailedDefault": "Impossibile caricare le impostazioni di sicurezza.",
+      "pushNotificationsDescription": "Avvisami di offerte di lavoro compatibili, promemoria dei colloqui e follow-up del coach.",
+      "pushNotificationsTitle": "Notifiche push",
+      "sendCodeFailedDefault": "Impossibile inviare un codice di verifica al momento.",
+      "sending": "Invio…",
+      "subtitle": "Proteggi il tuo account con l'autenticazione a due fattori via codice e-mail.",
+      "title": "Sicurezza",
+      "toggleNotificationsFailedDefault": "Impossibile aggiornare la tua preferenza di notifica al momento.",
+      "twoFactorDisabledDescription": "Non attivata.",
+      "twoFactorEnabledDescription": "Attivata — un codice viene inviato alla tua e-mail a ogni accesso.",
+      "twoFactorTitle": "Autenticazione a due fattori",
+      "verificationCodeLabel": "Codice di verifica",
+      "verifyAndEnable": "Verifica e attiva",
+      "verifyFailedDefault": "Quel codice non ha funzionato — prova a inviarne uno nuovo.",
+      "verifying": "Verifica in corso…"
+    }
+  },
   "shell": {
     "closeMenu": "Chiudi menu",
     "notifications": "Notifiche",
     "profile": "Profilo",
-    "toggleSidebar": "Attiva/disattiva barra laterale"
+    "toggleSidebar": "Attiva/disattiva barra laterale",
+    "toggleTheme": "Cambia tema"
+  },
+  "subscription": {
+    "checkoutFailedDefault": "Impossibile avviare il pagamento. Riprova.",
+    "currentPlan": "Piano attuale",
+    "currentPlanLine": "Attualmente sei sul piano {{plan}}.",
+    "free": "Gratuito",
+    "loadPlansFailedDefault": "Impossibile caricare i piani al momento. Riprova tra un istante.",
+    "loadingPlans": "Caricamento piani…",
+    "manageBilling": "Gestisci fatturazione",
+    "mostPopular": "Più popolare",
+    "noPlansAvailable": "I piani non sono disponibili al momento — torna a controllare presto.",
+    "opening": "Apertura…",
+    "perMonth": "/mese",
+    "perYear": "/anno",
+    "portalFailedDefault": "Impossibile aprire il portale di fatturazione. Riprova.",
+    "redirecting": "Reindirizzamento…",
+    "subscribe": "Abbonati",
+    "subtitle": "Passa a un piano superiore quando vuoi — annulla o cambia piano ogni volta che ti serve.",
+    "success": {
+      "backToPlans": "Torna ai piani",
+      "description": "Il tuo abbonamento è in fase di conferma. Potrebbe volerci un momento prima che si rifletta ovunque nel tuo account.",
+      "goToDashboard": "Vai alla dashboard",
+      "title": "Tutto pronto"
+    },
+    "title": "Piani pensati per ogni fase della tua ricerca"
+  },
+  "support": {
+    "description": "La chat di assistenza dal vivo nell'app arriverà sulla versione web in un futuro aggiornamento. Nel frattempo, contattaci direttamente e ti risponderemo il prima possibile.",
+    "emailCta": "Scrivi a {{email}}",
+    "title": "Assistenza dal vivo"
   },
   "welcomeModal": {
     "cta": "Iniziamo",
