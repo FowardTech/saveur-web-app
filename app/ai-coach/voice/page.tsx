@@ -293,7 +293,14 @@ export default function VoiceCoachPage() {
         });
         setLastCoachLine(retryLine);
         setErrorMsg(apiErr.message || t("web:aiCoach.replyFailedDefault", { defaultValue: "The coach couldn't reply right now. Please try again." }));
-        if (sessionActiveRef.current) startRecognitionInternal();
+        // Speak the local retry line too (it's a static, hardcoded string,
+        // not an LLM reply) so a failed /api/v1/coach/advice call — e.g. a
+        // Lovable-proxied LLM billing issue — still leaves the coach
+        // sounding alive instead of going silently mute. speakReply's own
+        // onend/onerror handler already resumes listening (or goes idle)
+        // afterward, same as the old startRecognitionInternal()/setPhase
+        // calls this replaces.
+        if (sessionActiveRef.current) speakReply(retryLine);
         else setPhase("idle");
       }
     },
@@ -320,13 +327,37 @@ export default function VoiceCoachPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveTranscript, phase]);
 
+  // Whether the static local greeting has already been spoken this page
+  // visit — only ever spoken once, the first time the user starts a
+  // session, same as VoiceCoachView's own one-shot intro on mobile.
+  const greetedRef = useRef(false);
+
   const startSession = useCallback(() => {
     setErrorMsg(null);
     setProRequired(false);
     networkErrorStreakRef.current = 0;
     sessionActiveRef.current = true;
+    if (!greetedRef.current) {
+      greetedRef.current = true;
+      // BUG FIX (mobile parity — VoiceCoachView.tsx speaks a hardcoded,
+      // purely local intro line via native TTS the moment Voice mode is
+      // engaged, entirely independent of any LLM call; see that file's own
+      // "coach_voice_intro_line" comment). Web used to only ever speak a
+      // reply that came back from POST /api/v1/coach/advice — if that call
+      // failed (e.g. a Lovable-proxied LLM billing issue), the coach never
+      // said a single word out loud, even though GREETING_TEXT below is
+      // already a static string requiring no backend/LLM call at all.
+      // Speaking it directly here, before recognition even starts, means
+      // the very first thing the user hears never depends on the AI
+      // backend succeeding. speakReply's own onend/onerror handler starts
+      // recognition once the greeting finishes (mirrors a normal turn).
+      const greeting = t("web:aiCoach.voiceInitialLine", { defaultValue: GREETING_TEXT });
+      setLastCoachLine(greeting);
+      speakReply(greeting);
+      return;
+    }
     startRecognitionInternal();
-  }, [startRecognitionInternal]);
+  }, [startRecognitionInternal, speakReply, t]);
 
   const endSession = useCallback(() => {
     sessionActiveRef.current = false;

@@ -110,3 +110,41 @@ export function currentNotificationPermission(): NotificationPermission | "unsup
   if (typeof window === "undefined" || !("Notification" in window)) return "unsupported";
   return Notification.permission;
 }
+
+/** BUG FIX (product report: the notification bell/badge doesn't update live
+ * when a push arrives while the app is open — only after a manual page
+ * refresh). Firebase's `onMessage` only ever fires for FOREGROUND
+ * messages (a background/killed tab instead gets a real OS notification via
+ * public/firebase-messaging-sw.js's own onBackgroundMessage) — this is the
+ * missing foreground counterpart, and the piece components/shell/
+ * NotificationBell.tsx was missing entirely: it only ever fetched once on
+ * mount/open, with nothing to tell it a new notification had just arrived.
+ *
+ * Deliberately push-driven rather than a polling interval — this app
+ * already has real, working FCM web push (see enableWebPush above), so a
+ * poll-every-N-seconds fallback would just be redundant network traffic for
+ * users who already grant notification permission, and still-invisible-
+ * until-refresh for the users the bell most wants to update live is exactly
+ * what real-time push already solves. Callers get a plain callback (not the
+ * raw payload) since every current caller just wants to know "something
+ * changed, refetch" rather than parse the message itself.
+ *
+ * No-ops (resolves to a no-op unsubscribe) when messaging isn't supported in
+ * this browser, or when getMessaging()/onMessage() throws for any reason
+ * (e.g. Firebase not configured) — same fail-soft contract as the rest of
+ * this module. Safe to call unconditionally, independent of whether this
+ * user has ever enabled push (an onMessage listener with no messages ever
+ * arriving is a harmless no-op, not an error).
+ */
+export async function onForegroundMessage(callback: () => void): Promise<() => void> {
+  if (typeof window === "undefined" || !("Notification" in window)) return () => {};
+  try {
+    const { isSupported, getMessaging, onMessage } = await import("firebase/messaging");
+    if (!(await isSupported())) return () => {};
+    const messaging = getMessaging(firebaseApp);
+    return onMessage(messaging, () => callback());
+  } catch (err) {
+    console.warn("[messaging] onForegroundMessage failed to attach", err);
+    return () => {};
+  }
+}

@@ -12,6 +12,7 @@ import {
   notificationHref,
   type AppNotification,
 } from "@/lib/notifications";
+import { onForegroundMessage } from "@/lib/messaging";
 
 function relativeTime(iso: string): string {
   const ms = Date.parse(iso);
@@ -70,6 +71,32 @@ export function NotificationBell() {
   useEffect(() => {
     if (loading || !firebaseUser) return;
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firebaseUser, loading]);
+
+  // BUG FIX (product report: the badge doesn't update live when a push
+  // arrives while the app is open — only shows up after a manual page
+  // refresh). `load()` above only ever runs once on mount/auth-ready and
+  // again when the panel is opened; nothing previously told this component
+  // "a new notification just arrived" in between. Wires the real FCM
+  // foreground listener (lib/messaging.ts's onForegroundMessage, built on
+  // the same firebase/messaging web push infra enableWebPush already sets
+  // up) so a foreground push refetches the list immediately — the badge
+  // count and panel both update live, no polling involved.
+  useEffect(() => {
+    if (loading || !firebaseUser) return;
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+    onForegroundMessage(() => {
+      load();
+    }).then((unsub) => {
+      if (cancelled) unsub();
+      else unsubscribe = unsub;
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firebaseUser, loading]);
 
