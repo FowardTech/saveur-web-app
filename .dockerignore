@@ -1,0 +1,17 @@
+# Missing entirely until now — without this, `COPY . .` in the Dockerfile
+# was sending .git history, any local node_modules/.next build artifacts,
+# etc. into the Docker build context and image layers. On a 10GB droplet
+# already tight on space (see Dockerfile's own comment on the "no space
+# left on device" fix), this is real, avoidable waste.
+.git
+.gitignore
+node_modules
+.next
+out
+npm-debug.log*
+.env
+.env.*
+.DS_Store
+*.md
+.vscode
+.idea

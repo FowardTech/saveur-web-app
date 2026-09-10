@@ -12,14 +12,19 @@
 # NEXT_PUBLIC_-prefixed. If you ever change one of these values, you must
 # rebuild the image (`docker compose build web`), not just restart it.
 
-FROM node:20-slim AS deps
+# BUG FIX (droplet report: "no space left on device" mid-build) — this used
+# to be a separate `deps` stage whose /app/node_modules got COPY'd into this
+# `builder` stage. Docker keeps both stages' filesystem layers on disk
+# during the build (only unused ones get garbage-collected after), so that
+# pattern briefly needs roughly 2x node_modules' size on disk at once. This
+# droplet is a 512MB RAM / 10GB disk box already running Postgres+Redis+the
+# backend's own images — real headroom is thin, so installing directly in
+# this one stage (no separate deps stage, no duplicate COPY) instead of
+# optimizing for rebuild-cache speed is the right tradeoff here.
+FROM node:20-slim AS builder
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
-
-FROM node:20-slim AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ARG NEXT_PUBLIC_API_BASE_URL
