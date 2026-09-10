@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -10,6 +11,12 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonBubble } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import {
+  getSpeechRecognitionCtor,
+  safeStartRecognition,
+  describeSpeechError,
+  type MinimalSpeechRecognition,
+} from "@/lib/speechRecognition";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py
 //   GET    /api/v1/coach/messages -> {messages: CoachMessage[]}
@@ -45,20 +52,6 @@ const GREETING_MESSAGE: CoachMessage = {
   text: COACH_GREETING_TEXT,
 };
 
-// Minimal ambient shape for the Web Speech API's SpeechRecognition — not a
-// full TS lib.dom type (browser support/prefixing varies, see startListening
-// below), just enough of the surface this file actually touches.
-interface MinimalSpeechRecognition {
-  lang: string;
-  interimResults: boolean;
-  maxAlternatives: number;
-  onresult: ((event: { results: { [index: number]: { [index: number]: { transcript: string } } } }) => void) | null;
-  onerror: (() => void) | null;
-  onend: (() => void) | null;
-  start: () => void;
-  stop: () => void;
-}
-
 export default function AiCoachPage() {
   const { t } = useTranslation();
   const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
@@ -81,6 +74,13 @@ export default function AiCoachPage() {
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [voiceUnsupported, setVoiceUnsupported] = useState<string | null>(null);
+  // BUG FIX: separate from voiceUnsupported (a browser-capability message,
+  // shown once and stays relevant) — this surfaces a real, per-attempt
+  // SpeechRecognition failure (permission denied, no mic, network, a
+  // start() that threw) instead of the old behavior of silently resetting
+  // `listening` to false with zero explanation. See lib/speechRecognition.ts's
+  // describeSpeechError/safeStartRecognition for the full root-cause writeup.
+  const [voiceError, setVoiceError] = useState<string | null>(null);
   const recognitionRef = useRef<MinimalSpeechRecognition | null>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -201,16 +201,14 @@ export default function AiCoachPage() {
       return;
     }
 
-    const SpeechRecognitionCtor =
-      (window as unknown as { SpeechRecognition?: new () => MinimalSpeechRecognition }).SpeechRecognition ||
-      (window as unknown as { webkitSpeechRecognition?: new () => MinimalSpeechRecognition }).webkitSpeechRecognition;
-
+    const SpeechRecognitionCtor = getSpeechRecognitionCtor();
     if (!SpeechRecognitionCtor) {
       setVoiceUnsupported(t("web:aiCoach.voiceUnsupported", { defaultValue: "Voice input isn't supported in this browser yet — try Chrome or Edge." }));
       return;
     }
 
     setVoiceUnsupported(null);
+    setVoiceError(null);
     const recognition = new SpeechRecognitionCtor();
     recognition.lang = typeof navigator !== "undefined" ? navigator.language : "en-US";
     recognition.interimResults = false;
@@ -221,12 +219,36 @@ export default function AiCoachPage() {
         sendQuestion(transcript, "voice");
       }
     };
-    recognition.onerror = () => setListening(false);
+    // BUG FIX (real, reproducible root cause of "voice mode isn't working"):
+    // the old onerror discarded the actual error code and just reset
+    // `listening`, so every failure (permission denied, no mic, a network
+    // hiccup) looked like nothing happened at all. Now surfaces a specific,
+    // actionable message via describeSpeechError — see
+    // lib/speechRecognition.ts's own comment for the full writeup.
+    recognition.onerror = (event) => {
+      setListening(false);
+      const message = describeSpeechError(event?.error, t);
+      if (message) setVoiceError(message);
+    };
     recognition.onend = () => setListening(false);
 
     recognitionRef.current = recognition;
-    setListening(true);
-    recognition.start();
+    // BUG FIX: `listening` used to be set to true unconditionally BEFORE
+    // calling start(), with start() itself never wrapped in a try/catch.
+    // start() throws SYNCHRONOUSLY in real cases (e.g. a fast double-tap
+    // racing a not-yet-torn-down previous instance) — when that happened,
+    // `listening` was already true and nothing would ever reset it (onend/
+    // onerror never fire for an instance whose start() never actually
+    // succeeded), permanently stranding the UI on "Listening…" with a dead
+    // mic until a full page reload. safeStartRecognition only flips
+    // `listening` true on a confirmed-successful start.
+    const result = safeStartRecognition(recognition);
+    if (result.ok) {
+      setListening(true);
+    } else {
+      recognitionRef.current = null;
+      setVoiceError(t("web:aiCoach.voiceErrorGeneric", { defaultValue: "Voice input hit an unexpected error. Try again." }));
+    }
   }
 
   return (
@@ -238,11 +260,24 @@ export default function AiCoachPage() {
               title={t("web:aiCoach.title", { defaultValue: "AI Coach" })}
               subtitle={t("web:aiCoach.subtitle", { defaultValue: "Ask anything about your job search, interviews, or career." })}
             />
-            {messages.length > 0 && (
-              <Button variant="ghost" size="sm" onClick={handleClear}>
-                {t("web:aiCoach.clearChat", { defaultValue: "Clear chat" })}
-              </Button>
-            )}
+            <div className="flex shrink-0 items-center gap-2">
+              {/* Entry point into the dedicated Voice Coach screen — mirrors
+                  mobile Chat.tsx's "Speak" pill (waveform icon) that
+                  switches into VoiceCoachView, except this opens a real
+                  route rather than swapping the chat area in place. */}
+              <Link
+                href="/ai-coach/voice"
+                className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-1 px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-surface-3"
+              >
+                <EvaIcon name="mic-outline" size={16} />
+                {t("web:aiCoach.openVoiceCoach", { defaultValue: "Voice Coach" })}
+              </Link>
+              {messages.length > 0 && (
+                <Button variant="ghost" size="sm" onClick={handleClear}>
+                  {t("web:aiCoach.clearChat", { defaultValue: "Clear chat" })}
+                </Button>
+              )}
+            </div>
           </div>
 
           {proRequired && (
@@ -304,6 +339,7 @@ export default function AiCoachPage() {
 
               {error && <p className="text-sm text-danger">{error}</p>}
               {voiceUnsupported && <p className="text-sm text-danger">{voiceUnsupported}</p>}
+              {voiceError && <p className="text-sm text-danger">{voiceError}</p>}
               {listening && <p className="text-sm text-hint">{t("web:aiCoach.listening", { defaultValue: "Listening…" })}</p>}
               {speaking && <p className="text-sm text-hint">{t("web:aiCoach.speakingHint", { defaultValue: "Speaking… (tap the mic to stop)" })}</p>}
 
