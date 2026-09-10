@@ -25,7 +25,6 @@ function useGreeting() {
     if (hour < 12) setGreeting(t("web:dashboard.greetingMorning", { defaultValue: "Good morning" }));
     else if (hour < 18) setGreeting(t("web:dashboard.greetingAfternoon", { defaultValue: "Good afternoon" }));
     else setGreeting(t("web:dashboard.greetingEvening", { defaultValue: "Good evening" }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
   return greeting;
 }

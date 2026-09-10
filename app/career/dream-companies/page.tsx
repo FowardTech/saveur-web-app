@@ -51,6 +51,9 @@ export default function DreamCompaniesPage() {
   }
 
   useEffect(() => {
+    // Intentional fetch-on-mount — load() sets state once its async GET
+    // resolves, not synchronously in this effect body.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

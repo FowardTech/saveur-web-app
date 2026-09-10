@@ -104,6 +104,10 @@ export default function AiCoachPage() {
   }
 
   useEffect(() => {
+    // Intentional fetch-on-mount — load() sets state once its async GET
+    // resolves, not synchronously in this effect body, so the cascading-
+    // render this rule guards against doesn't apply here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, []);
 

@@ -39,6 +39,10 @@ export default function JobAlertsPage() {
   const [savingPrefs, setSavingPrefs] = useState(false);
 
   useEffect(() => {
+    // Syncs the roles text field from the async-loaded profile once it
+    // arrives — can't be a lazy useState initializer since `profile` is
+    // still null on first render while the backend call is in flight.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (profile) setRolesText((profile.desiredRoles || []).join(", "));
   }, [profile]);
 
@@ -57,7 +61,11 @@ export default function JobAlertsPage() {
   }
 
   useEffect(() => {
+    // Intentional fetch-on-mount — load() sets state once its async GET
+    // resolves, not synchronously in this effect body.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleRefresh() {

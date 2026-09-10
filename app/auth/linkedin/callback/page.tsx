@@ -31,6 +31,11 @@ function LinkedInCallbackInner() {
     const token = searchParams.get("token");
 
     if (errorParam) {
+      // One-time redirect-result handling (guarded by the `ran` ref above),
+      // not a derived-state pattern — setting state directly here is the
+      // intentional outcome of a query param that only exists on this exact
+      // redirect landing, not a value this effect resyncs repeatedly.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError(errorParam);
       return;
     }

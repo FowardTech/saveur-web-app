@@ -60,7 +60,11 @@ export default function LearningPage() {
   }
 
   useEffect(() => {
+    // Intentional fetch-on-mount — load() sets state once its async GETs
+    // resolve, not synchronously in this effect body.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleGenerate(e: React.FormEvent) {

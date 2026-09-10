@@ -25,7 +25,11 @@ export default function ProfileSettingsPage() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    // Syncs the form fields from the async-loaded profile once it arrives —
+    // can't be a lazy useState initializer since `profile` is still null on
+    // first render while the backend call is in flight.
     if (profile) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(profile.name || "");
       setPhone(profile.phoneNumber || "");
       setAddress(profile.homeAddress || "");
