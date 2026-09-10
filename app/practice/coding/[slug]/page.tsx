@@ -9,6 +9,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web counterpart to mobile's src/practice/CodingProblemSolve.tsx — that
 // screen is a full Judge0/AI-backed dark-IDE code editor (language picker,
@@ -40,6 +41,7 @@ const difficultyTint: Record<string, string> = {
 
 export default function CodingProblemDetailPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const params = useParams<{ slug: string }>();
   const slug = params?.slug;
 
@@ -48,7 +50,7 @@ export default function CodingProblemDetailPage() {
   const [addonRequired, setAddonRequired] = useState(false);
 
   useEffect(() => {
-    if (!slug) return;
+    if (authLoading || !slug) return;
     let cancelled = false;
     apiClient
       .get<CodingProblemDetail>("/api/v1/coding/problem", { params: { slug } })
@@ -70,7 +72,7 @@ export default function CodingProblemDetailPage() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug]);
+  }, [authLoading, slug]);
 
   function difficultyLabel(value: string) {
     return t(`web:practice.codingDifficulty.${value}`, { defaultValue: value });

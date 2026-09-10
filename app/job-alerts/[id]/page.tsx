@@ -14,6 +14,7 @@ import { guessCompanyLogoUrl } from "@/lib/companyData";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { JobFitAnalysis } from "@/components/jobAlerts/JobFitAnalysis";
 import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web counterpart to Saveur/src/more/JobAlertDetails.tsx — the landing
 // screen a tap on a Job Alerts list card (app/job-alerts/page.tsx) opens.
@@ -48,6 +49,7 @@ function formatDate(iso: string, locale?: string) {
 
 export default function JobAlertDetailsPage() {
   const { t, i18n } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const params = useParams<{ id: string }>();
   const alertId = params?.id;
 
@@ -58,7 +60,7 @@ export default function JobAlertDetailsPage() {
   const [shareCopied, setShareCopied] = useState(false);
 
   useEffect(() => {
-    if (!alertId) return;
+    if (authLoading || !alertId) return;
     let cancelled = false;
     apiClient
       .get<JobAlertDetail>(`/api/v1/job-alerts/${alertId}`)
@@ -88,7 +90,7 @@ export default function JobAlertDetailsPage() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertId]);
+  }, [authLoading, alertId]);
 
   function onApply() {
     if (!alert?.apply_url) return;

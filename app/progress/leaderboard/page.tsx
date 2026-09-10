@@ -57,7 +57,7 @@ function ChangeBadge({ changePct, t }: { changePct: number | null; t: (k: string
 
 function LeaderboardPageInner() {
   const { t } = useTranslation();
-  const { firebaseUser } = useAuth();
+  const { firebaseUser, loading: authLoading } = useAuth();
 
   const [streak, setStreak] = useState<GamificationStreak | null>(null);
   const [checkingIn, setCheckingIn] = useState(false);
@@ -69,10 +69,11 @@ function LeaderboardPageInner() {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (authLoading) return;
     gamificationService.getStreak().then(setStreak).catch(() => {
       // Non-critical — "Your standing" just stays hidden on a failed fetch.
     });
-  }, []);
+  }, [authLoading]);
 
   const load = async () => {
     setIsLoading(true);
@@ -88,10 +89,11 @@ function LeaderboardPageInner() {
   };
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, firebaseUser?.uid]);
+  }, [authLoading, period, firebaseUser?.uid]);
 
   async function onCheckIn() {
     if (checkingIn || !streak || streak.checkedInToday) return;

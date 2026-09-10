@@ -94,7 +94,7 @@ function fallbackTypeLabel(type: string) {
 
 function ProgressPageInner() {
   const { t, i18n } = useTranslation();
-  const { profile, firebaseUser } = useAuth();
+  const { profile, firebaseUser, loading: authLoading } = useAuth();
 
   const [tab, setTab] = useState<"overview" | "skills" | "history">("overview");
 
@@ -145,12 +145,14 @@ function ProgressPageInner() {
   };
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   useEffect(() => {
+    if (authLoading) return;
     let cancelled = false;
     setLeaderboardError(null);
     gamificationService
@@ -164,9 +166,10 @@ function ProgressPageInner() {
     return () => {
       cancelled = true;
     };
-  }, [firebaseUser?.uid, t]);
+  }, [authLoading, firebaseUser?.uid, t]);
 
   useEffect(() => {
+    if (authLoading) return;
     let cancelled = false;
     apiClient
       .get<{ session_count: number; dimensions?: { key: string; score: number }[] }>("/api/v1/feedback/heatmap")
@@ -190,7 +193,7 @@ function ProgressPageInner() {
     return () => {
       cancelled = true;
     };
-  }, [t]);
+  }, [authLoading, t]);
 
   const loadChallenge = () => {
     setChallengeLoading(true);
@@ -201,10 +204,11 @@ function ProgressPageInner() {
       .finally(() => setChallengeLoading(false));
   };
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadChallenge();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.language]);
+  }, [authLoading, i18n.language]);
 
   async function onSubmitChallenge() {
     if (!response.trim() || submitting) return;

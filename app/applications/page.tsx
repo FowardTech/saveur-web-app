@@ -15,6 +15,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { INTERVIEW_TYPES, interviewTypeSlug } from "@/lib/interviewData";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web counterpart to Saveur/src/requests/RequestsSrc.tsx: ONE "Interviews"
 // screen with a pill tab bar — Applications (index 0, default) and Practice
@@ -112,6 +113,16 @@ function formatSessionDate(iso: string) {
 function InterviewsPageInner() {
   const { t } = useTranslation();
   const router = useRouter();
+  // BUG FIX (real root cause of "Request failed with status 401" on every
+  // page refresh): both fetch effects below used to fire unconditionally
+  // on mount (`[]` deps). This component's own body mounts with the route
+  // regardless of what RequireAuth (rendered further down in this file's
+  // return) decides to do with its `children` -- RequireAuth only gates
+  // rendering of the JSX it wraps, not this component's own effects. See
+  // components/shell/Sidebar.tsx's identical fix for the full mechanism
+  // (AuthProvider sets `firebaseUser` before awaiting the backend profile
+  // sync, flipping `loading` false only afterward).
+  const { loading } = useAuth();
   const searchParams = useSearchParams();
   const tabParam = searchParams?.get("tab");
   const tab: Tab = tabParam === "history" ? "history" : "applications";
@@ -159,10 +170,11 @@ function InterviewsPageInner() {
   }
 
   useEffect(() => {
+    if (loading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadApplications();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loading]);
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -257,6 +269,7 @@ function InterviewsPageInner() {
   const [historyQuery, setHistoryQuery] = useState("");
 
   useEffect(() => {
+    if (loading) return;
     (async () => {
       try {
         const data = await apiClient.get<Session[]>("/api/v1/interviews/sessions");
@@ -266,7 +279,7 @@ function InterviewsPageInner() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loading]);
 
   function sessionTypeLabel(type: string) {
     return t(`web:practice.mockInterviews.types.${type}`, { defaultValue: fallbackLabelFor(type) });

@@ -10,6 +10,7 @@ import { TextField } from "@/components/ui/TextField";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web port of Saveur (mobile)'s src/more/CareerDiary.tsx — a plain journal
 // for logging what the user did, learned, or achieved day-to-day regarding
@@ -56,6 +57,7 @@ function formatDateHeader(dateStr: string, t: (k: string, o?: Record<string, unk
 
 export default function CareerDiaryPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const [entries, setEntries] = useState<DiaryEntry[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [showComposer, setShowComposer] = useState(false);
@@ -75,10 +77,11 @@ export default function CareerDiaryPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function onAdd() {
     const trimmed = text.trim();

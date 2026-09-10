@@ -163,7 +163,7 @@ function fieldInput(value: string | undefined, onChange: (v: string) => void, pl
 
 function GenerateResumeInner() {
   const { t } = useTranslation();
-  const { isPro } = useAuth();
+  const { isPro, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
   const docType = (searchParams.get("docType") === "cv" ? "cv" : "resume") as "resume" | "cv";
 
@@ -210,12 +210,13 @@ function GenerateResumeInner() {
   );
 
   useEffect(() => {
+    if (authLoading) return;
     const handoff = readHandoff();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     build(role, handoff);
     // Only on mount — Regenerate below re-runs explicitly with current role.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   function update<K extends keyof ResumeSections>(key: K, value: ResumeSections[K]) {
     setContent((prev) => (prev ? { ...prev, [key]: value } : prev));

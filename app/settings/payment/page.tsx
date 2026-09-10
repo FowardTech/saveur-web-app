@@ -37,12 +37,13 @@ function formatMoney(cents: number, currency: string) {
 // plan-comparison page.
 export default function PaymentSettingsPage() {
   const { t } = useTranslation();
-  const { isPro, subscriptionStatus } = useAuth();
+  const { isPro, subscriptionStatus, loading: authLoading } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
 
   useEffect(() => {
+    if (authLoading) return;
     (async () => {
       try {
         const data = await apiClient.get<{ data: Payment[] }>("/api/v1/billing/payments");
@@ -54,7 +55,7 @@ export default function PaymentSettingsPage() {
         setPayments([]);
       }
     })();
-  }, []);
+  }, [authLoading]);
 
   async function handleManageBilling() {
     setBusy(true);

@@ -13,6 +13,7 @@ import { SkeletonRows } from "@/components/ui/Skeleton";
 import * as documentsService from "@/lib/documentsService";
 import type { DocumentRecord } from "@/lib/documentsService";
 import type { ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web port of Saveur (mobile)'s src/more/MyDocuments.tsx — a central hub for
 // uploaded source documents (resume, cover letter, LinkedIn export,
@@ -43,6 +44,7 @@ function formatSize(bytes?: number | null): string {
 
 export default function DocumentsPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [documents, setDocuments] = useState<DocumentRecord[] | null>(null);
@@ -63,10 +65,11 @@ export default function DocumentsPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   function onPickFile() {
     fileInputRef.current?.click();

@@ -71,7 +71,7 @@ const stepBadge: Record<PlanStep["status"], string> = {
 
 export default function WhatsNextPage() {
   const { t } = useTranslation();
-  const { isPremium } = useAuth();
+  const { isPremium, loading: authLoading } = useAuth();
 
   const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
@@ -100,15 +100,16 @@ export default function WhatsNextPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
-  }, []);
+  }, [authLoading]);
 
   // Auto-detect a single Offer-stage tracked application and pre-fill the
   // form sheet from it — mirrors mobile's WhatsNext.tsx (does nothing when
   // there are zero or multiple Offer-stage applications).
   useEffect(() => {
-    if (plan !== null) return;
+    if (authLoading || plan !== null) return;
     apiClient
       .get<OfferApplication[]>("/api/v1/tracker/applications")
       .then((apps) => {
@@ -121,15 +122,15 @@ export default function WhatsNextPage() {
         setAutoDetected(true);
       })
       .catch(() => {});
-  }, [plan]);
+  }, [authLoading, plan]);
 
   useEffect(() => {
-    if (!plan) return;
+    if (authLoading || !plan) return;
     apiClient
       .get<{ checkin: CheckIn | null }>("/api/v1/whats-next/checkin")
       .then((data) => setPendingCheckIn(data.checkin))
       .catch(() => {});
-  }, [plan]);
+  }, [authLoading, plan]);
 
   async function onGenerate() {
     if (!company.trim() || !role.trim() || generating) return;

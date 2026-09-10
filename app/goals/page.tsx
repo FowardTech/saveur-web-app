@@ -67,7 +67,7 @@ type TargetKey = keyof WeeklyTargets;
 
 function GoalsPageInner() {
   const { t } = useTranslation();
-  const { profile, firebaseUser } = useAuth();
+  const { profile, firebaseUser, loading: authLoading } = useAuth();
   const uid = firebaseUser?.uid ?? null;
 
   const [practiceThisWeek, setPracticeThisWeek] = useState(0);
@@ -105,10 +105,11 @@ function GoalsPageInner() {
   }, [uid, t]);
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uid]);
+  }, [authLoading, uid]);
 
   const goal = profile?.goals?.[0];
   const desiredRolesCount = profile?.desiredRoles?.length ?? 0;

@@ -53,7 +53,7 @@ interface SessionResult {
 
 function MockInterviewSetupInner() {
   const { t, i18n } = useTranslation();
-  const { profile, isPremium, isPro } = useAuth();
+  const { profile, isPremium, isPro, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
 
   // Pro Premium / Pro (Yearly) only — same gate mobile's isPremium applies
@@ -173,6 +173,7 @@ function MockInterviewSetupInner() {
   const [unlockedAddonCodes, setUnlockedAddonCodes] = useState<string[] | null>(null);
   const [remainingFreeSessions, setRemainingFreeSessions] = useState<number | null>(null);
   useEffect(() => {
+    if (authLoading) return;
     let cancelled = false;
     (async () => {
       try {
@@ -200,7 +201,7 @@ function MockInterviewSetupInner() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFreeTier]);
+  }, [authLoading, isFreeTier]);
 
   const requiredAddonCode = billingService.addonCodeForInterviewType(interviewType.label);
   const selectedTypeAddonOwned = requiredAddonCode ? !!unlockedAddonCodes?.includes(requiredAddonCode) : false;

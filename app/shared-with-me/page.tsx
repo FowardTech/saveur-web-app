@@ -14,6 +14,7 @@ import { SkeletonRows } from "@/components/ui/Skeleton";
 import * as sharesService from "@/lib/sharesService";
 import type { ReceivedShareProps, PendingConnectionRequest } from "@/lib/sharesService";
 import type { ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web counterpart to Saveur/src/more/SharedWithMe.tsx — the receiving/inbox
 // side of the same in-app, user-to-user sharing system
@@ -58,6 +59,7 @@ type Tab = "received" | "requests";
 
 function SharedWithMeInner() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams?.get("tab");
@@ -94,11 +96,12 @@ function SharedWithMeInner() {
   }, [t]);
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     loadRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function onRespond(requestId: string, accept: boolean) {
     if (respondingId) return;

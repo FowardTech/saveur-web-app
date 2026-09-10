@@ -71,7 +71,7 @@ function renderSectionValue(value: unknown): string {
 export default function ResumeBuilderPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { profile } = useAuth();
+  const { profile, loading: authLoading } = useAuth();
   const [resume, setResume] = useState<ResumePayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [targetRole, setTargetRole] = useState("");
@@ -96,8 +96,9 @@ export default function ResumeBuilderPage() {
   const [pendingImportKey, setPendingImportKey] = useState<ResumeImportSourceKey | null>(null);
 
   useEffect(() => {
+    if (authLoading) return;
     resumeService.getImportedSources().then(setImported).catch(() => {});
-  }, []);
+  }, [authLoading]);
 
   function onPickDeviceFile(key: ResumeImportSourceKey) {
     setPendingImportKey(key);
@@ -161,12 +162,13 @@ export default function ResumeBuilderPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleGenerate(e: React.FormEvent) {
     e.preventDefault();

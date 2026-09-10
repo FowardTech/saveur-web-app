@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/linkedin_optimizer.py
 //   POST /api/v1/linkedin/optimize -> {headline, about, experience_bullets, overall_feedback, profile_strength_score}
@@ -46,6 +47,7 @@ interface OptimizeResult {
 
 export default function LinkedInOptimizerPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const [headline, setHeadline] = useState("");
   const [about, setAbout] = useState("");
   const [bulletsText, setBulletsText] = useState("");
@@ -57,11 +59,12 @@ export default function LinkedInOptimizerPage() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   useEffect(() => {
+    if (authLoading) return;
     apiClient
       .get<{ history: HistoryEntry[] }>("/api/v1/linkedin/history")
       .then((data) => setHistory(data.history ?? []))
       .catch(() => {});
-  }, []);
+  }, [authLoading]);
 
   const previousScore = history.find((h) => h.profile_strength_score != null)?.profile_strength_score ?? null;
   const canSubmit = headline.trim() || about.trim() || bulletsText.trim();

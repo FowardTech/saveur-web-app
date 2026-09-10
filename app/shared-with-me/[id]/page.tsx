@@ -14,6 +14,7 @@ import { guessCompanyLogoUrl } from "@/lib/companyData";
 import * as sharesService from "@/lib/sharesService";
 import type { SharedContentDetailProps } from "@/lib/sharesService";
 import type { ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web counterpart to Saveur/src/more/SharedContentDetail.tsx — viewer for
 // one piece of content another Saveur user shared. Reached from
@@ -82,6 +83,7 @@ function formatDate(ms: number, locale?: string) {
 
 export default function SharedContentDetailPage() {
   const { t, i18n } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const params = useParams<{ id: string }>();
   const shareId = params?.id;
 
@@ -89,7 +91,7 @@ export default function SharedContentDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!shareId) return;
+    if (authLoading || !shareId) return;
     let cancelled = false;
     sharesService
       .getShareDetail(shareId)
@@ -109,7 +111,7 @@ export default function SharedContentDetailPage() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shareId]);
+  }, [authLoading, shareId]);
 
   function skillLabel(key: (typeof SCORE_KEYS)[number]) {
     return t(`web:practice.session.skills.${key}`, { defaultValue: SKILL_DEFAULT_LABELS[key] });

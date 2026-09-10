@@ -20,7 +20,7 @@ import { enableWebPush, currentNotificationPermission, isPushConfigured } from "
 //   POST /api/v1/auth/2fa/disable -> {two_factor_enabled: false}
 export default function SecuritySettingsPage() {
   const { t } = useTranslation();
-  const { profile, updateProfile } = useAuth();
+  const { profile, updateProfile, loading: authLoading } = useAuth();
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
@@ -49,12 +49,13 @@ export default function SecuritySettingsPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleSendCode() {
     setSending(true);

@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web counterpart to mobile's src/practice/InterviewFeedback.tsx — the
 // screen a completed Practice History row (PracticeSessionItem.tsx) taps
@@ -109,6 +110,7 @@ function formatSessionDate(iso: string) {
 
 export default function PracticeSessionDetailPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const params = useParams<{ id: string }>();
   const sessionId = params?.id;
 
@@ -133,7 +135,7 @@ export default function PracticeSessionDetailPage() {
   );
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (authLoading || !sessionId) return;
     let cancelled = false;
     apiClient
       .get<SessionDetail>(`/api/v1/interviews/sessions/${sessionId}`)
@@ -155,7 +157,7 @@ export default function PracticeSessionDetailPage() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId]);
+  }, [authLoading, sessionId]);
 
   function sessionTypeLabel(type: string) {
     return t(`web:practice.mockInterviews.types.${type}`, { defaultValue: fallbackLabelFor(type) });

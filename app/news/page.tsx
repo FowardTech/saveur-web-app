@@ -28,7 +28,7 @@ interface DailyNews {
 
 export default function NewsPage() {
   const { t, i18n } = useTranslation();
-  const { isPremium } = useAuth();
+  const { isPremium, loading: authLoading } = useAuth();
   const [items, setItems] = useState<NewsItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,10 +41,11 @@ export default function NewsPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     if (isPremium) load();
     else setItems([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPremium]);
+  }, [authLoading, isPremium]);
 
   if (!isPremium) {
     return (

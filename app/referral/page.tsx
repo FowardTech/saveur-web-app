@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/referrals.py
 //   GET  /api/v1/referrals/me     -> {code, share_url, reward_amount_cents,
@@ -29,6 +30,7 @@ interface ReferralInfo {
 
 export default function ReferralProgramPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const [info, setInfo] = useState<ReferralInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -47,10 +49,11 @@ export default function ReferralProgramPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleCopy() {
     if (!info) return;

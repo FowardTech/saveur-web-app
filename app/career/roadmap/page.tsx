@@ -12,6 +12,7 @@ import { Skeleton, SkeletonRows } from "@/components/ui/Skeleton";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import { StatMiniCard } from "@/components/ui/StatMiniCard";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/career_roadmap.py
 //   GET  /api/v1/roadmap          -> {roadmap: Roadmap | null}
@@ -60,6 +61,7 @@ const TYPE_META: Record<RoadmapStep["type"], { label: string; icon: EvaIconName;
 
 export default function CareerRoadmapPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const [roadmap, setRoadmap] = useState<Roadmap | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
@@ -72,11 +74,12 @@ export default function CareerRoadmapPage() {
   const [streakDays, setStreakDays] = useState(0);
 
   useEffect(() => {
+    if (authLoading) return;
     apiClient
       .get<{ streak_days: number }>("/api/v1/gamification/streak")
       .then((data) => setStreakDays(data.streak_days ?? 0))
       .catch(() => {});
-  }, []);
+  }, [authLoading]);
 
   async function load() {
     try {
@@ -94,12 +97,13 @@ export default function CareerRoadmapPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleGenerate(e: React.FormEvent) {
     e.preventDefault();

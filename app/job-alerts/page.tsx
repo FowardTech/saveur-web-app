@@ -48,7 +48,7 @@ interface JobAlert {
 
 function JobAlertsPageInner() {
   const { t } = useTranslation();
-  const { profile, updateProfile } = useAuth();
+  const { profile, updateProfile, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
   // "Users should be able to click on the job pill and it should take the
   // user to a page that lists the jobs fetched for that company" — deep
@@ -92,12 +92,13 @@ function JobAlertsPageInner() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleRefresh() {
     setRefreshing(true);

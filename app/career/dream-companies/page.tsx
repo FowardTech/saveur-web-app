@@ -74,7 +74,7 @@ function shareSummaryText(c: DreamCompany, t: TFunction, notes: string): string 
 export default function DreamCompaniesPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { isPremium } = useAuth();
+  const { isPremium, loading: authLoading } = useAuth();
 
   const [companies, setCompanies] = useState<DreamCompany[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -118,12 +118,13 @@ export default function DreamCompaniesPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   // Silent background poll while any tracked company's research is still
   // running (add_company returns before research finishes — see

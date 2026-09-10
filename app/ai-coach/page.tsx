@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonBubble } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 import {
   getSpeechRecognitionCtor,
   safeStartRecognition,
@@ -54,6 +55,7 @@ const GREETING_MESSAGE: CoachMessage = {
 
 export default function AiCoachPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -102,12 +104,13 @@ export default function AiCoachPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body, so the cascading-
     // render this rule guards against doesn't apply here.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
-  }, []);
+  }, [authLoading]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

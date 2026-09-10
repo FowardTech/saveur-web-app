@@ -109,7 +109,7 @@ function NetworkingAssistantInner() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { firebaseUser } = useAuth();
+  const { firebaseUser, loading: authLoading } = useAuth();
   const uid = firebaseUser?.uid;
 
   const tabParam = searchParams?.get("tab");
@@ -150,10 +150,11 @@ function NetworkingAssistantInner() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleRefreshEvents() {
     setRefreshingEvents(true);

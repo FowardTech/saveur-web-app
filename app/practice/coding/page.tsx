@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/coding.py
 //   GET /api/v1/coding/problems -> [{slug, title, difficulty, category, status, bookmarked}]
@@ -32,11 +33,25 @@ const difficultyTint: Record<string, string> = {
 
 export default function CodingPracticePage() {
   const { t } = useTranslation();
+  // BUG FIX (real root cause of "Request failed with status 401" on every
+  // page refresh): this effect used to fire unconditionally on mount
+  // (`[]` deps), completely independent of RequireAuth's own render
+  // gating below -- RequireAuth only controls whether ITS `children` (the
+  // AppShell/content this component returns) get rendered, it has no
+  // effect on THIS component's own body, which mounts with the route and
+  // runs its effects immediately. AuthProvider's onAuthStateChanged
+  // handler sets `firebaseUser` before awaiting the backend profile/
+  // subscription sync and only then flips `loading` false, so this effect
+  // was firing its authenticated fetch before the token/session was
+  // actually ready to rely on, every single load. Gating on `!loading`
+  // defers it to the provider's real "ready" signal.
+  const { loading } = useAuth();
   const [problems, setProblems] = useState<CodingProblem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [addonRequired, setAddonRequired] = useState(false);
 
   useEffect(() => {
+    if (loading) return;
     let cancelled = false;
     (async () => {
       try {
@@ -56,7 +71,7 @@ export default function CodingPracticePage() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loading]);
 
   function difficultyLabel(value: string) {
     return t(`web:practice.codingDifficulty.${value}`, { defaultValue: value });

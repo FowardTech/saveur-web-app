@@ -11,6 +11,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { API_BASE_URL, type ApiError } from "@/lib/apiClient";
 import { firebaseAuth } from "@/lib/firebase";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/resume_variants.py
 //   GET  /api/v1/resume/variants -> {items: ResumeVariant[]}
@@ -27,6 +28,7 @@ interface ResumeVariant {
 
 export default function ResumeVariantsPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const [variants, setVariants] = useState<ResumeVariant[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
@@ -46,12 +48,13 @@ export default function ResumeVariantsPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();

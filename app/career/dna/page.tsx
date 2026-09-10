@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Real backend contract — Saveur-Backend/app/api/career_dna.py
 //   GET  /api/v1/career-dna          -> {has_profile, traits, narrative, signal_count, version, generated_at, next_step_action_ids}
@@ -25,6 +26,7 @@ interface CareerDnaPayload {
 
 export default function CareerDnaPage() {
   const { t } = useTranslation();
+  const { loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<CareerDnaPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [premiumRequired, setPremiumRequired] = useState(false);
@@ -48,12 +50,13 @@ export default function CareerDnaPage() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     // Intentional fetch-on-mount — load() sets state once its async GET
     // resolves, not synchronously in this effect body.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading]);
 
   async function handleRefresh() {
     setRefreshing(true);

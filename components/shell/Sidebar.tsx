@@ -167,11 +167,26 @@ function LanguageMenu() {
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { t } = useTranslation();
-  const { firebaseUser } = useAuth();
+  const { firebaseUser, loading } = useAuth();
   const [badges, setBadges] = useState<MoreBadges | null>(null);
 
+  // BUG FIX (real root cause of "Request failed with status 401" on every
+  // page refresh): Sidebar mounts as part of AppShell, which RequireAuth
+  // (and app/dashboard/page.tsx's own identical inline pattern) render
+  // UNCONDITIONALLY for its own loading placeholder -- so this effect was
+  // already live on every single page load, well before any page's own
+  // content gets a chance to gate on auth readiness. onAuthStateChanged's
+  // handler in AuthProvider calls `setFirebaseUser(user)` BEFORE awaiting
+  // `Promise.all([syncProfile(), refreshSubscriptionStatus()])` and only
+  // THEN flips `loading` to false -- that `await` means React commits an
+  // intermediate render where `firebaseUser` is already truthy but
+  // `loading` is still `true`. This effect depended on `firebaseUser`
+  // alone, so it fired its authenticated fetch on exactly that
+  // intermediate render, every time, instead of waiting for the provider's
+  // own "fully ready" signal. Gating on `!loading` too defers the fetch to
+  // the steady-state render, after the provider has finished initializing.
   useEffect(() => {
-    if (!firebaseUser) {
+    if (loading || !firebaseUser) {
       setBadges(null);
       return;
     }
@@ -182,7 +197,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     return () => {
       cancelled = true;
     };
-  }, [firebaseUser]);
+  }, [firebaseUser, loading]);
 
   return (
     <div className="flex h-full w-64 flex-col bg-surface-1">

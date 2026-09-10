@@ -36,16 +36,16 @@ function relativeTime(iso: string): string {
 export function NotificationBell() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { firebaseUser } = useAuth();
+  const { firebaseUser, loading } = useAuth();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<AppNotification[] | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [notifLoading, setNotifLoading] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const unreadCount = (notifications ?? []).filter((n) => !n.read).length;
 
   async function load() {
-    setLoading(true);
+    setNotifLoading(true);
     try {
       const data = await listNotifications();
       setNotifications(data);
@@ -54,15 +54,24 @@ export function NotificationBell() {
       // than breaking the topbar.
       setNotifications((prev) => prev ?? []);
     } finally {
-      setLoading(false);
+      setNotifLoading(false);
     }
   }
 
+  // BUG FIX (real root cause of "Request failed with status 401" on every
+  // page refresh) -- see Sidebar.tsx's identical fix for the full
+  // writeup. NotificationBell mounts as part of AppShell inside
+  // RequireAuth's (and app/dashboard/page.tsx's) own loading placeholder,
+  // so gating on `firebaseUser` alone fired this fetch on the intermediate
+  // render AuthProvider commits after `setFirebaseUser(user)` but before
+  // `loading` flips false (it awaits syncProfile()/refreshSubscriptionStatus()
+  // in between). Gating on `!loading` too waits for the provider's real
+  // "ready" signal instead.
   useEffect(() => {
-    if (!firebaseUser) return;
+    if (loading || !firebaseUser) return;
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firebaseUser]);
+  }, [firebaseUser, loading]);
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -119,7 +128,7 @@ export function NotificationBell() {
             </Link>
           </div>
 
-          {loading && !notifications && (
+          {notifLoading && !notifications && (
             <p className="px-4 py-6 text-center text-sm text-hint">
               {t("common:actions.loading", { defaultValue: "Loading…" })}
             </p>
