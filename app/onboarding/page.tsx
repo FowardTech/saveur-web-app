@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { BrandLockup } from "@/components/shell/BrandLockup";
 import { CAREER_GOALS } from "@/lib/careerGoalLabels";
+import { COUNTRIES } from "@/lib/countries";
+import { CountryFlag } from "@/components/ui/CountryFlag";
+import { jobRoleCountryCaps } from "@/lib/jobPreferenceCaps";
 
-const MAX_ROLES = 5;
 const TOTAL_STEPS = 4;
 
 function Chip({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
@@ -33,7 +35,18 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
 export default function OnboardingPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { profile, loading, updateProfile } = useAuth();
+  const { profile, loading, updateProfile, isPro, isPremium } = useAuth();
+
+  // Real per-tier caps (Saveur-Backend's entitlements_service.
+  // job_role_country_caps, mirrored via lib/jobPreferenceCaps.ts) — a
+  // brand-new signup has no subscription yet (isPro/isPremium both false
+  // this early), so this lands on the same free-tier 5 roles/3 countries
+  // mobile's SignupSecondStep.tsx hardcodes for the identical reason (see
+  // that file's own comment: "there's no signed-in subscription to read
+  // yet"). Replaces the previous flat `MAX_ROLES = 5` constant, which had
+  // no tier awareness at all, and the previously fully-uncapped countries
+  // step.
+  const { maxDesiredRoles: MAX_ROLES, maxPreferredCountries: MAX_COUNTRIES } = jobRoleCountryCaps(isPro, isPremium);
 
   // Real 10-option career-goal list — mirrors mobile's single source of
   // truth (utils/careerGoalLabels.ts's CAREER_GOALS, used by both
@@ -52,14 +65,12 @@ export default function OnboardingPage() {
     value: g.defaultValue,
     label: t(`web:onboarding.goals.${g.key}`, { defaultValue: g.defaultValue }),
   }));
-  const COUNTRIES = [
-    t("common:countries.United States", { defaultValue: "United States" }),
-    t("common:countries.United Kingdom", { defaultValue: "United Kingdom" }),
-    t("common:countries.Canada", { defaultValue: "Canada" }),
-    t("common:countries.Germany", { defaultValue: "Germany" }),
-    t("common:countries.France", { defaultValue: "France" }),
-    t("common:countries.Remote", { defaultValue: "Remote" }),
-  ];
+  // COUNTRIES (lib/countries.ts) stays a fixed list of stable English
+  // canonical values — what's actually persisted via updateProfile — this
+  // just looks up a display label for the active language, same pattern
+  // mobile's countryLabel() helper uses (SignupSecondStep.tsx /
+  // JobPreferences.tsx), falling back to the English name itself.
+  const countryLabel = (country: string) => t(`common:countries.${country}`, { defaultValue: country });
 
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
@@ -67,8 +78,17 @@ export default function OnboardingPage() {
   const [roles, setRoles] = useState<string[]>([]);
   const [roleInput, setRoleInput] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
+  const [countryQuery, setCountryQuery] = useState("");
+  const [capMessage, setCapMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const filteredCountries = useMemo(() => {
+    const q = countryQuery.trim().toLowerCase();
+    if (!q) return COUNTRIES;
+    return COUNTRIES.filter((c) => c.toLowerCase().includes(q) || countryLabel(c).toLowerCase().includes(q));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countryQuery]);
 
   useEffect(() => {
     // Syncs the name field from the async-loaded profile once it arrives —
@@ -88,13 +108,46 @@ export default function OnboardingPage() {
     setGoals((prev) => (prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]));
   }
 
+  // Same tier-aware cap enforcement mobile's toggleCountry (JobPreferences.
+  // tsx / SignupSecondStep.tsx) applies — shows an inline "that's the max
+  // for now" message (mobile uses Alert.alert; web surfaces the same copy
+  // inline under the list) with an upsell note once the user hits the cap,
+  // rather than silently no-op'ing past it.
   function toggleCountry(country: string) {
-    setCountries((prev) => (prev.includes(country) ? prev.filter((c) => c !== country) : [...prev, country]));
+    setCountries((prev) => {
+      if (prev.includes(country)) return prev.filter((c) => c !== country);
+      if (prev.length >= MAX_COUNTRIES) {
+        setCapMessage(
+          t("web:onboarding.step3.maxReached", {
+            defaultValue: isPremium
+              ? "You can pick up to {{max}} countries at once. Remove one to add another."
+              : "You can pick up to {{max}} countries at once on your current plan. Upgrade to Premium to target up to 10.",
+            max: MAX_COUNTRIES,
+          }),
+        );
+        return prev;
+      }
+      setCapMessage(null);
+      return [...prev, country];
+    });
   }
 
   function addRole() {
     const value = roleInput.trim();
-    if (!value || roles.length >= MAX_ROLES || roles.includes(value)) return;
+    if (!value) return;
+    if (roles.length >= MAX_ROLES && !roles.includes(value)) {
+      setCapMessage(
+        t("web:onboarding.step2.maxReached", {
+          defaultValue: isPremium
+            ? "You can target up to {{max}} roles at once. Remove one to add another."
+            : "You can target up to {{max}} roles at once on your current plan. Upgrade to Premium to target up to 10.",
+          max: MAX_ROLES,
+        }),
+      );
+      return;
+    }
+    if (roles.includes(value)) return;
+    setCapMessage(null);
     setRoles((prev) => [...prev, value]);
     setRoleInput("");
   }
@@ -191,10 +244,9 @@ export default function OnboardingPage() {
                     }
                   }}
                   placeholder={t("web:onboarding.step2.placeholder", { defaultValue: "Type a role and press Enter" })}
-                  disabled={roles.length >= MAX_ROLES}
                   className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:opacity-60"
                 />
-                <Button type="button" variant="secondary" onClick={addRole} disabled={roles.length >= MAX_ROLES}>
+                <Button type="button" variant="secondary" onClick={addRole}>
                   {t("common:actions.add", { defaultValue: "Add" })}
                 </Button>
               </div>
@@ -218,6 +270,7 @@ export default function OnboardingPage() {
               <p className="text-xs text-hint">
                 {t("web:onboarding.step2.added", { defaultValue: "{{count}}/{{max}} added", count: roles.length, max: MAX_ROLES })}
               </p>
+              {capMessage && <p className="text-xs font-medium text-warning-text">{capMessage}</p>}
             </div>
           )}
 
@@ -225,14 +278,73 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step3.title", { defaultValue: "Where are you looking to work?" })}</h1>
-                <p className="mt-1 text-sm text-hint">{t("web:onboarding.step3.subtitle", { defaultValue: "Select every country you'd consider — optional." })}</p>
+                <p className="mt-1 text-sm text-hint">
+                  {t("web:onboarding.step3.subtitle", {
+                    defaultValue: "Select up to {{max}} countries you'd consider — optional.",
+                    max: MAX_COUNTRIES,
+                  })}
+                </p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {COUNTRIES.map((country) => (
-                  <Chip key={country} selected={countries.includes(country)} onClick={() => toggleCountry(country)}>
-                    {country}
-                  </Chip>
-                ))}
+
+              {/* Searchable list (mirrors mobile's SignupSecondStep.tsx /
+                  JobPreferences.tsx — a flat chip cloud doesn't scale to
+                  the full ~70-country list) with round flag badges beside
+                  each name (product request: "when users are selecting
+                  countries during signup they should also see the flags of
+                  those countries beside them"). */}
+              <input
+                value={countryQuery}
+                onChange={(e) => setCountryQuery(e.target.value)}
+                placeholder={t("web:onboarding.step3.searchPlaceholder", { defaultValue: "Search countries" })}
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+
+              {countries.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {countries.map((country) => (
+                    <button
+                      key={country}
+                      type="button"
+                      onClick={() => toggleCountry(country)}
+                      className="flex items-center gap-1.5 rounded-pill border border-border bg-surface-3 px-3 py-1.5 text-sm font-medium text-primary"
+                    >
+                      <CountryFlag country={country} size="sm" />
+                      {countryLabel(country)}
+                      <EvaIcon name="close-outline" size={14} />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <p className="text-xs text-hint">
+                {t("web:onboarding.step3.added", { defaultValue: "{{count}}/{{max}} added", count: countries.length, max: MAX_COUNTRIES })}
+              </p>
+              {capMessage && <p className="text-xs font-medium text-warning-text">{capMessage}</p>}
+
+              <div className="flex max-h-64 flex-col overflow-y-auto rounded-lg border border-border">
+                {filteredCountries.map((country) => {
+                  const selected = countries.includes(country);
+                  return (
+                    <button
+                      key={country}
+                      type="button"
+                      onClick={() => toggleCountry(country)}
+                      className={`flex items-center justify-between gap-2 border-b border-border px-3.5 py-2.5 text-left text-sm last:border-b-0 ${
+                        selected ? "bg-brand/5 text-brand font-medium" : "text-primary hover:bg-surface-3"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <CountryFlag country={country} size="sm" />
+                        {countryLabel(country)}
+                      </span>
+                      {selected ? (
+                        <EvaIcon name="checkmark-circle-2-outline" size={18} className="text-brand" />
+                      ) : (
+                        <span className="h-[18px] w-[18px] rounded-full border border-border" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -243,13 +355,23 @@ export default function OnboardingPage() {
             <Button
               type="button"
               variant="ghost"
-              onClick={() => setStep((s) => Math.max(0, s - 1))}
+              onClick={() => {
+                setCapMessage(null);
+                setStep((s) => Math.max(0, s - 1));
+              }}
               className={step === 0 ? "invisible" : ""}
             >
               {t("common:actions.back", { defaultValue: "Back" })}
             </Button>
             {step < TOTAL_STEPS - 1 ? (
-              <Button type="button" onClick={() => setStep((s) => s + 1)} disabled={!canContinue}>
+              <Button
+                type="button"
+                onClick={() => {
+                  setCapMessage(null);
+                  setStep((s) => s + 1);
+                }}
+                disabled={!canContinue}
+              >
                 {t("common:actions.continue", { defaultValue: "Continue" })}
               </Button>
             ) : (
