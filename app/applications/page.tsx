@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { INTERVIEW_TYPES, interviewTypeSlug } from "@/lib/interviewData";
 
 // Web counterpart to Saveur/src/requests/RequestsSrc.tsx: ONE "Interviews"
 // screen with a pill tab bar — Applications (index 0, default) and Practice
@@ -510,11 +512,31 @@ function InterviewsPageInner() {
   );
 }
 
+// Mirrors mobile's PracticeSessionItem.tsx onPress routing: a Completed
+// session opens its real feedback; a not-yet-taken session (Scheduled /
+// in_progress) can't show feedback that doesn't exist yet (mobile's
+// InterviewFeedback screen would call completeSession on mount and
+// silently mark it "Completed" with a fake score — the web detail page
+// deliberately doesn't do that), so it routes into the setup flow instead,
+// pre-filled with the same interview type, matching mobile's
+// `navigate('MockInterviewSetup', {interviewType: item.interviewType})`.
+function sessionHref(session: Session): string {
+  if ((session.status || "").toLowerCase() === "completed") {
+    return `/practice/session/${session.id}`;
+  }
+  const typeDef = INTERVIEW_TYPES.find((td) => td.wire === session.type);
+  const slug = typeDef ? interviewTypeSlug(typeDef.label) : undefined;
+  return slug ? `/practice/mock-interviews?type=${slug}` : "/practice/mock-interviews";
+}
+
 function SessionRow({ session, typeLabel }: { session: Session; typeLabel: (t: string) => string }) {
   const { t } = useTranslation();
   const scorePct = session.overall_score != null ? Math.round(session.overall_score) : null;
   return (
-    <div className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4">
+    <Link
+      href={sessionHref(session)}
+      className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+    >
       <div className="flex items-center gap-3">
         <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
           <EvaIcon name={session.has_video ? "mic-outline" : "clipboard-outline"} size={18} />
@@ -535,7 +557,7 @@ function SessionRow({ session, typeLabel }: { session: Session; typeLabel: (t: s
           {scorePct}%
         </span>
       )}
-    </div>
+    </Link>
   );
 }
 

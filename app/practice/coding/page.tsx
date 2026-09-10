@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -101,7 +102,11 @@ export default function CodingPracticePage() {
           {problems && problems.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {problems.map((p) => (
-                <div key={p.slug} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm">
+                <Link
+                  key={p.slug}
+                  href={`/practice/coding/${p.slug}`}
+                  className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                >
                   <div className="flex items-center justify-between">
                     <span className={`rounded-pill px-2.5 py-1 text-xs font-medium ${difficultyTint[p.difficulty] ?? "bg-surface-3 text-hint"}`}>
                       {difficultyLabel(p.difficulty)}
@@ -117,7 +122,7 @@ export default function CodingPracticePage() {
                       {p.status}
                     </span>
                   )}
-                </div>
+                </Link>
               ))}
             </div>
           )}
