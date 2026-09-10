@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { AppShell } from "@/components/shell/AppShell";
@@ -44,8 +45,17 @@ function formatOffer(offer: Offer, t: TFunction) {
   return parts.join(" · ");
 }
 
-export default function SalaryNegotiationPage() {
+function SalaryNegotiationPageInner() {
   const { t } = useTranslation();
+  const searchParams = useSearchParams();
+  // Deep-link overrides from the Dream Company Dashboard's "Practice
+  // negotiation" quick action (app/career/dream-companies/page.tsx,
+  // ?company=<name>&role=<role>) — mirrors mobile's salaryNegotiationService.
+  // getScenario(overrides), which applies these uniformly over whichever
+  // source actually generated the scenario (the backend never reads these
+  // as request params; the client stamps them onto the result instead).
+  const companyOverride = searchParams.get("company");
+  const roleOverride = searchParams.get("role");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proRequired, setProRequired] = useState(false);
@@ -61,7 +71,12 @@ export default function SalaryNegotiationPage() {
     setError(null);
     try {
       const data = await apiClient.get<Scenario>("/api/v1/coach/negotiation/scenario");
-      setScenario(data);
+      const scenarioWithOverrides: Scenario = {
+        ...data,
+        company: companyOverride || data.company,
+        role: roleOverride || data.role,
+      };
+      setScenario(scenarioWithOverrides);
       setCurrentOffer(data.offer);
       setRounds([]);
       setIsFinal(false);
@@ -182,5 +197,15 @@ export default function SalaryNegotiationPage() {
         </div>
       </AppShell>
     </RequireAuth>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary in the app router (same
+// pattern as app/practice/mock-interviews/page.tsx).
+export default function SalaryNegotiationPage() {
+  return (
+    <Suspense fallback={null}>
+      <SalaryNegotiationPageInner />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -45,9 +46,17 @@ interface JobAlert {
   company_logo_url?: string;
 }
 
-export default function JobAlertsPage() {
+function JobAlertsPageInner() {
   const { t } = useTranslation();
   const { profile, updateProfile } = useAuth();
+  const searchParams = useSearchParams();
+  // "Users should be able to click on the job pill and it should take the
+  // user to a page that lists the jobs fetched for that company" — deep
+  // link from the Dream Company Dashboard's "N open jobs" badge
+  // (app/career/dream-companies/page.tsx, ?company=<name>). Client-side
+  // filter only (no matching backend query param) since GET /job-alerts
+  // already returns the user's full list in one page.
+  const companyFilter = searchParams.get("company");
   const [alerts, setAlerts] = useState<JobAlert[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [proRequired, setProRequired] = useState(false);
@@ -116,6 +125,12 @@ export default function JobAlertsPage() {
     }
   }
 
+  const visibleAlerts = useMemo(() => {
+    if (!alerts) return alerts;
+    if (!companyFilter) return alerts;
+    return alerts.filter((a) => a.company.toLowerCase() === companyFilter.toLowerCase());
+  }, [alerts, companyFilter]);
+
   async function handleSavePreferences(e: React.FormEvent) {
     e.preventDefault();
     setSavingPrefs(true);
@@ -158,6 +173,17 @@ export default function JobAlertsPage() {
 
           {error && <p className="text-sm text-danger">{error}</p>}
 
+          {companyFilter && (
+            <div className="flex items-center justify-between gap-3 rounded-card border border-dashed border-border p-3 text-sm">
+              <span className="text-hint">
+                {t("web:jobAlerts.filteredByCompany", { defaultValue: "Showing alerts for {{company}}", company: companyFilter })}
+              </span>
+              <Link href="/job-alerts" className="font-semibold text-link hover:underline">
+                {t("web:jobAlerts.clearFilter", { defaultValue: "Clear filter" })}
+              </Link>
+            </div>
+          )}
+
           <form onSubmit={handleSavePreferences} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-end">
             <label className="flex flex-1 flex-col gap-1.5">
               <span className="text-sm font-medium text-primary">{t("web:jobAlerts.targetRolesLabel", { defaultValue: "Target roles (comma-separated)" })}</span>
@@ -176,13 +202,17 @@ export default function JobAlertsPage() {
 
           {alerts === null && !proRequired && !error && <SkeletonRows count={5} />}
 
-          {alerts && alerts.length === 0 && !proRequired && (
-            <p className="text-sm text-hint">{t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })}</p>
+          {visibleAlerts && visibleAlerts.length === 0 && !proRequired && (
+            <p className="text-sm text-hint">
+              {companyFilter
+                ? t("web:jobAlerts.emptyForCompany", { defaultValue: "No open job alerts for {{company}} yet.", company: companyFilter })
+                : t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })}
+            </p>
           )}
 
-          {alerts && alerts.length > 0 && (
+          {visibleAlerts && visibleAlerts.length > 0 && (
             <div className="flex flex-col gap-3">
-              {alerts.map((a) => {
+              {visibleAlerts.map((a) => {
                 // Backend (Saveur-Backend/app/services/company_logo_service.py)
                 // only reliably fills company_logo_url when a company domain
                 // was confidently resolved at discovery time — many rows,
@@ -238,5 +268,15 @@ export default function JobAlertsPage() {
         </div>
       </AppShell>
     </RequireAuth>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary in the app router (same
+// pattern as app/practice/mock-interviews/page.tsx).
+export default function JobAlertsPage() {
+  return (
+    <Suspense fallback={null}>
+      <JobAlertsPageInner />
+    </Suspense>
   );
 }

@@ -72,16 +72,26 @@ function MockInterviewSetupInner() {
   // typesGrid jumping straight into MockInterviewSetup with a type
   // pre-selected instead of always defaulting to Behavioral.
   const [interviewType, setInterviewType] = useState(() => interviewTypeFromSlug(searchParams.get("type")) ?? INTERVIEW_TYPES[0]);
-  const [role, setRole] = useState("");
+  // Prefills from the Dream Company Dashboard's "Practice interview" quick
+  // action (app/career/dream-companies/page.tsx, ?company=<name>&role=<role>)
+  // — same convention as the `?type=` prefill above.
+  const [role, setRole] = useState(() => searchParams.get("role") ?? "");
   const [difficulty, setDifficulty] = useState<"Beginner" | "Intermediate" | "Advanced">("Intermediate");
   const [durationMin, setDurationMin] = useState(30);
   const [videoGateNotice, setVideoGateNotice] = useState(false);
 
   // ---- Company picker (region-aware — see lib/companyData.ts) ----
   const regionCompanies = useMemo(() => companiesForCountries(profile?.preferredCountries), [profile?.preferredCountries]);
-  const [company, setCompany] = useState<string | undefined>(undefined);
+  const prefillCompany = searchParams.get("company");
+  const [company, setCompany] = useState<string | undefined>(() => prefillCompany ?? undefined);
   const [companySearch, setCompanySearch] = useState("");
-  const [customCompanies, setCustomCompanies] = useState<CompanySearchResult[]>([]);
+  // A deep-linked company (e.g. from Dream Company Dashboard) that isn't in
+  // the region/static list still needs to render as a selectable pill —
+  // seeded here as a "custom" company exactly like a confirmed AI web
+  // search result would be (see onConfirmAiCompanyYes below).
+  const [customCompanies, setCustomCompanies] = useState<CompanySearchResult[]>(() =>
+    prefillCompany ? [{ name: prefillCompany, domain: "", logoUrl: guessCompanyLogoUrl(prefillCompany) }] : []
+  );
   const customCompanyLogos = useMemo(() => {
     const map: Record<string, string> = {};
     customCompanies.forEach((c) => {

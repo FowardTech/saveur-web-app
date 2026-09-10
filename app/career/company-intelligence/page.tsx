@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -35,11 +36,16 @@ interface Intel {
   sources: string[];
 }
 
-export default function CompanyIntelligencePage() {
+function CompanyIntelligencePageInner() {
   const { t } = useTranslation();
   const { isPro } = useAuth();
-  const [company, setCompany] = useState("");
-  const [role, setRole] = useState("");
+  const searchParams = useSearchParams();
+  // Prefills from the Dream Company Dashboard's "Look up any company" link
+  // (app/career/dream-companies/page.tsx, ?company=<name>&role=<role>) —
+  // mirrors mobile's CompanyIntelligence.tsx seeding company/role from
+  // route.params without auto-submitting; the user still taps "Research".
+  const [company, setCompany] = useState(() => searchParams.get("company") ?? "");
+  const [role, setRole] = useState(() => searchParams.get("role") ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proRequired, setProRequired] = useState(false);
@@ -151,6 +157,16 @@ export default function CompanyIntelligencePage() {
         </div>
       </AppShell>
     </RequireAuth>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary in the app router (same
+// pattern as app/practice/mock-interviews/page.tsx).
+export default function CompanyIntelligencePage() {
+  return (
+    <Suspense fallback={null}>
+      <CompanyIntelligencePageInner />
+    </Suspense>
   );
 }
 

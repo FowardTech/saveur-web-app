@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
+import { downloadUrlAsFile } from "@/lib/downloadFile";
 
 // Real backend contract — Saveur-Backend/app/api/resume_gen.py
 //   POST /api/v1/resume/cover-letter -> {cover_letter: str}
@@ -20,11 +22,14 @@ import apiClient, { type ApiError } from "@/lib/apiClient";
 // page used to swallow a 402 into the same generic "Couldn't generate a
 // cover letter right now" error as any other failure. Same preemptive-isPro
 // + reactive-402 pattern as app/career/company-intelligence/page.tsx.
-export default function CoverLetterPage() {
+function CoverLetterPageInner() {
   const { t } = useTranslation();
   const { isPro } = useAuth();
-  const [company, setCompany] = useState("");
-  const [role, setRole] = useState("");
+  const searchParams = useSearchParams();
+  // Prefills from the Dream Company Dashboard's "Generate cover letter"
+  // quick action (app/career/dream-companies/page.tsx, ?company=<name>&role=<role>).
+  const [company, setCompany] = useState(() => searchParams.get("company") ?? "");
+  const [role, setRole] = useState(() => searchParams.get("role") ?? "");
   const [hiringManager, setHiringManager] = useState("");
   const [jdText, setJdText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,6 +37,11 @@ export default function CoverLetterPage() {
   const [proRequired, setProRequired] = useState(false);
   const [letter, setLetter] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  // Download as PDF/Word — was entirely missing here (see mobile's
+  // src/more/CoverLetterGenerator.tsx, POST /api/v1/resume/cover-letter/export)
+  // even though this page already generated the letter text.
+  const [downloadingFormat, setDownloadingFormat] = useState<"pdf" | "docx" | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   const canSubmit = company.trim() || role.trim() || jdText.trim();
 
@@ -69,6 +79,24 @@ export default function CoverLetterPage() {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // clipboard unavailable — no-op
+    }
+  }
+
+  async function handleDownload(format: "pdf" | "docx") {
+    if (!letter || downloadingFormat) return;
+    setDownloadingFormat(format);
+    setDownloadError(null);
+    try {
+      const data = await apiClient.post<{ url?: string }>("/api/v1/resume/cover-letter/export", { text: letter, format });
+      if (!data.url) {
+        setDownloadError(t("web:resume.coverLetter.noFileDefault", { defaultValue: "Couldn't produce a downloadable file right now." }));
+        return;
+      }
+      await downloadUrlAsFile(data.url, `Cover Letter.${format}`);
+    } catch {
+      setDownloadError(t("web:resume.coverLetter.downloadFailedDefault", { defaultValue: "Couldn't download the file. Please try again." }));
+    } finally {
+      setDownloadingFormat(null);
     }
   }
 
@@ -133,9 +161,20 @@ export default function CoverLetterPage() {
           {letter && (
             <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-primary">{letter}</p>
-              <Button variant="outline" size="sm" onClick={handleCopy} className="w-fit">
-                {copied ? t("web:resume.coverLetter.copied", { defaultValue: "Copied!" }) : t("web:resume.coverLetter.copyLetter", { defaultValue: "Copy letter" })}
-              </Button>
+              {downloadError && <p className="text-sm text-danger">{downloadError}</p>}
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" onClick={handleCopy} className="w-fit">
+                  {copied ? t("web:resume.coverLetter.copied", { defaultValue: "Copied!" }) : t("web:resume.coverLetter.copyLetter", { defaultValue: "Copy letter" })}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleDownload("docx")} disabled={!!downloadingFormat} className="w-fit">
+                  <EvaIcon name="download-outline" size={14} />
+                  {downloadingFormat === "docx" ? t("web:resume.coverLetter.preparing", { defaultValue: "Preparing…" }) : t("web:resume.coverLetter.downloadWord", { defaultValue: "Download Word" })}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleDownload("pdf")} disabled={!!downloadingFormat} className="w-fit">
+                  <EvaIcon name="download-outline" size={14} />
+                  {downloadingFormat === "pdf" ? t("web:resume.coverLetter.preparing", { defaultValue: "Preparing…" }) : t("web:resume.coverLetter.downloadPdf", { defaultValue: "Download PDF" })}
+                </Button>
+              </div>
             </div>
           )}
           </>
@@ -143,5 +182,15 @@ export default function CoverLetterPage() {
         </div>
       </AppShell>
     </RequireAuth>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary in the app router (same
+// pattern as app/practice/mock-interviews/page.tsx).
+export default function CoverLetterPage() {
+  return (
+    <Suspense fallback={null}>
+      <CoverLetterPageInner />
+    </Suspense>
   );
 }
