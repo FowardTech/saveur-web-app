@@ -44,7 +44,12 @@ export async function registerDeviceToken(token: string, platform: string = "web
 export function notificationHref(n: AppNotification): string | undefined {
   switch (n.type) {
     case "job_alert":
-      return "/job-alerts";
+      // The backend embeds the full job on the notification itself (see
+      // Saveur-Backend's notification_service.py) — land straight on that
+      // alert's own details/apply screen (app/job-alerts/[id]/page.tsx)
+      // when we have its id, same as mobile's bell-tap routing
+      // (src/home/Notification/index.tsx) does, rather than just the list.
+      return n.job_alert?.id ? `/job-alerts/${n.job_alert.id}` : "/job-alerts";
     case "career_event":
       return "/career/events";
     case "feedback_ready":

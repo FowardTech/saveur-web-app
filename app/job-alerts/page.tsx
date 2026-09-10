@@ -8,7 +8,9 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import Link from "next/link";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
+import { guessCompanyLogoUrl } from "@/lib/companyData";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -33,10 +35,13 @@ interface JobAlert {
   title: string;
   company: string;
   location?: string;
+  source?: string;
+  matched_role?: string;
   apply_url?: string;
   posted_at?: string;
   read: boolean;
   pinned: boolean;
+  applied?: boolean;
   company_logo_url?: string;
 }
 
@@ -177,39 +182,57 @@ export default function JobAlertsPage() {
 
           {alerts && alerts.length > 0 && (
             <div className="flex flex-col gap-3">
-              {alerts.map((a) => (
-                <div
-                  key={a.id}
-                  className={`flex items-center justify-between gap-4 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                    !a.read ? "border-accent-purple" : "border-border"
-                  }`}
-                >
-                  <a href={a.apply_url || "#"} target={a.apply_url ? "_blank" : undefined} rel="noopener noreferrer" className="flex flex-1 items-center gap-3">
-                    <CompanyLogoAvatar logoUrl={a.company_logo_url ?? null} companyName={a.company} size={44} className="shrink-0 bg-tint-mint" />
-                    <div>
-                      {!a.read && (
-                        <span className="mb-1 inline-block rounded-pill bg-accent-purple/15 px-2 py-0.5 text-xs font-semibold text-accent-purple">
-                          {t("web:jobAlerts.newBadge", { defaultValue: "New" })}
-                        </span>
-                      )}
-                      <h3 className="font-medium text-primary">{a.title}</h3>
-                      <p className="text-sm text-hint">
-                        {a.company}
-                        {a.location ? ` · ${a.location}` : ""}
-                      </p>
-                    </div>
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => handleTogglePin(a)}
-                    disabled={togglingPinId === a.id}
-                    aria-label={t("web:jobAlerts.pinAria", { defaultValue: "Pin this alert" })}
-                    className="shrink-0 text-hint transition hover:text-brand disabled:opacity-50"
+              {alerts.map((a) => {
+                // Backend (Saveur-Backend/app/services/company_logo_service.py)
+                // only reliably fills company_logo_url when a company domain
+                // was confidently resolved at discovery time — many rows,
+                // especially older ones, simply have it null. Falls back to
+                // the same geticon.dev domain-guess CompanyLogoAvatar's
+                // mock-interview company picker already uses
+                // (lib/companyData.ts) so most real companies still get a
+                // reasonable logo instead of the generic briefcase icon.
+                const logoUrl = a.company_logo_url ?? guessCompanyLogoUrl(a.company);
+                return (
+                  <div
+                    key={a.id}
+                    className={`flex items-center justify-between gap-4 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                      !a.read ? "border-accent-purple" : "border-border"
+                    }`}
                   >
-                    <EvaIcon name="star-outline" size={18} className={a.pinned ? "text-brand" : undefined} />
-                  </button>
-                </div>
-              ))}
+                    <Link href={`/job-alerts/${a.id}`} className="flex flex-1 items-center gap-3">
+                      <CompanyLogoAvatar logoUrl={logoUrl} companyName={a.company} size={44} className="shrink-0 bg-tint-mint" />
+                      <div>
+                        {!a.read && (
+                          <span className="mb-1 inline-block rounded-pill bg-accent-purple/15 px-2 py-0.5 text-xs font-semibold text-accent-purple">
+                            {t("web:jobAlerts.newBadge", { defaultValue: "New" })}
+                          </span>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-medium text-primary">{a.title}</h3>
+                          {a.applied && (
+                            <span className="inline-flex items-center rounded-pill bg-tint-purple px-2 py-0.5 text-xs font-medium text-tint-purple-text">
+                              {t("web:jobAlerts.appliedBadge", { defaultValue: "Applied" })}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-hint">
+                          {a.company}
+                          {a.location ? ` · ${a.location}` : ""}
+                        </p>
+                      </div>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePin(a)}
+                      disabled={togglingPinId === a.id}
+                      aria-label={t("web:jobAlerts.pinAria", { defaultValue: "Pin this alert" })}
+                      className="shrink-0 text-hint transition hover:text-brand disabled:opacity-50"
+                    >
+                      <EvaIcon name="star-outline" size={18} className={a.pinned ? "text-brand" : undefined} />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
