@@ -108,6 +108,13 @@ export const primaryNav: NavItem[] = [
   // right after Applications, since web's grouped nav sections don't have a
   // literal "between these two rows" slot the way mobile's flat list does.
   { label: "My Progress", labelKey: "myProgress", href: "/progress", icon: "trending-up-outline" },
+  // Mobile: MoreSrc.tsx's "Career Goal" row, which now opens
+  // src/more/GoalsScreen.tsx first (Career/Weekly targets/Progress hub)
+  // instead of jumping straight to the goal picker — see that screen's own
+  // header comment. Placed right after "My Progress" since both are
+  // glance-value progress surfaces reachable from the same part of
+  // mobile's flat More list.
+  { label: "Goals", labelKey: "goals", href: "/goals", icon: "flash-outline" },
 ];
 
 // Sidebar secondary / bottom section.
