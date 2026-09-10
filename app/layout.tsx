@@ -49,10 +49,41 @@ const montserratAlternates = localFont({
   display: "swap",
 });
 
+// NEXT_PUBLIC_SITE_URL isn't set anywhere yet (no web deployment domain is
+// confirmed in this repo's env files) — falls back to the app.saveurnow.com
+// convention the rest of this app follows (api.saveurnow.com is already
+// live). Needed so the relative image paths below resolve to absolute URLs
+// in the actual <meta> tags — social platforms/crawlers won't follow
+// relative og:image URLs. Update the env var once the real production
+// domain is confirmed.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://app.saveurnow.com";
+
+const TITLE = "Saveur — AI Career Coaching";
+const DESCRIPTION =
+  "Saveur helps you land your next role with AI mock interviews, coding practice, resume tools, a personalized career roadmap, and job alerts.";
+
 export const metadata: Metadata = {
-  title: "Saveur — AI Career Coaching",
-  description:
-    "Saveur helps you land your next role with AI mock interviews, coding practice, resume tools, a personalized career roadmap, and job alerts.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  manifest: "/manifest.webmanifest",
+  // Real Saveur logo badge (see public/logo-badge.png) for link-preview
+  // cards on social/chat platforms — previously unset, so shares of this
+  // app showed no image at all.
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: "Saveur",
+    images: [{ url: "/logo-badge.png", width: 1024, height: 1024, alt: "Saveur" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/logo-badge.png"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
