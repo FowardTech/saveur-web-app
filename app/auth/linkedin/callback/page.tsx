@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { signInWithCustomToken } from "firebase/auth";
 import { firebaseAuth } from "@/lib/firebase";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -15,6 +16,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
  * (failure) — see linkedin_auth.py's _app_redirect() for the "web" branch.
  * This page only flashes briefly in the normal redirect chain. */
 function LinkedInCallbackInner() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { syncProfile } = useAuth();
@@ -56,10 +58,10 @@ function LinkedInCallbackInner() {
         <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-danger/10 text-danger">
           <EvaIcon name="close-circle-outline" size={28} />
         </span>
-        <h1 className="text-xl font-bold text-primary">LinkedIn sign-in failed</h1>
-        <p className="text-sm text-hint">Error code: {error}</p>
+        <h1 className="text-xl font-bold text-primary">{t("web:linkedinCallback.title", { defaultValue: "LinkedIn sign-in failed" })}</h1>
+        <p className="text-sm text-hint">{t("web:linkedinCallback.errorCodeLabel", { defaultValue: "Error code: {{code}}", code: error })}</p>
         <Link href="/login" className="text-sm font-medium text-link hover:underline">
-          Back to sign in
+          {t("web:linkedinCallback.backToSignIn", { defaultValue: "Back to sign in" })}
         </Link>
       </div>
     );
@@ -68,7 +70,17 @@ function LinkedInCallbackInner() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
       <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-brand border-t-transparent" />
-      <p className="text-sm text-hint">Finishing LinkedIn sign-in…</p>
+      <p className="text-sm text-hint">{t("web:linkedinCallback.finishingSignIn", { defaultValue: "Finishing LinkedIn sign-in…" })}</p>
+    </div>
+  );
+}
+
+function LinkedInCallbackFallback() {
+  const { t } = useTranslation();
+  return (
+    <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
+      <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-brand border-t-transparent" />
+      <p className="text-sm text-hint">{t("web:linkedinCallback.finishingSignIn", { defaultValue: "Finishing LinkedIn sign-in…" })}</p>
     </div>
   );
 }
@@ -76,14 +88,7 @@ function LinkedInCallbackInner() {
 export default function LinkedInCallbackPage() {
   return (
     <AppShell>
-      <Suspense
-        fallback={
-          <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
-            <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-brand border-t-transparent" />
-            <p className="text-sm text-hint">Finishing LinkedIn sign-in…</p>
-          </div>
-        }
-      >
+      <Suspense fallback={<LinkedInCallbackFallback />}>
         <LinkedInCallbackInner />
       </Suspense>
     </AppShell>

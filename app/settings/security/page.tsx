@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -16,6 +17,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 //   POST /api/v1/auth/2fa/verify  -> {verified, two_factor_enabled}  (body: {code, purpose})
 //   POST /api/v1/auth/2fa/disable -> {two_factor_enabled: false}
 export default function SecuritySettingsPage() {
+  const { t } = useTranslation();
   const { profile, updateProfile } = useAuth();
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +33,7 @@ export default function SecuritySettingsPage() {
       const data = await apiClient.get<{ enabled: boolean }>("/api/v1/auth/2fa/status");
       setEnabled(data.enabled);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't load your security settings.");
+      setError((err as ApiError).message || t("web:settings.security.loadFailedDefault", { defaultValue: "Couldn't load your security settings." }));
     }
   }
 
@@ -48,7 +50,7 @@ export default function SecuritySettingsPage() {
       });
       setEmailHint(data.email_hint);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't send a verification code right now.");
+      setError((err as ApiError).message || t("web:settings.security.sendCodeFailedDefault", { defaultValue: "Couldn't send a verification code right now." }));
     } finally {
       setSending(false);
     }
@@ -68,7 +70,7 @@ export default function SecuritySettingsPage() {
       setEmailHint(null);
       setCode("");
     } catch (err) {
-      setError((err as ApiError).message || "That code didn't work — try sending a new one.");
+      setError((err as ApiError).message || t("web:settings.security.verifyFailedDefault", { defaultValue: "That code didn't work — try sending a new one." }));
     } finally {
       setVerifying(false);
     }
@@ -81,7 +83,7 @@ export default function SecuritySettingsPage() {
       await apiClient.post("/api/v1/auth/2fa/disable");
       setEnabled(false);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't disable two-factor authentication right now.");
+      setError((err as ApiError).message || t("web:settings.security.disableFailedDefault", { defaultValue: "Couldn't disable two-factor authentication right now." }));
     } finally {
       setDisabling(false);
     }
@@ -99,7 +101,7 @@ export default function SecuritySettingsPage() {
     try {
       await updateProfile({ notificationsEnabled: !profile.notificationsEnabled });
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't update your notification preference right now.");
+      setError((err as ApiError).message || t("web:settings.security.toggleNotificationsFailedDefault", { defaultValue: "Couldn't update your notification preference right now." }));
     } finally {
       setSavingNotifications(false);
     }
@@ -109,7 +111,10 @@ export default function SecuritySettingsPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
-          <PageHeader title="Security" subtitle="Protect your account with email-code two-factor authentication." />
+          <PageHeader
+            title={t("web:settings.security.title", { defaultValue: "Security" })}
+            subtitle={t("web:settings.security.subtitle", { defaultValue: "Protect your account with email-code two-factor authentication." })}
+          />
 
           {error && <p className="text-sm text-danger">{error}</p>}
 
@@ -119,31 +124,42 @@ export default function SecuritySettingsPage() {
                 <EvaIcon name="shield-outline" size={20} />
               </span>
               <div>
-                <h2 className="font-semibold text-primary">Two-factor authentication</h2>
+                <h2 className="font-semibold text-primary">{t("web:settings.security.twoFactorTitle", { defaultValue: "Two-factor authentication" })}</h2>
                 <p className="text-sm text-hint">
-                  {enabled === null ? "Loading…" : enabled ? "Enabled — a code is sent to your email at login." : "Not enabled."}
+                  {enabled === null
+                    ? t("common:actions.loading", { defaultValue: "Loading…" })
+                    : enabled
+                      ? t("web:settings.security.twoFactorEnabledDescription", { defaultValue: "Enabled — a code is sent to your email at login." })
+                      : t("web:settings.security.twoFactorDisabledDescription", { defaultValue: "Not enabled." })}
                 </p>
               </div>
             </div>
 
             {enabled === true && (
               <Button variant="outline" onClick={handleDisable} disabled={disabling} className="w-fit">
-                {disabling ? "Disabling…" : "Disable 2FA"}
+                {disabling ? t("web:settings.security.disabling", { defaultValue: "Disabling…" }) : t("web:settings.security.disable2fa", { defaultValue: "Disable 2FA" })}
               </Button>
             )}
 
             {enabled === false && !emailHint && (
               <Button onClick={handleSendCode} disabled={sending} className="w-fit">
-                {sending ? "Sending…" : "Enable 2FA"}
+                {sending ? t("web:settings.security.sending", { defaultValue: "Sending…" }) : t("web:settings.security.enable2fa", { defaultValue: "Enable 2FA" })}
               </Button>
             )}
 
             {enabled === false && emailHint && (
               <form onSubmit={handleVerify} className="flex flex-col gap-3">
-                <p className="text-sm text-hint">Enter the code sent to {emailHint}.</p>
-                <TextField label="Verification code" value={code} onChange={(e) => setCode(e.target.value)} required />
+                <p className="text-sm text-hint">{t("web:settings.security.codeSentTo", { defaultValue: "Enter the code sent to {{email}}.", email: emailHint })}</p>
+                <TextField
+                  label={t("web:settings.security.verificationCodeLabel", { defaultValue: "Verification code" })}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  required
+                />
                 <Button type="submit" disabled={verifying || !code.trim()} className="w-fit">
-                  {verifying ? "Verifying…" : "Verify & enable"}
+                  {verifying
+                    ? t("web:settings.security.verifying", { defaultValue: "Verifying…" })
+                    : t("web:settings.security.verifyAndEnable", { defaultValue: "Verify & enable" })}
                 </Button>
               </form>
             )}
@@ -155,8 +171,12 @@ export default function SecuritySettingsPage() {
                 <EvaIcon name="bell-outline" size={20} />
               </span>
               <div>
-                <h2 className="font-semibold text-primary">Push notifications</h2>
-                <p className="text-sm text-hint">Notify me about job matches, interview reminders, and coach follow-ups.</p>
+                <h2 className="font-semibold text-primary">{t("web:settings.security.pushNotificationsTitle", { defaultValue: "Push notifications" })}</h2>
+                <p className="text-sm text-hint">
+                  {t("web:settings.security.pushNotificationsDescription", {
+                    defaultValue: "Notify me about job matches, interview reminders, and coach follow-ups.",
+                  })}
+                </p>
               </div>
             </div>
             <button

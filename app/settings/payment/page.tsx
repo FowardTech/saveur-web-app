@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -16,6 +17,7 @@ import type { ApiError } from "@/lib/apiClient";
 // "Payment Method" settings entry point, /subscription stays the full
 // plan-comparison page.
 export default function PaymentSettingsPage() {
+  const { t } = useTranslation();
   const { profile } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +29,7 @@ export default function PaymentSettingsPage() {
       const url = await createPortalSession(`${window.location.origin}/settings/payment`);
       window.location.assign(url);
     } catch (err) {
-      setError((err as ApiError).message || "Couldn't open the billing portal. Please try again.");
+      setError((err as ApiError).message || t("web:settings.payment.openPortalFailedDefault", { defaultValue: "Couldn't open the billing portal. Please try again." }));
       setBusy(false);
     }
   }
@@ -38,7 +40,10 @@ export default function PaymentSettingsPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-xl flex-col gap-8 pb-10">
-          <PageHeader title="Payment Method" subtitle="Manage your subscription and billing details." />
+          <PageHeader
+            title={t("web:settings.payment.title", { defaultValue: "Payment Method" })}
+            subtitle={t("web:settings.payment.subtitle", { defaultValue: "Manage your subscription and billing details." })}
+          />
 
           <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <div className="flex items-center gap-3">
@@ -47,17 +52,23 @@ export default function PaymentSettingsPage() {
               </span>
               <div>
                 <h2 className="font-semibold text-primary">
-                  {isPaidSubscriber ? `You're on the ${profile?.subscriptionTier} plan` : "You're on the free plan"}
+                  {isPaidSubscriber
+                    ? t("web:settings.payment.paidPlanLine", { defaultValue: "You're on the {{plan}} plan", plan: profile?.subscriptionTier })
+                    : t("web:settings.payment.freePlanLine", { defaultValue: "You're on the free plan" })}
                 </h2>
-                <p className="text-sm text-hint">Manage your payment method, invoices, and plan through Stripe's secure billing portal.</p>
+                <p className="text-sm text-hint">
+                  {t("web:settings.payment.description", {
+                    defaultValue: "Manage your payment method, invoices, and plan through Stripe's secure billing portal.",
+                  })}
+                </p>
               </div>
             </div>
             {error && <p className="text-sm text-danger">{error}</p>}
             <Button onClick={handleManageBilling} disabled={busy} className="w-fit">
-              {busy ? "Opening…" : "Manage billing"}
+              {busy ? t("web:settings.payment.opening", { defaultValue: "Opening…" }) : t("web:settings.payment.manageBilling", { defaultValue: "Manage billing" })}
             </Button>
             <Link href="/subscription" className="text-sm text-link hover:underline">
-              View plans &amp; pricing
+              {t("web:settings.payment.viewPlans", { defaultValue: "View plans & pricing" })}
             </Link>
           </div>
         </div>

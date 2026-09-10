@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
@@ -11,6 +12,7 @@ import { formatPrice, type BillingPlan } from "@/lib/types";
 import { getErrorMessage } from "@/lib/errors";
 
 export default function SubscriptionPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { firebaseUser, profile } = useAuth();
   const [plans, setPlans] = useState<BillingPlan[]>([]);
@@ -26,7 +28,7 @@ export default function SubscriptionPage() {
         const data = await getPlans();
         if (!cancelled) setPlans(data);
       } catch {
-        if (!cancelled) setPlansError("Couldn't load plans right now. Please try again in a moment.");
+        if (!cancelled) setPlansError(t("web:subscription.loadPlansFailedDefault", { defaultValue: "Couldn't load plans right now. Please try again in a moment." }));
       } finally {
         if (!cancelled) setLoadingPlans(false);
       }
@@ -53,7 +55,7 @@ export default function SubscriptionPage() {
       });
       window.location.assign(url);
     } catch (err: unknown) {
-      const message = getErrorMessage(err, "Couldn't start checkout. Please try again.");
+      const message = getErrorMessage(err, t("web:subscription.checkoutFailedDefault", { defaultValue: "Couldn't start checkout. Please try again." }));
       setActionError(message);
       setBusyCode(null);
     }
@@ -66,7 +68,7 @@ export default function SubscriptionPage() {
       const url = await createPortalSession(`${window.location.origin}/subscription`);
       window.location.assign(url);
     } catch (err: unknown) {
-      const message = getErrorMessage(err, "Couldn't open the billing portal. Please try again.");
+      const message = getErrorMessage(err, t("web:subscription.portalFailedDefault", { defaultValue: "Couldn't open the billing portal. Please try again." }));
       setActionError(message);
       setBusyCode(null);
     }
@@ -78,23 +80,29 @@ export default function SubscriptionPage() {
     <AppShell>
       <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
         <div className="flex flex-col gap-2 text-center">
-          <h1 className="text-3xl font-bold text-primary">Plans built for every stage of your search</h1>
-          <p className="text-sm text-hint">Upgrade any time — cancel or switch plans whenever you need to.</p>
+          <h1 className="text-3xl font-bold text-primary">{t("web:subscription.title", { defaultValue: "Plans built for every stage of your search" })}</h1>
+          <p className="text-sm text-hint">
+            {t("web:subscription.subtitle", { defaultValue: "Upgrade any time — cancel or switch plans whenever you need to." })}
+          </p>
         </div>
 
         {isPaidSubscriber && (
           <div className="flex items-center justify-between rounded-card border border-border bg-surface-2 px-5 py-4">
             <div className="flex items-center gap-3">
               <EvaIcon name="credit-card-outline" size={18} className="text-brand" />
-              <p className="text-sm text-primary">You&apos;re currently on the {profile?.subscriptionTier} plan.</p>
+              <p className="text-sm text-primary">
+                {t("web:subscription.currentPlanLine", { defaultValue: "You're currently on the {{plan}} plan.", plan: profile?.subscriptionTier })}
+              </p>
             </div>
             <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={busyCode === "__portal__"}>
-              {busyCode === "__portal__" ? "Opening…" : "Manage billing"}
+              {busyCode === "__portal__"
+                ? t("web:subscription.opening", { defaultValue: "Opening…" })
+                : t("web:subscription.manageBilling", { defaultValue: "Manage billing" })}
             </Button>
           </div>
         )}
 
-        {loadingPlans && <p className="text-center text-sm text-hint">Loading plans…</p>}
+        {loadingPlans && <p className="text-center text-sm text-hint">{t("web:subscription.loadingPlans", { defaultValue: "Loading plans…" })}</p>}
         {plansError && <p className="text-center text-sm text-danger">{plansError}</p>}
         {actionError && <p className="text-center text-sm text-danger">{actionError}</p>}
 
@@ -109,14 +117,20 @@ export default function SubscriptionPage() {
               >
                 {plan.recommended && (
                   <span className="w-fit rounded-pill bg-brand px-3 py-1 text-xs font-semibold text-white">
-                    Most popular
+                    {t("web:subscription.mostPopular", { defaultValue: "Most popular" })}
                   </span>
                 )}
                 <div>
                   <h3 className="text-lg font-bold text-primary">{plan.name}</h3>
                   <p className="mt-1 flex items-baseline gap-1">
                     <span className="text-3xl font-bold text-primary">{formatPrice(plan.amount, plan.currency)}</span>
-                    {plan.interval && <span className="text-sm text-hint">/{plan.interval === "month" ? "mo" : "yr"}</span>}
+                    {plan.interval && (
+                      <span className="text-sm text-hint">
+                        {plan.interval === "month"
+                          ? t("web:subscription.perMonth", { defaultValue: "/mo" })
+                          : t("web:subscription.perYear", { defaultValue: "/yr" })}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <ul className="flex flex-1 flex-col gap-2">
@@ -129,15 +143,17 @@ export default function SubscriptionPage() {
                 </ul>
                 {plan.isCurrent ? (
                   <Button variant="secondary" disabled className="w-full">
-                    Current plan
+                    {t("web:subscription.currentPlan", { defaultValue: "Current plan" })}
                   </Button>
                 ) : plan.code ? (
                   <Button onClick={() => handleSubscribe(plan)} disabled={busyCode === plan.code} className="w-full">
-                    {busyCode === plan.code ? "Redirecting…" : "Subscribe"}
+                    {busyCode === plan.code
+                      ? t("web:subscription.redirecting", { defaultValue: "Redirecting…" })
+                      : t("web:subscription.subscribe", { defaultValue: "Subscribe" })}
                   </Button>
                 ) : (
                   <Button variant="secondary" disabled className="w-full">
-                    Free
+                    {t("web:subscription.free", { defaultValue: "Free" })}
                   </Button>
                 )}
               </div>
@@ -146,7 +162,7 @@ export default function SubscriptionPage() {
         )}
 
         {!loadingPlans && !plansError && plans.length === 0 && (
-          <p className="text-center text-sm text-hint">Plans aren&apos;t available right now — check back soon.</p>
+          <p className="text-center text-sm text-hint">{t("web:subscription.noPlansAvailable", { defaultValue: "Plans aren't available right now — check back soon." })}</p>
         )}
       </div>
     </AppShell>
