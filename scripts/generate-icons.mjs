@@ -84,6 +84,14 @@ const ICONS = [
   "diagonal-arrow-right-up-outline",
   "clock-outline",
   "trash-2-outline",
+  "video-outline",
+  "camera-outline",
+  "message-square-outline",
+  "grid-outline",
+  "pie-chart-outline",
+  "heart-outline",
+  "bulb-outline",
+  "phone-call-outline",
 ];
 
 function extractInner(svg) {

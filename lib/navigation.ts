@@ -90,6 +90,10 @@ export const primaryNav: NavItem[] = [
 // Sidebar secondary / bottom section.
 export const secondaryNav: NavLeaf[] = [
   { label: "Referral Program", labelKey: "referralProgram", href: "/referral", icon: "gift-outline" },
+  // Mobile drawer: MoreSrc.tsx places this row directly above Subscription
+  // — a one-time-purchase catalog (Coding Practice, etc.) independent of
+  // subscription tier, see src/more/AddOns.tsx.
+  { label: "Add-ons", labelKey: "addons", href: "/addons", icon: "pricetags-outline" },
   { label: "Subscription", labelKey: "subscription", href: "/subscription", icon: "credit-card-outline" },
   // badgeKey "settings" folds Daily Industry News + Weekly Career Report
   // unread flags together (0/1/2) — same combined-row treatment mobile's
