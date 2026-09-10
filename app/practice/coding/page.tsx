@@ -86,6 +86,24 @@ export default function CodingPracticePage() {
             subtitle={t("web:practice.coding.subtitle", { defaultValue: "Real problems, instant AI review." })}
           />
 
+          <Link
+            href="/practice/coding/projects"
+            className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 hover:border-brand/40"
+          >
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <EvaIcon name="folder-outline" size={16} />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-primary">{t("web:practice.coding.projectsLinkTitle", { defaultValue: "My Projects" })}</p>
+                <p className="text-xs text-hint">
+                  {t("web:practice.coding.projectsLinkSubtitle", { defaultValue: "Build a multi-file web page or script, save it, and run or preview it — like a lightweight VS Code." })}
+                </p>
+              </div>
+            </div>
+            <EvaIcon name="chevron-right-outline" size={16} className="text-hint" />
+          </Link>
+
           {addonRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
