@@ -41,11 +41,12 @@ export const primaryNav: NavItem[] = [
       { label: "Mock Interviews", labelKey: "mockInterviews", href: "/practice/mock-interviews", icon: "mic-outline" },
       { label: "Coding Practice", labelKey: "codingPractice", href: "/practice/coding", icon: "code-outline" },
       { label: "Practical Scenarios", labelKey: "practicalScenarios", href: "/practice/scenarios", icon: "clipboard-outline" },
-      // Mobile drawer: "Recent Interviews", lands on the Practice History
-      // tab of the Interviews screen (see MainDrawer.tsx) — here it's its
-      // own real route, sharing the same GET /api/v1/interviews/sessions
-      // history mobile's PracticeHistoryTab.tsx reads from.
-      { label: "Recent Interviews", labelKey: "recentInterviews", href: "/practice/history", icon: "clock-outline" },
+      // Mobile drawer: "Recent Interviews" lands on the real "Interviews"
+      // screen (src/requests/RequestsSrc.tsx) with its Practice History tab
+      // pre-selected (`initialTab: 1`) rather than its own screen — same
+      // structure here: this points at the merged app/applications/page.tsx
+      // with ?tab=history, not a separate route.
+      { label: "Recent Interviews", labelKey: "recentInterviews", href: "/applications?tab=history", icon: "clock-outline" },
     ],
   },
   {
@@ -83,12 +84,20 @@ export const primaryNav: NavItem[] = [
   },
   { label: "Learning Courses", labelKey: "learningCourses", href: "/learning", icon: "book-open-outline" },
   { label: "Job Alerts", labelKey: "jobAlerts", href: "/job-alerts", icon: "briefcase-outline", badgeKey: "jobAlerts" },
-  // Mobile: MoreSrc.tsx's "Applications" row / the Applications tab of the
-  // Interviews screen (src/requests/Applications/ApplicationsTab.tsx),
-  // backed by Saveur-Backend's app/api/tracker.py CRUD endpoints. Top-level
-  // here (not nested under Practice) since it's a Basic-and-up job-search
-  // tool in its own right, same tier/prominence as Job Alerts.
-  { label: "Application Tracker", labelKey: "applicationTracker", href: "/applications", icon: "award-outline" },
+  // Mobile: MoreSrc.tsx's "Applications" row, landing on the same real
+  // "Interviews" screen (src/requests/RequestsSrc.tsx) as "Recent
+  // Interviews" above, just defaulting to the Applications tab instead of
+  // Practice History — see app/applications/page.tsx's own comment for why
+  // this is one merged route with two differently-labeled entry points
+  // rather than either a single nav row or two separate pages. Label
+  // renamed from "Application Tracker" to "Applications" to match MoreSrc's
+  // real row label (t('more:tab_interviews', {defaultValue: 'Applications'}));
+  // labelKey stays `applicationTracker` on purpose so existing translations
+  // aren't invalidated (same convention as this file's own "Support" rename
+  // below). Top-level here (not nested under Practice) since it's a
+  // Basic-and-up job-search tool in its own right, same tier/prominence as
+  // Job Alerts.
+  { label: "Applications", labelKey: "applicationTracker", href: "/applications", icon: "award-outline" },
 ];
 
 // Sidebar secondary / bottom section.

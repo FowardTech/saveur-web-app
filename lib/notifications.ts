@@ -58,7 +58,10 @@ export function notificationHref(n: AppNotification): string | undefined {
     case "feedback_ready":
     case "video_ready":
     case "practical_feedback_ready":
-      return "/practice/history";
+      // Practice History is now the second tab of the merged Interviews
+      // screen (app/applications/page.tsx), not its own route — see that
+      // file's own comment.
+      return "/applications?tab=history";
     case "roadmap_ready":
       return "/career/roadmap";
     case "payment":
