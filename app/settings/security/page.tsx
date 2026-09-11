@@ -231,13 +231,13 @@ export default function SecuritySettingsPage() {
               aria-checked={!!profile?.notificationsEnabled}
               disabled={!profile || savingNotifications}
               onClick={handleToggleNotifications}
-              className={`relative h-6 w-11 shrink-0 rounded-pill transition disabled:opacity-50 ${
+              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer appearance-none items-center rounded-pill border-0 p-0 outline-none transition-colors duration-200 ease-in-out focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
                 profile?.notificationsEnabled ? "bg-brand" : "bg-surface-4"
               }`}
             >
               <span
-                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-                  profile?.notificationsEnabled ? "translate-x-5" : "translate-x-0.5"
+                className={`pointer-events-none absolute left-0.5 h-6 w-6 rounded-full bg-white shadow-md ring-1 ring-black/5 transition-transform duration-200 ease-in-out ${
+                  profile?.notificationsEnabled ? "translate-x-5" : "translate-x-0"
                 }`}
               />
             </button>
