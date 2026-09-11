@@ -17,7 +17,7 @@ import { getAppConfig } from "@/lib/appConfigService";
 import * as billingService from "@/lib/billingService";
 import { searchCompany, type CompanySearchResult } from "@/lib/companySearchService";
 import { COMPANY_ANY, companiesForCountries, guessCompanyLogoUrl } from "@/lib/companyData";
-import { INTERVIEW_TYPES, interviewTypeFromSlug, interviewTypeSlug } from "@/lib/interviewData";
+import { INTERVIEW_TYPES, interviewTypeFromSlug, interviewTypeSlug, PRACTICE_MODES, DIFFICULTIES, DURATION_OPTIONS_MIN } from "@/lib/interviewData";
 
 // Real backend contract — ported from mobile's services/interviewService.ts
 // (TYPE_TO_WIRE/MODE_TO_WIRE/DIFFICULTY_TO_WIRE) and
@@ -25,14 +25,9 @@ import { INTERVIEW_TYPES, interviewTypeFromSlug, interviewTypeSlug } from "@/lib
 // missing entirely — see constants/Data.ts for the source pill data).
 //   POST /api/v1/interviews/sessions -> {id, type, role, company, difficulty,
 //     mode, status, first_question?, question_id?}
-const PRACTICE_MODES: { mode: "Voice" | "Text" | "Video"; icon: EvaIconName; description: string }[] = [
-  { mode: "Voice", icon: "phone-call-outline", description: "Speak your answers, get spoken feedback" },
-  { mode: "Text", icon: "edit-2-outline", description: "Type your answers at your own pace" },
-  { mode: "Video", icon: "video-outline", description: "Practice on camera like a real interview" },
-];
-
-const DIFFICULTIES: Array<"Beginner" | "Intermediate" | "Advanced"> = ["Beginner", "Intermediate", "Advanced"];
-const DURATION_OPTIONS_MIN = [15, 30, 45, 60];
+// PRACTICE_MODES/DIFFICULTIES/DURATION_OPTIONS_MIN now live in
+// lib/interviewData.ts, shared with app/practice/schedule/page.tsx (the
+// near-twin "Schedule Mock Interview" screen).
 const FREE_SESSIONS_PER_MONTH = 5;
 
 interface InterviewPersona {

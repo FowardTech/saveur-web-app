@@ -39,3 +39,18 @@ export function interviewTypeFromSlug(slug: string | null | undefined): Intervie
   if (!slug) return undefined;
   return INTERVIEW_TYPES.find((t) => interviewTypeSlug(t.label) === slug);
 }
+
+// Shared practice-mode / difficulty / duration pill data — originally only
+// declared inline in app/practice/mock-interviews/page.tsx, now also used by
+// app/practice/schedule/page.tsx (the near-twin "Schedule Mock Interview"
+// screen, ported from mobile's src/practice/ScheduleInterview.tsx) so the two
+// setup wizards can't silently drift apart on their shared fields.
+export const PRACTICE_MODES: { mode: "Voice" | "Text" | "Video"; icon: EvaIconName; description: string }[] = [
+  { mode: "Voice", icon: "phone-call-outline", description: "Speak your answers, get spoken feedback" },
+  { mode: "Text", icon: "edit-2-outline", description: "Type your answers at your own pace" },
+  { mode: "Video", icon: "video-outline", description: "Practice on camera like a real interview" },
+];
+
+export const DIFFICULTIES: Array<"Beginner" | "Intermediate" | "Advanced"> = ["Beginner", "Intermediate", "Advanced"];
+
+export const DURATION_OPTIONS_MIN = [15, 30, 45, 60];
