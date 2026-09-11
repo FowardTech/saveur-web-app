@@ -10,12 +10,12 @@ import apiClient, { type ApiError } from "@/lib/apiClient";
 import {
   getSpeechRecognitionCtor,
   isSpeechRecognitionSupported,
-  isSpeechSynthesisSupported,
   safeStartRecognition,
   describeSpeechError,
   transcriptFromEvent,
   type MinimalSpeechRecognition,
 } from "@/lib/speechRecognition";
+import * as ttsService from "@/lib/ttsService";
 
 // Dedicated, full-screen Voice Coach — the web counterpart to
 // Saveur/src/messages/VoiceCoachView.tsx, reached from app/ai-coach/page.tsx's
@@ -37,7 +37,10 @@ import {
 //    transcript is sent to the coach. See SILENCE_MS below.
 //  - The same POST /api/v1/coach/advice contract the inline voice toggle
 //    already uses, with mode: "voice" for shorter/speakable replies.
-//  - Replies spoken via window.speechSynthesis, same as the inline toggle.
+//  - Replies spoken via the real ElevenLabs voice (POST /api/v1/tts/speak,
+//    same backend endpoint mobile's speechService.ts uses — see
+//    lib/ttsService.ts), falling back to window.speechSynthesis on any
+//    failure so the coach is never left silently mute.
 //  - A manual "tap orb to stop/interrupt" control.
 //
 // WHAT HONESTLY DOESN'T: VoiceCoachView's real barge-in (the coach gets cut
@@ -78,7 +81,7 @@ const GREETING_TEXT =
   "Hi, I'm Saveur, your AI career coach. Tap the orb and talk to me whenever you're ready.";
 
 export default function VoiceCoachPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [liveTranscript, setLiveTranscript] = useState("");
@@ -131,7 +134,7 @@ export default function VoiceCoachPage() {
     return () => {
       sessionActiveRef.current = false;
       recognitionRef.current?.abort();
-      if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel();
+      ttsService.cancel();
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     };
   }, []);
@@ -236,26 +239,22 @@ export default function VoiceCoachPage() {
 
   const speakReply = useCallback(
     (text: string) => {
-      if (!isSpeechSynthesisSupported()) {
-        // No TTS available — show the reply as text and go straight back
-        // to listening instead of getting stuck on a 'speaking' phase that
-        // will never resolve via an utterance event.
-        if (sessionActiveRef.current) startRecognitionInternal();
-        else setPhase("idle");
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      // ttsService.speak() tries the real ElevenLabs voice first (POST
+      // /api/v1/tts/speak) and transparently falls back to
+      // window.speechSynthesis on any failure — see lib/ttsService.ts. Its
+      // returned promise never rejects and resolves exactly once speech is
+      // over (naturally, on error, or because ttsService.cancel() force-
+      // stopped it via interrupt()/endSession()/unmount below), so `resume`
+      // here is the direct replacement for the old
+      // utterance.onend/utterance.onerror pair.
       const resume = () => {
         if (sessionActiveRef.current) startRecognitionInternal();
         else setPhase("idle");
       };
-      utterance.onend = resume;
-      utterance.onerror = resume;
       setPhase("speaking");
-      window.speechSynthesis.speak(utterance);
+      void ttsService.speak(text, { language: i18n.language }).then(resume);
     },
-    [startRecognitionInternal]
+    [startRecognitionInternal, i18n.language]
   );
 
   const sendTurn = useCallback(
@@ -363,7 +362,7 @@ export default function VoiceCoachPage() {
     sessionActiveRef.current = false;
     clearSilenceTimer();
     recognitionRef.current?.stop();
-    if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel();
+    ttsService.cancel();
     setLiveTranscript("");
     setPhase("idle");
   }, [clearSilenceTimer]);
@@ -372,10 +371,16 @@ export default function VoiceCoachPage() {
   // comment. Only meaningful while the coach is actually speaking.
   const interrupt = useCallback(() => {
     if (phaseRef.current !== "speaking") return;
-    if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel();
-    if (sessionActiveRef.current) startRecognitionInternal();
-    else setPhase("idle");
-  }, [startRecognitionInternal]);
+    // ttsService.cancel() force-resolves speakReply's pending promise itself
+    // (see that module's own comment), which fires `resume` above and starts
+    // recognition again — but only if sessionActiveRef is still true by the
+    // time that resolves. Calling startRecognitionInternal() again here too
+    // would double-start it, so this only needs to handle the "session
+    // already ended" idle case; the normal resume path is handled by
+    // speakReply's own `resume` callback.
+    ttsService.cancel();
+    if (!sessionActiveRef.current) setPhase("idle");
+  }, []);
 
   function onOrbTap() {
     if (unsupported) return;
