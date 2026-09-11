@@ -31,18 +31,9 @@ import * as ttsService from "@/lib/ttsService";
 // web app... all the features in the mobile app must also be in the web
 // app too").
 //
-// SCOPE (stated plainly, not glossed over): Text and Voice mode are both
-// fully real here — same backend endpoints, same session/feedback pipeline
-// as mobile (see lib/interviewService.ts's header comment). Video mode's
-// live on-camera analysis is NOT ported: mobile's version
-// (src/practice/LiveInterviewSession.tsx) is built on react-native-vision-
-// camera + an ML Kit face-detection pipeline + a hand-tuned native
-// audio-session workaround spanning hundreds of lines of iOS/Android-
-// specific code with no browser equivalent — attempting a shallow imitation
-// (a browser camera feed with no real analysis behind it) would be worse
-// than being upfront that it isn't here. A Video-mode session still gets a
-// full, real interview: it's offered Voice or Text instead, right on this
-// screen, rather than being dead-ended.
+// Text, Voice, AND Video mode are all fully real here — same backend
+// endpoints, same session/feedback pipeline as mobile (see
+// lib/interviewService.ts's header comment).
 //
 // Voice mode reuses the exact same continuous-listening, silence-based
 // turn-detection model as app/ai-coach/voice/page.tsx (see that file's own
@@ -51,6 +42,20 @@ import * as ttsService from "@/lib/ttsService";
 // duplex voice pipeline) — same SpeechRecognition + ElevenLabs TTS
 // building blocks, just driving an interview Q&A loop instead of a coach
 // chat.
+//
+// Video mode runs that exact same Q&A loop underneath (real-time speech is
+// still the actual interview mechanism — a browser has no equivalent to
+// mobile's native audio-session pipeline for anything else) and adds real
+// getUserMedia camera capture on top: a live self-view preview, a
+// MediaRecorder recording of the whole session uploaded via the existing
+// POST .../video endpoint on End, and a periodic webcam snapshot sent to a
+// real AI-vision backend call (analyze-camera-frame) whose output is
+// relayed into the SAME CameraAnalysisFrame timeline mobile's on-device ML
+// Kit face detector writes to — so replay/scoring work identically for a
+// web session (product report: "For video mode I think it can be
+// accomplishable in web too... make use of AI and some APIs... implement
+// it perfectly on web too"). If the browser can't grant camera access, the
+// candidate is offered Voice or Text instead rather than being dead-ended.
 const SILENCE_MS = 1300;
 
 type VoicePhase = "idle" | "listening" | "thinking" | "speaking";
@@ -84,7 +89,7 @@ export default function LiveInterviewSessionPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<TranscriptTurn[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<string | null>(null);
-  const [effectiveMode, setEffectiveMode] = useState<"voice" | "text" | null>(null);
+  const [effectiveMode, setEffectiveMode] = useState<"voice" | "text" | "video" | null>(null);
   const [isEnding, setIsEnding] = useState(false);
   const [endError, setEndError] = useState<string | null>(null);
 
@@ -113,6 +118,21 @@ export default function LiveInterviewSessionPage() {
   const silenceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const networkErrorStreakRef = useRef(0);
   const NETWORK_ERROR_LIMIT = 3;
+
+  // --- Video mode --- (Voice mode's exact Q&A state machine above, plus
+  // real camera capture/recording/frame-analysis on top)
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const cameraVideoRef = useRef<HTMLVideoElement | null>(null);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  const recordingStartRef = useRef<number | null>(null);
+  const frameIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Deliberately infrequent — each sample is a real, billed AI-vision call
+  // (see Saveur-Backend's analyze-camera-frame docstring), unlike mobile's
+  // free on-device ML Kit sampling which can run every animation frame.
+  const FRAME_ANALYSIS_INTERVAL_MS = 8000;
 
   useEffect(() => {
     voicePhaseRef.current = voicePhase;
@@ -150,7 +170,7 @@ export default function LiveInterviewSessionPage() {
           }
         }
         const mode = detail.mode === "voice" || detail.mode === "text" || detail.mode === "video" ? detail.mode : "text";
-        setEffectiveMode(mode === "video" ? null : mode);
+        setEffectiveMode(mode);
         if (detail.durationMin) {
           endsAtRef.current = Date.now() + detail.durationMin * 60 * 1000;
           setRemainingSeconds(detail.durationMin * 60);
@@ -189,7 +209,41 @@ export default function LiveInterviewSessionPage() {
     sessionActiveRef.current = false;
     recognitionRef.current?.abort();
     ttsService.cancel();
+    if (frameIntervalRef.current) {
+      clearInterval(frameIntervalRef.current);
+      frameIntervalRef.current = null;
+    }
+    // Stop the recording and upload it BEFORE navigating away, so the
+    // replay screen (app/practice/session/[id]/page.tsx) has a real
+    // video_url the moment AI feedback finishes generating, same as
+    // mobile's own end-of-session flow.
+    const recorder = mediaRecorderRef.current;
+    let uploadPromise: Promise<void> | null = null;
+    if (recorder && recorder.state !== "inactive") {
+      uploadPromise = new Promise<void>((resolve) => {
+        recorder.onstop = () => resolve();
+        try {
+          recorder.stop();
+        } catch {
+          resolve();
+        }
+      }).then(async () => {
+        const blob = new Blob(recordedChunksRef.current, { type: recorder.mimeType || "video/webm" });
+        const durationSec = recordingStartRef.current ? Math.round((Date.now() - recordingStartRef.current) / 1000) : 0;
+        if (blob.size > 0) {
+          try {
+            await interviewService.uploadSessionVideo(sessionId, blob, durationSec);
+          } catch {
+            // best-effort — losing the recording is much less bad than
+            // getting the candidate stuck unable to see their score.
+          }
+        }
+      });
+    }
+    cameraStreamRef.current?.getTracks().forEach((track) => track.stop());
+    cameraStreamRef.current = null;
     try {
+      if (uploadPromise) await uploadPromise;
       await interviewService.endSession(sessionId);
       router.push(`/practice/session/${sessionId}`);
     } catch (err) {
@@ -349,13 +403,6 @@ export default function LiveInterviewSessionPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveTranscript, voicePhase]);
 
-  useEffect(() => {
-    if (effectiveMode !== "voice") return;
-    if (!isSpeechRecognitionSupported()) {
-      setVoiceUnsupported(t("web:aiCoach.voiceUnsupported", { defaultValue: "Voice input isn't supported in this browser yet — try Chrome or Edge." }));
-    }
-  }, [effectiveMode, t]);
-
   function startVoiceSession() {
     if (!currentQuestion) return;
     setVoiceStarted(true);
@@ -371,13 +418,116 @@ export default function LiveInterviewSessionPage() {
     if (!sessionActiveRef.current) setVoicePhase("idle");
   }
 
-  // Tear down mic/speech on navigating away.
+  // --- Video mode: real getUserMedia camera capture on top of the exact
+  // same Voice-mode Q&A loop above. ---
+  const setupCamera = useCallback(async (): Promise<boolean> => {
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setCameraError(
+        t("web:practice.interview.cameraUnsupported", {
+          defaultValue: "Camera recording isn't supported in this browser — try Chrome or Edge, or continue in Voice or Text mode.",
+        })
+      );
+      return false;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true });
+      cameraStreamRef.current = stream;
+      if (cameraVideoRef.current) {
+        cameraVideoRef.current.srcObject = stream;
+        await cameraVideoRef.current.play().catch(() => {});
+      }
+      return true;
+    } catch {
+      setCameraError(
+        t("web:practice.interview.cameraDenied", {
+          defaultValue: "Couldn't access your camera or microphone. Check your browser's permissions for this site and try again, or continue in Voice or Text mode.",
+        })
+      );
+      return false;
+    }
+  }, [t]);
+
+  const startRecording = useCallback((stream: MediaStream) => {
+    recordedChunksRef.current = [];
+    const candidateType = "video/webm;codecs=vp8,opus";
+    const mimeType = typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(candidateType) ? candidateType : "video/webm";
+    try {
+      const recorder = typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(mimeType) ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
+      };
+      recorder.start(1000);
+      mediaRecorderRef.current = recorder;
+      recordingStartRef.current = Date.now();
+    } catch {
+      // Recording isn't available in this browser — the interview still
+      // runs fine, it just won't have a replay video afterward.
+    }
+  }, []);
+
+  // One webcam snapshot -> real AI-vision analysis -> relayed into the same
+  // CameraAnalysisFrame timeline mobile's on-device detector writes to.
+  // Best-effort throughout: a missed/failed sample must never interrupt the
+  // live interview.
+  const captureAndAnalyzeFrame = useCallback(() => {
+    if (!sessionId) return;
+    const video = cameraVideoRef.current;
+    if (!video || !video.videoWidth || !video.videoHeight) return;
+    const canvas = canvasRef.current ?? document.createElement("canvas");
+    canvasRef.current = canvas;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+    void (async () => {
+      const analysis = await interviewService.analyzeCameraFrame(sessionId, dataUrl);
+      if (analysis && analysis.faceDetected) {
+        await interviewService.postCameraFrame(sessionId, analysis);
+      }
+    })();
+  }, [sessionId]);
+
+  async function startVideoSession() {
+    if (!currentQuestion || voiceStarted) return;
+    setCameraError(null);
+    const ok = await setupCamera();
+    if (!ok) return;
+    if (cameraStreamRef.current) startRecording(cameraStreamRef.current);
+    frameIntervalRef.current = setInterval(captureAndAnalyzeFrame, FRAME_ANALYSIS_INTERVAL_MS);
+    setVoiceStarted(true);
+    setVoiceError(null);
+    networkErrorStreakRef.current = 0;
+    sessionActiveRef.current = true;
+    speakAndListen(currentQuestion);
+  }
+
+  // Voice input (SpeechRecognition) backs the Q&A loop in BOTH Voice and
+  // Video mode — check support for either as soon as either is selected.
+  useEffect(() => {
+    if (effectiveMode !== "voice" && effectiveMode !== "video") return;
+    if (!isSpeechRecognitionSupported()) {
+      setVoiceUnsupported(t("web:aiCoach.voiceUnsupported", { defaultValue: "Voice input isn't supported in this browser yet — try Chrome or Edge." }));
+    }
+  }, [effectiveMode, t]);
+
+  // Tear down mic/speech/camera on navigating away.
   useEffect(() => {
     return () => {
       sessionActiveRef.current = false;
       recognitionRef.current?.abort();
       ttsService.cancel();
       clearSilenceTimer();
+      if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
+      cameraStreamRef.current?.getTracks().forEach((track) => track.stop());
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        try {
+          mediaRecorderRef.current.stop();
+        } catch {
+          // already stopped/unavailable
+        }
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -431,31 +581,6 @@ export default function LiveInterviewSessionPage() {
                   </span>
                 )}
               </div>
-
-              {effectiveMode === null && (
-                <div className="flex flex-col items-start gap-3 rounded-card border border-border bg-surface-2 p-6">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
-                    <EvaIcon name="video-outline" size={20} />
-                  </span>
-                  <h2 className="font-semibold text-primary">
-                    {t("web:practice.interview.videoUnavailableTitle", { defaultValue: "Video mode isn't available in the browser yet" })}
-                  </h2>
-                  <p className="text-sm text-hint">
-                    {t("web:practice.interview.videoUnavailableBody", {
-                      defaultValue:
-                        "Live on-camera analysis relies on deep native camera and AI tooling that only exists in the mobile app. You can continue this exact session in Voice or Text mode right here instead, or open the mobile app for the full video experience.",
-                    })}
-                  </p>
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => setEffectiveMode("voice")}>
-                      {t("web:practice.interview.continueInVoice", { defaultValue: "Continue in Voice mode" })}
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setEffectiveMode("text")}>
-                      {t("web:practice.interview.continueInText", { defaultValue: "Continue in Text mode" })}
-                    </Button>
-                  </div>
-                </div>
-              )}
 
               {effectiveMode !== null && (
                 <>
@@ -535,6 +660,94 @@ export default function LiveInterviewSessionPage() {
                           <p className="text-sm font-medium text-hint">
                             {!voiceStarted
                               ? t("web:practice.interview.tapToStart", { defaultValue: "Tap to start the interview" })
+                              : voicePhase === "listening"
+                              ? liveTranscript || t("web:aiCoach.voiceStatusListeningPrompt", { defaultValue: "I'm listening — go ahead" })
+                              : voicePhase === "thinking"
+                              ? t("web:aiCoach.voiceStatusThinking", { defaultValue: "Thinking…" })
+                              : voicePhase === "speaking"
+                              ? t("web:aiCoach.voiceStatusSpeaking", { defaultValue: "Speaking… tap to interrupt" })
+                              : ""}
+                          </p>
+                          {currentQuestion && <p className="max-w-md text-center text-primary">{currentQuestion}</p>}
+                          {voiceError && <p className="max-w-md text-center text-sm text-danger">{voiceError}</p>}
+                          <Button variant="outline" size="sm" onClick={onEnd} disabled={isEnding}>
+                            {isEnding
+                              ? t("web:practice.interview.ending", { defaultValue: "Ending…" })
+                              : t("web:practice.interview.endInterview", { defaultValue: "End interview" })}
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {effectiveMode === "video" && (
+                    <div className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface-2 p-8">
+                      {voiceUnsupported || cameraError ? (
+                        <>
+                          <p className="text-center text-sm text-hint">{voiceUnsupported || cameraError}</p>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setCameraError(null);
+                                setEffectiveMode("voice");
+                              }}
+                            >
+                              {t("web:practice.interview.continueInVoice", { defaultValue: "Continue in Voice mode" })}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setCameraError(null);
+                                setEffectiveMode("text");
+                              }}
+                            >
+                              {t("web:practice.interview.continueInText", { defaultValue: "Continue in Text mode" })}
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="relative w-full max-w-sm overflow-hidden rounded-card bg-black">
+                            <video
+                              ref={cameraVideoRef}
+                              muted
+                              playsInline
+                              autoPlay
+                              className="aspect-video w-full object-cover"
+                              style={{ transform: "scaleX(-1)" }}
+                            />
+                            {voiceStarted && (
+                              <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-pill bg-black/60 px-2 py-1 text-xs font-medium text-white">
+                                <span className="h-2 w-2 rounded-full bg-danger animate-pulse" />
+                                {t("web:practice.interview.recording", { defaultValue: "Recording" })}
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (!voiceStarted) void startVideoSession();
+                              else if (voicePhase === "speaking") interruptVoice();
+                            }}
+                            aria-label={
+                              voicePhase === "speaking"
+                                ? t("web:aiCoach.stopSpeaking", { defaultValue: "Stop speaking" })
+                                : t("web:practice.interview.startInterview", { defaultValue: "Start interview" })
+                            }
+                            className="relative flex h-24 w-24 items-center justify-center rounded-full shadow-xl transition"
+                            style={{ background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)" }}
+                          >
+                            <EvaIcon
+                              name={voicePhase === "listening" ? "mic-outline" : voicePhase === "speaking" ? "close-circle-outline" : "play-circle-outline"}
+                              size={28}
+                              className="text-white drop-shadow"
+                            />
+                          </button>
+                          <p className="text-sm font-medium text-hint">
+                            {!voiceStarted
+                              ? t("web:practice.interview.tapToStartVideo", { defaultValue: "Tap to turn on your camera and start the interview" })
                               : voicePhase === "listening"
                               ? liveTranscript || t("web:aiCoach.voiceStatusListeningPrompt", { defaultValue: "I'm listening — go ahead" })
                               : voicePhase === "thinking"
