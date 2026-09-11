@@ -120,11 +120,16 @@ export default function CareerDnaPage() {
                 </p>
               </div>
 
+              {/* BUG FIX (product report: "The career DNAs text are not
+                  supposed to be in blue color. They should be black and
+                  aligned left"): text-brand (blue) + text-center swapped
+                  for text-primary (black) + text-left, same as the
+                  narrative paragraph above it. */}
               {profile.traits && Object.keys(profile.traits).length > 0 && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {Object.entries(profile.traits).map(([trait, value]) => (
-                    <div key={trait} className="rounded-card border border-border bg-surface-2 p-4 text-center">
-                      <p className="text-lg font-bold text-brand">{String(value)}</p>
+                    <div key={trait} className="rounded-card border border-border bg-surface-2 p-4 text-left">
+                      <p className="text-lg font-bold text-primary">{String(value)}</p>
                       <p className="mt-1 text-xs capitalize text-hint">{trait.replace(/_/g, " ")}</p>
                     </div>
                   ))}
