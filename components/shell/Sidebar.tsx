@@ -10,6 +10,8 @@ import { primaryNav, secondaryNav, isNavGroup, type NavItem } from "@/lib/naviga
 import { SUPPORTED_LANGUAGES, LOCALE_STORAGE_KEY, getLanguageNativeLabel } from "@/i18n/config";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { getMoreBadges, badgeCountFor, type MoreBadges } from "@/lib/moreBadges";
+import { getSharedWithMeBadgeCount } from "@/lib/sharesService";
+import { onForegroundMessage } from "@/lib/messaging";
 
 /** Small unread-count pill — mirrors mobile MainDrawer.tsx's `styles.navBadge`
  * (rounded, brand-colored background, white text) and its `item.badge > 9 ?
@@ -185,18 +187,59 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   // intermediate render, every time, instead of waiting for the provider's
   // own "fully ready" signal. Gating on `!loading` too defers the fetch to
   // the steady-state render, after the provider has finished initializing.
+  // Fetches the combined badge snapshot: getMoreBadges() covers Job Alerts/
+  // Career Events/Settings (all from the one GET /api/v1/more/badges round
+  // trip), and getSharedWithMeBadgeCount() is a SEPARATE fetch layered on
+  // top for the Shared with Me row (product request: badge it despite
+  // neither mobile parity nor /more/badges backing it — see
+  // lib/navigation.ts's and lib/moreBadges.ts's comments on that field).
+  // Both results merge into the one `badges` state object so
+  // badgeCountFor/NavLink's rendering path stays a single code path
+  // regardless of which endpoint actually produced a given count.
+  function fetchBadges(onResult: (badges: MoreBadges) => void) {
+    Promise.all([getMoreBadges(), getSharedWithMeBadgeCount()]).then(([moreBadges, sharedWithMeUnreadCount]) => {
+      onResult({ ...moreBadges, sharedWithMeUnreadCount });
+    });
+  }
+
   useEffect(() => {
     if (loading || !firebaseUser) {
       setBadges(null);
       return;
     }
     let cancelled = false;
-    getMoreBadges().then((result) => {
+    fetchBadges((result) => {
       if (!cancelled) setBadges(result);
     });
     return () => {
       cancelled = true;
     };
+  }, [firebaseUser, loading]);
+
+  // Live-updates the badges (including Shared with Me) when a foreground
+  // push arrives, mirroring NotificationBell.tsx's identical
+  // onForegroundMessage wiring (see that component for the full writeup) —
+  // otherwise a new share/connection request/job alert etc. would only
+  // show up here after a manual page refresh. Same !loading && firebaseUser
+  // gate as the fetch-on-mount effect above, for the same 401-on-refresh
+  // reason (see this file's BUG FIX comment further up).
+  useEffect(() => {
+    if (loading || !firebaseUser) return;
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+    onForegroundMessage(() => {
+      fetchBadges((result) => {
+        if (!cancelled) setBadges(result);
+      });
+    }).then((unsub) => {
+      if (cancelled) unsub();
+      else unsubscribe = unsub;
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firebaseUser, loading]);
 
   return (
