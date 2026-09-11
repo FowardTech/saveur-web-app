@@ -14,6 +14,8 @@ import { guessCompanyLogoUrl } from "@/lib/companyData";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { JobFitAnalysis } from "@/components/jobAlerts/JobFitAnalysis";
 import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
+import { DidYouApplyModal } from "@/components/jobAlerts/DidYouApplyModal";
+import { useApplyTracking } from "@/hooks/useApplyTracking";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 // Web counterpart to Saveur/src/more/JobAlertDetails.tsx — the landing
@@ -92,12 +94,36 @@ export default function JobAlertDetailsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading, alertId]);
 
+  // Mobile opens the real application page in-app via WebViewScreen, which
+  // can auto-detect a submitted application because a native WebView is a
+  // component the app fully controls. A window.open()'d tab is a separate,
+  // cross-origin browsing context with none of that visibility — see
+  // hooks/useApplyTracking.ts's own header comment for the full reasoning
+  // and why its return-to-tab "did you apply?" prompt is the honest web
+  // equivalent, not a gap. Skips arming that prompt entirely once this
+  // alert is already marked applied (nothing left to ask about).
+  const applyTracking = useApplyTracking({
+    company: alert?.company ?? "",
+    role: alert?.title ?? "",
+    location: alert?.location,
+    applyUrl: alert?.apply_url,
+    companyLogoUrl: alert?.company_logo_url,
+    alreadyApplied: alert?.applied,
+  });
+
   function onApply() {
     if (!alert?.apply_url) return;
-    // Mobile opens the real application page in-app via WebViewScreen with
-    // application-submission tracking; this is a web app, so the natural
-    // equivalent is just a new tab — no in-app WebView to build.
-    window.open(alert.apply_url, "_blank", "noopener,noreferrer");
+    applyTracking.openApply();
+  }
+
+  function onConfirmApplied() {
+    applyTracking.confirmApplied().then((succeeded) => {
+      if (!succeeded) return;
+      // Local sync so the "Applied" badge/reopen-listing copy shows
+      // immediately without waiting on a full refetch, and so a second
+      // apply-click this same visit doesn't re-arm the prompt.
+      setAlert((prev) => (prev ? { ...prev, applied: true } : prev));
+    });
   }
 
   // Web counterpart of mobile's jobShareService.shareJob (share-outline
@@ -291,6 +317,17 @@ export default function JobAlertDetailsPage() {
             onClose={() => setShareModalOpen(false)}
             contentType="job"
             contentId={alert.id}
+          />
+        )}
+        {alert && (
+          <DidYouApplyModal
+            open={applyTracking.promptOpen}
+            company={alert.company}
+            role={alert.title}
+            isSubmitting={applyTracking.isSubmitting}
+            feedback={applyTracking.feedback}
+            onConfirm={onConfirmApplied}
+            onDismiss={applyTracking.dismissPrompt}
           />
         )}
       </AppShell>

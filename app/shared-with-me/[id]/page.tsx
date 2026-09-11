@@ -15,6 +15,8 @@ import * as sharesService from "@/lib/sharesService";
 import type { SharedContentDetailProps } from "@/lib/sharesService";
 import type { ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { DidYouApplyModal } from "@/components/jobAlerts/DidYouApplyModal";
+import { useApplyTracking } from "@/hooks/useApplyTracking";
 
 // Web counterpart to Saveur/src/more/SharedContentDetail.tsx — viewer for
 // one piece of content another Saveur user shared. Reached from
@@ -119,6 +121,20 @@ export default function SharedContentDetailPage() {
 
   const content = (share?.content ?? {}) as SharedContentShape;
   const hasVideo = share?.contentType === "video" && !!content.video_url;
+
+  // Same return-to-tab "did you apply?" tracking as
+  // app/job-alerts/[id]/page.tsx's own onApply — see
+  // hooks/useApplyTracking.ts's header comment for why this (not iframe/
+  // auto-detection) is the honest web equivalent of mobile's WebViewScreen.
+  // A shared job has no "applied" state of its own to check first (it isn't
+  // this user's own tracked alert), so no `alreadyApplied` guard here.
+  const applyTracking = useApplyTracking({
+    company: content.company ?? "",
+    role: content.title ?? "",
+    location: content.location,
+    applyUrl: content.apply_url,
+    companyLogoUrl: content.company_logo_url,
+  });
   // Same "still generating" guard as the practice session detail page and
   // mobile's SharedContentDetail.tsx — a feedback/video share opened while
   // feedback.py's background generation job is still running reports
@@ -187,7 +203,7 @@ export default function SharedContentDetailPage() {
                     </div>
                   </div>
                   {content.apply_url ? (
-                    <Button onClick={() => window.open(content.apply_url, "_blank", "noopener,noreferrer")} className="w-full justify-center">
+                    <Button onClick={applyTracking.openApply} className="w-full justify-center">
                       {t("web:sharedWithMe.detail.openPosting", { defaultValue: "Open posting" })}
                       <EvaIcon name="external-link-outline" size={16} />
                     </Button>
@@ -268,6 +284,17 @@ export default function SharedContentDetailPage() {
             </>
           )}
         </div>
+        {share?.contentType === "job" && (
+          <DidYouApplyModal
+            open={applyTracking.promptOpen}
+            company={content.company ?? ""}
+            role={content.title ?? ""}
+            isSubmitting={applyTracking.isSubmitting}
+            feedback={applyTracking.feedback}
+            onConfirm={applyTracking.confirmApplied}
+            onDismiss={applyTracking.dismissPrompt}
+          />
+        )}
       </AppShell>
     </RequireAuth>
   );
