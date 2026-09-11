@@ -165,12 +165,27 @@ export async function analyzeCameraFrame(sessionId: string | number, imageDataUr
  * frame into the SAME CameraAnalysisFrame timeline mobile's on-device
  * detector writes to, so GET /api/v1/feedback/session/:id/replay's
  * camera_points and camera-summary work identically for a web session.
- * Best-effort — a dropped sample is never worth surfacing to the user. */
-export async function postCameraFrame(sessionId: string | number, analysis: CameraFrameAnalysis): Promise<void> {
+ * Best-effort — a dropped sample is never worth surfacing to the user.
+ *
+ * BUG FIX (product report: "why am I not seeing eye contact/flagged
+ * moments... just like mobile"): this used to send `ts: Date.now()`, an
+ * absolute ~13-digit epoch value — the exact same overflow bug mobile's
+ * videoAnalysisService.ts already found and fixed once (see that file's own
+ * comment): the backend's `t_ms` column is a Postgres INTEGER (max ~2.1
+ * billion), and app/api/feedback.py's replay()/aggregate() both assume `ts`
+ * is SESSION-RELATIVE milliseconds, same semantics as the transcript's own
+ * `t_ms`. Every single camera-frame POST from web has been silently
+ * failing since this was first written (caught by this function's own
+ * try/catch, so nothing ever surfaced) — meaning zero CameraAnalysisFrame
+ * rows were ever actually created from a web session, which is the real
+ * root cause of "I'm not seeing eye contact / flagged moments" here.
+ * `tsMs` must be milliseconds elapsed since recording started, not an
+ * epoch — see the interview page's `recordingStartRef`. */
+export async function postCameraFrame(sessionId: string | number, analysis: CameraFrameAnalysis, tsMs: number): Promise<void> {
   try {
     await apiClient.post(`/api/v1/feedback/session/${sessionId}/camera-frame`, {
       frames: [{
-        ts: Date.now(),
+        ts: Math.max(0, Math.round(tsMs)),
         eye_contact: analysis.eyeContact,
         smile: analysis.smile,
         head_yaw: analysis.headYaw,

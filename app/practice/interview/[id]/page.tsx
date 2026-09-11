@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import type { ApiError } from "@/lib/apiClient";
 import * as interviewService from "@/lib/interviewService";
-import type { InterviewSessionDetail } from "@/lib/interviewService";
+import type { InterviewSessionDetail, CameraFrameAnalysis } from "@/lib/interviewService";
 import {
   getSpeechRecognitionCtor,
   isSpeechRecognitionSupported,
@@ -122,6 +122,22 @@ export default function LiveInterviewSessionPage() {
   // --- Video mode --- (Voice mode's exact Q&A state machine above, plus
   // real camera capture/recording/frame-analysis on top)
   const [cameraError, setCameraError] = useState<string | null>(null);
+  // Latest periodic AI-vision read (product report: "why am I not seeing
+  // the features where it checks my eye contact, if i am away from the
+  // camera etc, flagged moments etc. just like the way it does in the
+  // mobile app") — drives the live status pills rendered in the floating
+  // header below. Updated once per captureAndAnalyzeFrame call
+  // (FRAME_ANALYSIS_INTERVAL_MS apart) — an honest, periodic AI-vision read
+  // rather than mobile's continuous multiple-times-a-second on-device ML
+  // Kit detection, since each sample here is a real billed backend call.
+  const [liveCameraAnalysis, setLiveCameraAnalysis] = useState<CameraFrameAnalysis | null>(null);
+  // True if MediaRecorder construction/start failed for this browser (e.g.
+  // no supported video codec at all) — surfaced explicitly instead of
+  // failing silently like before (product report: "why is the video not
+  // recording... there is no video replay"), so the candidate finds out
+  // DURING the interview that this session won't have a replay, rather
+  // than being surprised afterward.
+  const [recordingUnavailable, setRecordingUnavailable] = useState(false);
   const cameraVideoRef = useRef<HTMLVideoElement | null>(null);
   const cameraStreamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -447,12 +463,36 @@ export default function LiveInterviewSessionPage() {
     }
   }, [t]);
 
+  // BUG FIX (product report: "why is the video not recording in the web
+  // version because... there is no video replay"): this used to try
+  // exactly ONE codec string ("video/webm;codecs=vp8,opus") plus a bare
+  // "video/webm" fallback — both from the WebM family, which desktop
+  // Safari's MediaRecorder doesn't support in ANY form (no WebM demuxer at
+  // all), so a Safari candidate's recording silently never started; the
+  // failure was swallowed by the catch below with no visible sign anything
+  // was wrong until they went looking for a replay that was never made.
+  // Now tries a real ordered list spanning both the Chromium/Firefox
+  // (WebM/VP9/VP8) and Safari (MP4/H.264) codec families, and — the other
+  // half of the fix — actually surfaces it via recordingUnavailable if
+  // every option fails, instead of failing invisibly.
+  const RECORDING_MIME_CANDIDATES = [
+    "video/webm;codecs=vp9,opus",
+    "video/webm;codecs=vp8,opus",
+    "video/webm",
+    "video/mp4;codecs=h264,aac",
+    "video/mp4",
+  ];
+
   const startRecording = useCallback((stream: MediaStream) => {
     recordedChunksRef.current = [];
-    const candidateType = "video/webm;codecs=vp8,opus";
-    const mimeType = typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(candidateType) ? candidateType : "video/webm";
+    setRecordingUnavailable(false);
+    if (typeof MediaRecorder === "undefined") {
+      setRecordingUnavailable(true);
+      return;
+    }
+    const supportedType = RECORDING_MIME_CANDIDATES.find((c) => MediaRecorder.isTypeSupported(c));
     try {
-      const recorder = typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(mimeType) ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      const recorder = supportedType ? new MediaRecorder(stream, { mimeType: supportedType }) : new MediaRecorder(stream);
       recorder.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
       };
@@ -460,15 +500,23 @@ export default function LiveInterviewSessionPage() {
       mediaRecorderRef.current = recorder;
       recordingStartRef.current = Date.now();
     } catch {
-      // Recording isn't available in this browser — the interview still
-      // runs fine, it just won't have a replay video afterward.
+      // Recording genuinely isn't available in this browser — the
+      // interview still runs fine, it just won't have a replay video
+      // afterward. See recordingUnavailable's own comment above for why
+      // this is now shown to the user instead of failing silently.
+      setRecordingUnavailable(true);
     }
   }, []);
 
   // One webcam snapshot -> real AI-vision analysis -> relayed into the same
-  // CameraAnalysisFrame timeline mobile's on-device detector writes to.
-  // Best-effort throughout: a missed/failed sample must never interrupt the
-  // live interview.
+  // CameraAnalysisFrame timeline mobile's on-device detector writes to, AND
+  // kept in liveCameraAnalysis so the floating header can show the same
+  // kind of live eye-contact/smile/"can't see you" status mobile's
+  // liveIndicatorRow shows (product report: "why am I not seeing the
+  // features where it checks my eye contact, if i am away from the camera
+  // etc... just like the way it does in the mobile app"). Best-effort
+  // throughout: a missed/failed sample must never interrupt the live
+  // interview.
   const captureAndAnalyzeFrame = useCallback(() => {
     if (!sessionId) return;
     const video = cameraVideoRef.current;
@@ -483,8 +531,17 @@ export default function LiveInterviewSessionPage() {
     const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
     void (async () => {
       const analysis = await interviewService.analyzeCameraFrame(sessionId, dataUrl);
-      if (analysis && analysis.faceDetected) {
-        await interviewService.postCameraFrame(sessionId, analysis);
+      if (!analysis) return;
+      setLiveCameraAnalysis(analysis);
+      // Only a face-visible sample is persisted, matching mobile's own
+      // on-device detector (videoAnalysisService.ts's onFacesDetected
+      // returns early on faces.length === 0 without buffering anything) —
+      // a "can't see you" moment only ever drives the LIVE pill here, it's
+      // never written to the CameraAnalysisFrame timeline on either
+      // platform.
+      if (analysis.faceDetected) {
+        const tsMs = recordingStartRef.current != null ? Date.now() - recordingStartRef.current : 0;
+        await interviewService.postCameraFrame(sessionId, analysis, tsMs);
       }
     })();
   }, [sessionId]);
@@ -736,19 +793,44 @@ export default function LiveInterviewSessionPage() {
                           />
 
                           {/* Floating glass header — recording indicator +
+                              live eye-contact/smile/"can't see you" status +
                               countdown, same idea as mobile's
-                              floatingHeaderRow/liveIndicatorRow. */}
-                          <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-3 p-4">
-                            <div>
+                              floatingHeaderRow/liveIndicatorRow (product
+                              report: "why am I not seeing the features
+                              where it checks my eye contact, if i am away
+                              from the camera etc... just like the way it
+                              does in the mobile app"). */}
+                          <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4">
+                            <div className="flex flex-wrap items-center gap-2">
                               {voiceStarted && (
                                 <span className="inline-flex items-center gap-1.5 rounded-pill bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
                                   <span className="h-2 w-2 rounded-full bg-danger animate-pulse" />
                                   {t("web:practice.interview.recording", { defaultValue: "Recording" })}
                                 </span>
                               )}
+                              {voiceStarted && liveCameraAnalysis && (
+                                liveCameraAnalysis.faceDetected ? (
+                                  <>
+                                    <span className="inline-flex items-center gap-1 rounded-pill bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
+                                      {liveCameraAnalysis.eyeContact
+                                        ? t("web:practice.interview.liveEyeContact", { defaultValue: "👀 Eye contact" })
+                                        : t("web:practice.interview.liveLookAtCamera", { defaultValue: "Look at camera" })}
+                                    </span>
+                                    {liveCameraAnalysis.smile && (
+                                      <span className="inline-flex items-center gap-1 rounded-pill bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
+                                        {t("web:practice.interview.liveSmiling", { defaultValue: "😊 Smiling" })}
+                                      </span>
+                                    )}
+                                  </>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 rounded-pill bg-tint-orange/80 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
+                                    {t("web:practice.interview.liveCantSeeYou", { defaultValue: "😕 Can't see you" })}
+                                  </span>
+                                )
+                              )}
                             </div>
                             {remainingSeconds !== null && (
-                              <span className="inline-flex items-center gap-1.5 rounded-pill bg-black/50 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur">
+                              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-pill bg-black/50 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur">
                                 <EvaIcon name="clock-outline" size={14} />
                                 {formatClock(remainingSeconds)}
                               </span>
@@ -778,6 +860,13 @@ export default function LiveInterviewSessionPage() {
                               )}
                             </div>
                             {voiceError && <p className="max-w-md text-center text-xs text-tint-orange-text">{voiceError}</p>}
+                            {recordingUnavailable && (
+                              <p className="max-w-md text-center text-xs text-white/70">
+                                {t("web:practice.interview.recordingUnavailable", {
+                                  defaultValue: "This browser can't save a video recording — your interview is still running normally, but there won't be a replay for this session.",
+                                })}
+                              </p>
+                            )}
                           </div>
 
                           {/* Floating bottom controls — orb + End Interview,
