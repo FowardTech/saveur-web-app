@@ -580,22 +580,24 @@ export default function LearningPage() {
                     </span>
                   </div>
 
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant={isCourseComplete ? "outline" : "primary"}
-                    className="mt-4 w-full"
-                    onClick={() => {
-                      const qs = new URLSearchParams({ topic: course.title });
-                      router.push(`/learning/course/${encodeURIComponent(catalogCourseId)}?${qs.toString()}`);
-                    }}
-                  >
-                    {isCourseComplete
-                      ? t("web:learning.review", { defaultValue: "Review" })
-                      : completedModules > 0
-                      ? t("web:learning.continue", { defaultValue: "Continue" })
-                      : t("web:learning.start", { defaultValue: "Start" })}
-                  </Button>
+                  <div className="mt-4 flex justify-end">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="w-auto !border-black !bg-transparent !text-black hover:!bg-black/5"
+                      onClick={() => {
+                        const qs = new URLSearchParams({ topic: course.title });
+                        router.push(`/learning/course/${encodeURIComponent(catalogCourseId)}?${qs.toString()}`);
+                      }}
+                    >
+                      {isCourseComplete
+                        ? t("web:learning.review", { defaultValue: "Review" })
+                        : completedModules > 0
+                        ? t("web:learning.continue", { defaultValue: "Continue" })
+                        : t("web:learning.start", { defaultValue: "Start" })}
+                    </Button>
+                  </div>
                 </div>
               );
             })}
