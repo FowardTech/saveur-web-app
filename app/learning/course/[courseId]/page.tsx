@@ -27,10 +27,14 @@ import {
   generateVisual,
   issueCertificateIfEligible,
   isLLMUnavailable,
+  getModuleVideos,
+  setVideoSaved,
   type CourseLevel,
   type CourseModule,
   type Certificate,
+  type CourseVideo,
 } from "@/lib/learningService";
+import { InAppVideoPlayer } from "@/components/learning/InAppVideoPlayer";
 
 // Real module-by-module course viewer — web port of Saveur/src/more/
 // CourseSession.tsx, replacing the "that full course viewer is coming to
@@ -95,6 +99,16 @@ function CourseSessionInner() {
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isCheckingAnswer, setIsCheckingAnswer] = useState(false);
+
+  // Recommended Videos (product report: "What about the recommended videos
+  // in the learning modules. You did not implement that too in the web
+  // app") — get-or-fetch per module, mirrors mobile's CourseSession.tsx
+  // videosByModule cache exactly. Guarded by the `!== undefined` check
+  // (rather than listing videosByModule itself as an effect dependency) so
+  // revisiting an already-fetched module via Previous/Next never re-runs
+  // the search.
+  const [videosByModule, setVideosByModule] = useState<Record<number, CourseVideo[]>>({});
+  const [playerVideo, setPlayerVideo] = useState<CourseVideo | null>(null);
 
   // Resume where the learner left off, same as mobile's CourseSession —
   // reads real GET /api/v1/learning/progress instead of always restarting
@@ -209,6 +223,31 @@ function CourseSessionInner() {
 
   const currentModule = moduleCache[moduleIndex];
   const currentImage = imageCache[moduleIndex];
+
+  useEffect(() => {
+    if (!currentModule || videosByModule[moduleIndex] !== undefined) return;
+    getModuleVideos(courseId, moduleIndex, topic, currentModule.title, language).then((videos) => {
+      setVideosByModule((prev) => ({ ...prev, [moduleIndex]: videos }));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentModule, moduleIndex, courseId, topic]);
+  const currentVideos = videosByModule[moduleIndex];
+
+  async function onToggleSaveVideo(video: CourseVideo) {
+    const nextSaved = !video.isSaved;
+    setVideosByModule((prev) => ({
+      ...prev,
+      [moduleIndex]: (prev[moduleIndex] ?? []).map((v) => (v.videoId === video.videoId ? { ...v, isSaved: nextSaved } : v)),
+    }));
+    const ok = await setVideoSaved(video, nextSaved, { topic, moduleTitle: currentModule?.title, courseId });
+    if (!ok) {
+      // Revert the optimistic toggle on failure.
+      setVideosByModule((prev) => ({
+        ...prev,
+        [moduleIndex]: (prev[moduleIndex] ?? []).map((v) => (v.videoId === video.videoId ? { ...v, isSaved: !nextSaved } : v)),
+      }));
+    }
+  }
 
   async function onCheckAnswer() {
     if (!answer.trim() || !currentModule?.checkQuestion || isCheckingAnswer) return;
@@ -492,6 +531,41 @@ function CourseSessionInner() {
             </div>
           ) : null}
 
+          {currentVideos && currentVideos.length > 0 && (
+            <div className="mt-2">
+              <h3 className="mb-3 font-semibold text-primary">
+                {t("web:learning.session.recommendedVideos", { defaultValue: "Recommended Videos" })}
+              </h3>
+              <div className="flex gap-3 overflow-x-auto pb-1">
+                {currentVideos.map((video) => (
+                  <div key={video.videoId} className="w-56 shrink-0 overflow-hidden rounded-card border border-border bg-surface-2">
+                    <button type="button" onClick={() => setPlayerVideo(video)} className="relative block w-full">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={video.thumbnailUrl} alt="" className="h-32 w-full object-cover" />
+                      <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <EvaIcon name="play-circle-outline" size={32} className="text-white drop-shadow" />
+                      </span>
+                    </button>
+                    <div className="flex items-start gap-2 p-2.5">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-primary">{video.title}</p>
+                        {video.channel && <p className="truncate text-xs text-hint">{video.channel}</p>}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => onToggleSaveVideo(video)}
+                        aria-label={video.isSaved ? "Unsave video" : "Save video"}
+                        className={`shrink-0 ${video.isSaved ? "text-warning-text" : "text-hint"}`}
+                      >
+                        <EvaIcon name="star-outline" size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mt-4 flex items-center justify-between gap-3">
             <Button variant="ghost" disabled={moduleIndex === 0} onClick={onPrevious}>
               {t("web:learning.session.previous", { defaultValue: "Previous" })}
@@ -504,6 +578,11 @@ function CourseSessionInner() {
           </div>
         </>
       ) : null}
+      <InAppVideoPlayer
+        video={playerVideo}
+        context={{ topic, moduleTitle: currentModule?.title, courseId }}
+        onClose={() => setPlayerVideo(null)}
+      />
     </div>
   );
 }

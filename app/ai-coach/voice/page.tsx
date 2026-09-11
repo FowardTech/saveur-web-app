@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -16,6 +17,8 @@ import {
   type MinimalSpeechRecognition,
 } from "@/lib/speechRecognition";
 import * as ttsService from "@/lib/ttsService";
+import { isAffirmative } from "@/lib/affirmative";
+import { actionTitle, runSuggestedAction, type SuggestedActionId } from "@/lib/suggestedActions";
 
 // Dedicated, full-screen Voice Coach — the web counterpart to
 // Saveur/src/messages/VoiceCoachView.tsx, reached from app/ai-coach/page.tsx's
@@ -82,6 +85,7 @@ const GREETING_TEXT =
 
 export default function VoiceCoachPage() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [liveTranscript, setLiveTranscript] = useState("");
@@ -111,6 +115,14 @@ export default function VoiceCoachPage() {
   // and show a specific, actionable message instead of retrying forever.
   const networkErrorStreakRef = useRef(0);
   const NETWORK_ERROR_LIMIT = 3;
+  // Set right after the coach speaks a "want me to take you there?" offer;
+  // checked (and always cleared) at the start of the very next turn — web
+  // port of mobile's VoiceCoachView.tsx pendingActionRef. This was entirely
+  // missing on web before (product report: "The AI career coach navigating
+  // to screens is not working on web") — the voice screen never even read
+  // `suggested_action` off the advice response, so a spoken "take me there"
+  // request had nothing to act on.
+  const pendingActionRef = useRef<SuggestedActionId | null>(null);
 
   useEffect(() => {
     phaseRef.current = phase;
@@ -265,20 +277,60 @@ export default function VoiceCoachPage() {
         return;
       }
       setErrorMsg(null);
-      setHistory((prev) => [...prev, { role: "user", text: trimmed }]);
+
+      // Resolve any pending "want me to take you there?" offer from the
+      // previous turn before treating this as a fresh coaching question —
+      // a plain "yes" here should navigate, not get sent to the LLM.
+      const pendingAction = pendingActionRef.current;
+      pendingActionRef.current = null;
+      if (pendingAction) {
+        setHistory((prev) => [...prev, { role: "user", text: trimmed }]);
+        if (isAffirmative(trimmed, i18n.language)) {
+          const confirmLine = t("web:aiCoach.voiceActionConfirmLine", { defaultValue: "Great, taking you there now." });
+          setLastCoachLine(confirmLine);
+          setHistory((prev) => [...prev, { role: "coach", text: confirmLine }]);
+          setPhase("speaking");
+          sessionActiveRef.current = false; // about to navigate away
+          void ttsService.speak(confirmLine, { language: i18n.language }).then(() => {
+            runSuggestedAction(pendingAction, router).catch(() => {});
+          });
+          return;
+        }
+        // Anything other than a clear yes falls through and is sent as a
+        // normal turn below — treated as "no, but here's what I actually
+        // wanted to say" rather than a dead end.
+      } else {
+        setHistory((prev) => [...prev, { role: "user", text: trimmed }]);
+      }
 
       try {
         const requestHistory = historyRef.current.slice(-10).map((h) => ({ role: h.role, text: h.text }));
-        const data = await apiClient.post<{ reply: string }>("/api/v1/coach/advice", {
-          question: trimmed,
-          history: requestHistory,
-          persist_to_history: true,
-          mode: "voice",
-        });
+        const data = await apiClient.post<{ reply: string; suggested_action: SuggestedActionId | null }>(
+          "/api/v1/coach/advice",
+          {
+            question: trimmed,
+            history: requestHistory,
+            persist_to_history: true,
+            mode: "voice",
+          }
+        );
         if (!sessionActiveRef.current) return;
-        setHistory((prev) => [...prev, { role: "coach", text: data.reply }]);
-        setLastCoachLine(data.reply);
-        speakReply(data.reply);
+        let replyText = data.reply;
+        if (data.suggested_action) {
+          // Was a per-action hand-written full sentence on mobile originally
+          // — now one generic template naming the destination via the
+          // shared registry's title, same simplification mobile's own
+          // history already made.
+          const offer = t("web:aiCoach.voiceActionOfferGeneric", {
+            defaultValue: "Want me to take you to {{title}}?",
+            title: actionTitle(data.suggested_action),
+          });
+          replyText = `${replyText} ${offer}`;
+          pendingActionRef.current = data.suggested_action;
+        }
+        setHistory((prev) => [...prev, { role: "coach", text: replyText }]);
+        setLastCoachLine(replyText);
+        speakReply(replyText);
       } catch (err) {
         const apiErr = err as ApiError;
         if (apiErr.status === 402 || apiErr.status === 403) {
@@ -303,7 +355,7 @@ export default function VoiceCoachPage() {
         else setPhase("idle");
       }
     },
-    [speakReply, startRecognitionInternal, t]
+    [speakReply, startRecognitionInternal, t, i18n.language, router]
   );
 
   // Silence-based turn detection — the core of VoiceCoachView's model,

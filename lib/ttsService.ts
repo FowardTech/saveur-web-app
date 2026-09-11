@@ -40,15 +40,23 @@ function isStale(t: number): boolean {
   return t !== token;
 }
 
-// Force-resolves whichever playback promise (ElevenLabs <audio> or the
-// speechSynthesis fallback) is currently in flight. Set by whichever path is
-// actually playing right now; cleared once it settles on its own. This is
-// what lets cancel() (below) deterministically settle speak()'s returned
-// promise immediately — audioEl.pause() and window.speechSynthesis.cancel()
-// don't reliably fire an event a listener can depend on across browsers (in
-// particular, pause() fires no event at all), so callers that chain a
-// "resume listening" step off speak()'s promise need this to fire on demand.
-let currentSettle: (() => void) | null = null;
+// BUG FIX (product report: "the barge to interrupt is not working"). This
+// used to only exist INSIDE playAudioUrl/speakOnDevice, each managing its
+// own local `currentSettle` — meaning cancel() had nothing to force-resolve
+// during the window between speak() being called and audio ACTUALLY
+// starting to play (i.e. while the POST /api/v1/tts/speak request for the
+// audio_url is still in flight, which can easily take a couple of seconds
+// for a real ElevenLabs generation). Tapping "interrupt" during that window
+// bumped `token` (correctly making the eventual response stale, so audio
+// never started), but nothing settled the caller's pending speak() promise
+// right away — the UI stayed stuck showing "speaking" until that in-flight
+// network request finally resolved on its own, which looked and felt like
+// interrupt "not working" even though it technically caught up eventually.
+// Now a single resolver is registered for the ENTIRE top-level speak() call,
+// from the moment it starts, so cancel() can force-settle it instantly
+// regardless of which internal stage (fetching the URL, or already playing
+// it) is currently running.
+const pendingResolvers = new Set<() => void>();
 
 // audio_url from the backend is relative ("/api/v1/tts/audio/<id>.mp3") — the
 // API's own origin has to be prepended, same normalization as mobile's
@@ -57,9 +65,10 @@ function resolveAudioUrl(audioUrl: string): string {
   return /^https?:\/\//i.test(audioUrl) ? audioUrl : `${API_BASE_URL}${audioUrl}`;
 }
 
-function playAudioUrl(url: string, myToken: number): Promise<void> {
+function playAudioUrl(url: string, myToken: number, onSettle: () => void): Promise<void> {
   const audio = getAudioEl();
   if (!audio) {
+    onSettle();
     return Promise.reject(new Error("Audio playback isn't available in this environment."));
   }
 
@@ -68,12 +77,12 @@ function playAudioUrl(url: string, myToken: number): Promise<void> {
     const cleanup = () => {
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("error", onError);
-      if (currentSettle === finish) currentSettle = null;
     };
     const finish = () => {
       if (settled) return;
       settled = true;
       cleanup();
+      onSettle();
       resolve();
     };
     const onEnded = () => finish();
@@ -81,10 +90,10 @@ function playAudioUrl(url: string, myToken: number): Promise<void> {
       if (settled) return;
       settled = true;
       cleanup();
+      onSettle();
       reject(new Error("Audio playback failed."));
     };
 
-    currentSettle = finish;
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("error", onError);
     audio.src = url;
@@ -92,6 +101,7 @@ function playAudioUrl(url: string, myToken: number): Promise<void> {
       if (settled) return;
       settled = true;
       cleanup();
+      onSettle();
       reject(err instanceof Error ? err : new Error("Audio playback failed to start."));
     });
 
@@ -105,7 +115,7 @@ function playAudioUrl(url: string, myToken: number): Promise<void> {
   });
 }
 
-async function speakRemote(text: string, language: string | undefined, myToken: number): Promise<void> {
+async function speakRemote(text: string, language: string | undefined, myToken: number, onSettle: () => void): Promise<void> {
   const data = await apiClient.post<TtsSpeakResponse>(
     "/api/v1/tts/speak",
     language ? { text, language } : { text }
@@ -118,7 +128,7 @@ async function speakRemote(text: string, language: string | undefined, myToken: 
   }
   const url = resolveAudioUrl(data.audio_url);
   if (isStale(myToken)) return;
-  await playAudioUrl(url, myToken);
+  await playAudioUrl(url, myToken, onSettle);
 }
 
 /**
@@ -126,9 +136,10 @@ async function speakRemote(text: string, language: string | undefined, myToken: 
  * replaces as the primary path. Used whenever speakRemote() fails for any
  * reason.
  */
-function speakOnDevice(text: string, myToken: number): Promise<void> {
+function speakOnDevice(text: string, myToken: number, onSettle: () => void): Promise<void> {
   return new Promise<void>((resolve) => {
     if (typeof window === "undefined" || !isSpeechSynthesisSupported() || isStale(myToken)) {
+      onSettle();
       resolve();
       return;
     }
@@ -138,12 +149,11 @@ function speakOnDevice(text: string, myToken: number): Promise<void> {
     const finish = () => {
       if (settled) return;
       settled = true;
-      if (currentSettle === finish) currentSettle = null;
+      onSettle();
       resolve();
     };
     utterance.onend = finish;
     utterance.onerror = finish;
-    currentSettle = finish;
     window.speechSynthesis.speak(utterance);
   });
 }
@@ -162,31 +172,46 @@ function speakOnDevice(text: string, myToken: number): Promise<void> {
  */
 export async function speak(text: string, options?: { language?: string }): Promise<void> {
   const myToken = ++token;
-  try {
-    await speakRemote(text, options?.language, myToken);
-  } catch {
-    if (!isStale(myToken)) {
-      await speakOnDevice(text, myToken);
-    }
-  }
+  return new Promise<void>((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      pendingResolvers.delete(finish);
+      resolve();
+    };
+    // Registered BEFORE the network call even starts (see this module's own
+    // comment on pendingResolvers above) — this is the fix that lets
+    // cancel() interrupt instantly no matter which stage is in flight.
+    pendingResolvers.add(finish);
+
+    (async () => {
+      try {
+        await speakRemote(text, options?.language, myToken, finish);
+        finish();
+      } catch {
+        if (!isStale(myToken)) {
+          await speakOnDevice(text, myToken, finish);
+        }
+        finish();
+      }
+    })();
+  });
 }
 
 /**
  * Stop whatever's currently speaking (ElevenLabs <audio> playback or the
- * speechSynthesis fallback) and invalidate any in-flight /tts/speak request
- * that hasn't started playing yet — the equivalent of
+ * speechSynthesis fallback) and force-settle any speak() call currently in
+ * flight, immediately — whether it's already playing audio or still
+ * fetching the audio_url from the backend. This is the equivalent of
  * window.speechSynthesis.cancel() for this module, and the one to call from
  * interrupt/cleanup/end-session handlers instead of that directly.
- *
- * Also force-resolves speak()'s currently-pending promise right away, rather
- * than leaving a caller waiting on a browser event (audioEl.pause() in
- * particular never fires one) that would otherwise never come.
  */
 export function cancel(): void {
   token += 1;
-  const settle = currentSettle;
-  currentSettle = null;
-  if (settle) settle();
+  const resolvers = Array.from(pendingResolvers);
+  pendingResolvers.clear();
+  resolvers.forEach((resolve) => resolve());
   if (audioEl) {
     audioEl.pause();
     try {

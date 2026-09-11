@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -19,6 +20,8 @@ import {
   type MinimalSpeechRecognition,
 } from "@/lib/speechRecognition";
 import * as ttsService from "@/lib/ttsService";
+import { courseIdFor } from "@/lib/learningService";
+import { ACTION_META, actionTitle, runSuggestedAction, type SuggestedActionId } from "@/lib/suggestedActions";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py
 //   GET    /api/v1/coach/messages -> {messages: CoachMessage[]}
@@ -43,6 +46,7 @@ interface CoachMessage {
   role: "user" | "coach";
   text: string;
   suggested_course_topic?: string | null;
+  suggested_action?: SuggestedActionId | null;
   created_at?: string;
 }
 
@@ -56,6 +60,7 @@ const GREETING_MESSAGE: CoachMessage = {
 
 export default function AiCoachPage() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const { loading: authLoading } = useAuth();
   const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
   const [messages, setMessages] = useState<CoachMessage[]>([]);
@@ -143,6 +148,21 @@ export default function AiCoachPage() {
     setSpeaking(false);
   }
 
+  // Tapping a coach reply's "Learn more about X" chip — same shape as
+  // mobile's Chat.tsx onStartSuggestedCourse: any free-text topic works,
+  // not just a fixed catalog entry, via the same courseId/topic query-param
+  // convention app/learning/page.tsx's own "Learn Anything" flow uses.
+  const COACH_SUGGESTED_COURSE_MODULES = 5;
+  function onStartSuggestedCourse(topic: string) {
+    const courseId = courseIdFor(topic, "basic");
+    const qs = new URLSearchParams({ topic, totalModules: String(COACH_SUGGESTED_COURSE_MODULES) });
+    router.push(`/learning/course/${encodeURIComponent(courseId)}?${qs.toString()}`);
+  }
+
+  function onRunSuggestedAction(action: SuggestedActionId) {
+    runSuggestedAction(action, router).catch(() => {});
+  }
+
   async function sendQuestion(question: string, mode?: "voice") {
     if (!question || sending) return;
     setError(null);
@@ -155,10 +175,25 @@ export default function AiCoachPage() {
       const history = messages.slice(-10).map((m) => ({ role: m.role, text: m.text }));
       const body: Record<string, unknown> = { question, history, persist_to_history: true };
       if (mode) body.mode = mode;
-      const data = await apiClient.post<{ reply: string; suggested_course: string | null }>("/api/v1/coach/advice", body);
+      // BUG FIX (product report: "The AI career coach navigating to screens
+      // is not working on web"): `suggested_action` was already coming back
+      // from this exact endpoint the whole time — this page just never read
+      // it into state at all, so it silently vanished. See
+      // lib/suggestedActions.ts for the ~40-destination registry this now
+      // wires up (ported from mobile's services/suggestedActions.ts).
+      const data = await apiClient.post<{ reply: string; suggested_course: string | null; suggested_action: SuggestedActionId | null }>(
+        "/api/v1/coach/advice",
+        body
+      );
       setMessages((prev) => [
         ...prev,
-        { id: `local-reply-${Date.now()}`, role: "coach", text: data.reply, suggested_course_topic: data.suggested_course },
+        {
+          id: `local-reply-${Date.now()}`,
+          role: "coach",
+          text: data.reply,
+          suggested_course_topic: data.suggested_course,
+          suggested_action: data.suggested_action,
+        },
       ]);
       if (mode === "voice") {
         speakReply(data.reply);
@@ -327,10 +362,30 @@ export default function AiCoachPage() {
                           >
                             {m.text}
                           </div>
+                          {/* BUG FIX: these used to be plain, non-interactive
+                              <span> chips — tapping did nothing, which is
+                              exactly the "AI coach navigating to screens is
+                              not working" report. Both are now real
+                              navigation triggers. */}
                           {m.suggested_course_topic && (
-                            <span className="rounded-pill bg-tint-mint px-3 py-1 text-xs font-medium text-tint-mint-text">
+                            <button
+                              type="button"
+                              onClick={() => onStartSuggestedCourse(m.suggested_course_topic!)}
+                              className="inline-flex items-center gap-1.5 rounded-pill bg-tint-mint px-3 py-1 text-xs font-medium text-tint-mint-text transition hover:brightness-95"
+                            >
+                              <EvaIcon name="book-open-outline" size={13} />
                               {t("web:aiCoach.learnMoreAbout", { defaultValue: "Learn more about {{topic}}", topic: m.suggested_course_topic })}
-                            </span>
+                            </button>
+                          )}
+                          {!m.suggested_course_topic && m.suggested_action && ACTION_META[m.suggested_action] && (
+                            <button
+                              type="button"
+                              onClick={() => onRunSuggestedAction(m.suggested_action!)}
+                              className="inline-flex items-center gap-1.5 rounded-pill bg-tint-mint px-3 py-1 text-xs font-medium text-tint-mint-text transition hover:brightness-95"
+                            >
+                              <EvaIcon name={ACTION_META[m.suggested_action]!.icon} size={13} />
+                              {t("web:aiCoach.goToAction", { defaultValue: "Go to {{title}}", title: actionTitle(m.suggested_action) })}
+                            </button>
                           )}
                         </div>
                       </div>

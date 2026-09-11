@@ -442,3 +442,127 @@ export async function issueCertificateIfEligible(topic: string): Promise<Certifi
 export function isLLMUnavailable(err: unknown): boolean {
   return (err as ApiError | undefined)?.error === "llm_unavailable";
 }
+
+// ---------------------------------------------------------------------------
+// Recommended Videos — web port of mobile's CourseVideo/getModuleVideos etc.
+// (Saveur/services/learningService.ts). Product report: "What about the
+// recommended videos in the learning modules. You did not implement that
+// too in the web app" — confirmed a genuine gap (this section didn't exist
+// on web at all, not a bug): after each module, mobile auto-suggests real
+// matching YouTube videos (a real web search server-side, never an
+// ungrounded LLM guess — see Saveur-Backend/app/services/
+// learning_video_service.py's anti-hallucination gate) and plays them in an
+// in-app player. Real backend contract, confirmed against
+// Saveur-Backend/app/api/learning.py:
+//   POST /api/v1/learning/videos       -> {course_id, module_index, videos: Video[], language}
+//   POST /api/v1/learning/videos/watch -> {ok, video}  (telemetry only, never blocks playback)
+//   POST /api/v1/learning/videos/save  -> {ok, video}  (bookmark toggle)
+// GET /videos/saved and /videos/continue (mobile's Saved Videos list screen
+// + Home's Continue-Watching card) are deliberately NOT ported here — this
+// pass only covers the specific per-module recommendation feature reported
+// missing; a standalone Saved Videos screen doesn't exist on web yet at
+// all, same as several other mobile-only screens noted separately.
+export interface CourseVideo {
+  videoId: string;
+  title: string;
+  channel: string | null;
+  url: string;
+  embedUrl: string;
+  thumbnailUrl: string;
+  isSaved?: boolean;
+}
+
+interface CourseVideoWire {
+  video_id: string;
+  title: string;
+  channel: string | null;
+  url: string;
+  embed_url: string;
+  thumbnail_url: string;
+  is_saved?: boolean;
+}
+
+function fromVideoWire(w: CourseVideoWire): CourseVideo {
+  return {
+    videoId: w.video_id,
+    title: w.title,
+    channel: w.channel,
+    url: w.url,
+    embedUrl: w.embed_url,
+    thumbnailUrl: w.thumbnail_url,
+    isSaved: w.is_saved,
+  };
+}
+
+export interface CourseVideoContext {
+  topic?: string;
+  moduleTitle?: string;
+  courseId?: string;
+}
+
+/**
+ * Get-or-fetch — the first call for a given (course, module, language) runs
+ * a real search server-side and caches it; every later call (reopening the
+ * module, reviewing a finished course) just returns the same cached list
+ * instantly. Returns [] on any failure rather than throwing — a missing
+ * videos section is a much smaller loss than breaking the module itself,
+ * same tolerance generateVisual above already has.
+ */
+export async function getModuleVideos(
+  courseId: string,
+  moduleIndex: number,
+  topic: string,
+  moduleTitle: string,
+  language?: string
+): Promise<CourseVideo[]> {
+  try {
+    const data = await apiClient.post<{ videos?: CourseVideoWire[] }>("/api/v1/learning/videos", {
+      course_id: courseId,
+      module_index: moduleIndex,
+      topic,
+      module_title: moduleTitle,
+      language,
+    });
+    return (data.videos ?? []).map(fromVideoWire);
+  } catch {
+    return [];
+  }
+}
+
+function videoRequestBody(video: CourseVideo, context?: CourseVideoContext) {
+  return {
+    video_id: video.videoId,
+    title: video.title,
+    channel: video.channel,
+    url: video.url,
+    embed_url: video.embedUrl,
+    thumbnail_url: video.thumbnailUrl,
+    source: "youtube",
+    topic: context?.topic,
+    module_title: context?.moduleTitle,
+    course_id: context?.courseId,
+  };
+}
+
+/** Logs that this video was actually opened in the in-app player (product
+ * request item, already shipped for mobile: "the AI career coach [should]
+ * know the content of every video the user watches"). Fire-and-forget: a
+ * failure here should never block or interrupt playback. */
+export async function logVideoWatch(video: CourseVideo, context?: CourseVideoContext): Promise<void> {
+  try {
+    await apiClient.post("/api/v1/learning/videos/watch", videoRequestBody(video, context));
+  } catch {
+    // best-effort
+  }
+}
+
+/** Toggles the "Save Video" bookmark. Returns whether the call actually
+ * succeeded so the UI can revert an optimistic toggle on failure. */
+export async function setVideoSaved(video: CourseVideo, saved: boolean, context?: CourseVideoContext): Promise<boolean> {
+  try {
+    await apiClient.post("/api/v1/learning/videos/save", { ...videoRequestBody(video, context), saved });
+    return true;
+  } catch {
+    return false;
+  }
+}
