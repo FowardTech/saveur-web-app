@@ -18,6 +18,7 @@ import {
   describeSpeechError,
   type MinimalSpeechRecognition,
 } from "@/lib/speechRecognition";
+import * as ttsService from "@/lib/ttsService";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py
 //   GET    /api/v1/coach/messages -> {messages: CoachMessage[]}
@@ -54,7 +55,7 @@ const GREETING_MESSAGE: CoachMessage = {
 };
 
 export default function AiCoachPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { loading: authLoading } = useAuth();
   const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
   const [messages, setMessages] = useState<CoachMessage[]>([]);
@@ -67,12 +68,15 @@ export default function AiCoachPage() {
   // Voice mode state — a browser-native approximation of mobile's
   // VoiceCoachView.tsx, not a port of it. Mobile's voice pipeline uses
   // native iOS/Android speech recognition plus a cloud Deepgram/ElevenLabs
-  // duplex TTS service; there's no web equivalent of that pipeline without a
-  // much larger, separate infrastructure investment. What IS available
-  // cross-platform in a browser is the Web Speech API
-  // (SpeechRecognition/webkitSpeechRecognition for speech-to-text,
-  // window.speechSynthesis for text-to-speech), so that's what this uses —
-  // a simple push-to-talk mic button, not wake-word/continuous listening.
+  // duplex TTS service; there's no web equivalent of that full duplex
+  // pipeline without a much larger, separate infrastructure investment. For
+  // speech-to-text, what IS available cross-platform in a browser is the Web
+  // Speech API (SpeechRecognition/webkitSpeechRecognition), so that's what
+  // this uses — a simple push-to-talk mic button, not wake-word/continuous
+  // listening. For text-to-speech, replies ARE spoken with the real
+  // ElevenLabs voice from the backend (POST /api/v1/tts/speak, same endpoint
+  // mobile's speechService.ts uses — see lib/ttsService.ts and speakReply
+  // below), falling back to window.speechSynthesis only if that call fails.
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [voiceUnsupported, setVoiceUnsupported] = useState<string | null>(null);
@@ -116,29 +120,26 @@ export default function AiCoachPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Stop any in-flight speech synthesis if the user navigates away mid-reply.
+  // Stop any in-flight speech if the user navigates away mid-reply.
   useEffect(() => {
     return () => {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      ttsService.cancel();
     };
   }, []);
 
   function speakReply(text: string) {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
+    // ttsService.speak() tries the real ElevenLabs voice first (POST
+    // /api/v1/tts/speak) and transparently falls back to
+    // window.speechSynthesis on any failure — see lib/ttsService.ts. Its
+    // returned promise never rejects and resolves exactly once speech is
+    // over, whether that's naturally, on error, or because stopSpeaking()
+    // below force-stopped it via ttsService.cancel().
     setSpeaking(true);
-    window.speechSynthesis.speak(utterance);
+    void ttsService.speak(text, { language: i18n.language }).then(() => setSpeaking(false));
   }
 
   function stopSpeaking() {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
+    ttsService.cancel();
     setSpeaking(false);
   }
 
