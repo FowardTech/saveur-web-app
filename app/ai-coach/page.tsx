@@ -22,6 +22,7 @@ import {
 import * as ttsService from "@/lib/ttsService";
 import { courseIdFor } from "@/lib/learningService";
 import { ACTION_META, actionTitle, runSuggestedAction, type SuggestedActionId } from "@/lib/suggestedActions";
+import { getSuggestedTopics, type SuggestedTopic } from "@/lib/coachService";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py
 //   GET    /api/v1/coach/messages -> {messages: CoachMessage[]}
@@ -61,7 +62,7 @@ const GREETING_MESSAGE: CoachMessage = {
 export default function AiCoachPage() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { loading: authLoading } = useAuth();
+  const { loading: authLoading, profile } = useAuth();
   const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -95,6 +96,25 @@ export default function AiCoachPage() {
   const recognitionRef = useRef<MinimalSpeechRecognition | null>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Suggested topics on the greeting screen (product report: "suggested
+  // topics are not in the web version add it too") — same real endpoint +
+  // personalized client-side fallback as mobile's Chat.tsx/coachService.ts.
+  // Tapping one, like mobile, switches into a real spoken conversation
+  // about it rather than dropping a text bubble (see the Voice Coach link
+  // below, which hands the topic through as a ?topic= query param that
+  // app/ai-coach/voice/page.tsx auto-starts).
+  const [topics, setTopics] = useState<SuggestedTopic[]>([]);
+  useEffect(() => {
+    if (authLoading) return;
+    getSuggestedTopics({ goals: profile?.goals, desiredRoles: profile?.desiredRoles, language: i18n.language })
+      .then(setTopics)
+      .catch(() => {});
+  }, [authLoading, profile?.goals, profile?.desiredRoles, i18n.language]);
+
+  function onTapTopic(title: string) {
+    router.push(`/ai-coach/voice?topic=${encodeURIComponent(title)}`);
+  }
 
   async function load() {
     try {
@@ -395,6 +415,27 @@ export default function AiCoachPage() {
                   </div>
                 )}
               </div>
+
+              {messages.length === 1 && messages[0].id === "msg_greeting" && topics.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <p className="text-xs font-medium text-hint">
+                    {t("web:aiCoach.suggestedTopicsHint", { defaultValue: "Tap a topic to start a voice conversation" })}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {topics.slice(0, 3).map((topic) => (
+                      <button
+                        key={topic.id}
+                        type="button"
+                        onClick={() => onTapTopic(topic.title)}
+                        className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-1 px-3 py-1.5 text-left text-xs font-medium text-primary transition hover:bg-surface-3"
+                      >
+                        <EvaIcon name="mic-outline" size={13} className="shrink-0 text-brand" />
+                        {topic.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {error && <p className="text-sm text-danger">{error}</p>}
               {voiceUnsupported && <p className="text-sm text-danger">{voiceUnsupported}</p>}

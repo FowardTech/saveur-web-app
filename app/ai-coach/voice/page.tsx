@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -83,9 +83,22 @@ interface HistoryTurn {
 const GREETING_TEXT =
   "Hi, I'm Saveur, your AI career coach. Tap the orb and talk to me whenever you're ready.";
 
+// useSearchParams() (reads ?topic= — see the initial-topic effect below)
+// requires a Suspense boundary around anything that calls it, per Next.js's
+// own static-bailout rules — this default export is just that wrapper; all
+// the real page logic lives in VoiceCoachPageInner below.
 export default function VoiceCoachPage() {
+  return (
+    <Suspense fallback={null}>
+      <VoiceCoachPageInner />
+    </Suspense>
+  );
+}
+
+function VoiceCoachPageInner() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [liveTranscript, setLiveTranscript] = useState("");
@@ -409,6 +422,41 @@ export default function VoiceCoachPage() {
     }
     startRecognitionInternal();
   }, [startRecognitionInternal, speakReply, t]);
+
+  // Web port of mobile's VoiceCoachView.tsx initialTopic handling — a
+  // suggested topic tapped on the AI Coach greeting screen
+  // (app/ai-coach/page.tsx) lands here via ?topic=, and starts a REAL
+  // spoken conversation about it immediately (thinking -> a real spoken
+  // reply -> listening), skipping the generic static intro entirely —
+  // sendTurn's own reply already gives the user something to react to.
+  // (Product report: "suggested topics are not in the web version add it
+  // too" — this is the "tap a topic" half of that; app/ai-coach/page.tsx's
+  // chips are the other half.)
+  const startSessionWithTopic = useCallback(
+    (topic: string) => {
+      setErrorMsg(null);
+      setProRequired(false);
+      networkErrorStreakRef.current = 0;
+      sessionActiveRef.current = true;
+      greetedRef.current = true;
+      setPhase("thinking");
+      void sendTurn(topic);
+    },
+    [sendTurn]
+  );
+
+  const handledInitialTopicRef = useRef(false);
+  useEffect(() => {
+    if (handledInitialTopicRef.current) return;
+    const topic = searchParams?.get("topic");
+    if (!topic) return;
+    handledInitialTopicRef.current = true;
+    // Strip the query param so a later refresh of this screen doesn't
+    // silently replay the same topic as a brand new turn.
+    router.replace("/ai-coach/voice");
+    startSessionWithTopic(topic);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const endSession = useCallback(() => {
     sessionActiveRef.current = false;
