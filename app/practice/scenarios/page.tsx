@@ -475,23 +475,151 @@ export default function PracticalScenariosSetupPage() {
           )}
 
           {completed && (
-            <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
-                  <EvaIcon name="checkmark-circle-2-outline" size={22} />
-                </span>
-                <div>
-                  <h2 className="font-semibold text-primary">{t("web:practice.scenarios.scenarioComplete", { defaultValue: "Scenario complete" })}</h2>
-                  <p className="text-sm text-hint">
-                    {t("web:practice.scenarios.feedbackGenerating", {
-                      defaultValue: "Your judgment feedback for this session is being generated in the background.",
-                    })}
-                  </p>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
+                    <EvaIcon name="checkmark-circle-2-outline" size={22} />
+                  </span>
+                  <div>
+                    <h2 className="font-semibold text-primary">{t("web:practice.scenarios.scenarioComplete", { defaultValue: "Scenario complete" })}</h2>
+                    {!sessionFeedback && !feedbackLoadError && (
+                      <p className="text-sm text-hint">
+                        {t("web:practice.scenarios.feedbackGenerating", {
+                          defaultValue: "Your judgment feedback for this session is being generated in the background.",
+                        })}
+                      </p>
+                    )}
+                  </div>
                 </div>
+
+                {!sessionFeedback && !feedbackLoadError && (
+                  <InlineSpinner label={t("web:practice.scenarios.scoringInProgress", { defaultValue: "Evaluating your decisions…" }).toString()} />
+                )}
+
+                {feedbackLoadError && (
+                  <div className="flex flex-col items-start gap-2">
+                    <p className="text-sm text-danger">{feedbackLoadError}</p>
+                    <button
+                      type="button"
+                      className="text-sm font-semibold text-brand"
+                      onClick={() => {
+                        setFeedbackLoadError(null);
+                        feedbackPollAttemptsRef.current = 0;
+                        if (session) pollSessionFeedback(session.id);
+                      }}
+                    >
+                      {t("common:try_again", { defaultValue: "Try again" })}
+                    </button>
+                  </div>
+                )}
+
+                <Button variant="outline" onClick={resetSession} className="w-fit">
+                  {t("web:practice.scenarios.startAnother", { defaultValue: "Start another scenario" })}
+                </Button>
               </div>
-              <Button variant="outline" onClick={resetSession} className="w-fit">
-                {t("web:practice.scenarios.startAnother", { defaultValue: "Start another scenario" })}
-              </Button>
+
+              {sessionFeedback && (
+                <>
+                  {sessionFeedback.overall != null && (
+                    <div className="flex flex-col items-center gap-1 rounded-card border border-border bg-surface-2 p-6">
+                      <span className="text-3xl font-bold text-primary">{sessionFeedback.overall}</span>
+                      <span className="text-sm text-hint">{t("web:practice.scenarios.overallScore", { defaultValue: "Overall judgment score" })}</span>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                    <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                      {t("web:practice.scenarios.rubricScores", { defaultValue: "Skill scores" })}
+                    </h2>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      {RUBRIC_KEYS.map(({ key, fallback }) => {
+                        const val = sessionFeedback[key];
+                        return (
+                          <div key={key} className="flex flex-col gap-1.5">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-primary">{t(`web:practice.scenarios.scores.${key}`, { defaultValue: fallback })}</span>
+                              <span className="font-medium text-primary">{val ?? "—"}%</span>
+                            </div>
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
+                              <div className="h-full rounded-full bg-brand" style={{ width: `${Math.max(0, Math.min(100, val ?? 0))}%` }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {sessionFeedback.summary && (
+                    <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                      <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                        {t("web:practice.scenarios.summary", { defaultValue: "Summary" })}
+                      </h2>
+                      <p className="whitespace-pre-wrap text-sm text-primary">{sessionFeedback.summary}</p>
+                    </div>
+                  )}
+
+                  {(sessionFeedback.strengths.length > 0 || sessionFeedback.improvements.length > 0) && (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {sessionFeedback.strengths.length > 0 && (
+                        <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                          <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                            {t("web:practice.scenarios.strengths", { defaultValue: "Strengths" })}
+                          </h2>
+                          <ul className="flex flex-col gap-1.5 text-sm text-primary">
+                            {sessionFeedback.strengths.map((s, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <EvaIcon name="checkmark-circle-2-outline" size={16} className="mt-0.5 shrink-0 text-success-text" />
+                                <span>{s}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {sessionFeedback.improvements.length > 0 && (
+                        <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                          <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                            {t("web:practice.scenarios.improvements", { defaultValue: "Areas to improve" })}
+                          </h2>
+                          <ul className="flex flex-col gap-1.5 text-sm text-primary">
+                            {sessionFeedback.improvements.map((s, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <EvaIcon name="arrow-up-outline" size={16} className="mt-0.5 shrink-0 text-hint" />
+                                <span>{s}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {sessionFeedback.stepNotes.length > 0 && (
+                    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                      <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                        {t("web:practice.scenarios.decisionByDecision", { defaultValue: "Decision by decision" })}
+                      </h2>
+                      <div className="flex flex-col gap-2">
+                        {sessionFeedback.stepNotes.map((note, i) => (
+                          <div key={i} className="flex items-start gap-3 rounded-lg bg-surface-1 p-3">
+                            <EvaIcon
+                              name={note.isStrongMoment ? "checkmark-circle-2-outline" : "alert-circle-outline"}
+                              size={16}
+                              className={`mt-0.5 shrink-0 ${note.isStrongMoment ? "text-success-text" : "text-warning-text"}`}
+                            />
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-xs font-medium uppercase tracking-wide text-hint">
+                                {t("web:practice.scenarios.stepLabel", { defaultValue: "Step {{order}}", order: note.order })}
+                              </span>
+                              <span className="text-sm text-primary">{note.note}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
         </div>
