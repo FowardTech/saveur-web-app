@@ -55,6 +55,43 @@ export function languageExtensionForPath(path: string): Extension[] {
   }
 }
 
+/** Backend /coding/languages key -> CodeMirror language extension, for the
+ * single-file problem practice editor (app/practice/coding/[slug]/page.tsx),
+ * which has no file path/extension to key off of the way the project editor
+ * does — just a `language` id like "python" or "cpp" straight from
+ * starter_code's keys / GET /coding/languages. Reuses the exact same
+ * @codemirror/lang-* packages as languageExtensionForPath above rather than
+ * pulling in a second mapping's worth of imports. Languages with no
+ * dedicated CodeMirror package (go, rust, csharp, ruby, kotlin, swift) fall
+ * through to plain text — still fully editable, just without syntax
+ * highlighting, same graceful degradation as an unrecognized file extension
+ * above. */
+export function languageExtensionForLanguageId(id: string): Extension[] {
+  switch ((id || "").toLowerCase()) {
+    case "html":
+      return [html()];
+    case "css":
+      return [css()];
+    case "javascript":
+    case "jsx":
+      return [javascript({ jsx: true })];
+    case "typescript":
+    case "tsx":
+      return [javascript({ jsx: true, typescript: true })];
+    case "python":
+      return [python()];
+    case "java":
+      return [java()];
+    case "cpp":
+    case "c":
+      return [cpp()];
+    case "php":
+      return [php()];
+    default:
+      return [];
+  }
+}
+
 /** File-extension -> the backend's /coding/languages key, for defaulting the
  * Run panel's language picker to whatever the currently-open file looks
  * like (still overridable — this is just a sensible default, not a lock). */
