@@ -680,11 +680,27 @@ export default function LiveInterviewSessionPage() {
                     </div>
                   )}
 
+                  {/* BUG FIX (product report, with a full-screen video-call
+                      screenshot for reference: "I want the camera screen to
+                      cover the whole screen just like the way it covered
+                      the screen in the mobile app... the transcript should
+                      appear transparently just like the way it is in the
+                      mobile"): this used to be a small boxed camera preview
+                      sitting inside the same bordered card as Voice/Text
+                      mode. Mirrors mobile's LiveInterviewSession.tsx video-
+                      mode redesign instead — a real full-bleed `fixed
+                      inset-0` layer (breaks out of AppShell's nav/max-w-3xl
+                      container entirely, same as mobile using the device's
+                      whole screen with no nav chrome visible), with the
+                      question/status/live-transcript rendered in a
+                      semi-transparent "glass" card floating OVER the video
+                      (bg-black/45 + backdrop-blur) instead of in an opaque
+                      white card below it — mobile's own captionGlassCard. */}
                   {effectiveMode === "video" && (
-                    <div className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface-2 p-8">
+                    <div className="fixed inset-0 z-[100] flex flex-col bg-black">
                       {voiceUnsupported || cameraError ? (
-                        <>
-                          <p className="text-center text-sm text-hint">{voiceUnsupported || cameraError}</p>
+                        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
+                          <p className="max-w-sm text-sm text-white/80">{voiceUnsupported || cameraError}</p>
                           <div className="flex gap-2">
                             <Button
                               size="sm"
@@ -698,6 +714,7 @@ export default function LiveInterviewSessionPage() {
                             <Button
                               size="sm"
                               variant="outline"
+                              className="border-white/30 text-white hover:bg-white/10"
                               onClick={() => {
                                 setCameraError(null);
                                 setEffectiveMode("text");
@@ -706,63 +723,98 @@ export default function LiveInterviewSessionPage() {
                               {t("web:practice.interview.continueInText", { defaultValue: "Continue in Text mode" })}
                             </Button>
                           </div>
-                        </>
+                        </div>
                       ) : (
                         <>
-                          <div className="relative w-full max-w-sm overflow-hidden rounded-card bg-black">
-                            <video
-                              ref={cameraVideoRef}
-                              muted
-                              playsInline
-                              autoPlay
-                              className="aspect-video w-full object-cover"
-                              style={{ transform: "scaleX(-1)" }}
-                            />
-                            {voiceStarted && (
-                              <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-pill bg-black/60 px-2 py-1 text-xs font-medium text-white">
-                                <span className="h-2 w-2 rounded-full bg-danger animate-pulse" />
-                                {t("web:practice.interview.recording", { defaultValue: "Recording" })}
+                          <video
+                            ref={cameraVideoRef}
+                            muted
+                            playsInline
+                            autoPlay
+                            className="absolute inset-0 h-full w-full object-cover"
+                            style={{ transform: "scaleX(-1)" }}
+                          />
+
+                          {/* Floating glass header — recording indicator +
+                              countdown, same idea as mobile's
+                              floatingHeaderRow/liveIndicatorRow. */}
+                          <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-3 p-4">
+                            <div>
+                              {voiceStarted && (
+                                <span className="inline-flex items-center gap-1.5 rounded-pill bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
+                                  <span className="h-2 w-2 rounded-full bg-danger animate-pulse" />
+                                  {t("web:practice.interview.recording", { defaultValue: "Recording" })}
+                                </span>
+                              )}
+                            </div>
+                            {remainingSeconds !== null && (
+                              <span className="inline-flex items-center gap-1.5 rounded-pill bg-black/50 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur">
+                                <EvaIcon name="clock-outline" size={14} />
+                                {formatClock(remainingSeconds)}
                               </span>
                             )}
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (!voiceStarted) void startVideoSession();
-                              else if (voicePhase === "speaking") interruptVoice();
-                            }}
-                            aria-label={
-                              voicePhase === "speaking"
-                                ? t("web:aiCoach.stopSpeaking", { defaultValue: "Stop speaking" })
-                                : t("web:practice.interview.startInterview", { defaultValue: "Start interview" })
-                            }
-                            className="relative flex h-24 w-24 items-center justify-center rounded-full shadow-xl transition"
-                            style={{ background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)" }}
-                          >
-                            <EvaIcon
-                              name={voicePhase === "listening" ? "mic-outline" : voicePhase === "speaking" ? "close-circle-outline" : "play-circle-outline"}
-                              size={28}
-                              className="text-white drop-shadow"
-                            />
-                          </button>
-                          <p className="text-sm font-medium text-hint">
-                            {!voiceStarted
-                              ? t("web:practice.interview.tapToStartVideo", { defaultValue: "Tap to turn on your camera and start the interview" })
-                              : voicePhase === "listening"
-                              ? liveTranscript || t("web:aiCoach.voiceStatusListeningPrompt", { defaultValue: "I'm listening — go ahead" })
-                              : voicePhase === "thinking"
-                              ? t("web:aiCoach.voiceStatusThinking", { defaultValue: "Thinking…" })
-                              : voicePhase === "speaking"
-                              ? t("web:aiCoach.voiceStatusSpeaking", { defaultValue: "Speaking… tap to interrupt" })
-                              : ""}
-                          </p>
-                          {currentQuestion && <p className="max-w-md text-center text-primary">{currentQuestion}</p>}
-                          {voiceError && <p className="max-w-md text-center text-sm text-danger">{voiceError}</p>}
-                          <Button variant="outline" size="sm" onClick={onEnd} disabled={isEnding}>
-                            {isEnding
-                              ? t("web:practice.interview.ending", { defaultValue: "Ending…" })
-                              : t("web:practice.interview.endInterview", { defaultValue: "End interview" })}
-                          </Button>
+
+                          {/* Floating glass caption card — question + live
+                              status + the candidate's own live transcript,
+                              all rendered transparently over the camera
+                              feed rather than in a solid card beneath it. */}
+                          <div className="absolute inset-x-0 bottom-28 flex flex-col items-center gap-2 px-6">
+                            <div className="max-w-md rounded-card bg-black/45 px-4 py-3 text-center backdrop-blur">
+                              <p className="text-xs font-medium text-white/70">
+                                {!voiceStarted
+                                  ? t("web:practice.interview.tapToStartVideo", { defaultValue: "Tap to turn on your camera and start the interview" })
+                                  : voicePhase === "listening"
+                                  ? t("web:aiCoach.voiceStatusListeningPrompt", { defaultValue: "I'm listening — go ahead" })
+                                  : voicePhase === "thinking"
+                                  ? t("web:aiCoach.voiceStatusThinking", { defaultValue: "Thinking…" })
+                                  : voicePhase === "speaking"
+                                  ? t("web:aiCoach.voiceStatusSpeaking", { defaultValue: "Speaking… tap to interrupt" })
+                                  : ""}
+                              </p>
+                              {currentQuestion && <p className="mt-1 text-sm text-white">{currentQuestion}</p>}
+                              {voicePhase === "listening" && liveTranscript && (
+                                <p className="mt-1.5 text-sm italic text-white/85">&ldquo;{liveTranscript}&rdquo;</p>
+                              )}
+                            </div>
+                            {voiceError && <p className="max-w-md text-center text-xs text-tint-orange-text">{voiceError}</p>}
+                          </div>
+
+                          {/* Floating bottom controls — orb + End Interview,
+                              same pairing as mobile's floatingControlsRow. */}
+                          <div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-6">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (!voiceStarted) void startVideoSession();
+                                else if (voicePhase === "speaking") interruptVoice();
+                              }}
+                              aria-label={
+                                voicePhase === "speaking"
+                                  ? t("web:aiCoach.stopSpeaking", { defaultValue: "Stop speaking" })
+                                  : t("web:practice.interview.startInterview", { defaultValue: "Start interview" })
+                              }
+                              className="relative flex h-16 w-16 items-center justify-center rounded-full shadow-xl ring-2 ring-white/25 transition"
+                              style={{ background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)" }}
+                            >
+                              <EvaIcon
+                                name={voicePhase === "listening" ? "mic-outline" : voicePhase === "speaking" ? "close-circle-outline" : "play-circle-outline"}
+                                size={24}
+                                className="text-white drop-shadow"
+                              />
+                            </button>
+                            <Button
+                              size="sm"
+                              onClick={onEnd}
+                              disabled={isEnding}
+                              className="backdrop-blur"
+                              style={{ background: "rgba(220,38,38,0.9)", color: "#fff" }}
+                            >
+                              {isEnding
+                                ? t("web:practice.interview.ending", { defaultValue: "Ending…" })
+                                : t("web:practice.interview.endInterview", { defaultValue: "End interview" })}
+                            </Button>
+                          </div>
                         </>
                       )}
                     </div>
