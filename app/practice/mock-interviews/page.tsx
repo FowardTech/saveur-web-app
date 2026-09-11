@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -48,6 +48,7 @@ interface SessionResult {
 
 function MockInterviewSetupInner() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const { profile, isPremium, isPro, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
 
@@ -275,13 +276,24 @@ function MockInterviewSetupInner() {
         company?: string;
         first_question?: string;
       }>("/api/v1/interviews/sessions", payload);
-      setSession({
-        id: String(data.id ?? data.session_id ?? ""),
-        type: data.type,
-        role: data.role,
-        company: data.company,
-        first_question: data.first_question,
-      });
+      const newSessionId = String(data.id ?? data.session_id ?? "");
+      if (interviewType.label === "Coding") {
+        setSession({
+          id: newSessionId,
+          type: data.type,
+          role: data.role,
+          company: data.company,
+          first_question: data.first_question,
+        });
+      } else {
+        // Real live Q&A session (Voice/Text/Video) — replaces the old
+        // static "coming to the web app in a future pass" placeholder that
+        // used to render below (product report: "Why are you leaving this
+        // feature out of the web app"). See app/practice/interview/[id]/
+        // page.tsx for the actual live session + its own honest Video-mode
+        // scope note.
+        router.push(`/practice/interview/${newSessionId}`);
+      }
     } catch (err: unknown) {
       const apiErr = err as ApiError;
       setError(apiErr.message || t("web:practice.mockInterviews.startFailedDefault", { defaultValue: "Couldn't start a session. Please try again." }));
@@ -521,6 +533,10 @@ function MockInterviewSetupInner() {
             </form>
           )}
 
+          {/* Only ever set for the Coding branch now — every other
+              interview type navigates straight into the real live session
+              (app/practice/interview/[id]/page.tsx) on success instead of
+              landing here at all. */}
           {session && (
             <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
               <div className="flex items-center gap-3">
@@ -537,24 +553,7 @@ function MockInterviewSetupInner() {
                 </div>
               </div>
 
-              {interviewType.label === "Coding" ? (
-                <LinkButton href="/practice/coding">{t("web:practice.mockInterviews.goToCodingPractice", { defaultValue: "Go to Coding Practice" })}</LinkButton>
-              ) : (
-                <>
-                  {session.first_question && (
-                    <div className="rounded-lg bg-surface-1 p-4">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-hint">{t("web:practice.mockInterviews.firstQuestionLabel", { defaultValue: "First question" })}</p>
-                      <p className="mt-1.5 text-sm text-primary">{session.first_question}</p>
-                    </div>
-                  )}
-                  <div className="rounded-lg border border-dashed border-border p-4 text-center text-sm text-hint">
-                    {t("web:practice.mockInterviews.livePlaceholder", {
-                      defaultValue:
-                        "This is where the live interview session would run — real-time Q&A with your AI interviewer, voice/video mode, and instant feedback at the end. That experience is coming to the web app in a future pass; for now, this session is saved to your account the same as a mobile session.",
-                    })}
-                  </div>
-                </>
-              )}
+              <LinkButton href="/practice/coding">{t("web:practice.mockInterviews.goToCodingPractice", { defaultValue: "Go to Coding Practice" })}</LinkButton>
 
               <Button variant="outline" onClick={() => setSession(null)}>
                 {t("web:practice.mockInterviews.startAnother", { defaultValue: "Start another session" })}
