@@ -14,6 +14,7 @@ import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
 import { quickActions, tintCycle } from "@/lib/navigation";
+import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard";
 
 function useGreeting() {
   const { t } = useTranslation();
@@ -90,6 +91,11 @@ export default function DashboardPage() {
 
         {/* Home banner */}
         <HomeBanner />
+
+        {/* Upcoming Session — self-contained, renders nothing when there's
+            nothing scheduled (see app/practice/schedule/page.tsx for the
+            scheduling entry point, reached from the Practice hub). */}
+        <UpcomingSessionCard />
 
         {/* Promo banner */}
         <div className="flex flex-col items-start gap-4 rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-6 sm:flex-row sm:items-center sm:justify-between">

@@ -50,6 +50,28 @@ export default function PracticeHubPage() {
             title={t("web:practice.hub.title", { defaultValue: "Practice" })}
             subtitle={t("web:practice.hub.subtitle", { defaultValue: "Choose a mode to sharpen your skills before the real thing." })}
           />
+
+          {/* "Schedule a session" — mirrors mobile FindScreen.tsx's own entry
+              point at the top of the Practice tab (product request: "Take
+              the upcoming session card where user can schedule session and
+              place it at the top of the practice screen"). Always visible
+              (not conditional on an existing schedule) since its job is
+              starting a NEW schedule; the already-scheduled DISPLAY lives on
+              the dashboard's own Upcoming Session card instead. */}
+          <Link
+            href="/practice/schedule"
+            className="flex items-center gap-3 rounded-card border border-brand/40 bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
+              <EvaIcon name="calendar-outline" size={20} />
+            </span>
+            <div className="flex-1">
+              <p className="font-medium text-primary">{t("web:practice.hub.scheduleSessionTitle", { defaultValue: "Schedule a session" })}</p>
+              <p className="text-sm text-hint">{t("web:practice.hub.scheduleSessionSubtitle", { defaultValue: "Set a reminder for your next mock interview." })}</p>
+            </div>
+            <EvaIcon name="arrow-forward-outline" size={18} className="shrink-0 text-hint" />
+          </Link>
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {modes.map((mode) => (
               <ActionCard
