@@ -59,6 +59,40 @@ export interface PracticalSessionSummary {
   status: "active" | "completed";
 }
 
+export interface PracticalStepNote {
+  order: number;
+  note: string;
+  isStrongMoment: boolean;
+}
+
+// Aggregated end-of-session scoring — generated in the BACKGROUND right
+// after the final step (Saveur-Backend/app/tasks/practical_feedback_job.py),
+// so it usually isn't ready the instant the session completes. Mirrors
+// mobile's Saveur/services/practicalService.ts PracticalFeedback 1:1 (same
+// four named rubric scores + overall + summary + strengths/improvements +
+// per-step notes) -- see PracticalScenarioFeedback.tsx on that side for the
+// screen this feeds, which this web page's own completion view now mirrors
+// (product report: "But i did not see any feedback" -- the web completion
+// screen only ever said "being generated in the background" and never
+// actually fetched/displayed it once ready; this was a genuine missing
+// screen, not a backend bug).
+export interface PracticalFeedback {
+  judgment: number | null;
+  domainKnowledge: number | null;
+  communication: number | null;
+  criticalThinking: number | null;
+  overall: number | null;
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  stepNotes: PracticalStepNote[];
+}
+
+export interface PracticalSessionDetail extends PracticalSessionSummary {
+  steps: PracticalStep[];
+  feedback: PracticalFeedback | null;
+}
+
 interface WireChoice {
   id?: string;
   text?: string;
@@ -82,11 +116,25 @@ interface WireStep {
   is_final?: boolean;
 }
 
+interface WireFeedback {
+  judgment?: number | null;
+  domain_knowledge?: number | null;
+  communication?: number | null;
+  critical_thinking?: number | null;
+  overall?: number | null;
+  summary?: string;
+  strengths?: string[];
+  improvements?: string[];
+  step_notes?: { order?: number; note?: string; is_strong_moment?: boolean }[];
+}
+
 interface WireSession {
   id?: number;
   type?: string;
   role?: string | null;
   status?: string;
+  steps?: WireStep[];
+  feedback?: WireFeedback | null;
 }
 
 function mapTaskFeedback(raw: WireTaskFeedback | null | undefined): PracticalTaskFeedback | null {
@@ -118,6 +166,25 @@ function mapSession(raw: WireSession): PracticalSessionSummary {
     type: (raw.type as PracticalType) || "healthcare",
     role: raw.role ?? null,
     status: (raw.status as "active" | "completed") || "active",
+  };
+}
+
+function mapFeedback(raw: WireFeedback | null | undefined): PracticalFeedback | null {
+  if (!raw) return null;
+  return {
+    judgment: raw.judgment ?? null,
+    domainKnowledge: raw.domain_knowledge ?? null,
+    communication: raw.communication ?? null,
+    criticalThinking: raw.critical_thinking ?? null,
+    overall: raw.overall ?? null,
+    summary: raw.summary ?? "",
+    strengths: raw.strengths ?? [],
+    improvements: raw.improvements ?? [],
+    stepNotes: (raw.step_notes ?? []).map((n) => ({
+      order: n.order ?? 0,
+      note: n.note ?? "",
+      isStrongMoment: n.is_strong_moment ?? false,
+    })),
   };
 }
 
@@ -177,6 +244,18 @@ export async function submitTask(
     return { status: "completed", taskFeedback };
   }
   return { status: "active", step: mapStep(data.step), taskFeedback };
+}
+
+/** GET /api/v1/practical/sessions/:id — full session with steps + feedback
+ * (feedback is null until practical_feedback_job's background pass finishes;
+ * poll this like mobile's PracticalScenarioFeedback.tsx does). */
+export async function getSession(sessionId: number): Promise<PracticalSessionDetail> {
+  const data = await apiClient.get<WireSession>(`/api/v1/practical/sessions/${sessionId}`);
+  return {
+    ...mapSession(data),
+    steps: (data.steps ?? []).map(mapStep),
+    feedback: mapFeedback(data.feedback),
+  };
 }
 
 /** True when an ApiError came from the backend's shared LLMUnavailable

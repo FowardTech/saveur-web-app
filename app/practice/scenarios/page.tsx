@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import type { ApiError } from "@/lib/apiClient";
 import * as practicalService from "@/lib/practicalService";
-import type { PracticalSessionSummary, PracticalStep, PracticalTaskFeedback } from "@/lib/practicalService";
+import type { PracticalFeedback, PracticalSessionSummary, PracticalStep, PracticalTaskFeedback } from "@/lib/practicalService";
 
 // Real backend contract — Saveur-Backend/app/api/practical.py
 //   GET  /api/v1/practical/types              -> {types: string[]}
@@ -35,6 +35,23 @@ const PRACTICAL_TYPES: { value: string; icon: EvaIconName }[] = [
 ];
 
 const TOTAL_STEPS_ESTIMATE = 6; // mirrors Saveur-Backend/app/api/practical.py's MAX_STEPS
+
+// Judgment scoring across the whole decision path is generated in the
+// BACKGROUND right after the final step (practical_feedback_job.py), so it
+// polls GET /api/v1/practical/sessions/:id until PracticalFeedback actually
+// exists — mirrors mobile's PracticalScenarioFeedback.tsx exactly (same
+// 3s/~1min poll budget), which this screen's completion view had never done
+// (product report: "But i did not see any feedback" — it only ever showed a
+// static "being generated in the background" message and never fetched it).
+const FEEDBACK_POLL_INTERVAL_MS = 3000;
+const FEEDBACK_MAX_POLL_ATTEMPTS = 20; // ~1 minute
+
+const RUBRIC_KEYS: { key: "judgment" | "domainKnowledge" | "communication" | "criticalThinking"; fallback: string }[] = [
+  { key: "judgment", fallback: "Judgment" },
+  { key: "domainKnowledge", fallback: "Field Knowledge" },
+  { key: "communication", fallback: "Communication" },
+  { key: "criticalThinking", fallback: "Critical Thinking" },
+];
 
 function fallbackLabelFor(type: string) {
   return type[0].toUpperCase() + type.slice(1);
@@ -81,6 +98,40 @@ export default function PracticalScenariosSetupPage() {
   const [taskFeedback, setTaskFeedback] = useState<PracticalTaskFeedback | null>(null);
   const [pendingNextStep, setPendingNextStep] = useState<PracticalStep | null>(null);
 
+  // --- End-of-session feedback (polled once the scenario completes) ------
+  const [sessionFeedback, setSessionFeedback] = useState<PracticalFeedback | null>(null);
+  const [feedbackLoadError, setFeedbackLoadError] = useState<string | null>(null);
+  const feedbackPollAttemptsRef = useRef(0);
+  const feedbackPollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const pollSessionFeedback = useCallback(async (sessionId: number) => {
+    feedbackPollAttemptsRef.current += 1;
+    try {
+      const detail = await practicalService.getSession(sessionId);
+      if (detail.feedback) {
+        setSessionFeedback(detail.feedback);
+        return;
+      }
+      if (feedbackPollAttemptsRef.current < FEEDBACK_MAX_POLL_ATTEMPTS) {
+        feedbackPollTimeoutRef.current = setTimeout(() => pollSessionFeedback(sessionId), FEEDBACK_POLL_INTERVAL_MS);
+      }
+    } catch (err) {
+      setFeedbackLoadError((err as ApiError).message || t("web:practice.scenarios.feedbackLoadFailed", { defaultValue: "Couldn't load your results." }));
+    }
+  }, [t]);
+
+  useEffect(() => {
+    if (!completed || !session) return;
+    feedbackPollAttemptsRef.current = 0;
+    setSessionFeedback(null);
+    setFeedbackLoadError(null);
+    pollSessionFeedback(session.id);
+    return () => {
+      if (feedbackPollTimeoutRef.current) clearTimeout(feedbackPollTimeoutRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [completed, session?.id]);
+
   function labelFor(value: string) {
     return t(`web:practice.scenarios.types.${value}`, { defaultValue: fallbackLabelFor(value) });
   }
@@ -108,6 +159,7 @@ export default function PracticalScenariosSetupPage() {
   }
 
   function resetSession() {
+    if (feedbackPollTimeoutRef.current) clearTimeout(feedbackPollTimeoutRef.current);
     setSession(null);
     setStep(null);
     setCompleted(false);
@@ -120,6 +172,8 @@ export default function PracticalScenariosSetupPage() {
     setTaskErrorIsLLM(false);
     setTaskFeedback(null);
     setPendingNextStep(null);
+    setSessionFeedback(null);
+    setFeedbackLoadError(null);
   }
 
   // --- Choice steps -------------------------------------------------------

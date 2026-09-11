@@ -162,7 +162,7 @@
       "remove": "Remove",
       "researching": "Researching…",
       "subtitle": "Track target companies with AI research and a real readiness score.",
-      "targetRoleLabel": "Target role (optional)",
+      "targetRoleLabel": "Target role",
       "targetRolePlaceholder": "e.g. Product Manager",
       "title": "Dream Companies",
       "unmarkTopChoice": "Unmark top choice"
@@ -415,7 +415,7 @@
       "subtitle": "Set up a session and practice with an AI interviewer.",
       "targetCompanyLabel": "Target company (optional)",
       "targetCompanyPlaceholder": "e.g. Acme Corp",
-      "targetRoleLabel": "Target role (optional)",
+      "targetRoleLabel": "Target role",
       "targetRolePlaceholder": "e.g. Senior Backend Engineer",
       "title": "Mock Interview",
       "types": {
@@ -625,7 +625,7 @@
       "premiumRequiredTitle": "LinkedIn Optimizer is a Premium feature",
       "profileStrength": "Profile strength: {{score}}/100",
       "subtitle": "Paste your current profile text for an AI critique and rewrite.",
-      "targetRoleLabel": "Target role (optional)",
+      "targetRoleLabel": "Target role",
       "targetRolePlaceholder": "e.g. Product Manager",
       "title": "LinkedIn Optimizer"
     },
