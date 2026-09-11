@@ -149,7 +149,7 @@ export default function LinkedInOptimizerPage() {
           {!premiumRequired && (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
               <TextField
-                label={t("web:resume.linkedin.targetRoleLabel", { defaultValue: "Target role (optional)" })}
+                label={t("web:resume.linkedin.targetRoleLabel", { defaultValue: "Target role" })}
                 placeholder={t("web:resume.linkedin.targetRolePlaceholder", { defaultValue: "e.g. Product Manager" })}
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}

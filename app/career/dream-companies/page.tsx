@@ -462,7 +462,7 @@ export default function DreamCompaniesPage() {
                 required
               />
               <TextField
-                label={t("web:career.dreamCompanies.targetRoleLabel", { defaultValue: "Target role (optional)" })}
+                label={t("web:career.dreamCompanies.targetRoleLabel", { defaultValue: "Target role" })}
                 placeholder={t("web:career.dreamCompanies.targetRolePlaceholder", { defaultValue: "e.g. Product Manager" })}
                 value={roleInput}
                 onChange={(e) => setRoleInput(e.target.value)}
