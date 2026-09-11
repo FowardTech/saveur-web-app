@@ -222,3 +222,25 @@ export async function respondToConnectionRequest(
   );
   return { id: data.id, status: data.status as "accepted" | "declined" };
 }
+
+/** Combined count for the "Shared with Me" sidebar badge (product request:
+ * badge that row like the mobile-parity ones do, even though neither
+ * mobile's own MoreSrc.tsx row nor GET /api/v1/more/badges knows anything
+ * about shares/connections — see lib/navigation.ts's Shared with Me entry
+ * and lib/moreBadges.ts's `sharedWithMeUnreadCount` field for the rest of
+ * the wiring). Sums two distinct "you haven't seen/actioned this yet"
+ * signals: shares received but not yet opened (`read: false`), and
+ * connection requests still awaiting accept/decline — both represent
+ * unactioned inbound items on the same /shared-with-me screen, so they're
+ * combined into one pill rather than showing only one of the two. Fails
+ * soft (returns 0), same contract as getMoreBadges in lib/moreBadges.ts. */
+export async function getSharedWithMeBadgeCount(): Promise<number> {
+  try {
+    const [shares, pending] = await Promise.all([listReceivedShares(), listPendingConnectionRequests()]);
+    const unreadShares = shares.filter((s) => !s.read).length;
+    return unreadShares + pending.length;
+  } catch (err) {
+    console.warn("[sharesService] getSharedWithMeBadgeCount failed", err);
+    return 0;
+  }
+}

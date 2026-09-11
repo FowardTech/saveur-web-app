@@ -13,7 +13,7 @@ export interface NavLeaf {
   /** Key into the `/api/v1/more/badges` response (see lib/moreBadges.ts) —
    * when set, Sidebar renders a small unread-count pill at the end of this
    * row, mirroring mobile MainDrawer.tsx's per-row `badge` treatment. */
-  badgeKey?: "jobAlerts" | "careerEvents" | "settings";
+  badgeKey?: "jobAlerts" | "careerEvents" | "settings" | "sharedWithMe";
 }
 
 export interface NavGroup {
@@ -152,11 +152,15 @@ export const secondaryNav: NavLeaf[] = [
   // "Refer & Earn" (src/more/MoreSrc.tsx) — same relative position here.
   // Receiving side of the same in-app sharing system Job Alerts' "Share
   // with a Saveur user" (ShareToUserModal) already uses — see
-  // lib/sharesService.ts and app/shared-with-me/page.tsx. No badgeKey:
-  // mobile's own row (src/more/MoreSrc.tsx) has no badgeCount/badgeDot for
-  // this either, and GET /api/v1/more/badges doesn't report an unread-shares
-  // or pending-connection-requests count today.
-  { label: "Shared with Me", labelKey: "sharedWithMe", href: "/shared-with-me", icon: "share-outline" },
+  // lib/sharesService.ts and app/shared-with-me/page.tsx. badgeKey
+  // "sharedWithMe" is web-only (product request, explicitly asked for
+  // regardless of mobile parity): mobile's own row here has no
+  // badgeCount/badgeDot, and GET /api/v1/more/badges doesn't report an
+  // unread-shares or pending-connection-requests count either, so
+  // Sidebar.tsx fetches this one separately via
+  // lib/sharesService.ts's getSharedWithMeBadgeCount() (unread shares +
+  // pending connection requests) instead of the shared /more/badges call.
+  { label: "Shared with Me", labelKey: "sharedWithMe", href: "/shared-with-me", icon: "share-outline", badgeKey: "sharedWithMe" },
   // Mobile drawer: MoreSrc.tsx places this row directly above Subscription
   // — a one-time-purchase catalog (Coding Practice, etc.) independent of
   // subscription tier, see src/more/AddOns.tsx.
