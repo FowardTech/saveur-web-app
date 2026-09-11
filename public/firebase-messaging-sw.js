@@ -9,8 +9,27 @@
 // lib/messaging.ts's registerServiceWorker() and read back below via
 // self.location.search. The other four values are stable/project-wide and
 // safe to hardcode here identically to lib/firebase.ts's own fallbacks.
-importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js");
+//
+// BUG FIX (real root cause of push "not working" / not showing up when the
+// tab is backgrounded, even after the service-worker-ready race fix):
+// this pinned a firebase-messaging-compat build EIGHT MAJOR VERSIONS behind
+// the actual `firebase` npm package this app builds against (package.json
+// has "firebase": "^12.18.0" — see lib/messaging.ts/lib/firebase.ts, both of
+// which resolve to the real installed v12.18.0 at build time; this file was
+// still on v10.14.1 from whenever the CDN URL was first copied in). FCM's
+// Web SDK shares state between the page context and this service worker via
+// an IndexedDB database ("firebase-messaging-database") that both sides
+// read/write to register+look up the push subscription/token — a version
+// gap this large between the SDK generating the token (v12, in the page)
+// and the SDK receiving/decrypting the push here (v10, in this worker) is a
+// well-documented source of exactly this failure mode: getToken() succeeds
+// and registration with the backend succeeds (so everything LOOKS wired up
+// correctly), but this worker silently fails to correctly pick up incoming
+// background pushes since it's reading that shared state with a different
+// SDK generation's expectations. Pinned to the same 12.18.0 as package.json
+// so both sides of the handshake agree.
+importScripts("https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/12.18.0/firebase-messaging-compat.js");
 
 const params = new URL(self.location.href).searchParams;
 
