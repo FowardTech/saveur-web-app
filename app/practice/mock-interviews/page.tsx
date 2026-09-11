@@ -364,12 +364,17 @@ function MockInterviewSetupInner() {
               </section>
 
               <section className="flex flex-col gap-2">
-                <h2 className="text-sm font-semibold text-hint">{t("web:practice.mockInterviews.targetRoleLabel", { defaultValue: "Target role" })}</h2>
+                <h2 className="text-sm font-semibold text-hint">
+                  {t("web:practice.mockInterviews.targetRoleLabel", { defaultValue: "Target role" })}
+                  <span className="ml-0.5 text-danger" aria-hidden="true">*</span>
+                </h2>
                 <p className="text-xs text-hint">{t("web:practice.mockInterviews.targetRoleDescription", { defaultValue: "What role are you interviewing for? Used to tailor your questions." })}</p>
                 <input
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder={t("web:practice.mockInterviews.targetRolePlaceholder", { defaultValue: "e.g. Software Engineer" })}
+                  required
+                  aria-required="true"
                   className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                 />
               </section>
