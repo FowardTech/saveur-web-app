@@ -86,6 +86,16 @@ export default function ResumeBuilderPage() {
   const [bulletText, setBulletText] = useState("");
   const [rewriting, setRewriting] = useState(false);
   const [rewriteResult, setRewriteResult] = useState<{ rewritten: string; explanation: string } | null>(null);
+  // Per-bullet "Rewrite with AI" launched from a real structured experience
+  // bullet (see the experience-section render below) instead of the manual
+  // paste box — tracks which exact sections[key][entryIndex].bullets[bulletIndex]
+  // the current bulletText/rewriteResult came from, so "Apply to resume" can
+  // write the rewritten text back to that exact spot via PATCH.
+  const [activeBulletTarget, setActiveBulletTarget] = useState<{ sectionKey: string; entryIndex: number; bulletIndex: number; label: string } | null>(null);
+  const [applyingBullet, setApplyingBullet] = useState(false);
+  const rewriteCardRef = useRef<HTMLDivElement>(null);
+  const targetRoleRef = useRef<HTMLInputElement>(null);
+  const generateFormRef = useRef<HTMLFormElement>(null);
 
   // "Import from" grid state — see IMPORT_OPTIONS above.
   const [imported, setImported] = useState<Record<string, ImportedFileInfo>>({});
@@ -150,6 +160,13 @@ export default function ResumeBuilderPage() {
     education: t("web:resume.builder.sections.education", { defaultValue: "Education" }),
     projects: t("web:resume.builder.sections.projects", { defaultValue: "Projects" }),
     certifications: t("web:resume.builder.sections.certifications", { defaultValue: "Certifications" }),
+    // Raw text stored by POST /resume/upload before any AI generation has
+    // run (Saveur-Backend/app/api/resume.py's upload() — parsed_json is
+    // literally just {extracted_text: <raw blob>} at that point). Without
+    // this entry it fell through to the literal key name "extracted_text"
+    // as a section header, which is what the user's bug report screenshot
+    // showed.
+    extracted_text: t("web:resume.builder.sections.extracted_text", { defaultValue: "Uploaded Resume (unformatted)" }),
   };
 
   async function load() {
@@ -170,8 +187,13 @@ export default function ResumeBuilderPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
 
-  async function handleGenerate(e: React.FormEvent) {
-    e.preventDefault();
+  // Core generation call, shared by the "Generate a tailored resume" form
+  // submit AND the "Organize into editable sections with AI" CTA on the raw
+  // extracted-text card below — same POST /resume/generate + PATCH
+  // /resume flow either way, so the CTA path gets the exact same
+  // Pro-gating (402/403 -> proRequired banner) and error handling instead
+  // of a separate, less-safe request.
+  async function runGenerate() {
     if (!targetRole.trim()) return;
     setGenerating(true);
     setError(null);
@@ -192,6 +214,73 @@ export default function ResumeBuilderPage() {
       }
     } finally {
       setGenerating(false);
+    }
+  }
+
+  async function handleGenerate(e: React.FormEvent) {
+    e.preventDefault();
+    await runGenerate();
+  }
+
+  // "Organize into editable sections with AI" CTA on the raw
+  // extracted_text card. Always scrolls to the "Generate a tailored
+  // resume" form first, so the user sees the generating state and — if
+  // this account isn't Pro — the existing proRequired upsell banner that
+  // lives in that form, rather than a silent background request. If
+  // target role isn't filled in yet (required by the backend), focuses it
+  // instead of submitting an empty role.
+  function handleOrganizeCta() {
+    generateFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!targetRole.trim()) {
+      window.setTimeout(() => targetRoleRef.current?.focus(), 350);
+      return;
+    }
+    void runGenerate();
+  }
+
+  // Launched from a "Rewrite with AI" button on a real structured
+  // experience bullet (see the experience-section render below) — pre-fills
+  // the existing manual bulletText state instead of making the user
+  // retype/copy-paste the bullet themselves, and remembers exactly which
+  // bullet it came from so a later "Apply to resume" can write the
+  // rewritten text back in place.
+  function startBulletRewrite(sectionKey: string, entryIndex: number, bulletIndex: number, text: string, label: string) {
+    setBulletText(text);
+    setActiveBulletTarget({ sectionKey, entryIndex, bulletIndex, label });
+    setRewriteResult(null);
+    setError(null);
+    rewriteCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // Writes the just-rewritten bullet back into that exact
+  // sections[sectionKey][entryIndex].bullets[bulletIndex] slot via the
+  // existing PATCH /api/v1/resume endpoint, so the rewrite closes the loop
+  // in place instead of only ever showing as a separate result the user has
+  // to manually copy back into their resume.
+  async function handleApplyBulletRewrite() {
+    if (!activeBulletTarget || !rewriteResult || !resume) return;
+    const { sectionKey, entryIndex, bulletIndex } = activeBulletTarget;
+    const sectionValue = resume.sections[sectionKey];
+    if (!Array.isArray(sectionValue)) return;
+    const updatedSection = sectionValue.map((entry, i) => {
+      if (i !== entryIndex || typeof entry !== "object" || entry === null) return entry;
+      const record = entry as Record<string, unknown>;
+      const bullets = Array.isArray(record.bullets) ? [...(record.bullets as unknown[])] : [];
+      bullets[bulletIndex] = rewriteResult.rewritten;
+      return { ...record, bullets };
+    });
+    setApplyingBullet(true);
+    setError(null);
+    try {
+      const saved = await apiClient.patch<ResumePayload>("/api/v1/resume", { sections: { [sectionKey]: updatedSection } });
+      setResume(saved);
+      setActiveBulletTarget(null);
+      setRewriteResult(null);
+      setBulletText("");
+    } catch (err) {
+      setError((err as ApiError).message || t("web:resume.builder.applyBulletFailedDefault", { defaultValue: "Couldn't save that change right now." }));
+    } finally {
+      setApplyingBullet(false);
     }
   }
 
@@ -311,9 +400,10 @@ export default function ResumeBuilderPage() {
             </Link>
           </div>
 
-          <form onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+          <form ref={generateFormRef} onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <h2 className="font-semibold text-primary">{t("web:resume.builder.generateSectionTitle", { defaultValue: "Generate a tailored resume" })}</h2>
             <TextField
+              ref={targetRoleRef}
               label={t("web:resume.builder.targetRoleLabel", { defaultValue: "Target role" })}
               placeholder={t("web:resume.builder.targetRolePlaceholder", { defaultValue: "e.g. Senior Backend Engineer" })}
               value={targetRole}
@@ -391,28 +481,131 @@ export default function ResumeBuilderPage() {
                 </p>
               ) : (
                 <div className="flex flex-col gap-3">
-                  {sectionEntries.map(([key, value]) => (
-                    <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
-                      <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
-                      <p className="mt-1.5 text-sm text-hint">{renderSectionValue(value)}</p>
-                    </div>
-                  ))}
+                  {sectionEntries.map(([key, value]) => {
+                    // Raw, not-yet-organized text from /resume/upload
+                    // (see SECTION_LABELS['extracted_text'] comment above) —
+                    // preserve its original line breaks instead of
+                    // collapsing them into one dense paragraph, and surface
+                    // the real fix (AI generation) right on the card.
+                    if (key === "extracted_text") {
+                      return (
+                        <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
+                          <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
+                          <p className="mt-1.5 whitespace-pre-wrap text-sm text-hint">{renderSectionValue(value)}</p>
+                          <div className="mt-3 flex flex-col items-start gap-2 rounded-lg border border-brand/30 bg-surface-1 p-3">
+                            <p className="text-sm text-primary">
+                              {t("web:resume.builder.extractedTextCtaDescription", {
+                                defaultValue: "This is your raw uploaded text, unformatted. Organize it into clean, editable resume sections with AI.",
+                              })}
+                            </p>
+                            <Button type="button" size="sm" onClick={handleOrganizeCta} disabled={generating}>
+                              {generating
+                                ? t("web:resume.builder.generating", { defaultValue: "Generating…" })
+                                : t("web:resume.builder.organizeWithAi", { defaultValue: "Organize into editable sections with AI" })}
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // Real AI-generated experience section (see
+                    // Saveur-Backend's RESUME_JSON_SCHEMA:
+                    // experience: [{title, company, location, start, end,
+                    // bullets: [str]}]) — render each bullet individually
+                    // with its own "Rewrite with AI" action instead of
+                    // flattening the whole entry through the generic
+                    // JSON.stringify fallback below.
+                    if ((key === "experience" || key === "professional_experience") && Array.isArray(value)) {
+                      return (
+                        <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
+                          <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
+                          <div className="mt-2 flex flex-col gap-4">
+                            {value.map((entry, entryIndex) => {
+                              if (typeof entry !== "object" || entry === null) {
+                                return (
+                                  <p key={entryIndex} className="whitespace-pre-wrap text-sm text-hint">
+                                    {renderSectionValue(entry)}
+                                  </p>
+                                );
+                              }
+                              const record = entry as Record<string, unknown>;
+                              const bullets = Array.isArray(record.bullets) ? (record.bullets as unknown[]) : [];
+                              const titleLine = [record.title, record.company].filter(Boolean).join(" · ");
+                              const dateLine = [record.start, record.end].filter(Boolean).join(" – ");
+                              const entryLabel = titleLine || (SECTION_LABELS[key] || key);
+                              return (
+                                <div key={entryIndex} className="rounded-lg border border-border bg-surface-1 p-3">
+                                  {(titleLine || dateLine) && (
+                                    <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-1">
+                                      {titleLine && <p className="text-sm font-semibold text-primary">{titleLine}</p>}
+                                      {dateLine && <p className="text-xs text-hint">{dateLine}</p>}
+                                    </div>
+                                  )}
+                                  {bullets.length > 0 ? (
+                                    <ul className="flex flex-col gap-1.5">
+                                      {bullets.map((bullet, bulletIndex) => {
+                                        const bulletStr = typeof bullet === "string" ? bullet : renderSectionValue(bullet);
+                                        return (
+                                          <li key={bulletIndex} className="flex items-start justify-between gap-2 text-sm text-hint">
+                                            <span className="whitespace-pre-wrap">{bulletStr}</span>
+                                            <button
+                                              type="button"
+                                              onClick={() => startBulletRewrite(key, entryIndex, bulletIndex, bulletStr, entryLabel)}
+                                              className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-border px-2 py-0.5 text-xs font-medium text-brand hover:border-brand/40"
+                                            >
+                                              <EvaIcon name="edit-2-outline" size={12} />
+                                              {t("web:resume.builder.rewriteBulletCta", { defaultValue: "Rewrite with AI" })}
+                                            </button>
+                                          </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  ) : (
+                                    <p className="whitespace-pre-wrap text-sm text-hint">{renderSectionValue(record.description)}</p>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
+                        <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
+                        <p className="mt-1.5 whitespace-pre-wrap text-sm text-hint">{renderSectionValue(value)}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
 
               {/* "Rewrite a Bullet with AI" — was entirely missing on web
                   (see mobile's ResumeBuilder.tsx, same feature/endpoint). */}
-              <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
+              <div ref={rewriteCardRef} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
                 <div>
                   <h3 className="font-semibold text-primary">{t("web:resume.builder.aiBulletRewrite", { defaultValue: "Rewrite a Bullet with AI" })}</h3>
                   <p className="mt-1 text-sm text-hint">
-                    {t("web:resume.builder.aiBulletRewriteDescription", { defaultValue: "Paste a resume bullet — we'll tighten the wording and lead with a stronger verb." })}
+                    {activeBulletTarget
+                      ? t("web:resume.builder.aiBulletRewriteFromEntry", {
+                          defaultValue: "Editing a bullet from \"{{label}}\" — rewrite it, then apply it back in place.",
+                          label: activeBulletTarget.label,
+                        })
+                      : t("web:resume.builder.aiBulletRewriteDescription", { defaultValue: "Paste a resume bullet — we'll tighten the wording and lead with a stronger verb." })}
                   </p>
                 </div>
                 <textarea
                   rows={3}
                   value={bulletText}
-                  onChange={(e) => setBulletText(e.target.value)}
+                  onChange={(e) => {
+                    setBulletText(e.target.value);
+                    // Manually editing the text after it was pre-filled from
+                    // a specific bullet detaches it from that origin — Apply
+                    // only ever writes back a rewrite of the exact bullet it
+                    // started from, not an edited/different one.
+                    if (activeBulletTarget) setActiveBulletTarget(null);
+                  }}
                   placeholder={t("web:resume.builder.bulletPlaceholder", { defaultValue: "e.g. Responsible for managing the onboarding process for new hires" })}
                   className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                 />
@@ -430,6 +623,20 @@ export default function ResumeBuilderPage() {
                       <p className="mt-1.5 text-sm font-medium text-primary">{rewriteResult.rewritten}</p>
                       {rewriteResult.explanation && <p className="mt-2 text-xs text-hint">{rewriteResult.explanation}</p>}
                     </div>
+                    {/* Closes the loop: writes the rewritten text back into
+                        the exact experience bullet it came from via PATCH
+                        /api/v1/resume, instead of leaving the user to copy
+                        it back in by hand. Only shown when this rewrite
+                        actually originated from a real structured bullet
+                        (see startBulletRewrite above) — the manual paste-box
+                        flow has nowhere in `sections` to write back to. */}
+                    {activeBulletTarget && (
+                      <Button onClick={handleApplyBulletRewrite} disabled={applyingBullet} variant="outline" className="w-fit">
+                        {applyingBullet
+                          ? t("web:resume.builder.applyingBullet", { defaultValue: "Applying…" })
+                          : t("web:resume.builder.applyBulletToResume", { defaultValue: "Apply to resume" })}
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
