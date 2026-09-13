@@ -28,7 +28,20 @@ import { INTERVIEW_TYPES, interviewTypeFromSlug, interviewTypeSlug, PRACTICE_MOD
 // PRACTICE_MODES/DIFFICULTIES/DURATION_OPTIONS_MIN now live in
 // lib/interviewData.ts, shared with app/practice/schedule/page.tsx (the
 // near-twin "Schedule Mock Interview" screen).
-const FREE_SESSIONS_PER_MONTH = 5;
+//
+// BUG FIX (product report: "I thought we said its 3 free mock sessions
+// every month for free plan. Why am i see 5 free sessions in the web
+// app?"): this used to be the ONLY source for the free-tier cap — a
+// locally hardcoded 5, never actually 3, and never synced with the real
+// backend value (Saveur-Backend's entitlements_service.py's
+// FREE_SESSIONS_PER_MONTH, which IS 3). The backend already returns the
+// authoritative sessions_used/sessions_limit on every
+// GET /api/v1/billing/subscription call (billingService.ts's
+// SubscriptionStatus.sessionsUsed/sessionsLimit — already wired up
+// correctly, just never read here) — the effect below now prefers that
+// real value and only falls back to this constant if it's ever missing,
+// mirroring mobile's entitlementsService.ts getSessionEntitlement().
+const FREE_SESSIONS_PER_MONTH = 3;
 
 interface InterviewPersona {
   id: string;
@@ -49,7 +62,7 @@ interface SessionResult {
 function MockInterviewSetupInner() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { profile, isPremium, isPro, loading: authLoading } = useAuth();
+  const { profile, isPremium, isPro, subscriptionStatus, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
 
   // Pro Premium / Pro (Yearly) only — same gate mobile's isPremium applies
@@ -179,17 +192,26 @@ function MockInterviewSetupInner() {
         if (!cancelled) setUnlockedAddonCodes([]);
       }
       if (isFreeTier) {
-        try {
-          const sessions = await apiClient.get<{ started_at: string }[]>("/api/v1/interviews/sessions");
-          if (cancelled) return;
-          const now = new Date();
-          const usedThisMonth = sessions.filter((s) => {
-            const d = new Date(s.started_at);
-            return !Number.isNaN(d.getTime()) && d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-          }).length;
-          setRemainingFreeSessions(Math.max(0, FREE_SESSIONS_PER_MONTH - usedThisMonth));
-        } catch {
-          if (!cancelled) setRemainingFreeSessions(null);
+        // Prefer the real backend-reported limit/usage (always present —
+        // see this file's own FREE_SESSIONS_PER_MONTH comment) over
+        // recomputing it client-side from raw session history.
+        if (subscriptionStatus?.sessionsLimit != null) {
+          if (!cancelled) {
+            setRemainingFreeSessions(Math.max(0, subscriptionStatus.sessionsLimit - (subscriptionStatus.sessionsUsed ?? 0)));
+          }
+        } else {
+          try {
+            const sessions = await apiClient.get<{ started_at: string }[]>("/api/v1/interviews/sessions");
+            if (cancelled) return;
+            const now = new Date();
+            const usedThisMonth = sessions.filter((s) => {
+              const d = new Date(s.started_at);
+              return !Number.isNaN(d.getTime()) && d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+            }).length;
+            setRemainingFreeSessions(Math.max(0, FREE_SESSIONS_PER_MONTH - usedThisMonth));
+          } catch {
+            if (!cancelled) setRemainingFreeSessions(null);
+          }
         }
       }
     })();
@@ -197,7 +219,7 @@ function MockInterviewSetupInner() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authLoading, isFreeTier]);
+  }, [authLoading, isFreeTier, subscriptionStatus?.sessionsLimit, subscriptionStatus?.sessionsUsed]);
 
   const requiredAddonCode = billingService.addonCodeForInterviewType(interviewType.label);
   const selectedTypeAddonOwned = requiredAddonCode ? !!unlockedAddonCodes?.includes(requiredAddonCode) : false;
@@ -517,7 +539,7 @@ function MockInterviewSetupInner() {
                   <span>
                     {t("web:practice.mockInterviews.freeLimitReachedBody", {
                       defaultValue: "Free plans include {{limit}} practice sessions a month. Upgrade to Basic for unlimited practice.",
-                      limit: FREE_SESSIONS_PER_MONTH,
+                      limit: subscriptionStatus?.sessionsLimit ?? FREE_SESSIONS_PER_MONTH,
                     })}
                   </span>
                   <LinkButton href="/subscription" size="sm" variant="outline">
