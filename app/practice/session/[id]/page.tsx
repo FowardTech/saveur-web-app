@@ -76,12 +76,30 @@ interface StarItem {
   note?: string;
 }
 
+interface CameraAnalysis {
+  eye_contact_avg: number | null;
+  smile_avg: number | null;
+  posture_avg: number | null;
+  confidence: number | null;
+}
+
 interface FeedbackDetail {
   status: "ready" | "pending";
   overall_score: number;
   scores: FeedbackScores;
   star_breakdown: StarItem[];
   summary: string | null;
+  // BUG FIX (product report: "The camera feedback is not showing after
+  // the video mock interview only the normal feedback"): GET
+  // /api/v1/feedback/session/<id> has always returned this real,
+  // persisted aggregate (Saveur-Backend's camera_analysis.py, computed
+  // from CameraAnalysisFrame rows) — this page just never declared or
+  // rendered the field at all. Unlike mobile's InterviewFeedback.tsx
+  // (whose equivalent "Video Analysis" rings are ephemeral — only ever
+  // populated via live navigation params right after finishing, gone on
+  // a revisit from history), this reads the real backend aggregate, so
+  // it survives reopening an old session later too.
+  camera?: CameraAnalysis | null;
   strengths: string[];
   improvements: string[];
 }
@@ -491,6 +509,34 @@ export default function PracticeSessionDetailPage() {
                       ))}
                     </div>
                   </div>
+
+                  {session.mode === "video" && feedback.camera && feedback.camera.confidence != null && (
+                    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                      <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                        {t("web:practice.session.cameraAnalysis", { defaultValue: "Camera analysis" })}
+                      </h2>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        {([
+                          ["eyeContact", feedback.camera.eye_contact_avg, "web:practice.session.eyeContact", "Eye contact"],
+                          ["smiling", feedback.camera.smile_avg, "web:practice.session.smiling", "Smiling"],
+                          ["posture", feedback.camera.posture_avg, "web:practice.session.posture", "Posture"],
+                          ["confidence", feedback.camera.confidence != null ? feedback.camera.confidence / 100 : null, "web:practice.session.cameraConfidence", "On-camera confidence"],
+                        ] as const).map(([key, fraction, i18nKey, label]) =>
+                          fraction == null ? null : (
+                            <div key={key} className="flex flex-col gap-1.5">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-primary">{t(i18nKey, { defaultValue: label })}</span>
+                                <span className="font-medium text-primary">{Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%</span>
+                              </div>
+                              <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
+                                <div className="h-full rounded-full bg-brand" style={{ width: `${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%` }} />
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {feedback.star_breakdown && feedback.star_breakdown.length > 0 && (
                     <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
