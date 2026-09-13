@@ -98,16 +98,51 @@ function SalaryNegotiationPageInner() {
     setSending(true);
     setError(null);
     try {
-      const data = await apiClient.post<{ recruiter_response: string; updated_offer: Offer; is_final_round: boolean }>(
-        "/api/v1/coach/negotiation",
-        {
-          offer: currentOffer,
-          ask: ask.trim(),
-          context: { company: scenario.company, role: scenario.role, level: scenario.level },
-        }
-      );
-      setRounds((prev) => [...prev, { ask: ask.trim(), recruiter_response: data.recruiter_response }]);
-      setCurrentOffer(data.updated_offer || currentOffer);
+      // BUG FIX (product report: "look at the chat bubble after the
+      // user's own its empty"): this used to read data.recruiter_response
+      // as the only possible field name and pass data.updated_offer
+      // through untouched. The backend prompt this hits
+      // (app_config_service.py's negotiation_system) has at times declared
+      // a DIFFERENT updated_offer shape ({baseSalary, signingBonus, ...})
+      // than the {base, bonus, equity, currency} shape the rest of this
+      // screen uses for `Offer` — an LLM reply that actually followed that
+      // older prompt literally would produce a response object neither
+      // key name here expected, rendering as an empty bubble with no
+      // error (a missing object field silently becomes undefined, not a
+      // thrown exception). Mobile's salaryNegotiationService.ts already
+      // reads several possible key-name variants defensively for exactly
+      // this reason — mirrored here, plus a non-empty fallback line so a
+      // genuinely empty/missing reply is never rendered as a blank bubble
+      // again, backend prompt fix or not.
+      const data = await apiClient.post<{
+        recruiter_response?: string;
+        response?: string;
+        message?: string;
+        updated_offer?: Partial<Offer> & { baseSalary?: number; signingBonus?: number };
+        is_final_round?: boolean;
+      }>("/api/v1/coach/negotiation", {
+        offer: currentOffer,
+        ask: ask.trim(),
+        context: { company: scenario.company, role: scenario.role, level: scenario.level },
+      });
+      const recruiterResponse =
+        data.recruiter_response?.trim() ||
+        data.response?.trim() ||
+        data.message?.trim() ||
+        t("web:career.salaryNegotiation.recruiterResponseFallback", {
+          defaultValue: "Let's keep talking — what matters most to you in this offer?",
+        }).toString();
+      const wireOffer = data.updated_offer;
+      const updatedOffer: Offer = wireOffer
+        ? {
+            base: wireOffer.base ?? wireOffer.baseSalary ?? currentOffer.base,
+            bonus: wireOffer.bonus ?? currentOffer.bonus,
+            equity: wireOffer.equity ?? currentOffer.equity,
+            currency: wireOffer.currency ?? currentOffer.currency,
+          }
+        : currentOffer;
+      setRounds((prev) => [...prev, { ask: ask.trim(), recruiter_response: recruiterResponse }]);
+      setCurrentOffer(updatedOffer);
       setIsFinal(Boolean(data.is_final_round));
       setAsk("");
     } catch (err) {
