@@ -490,9 +490,18 @@ export default function LiveInterviewSessionPage() {
       setRecordingUnavailable(true);
       return;
     }
+    // BUG FIX (product report: "In the video play recording I only heard
+    // the users voice but did not hear the AI voice"): recording `stream`
+    // directly only ever captures the camera + mic tracks from
+    // getUserMedia — the AI's spoken questions play through a plain
+    // <audio> element (ttsService.speak()), which was never part of any
+    // MediaStream, so it could never end up in the recording. See
+    // ttsService.buildRecordingStream's own comment for how this mixes
+    // the AI voice into a real audio track alongside the mic input.
+    const recordingStream = ttsService.buildRecordingStream(stream);
     const supportedType = RECORDING_MIME_CANDIDATES.find((c) => MediaRecorder.isTypeSupported(c));
     try {
-      const recorder = supportedType ? new MediaRecorder(stream, { mimeType: supportedType }) : new MediaRecorder(stream);
+      const recorder = supportedType ? new MediaRecorder(recordingStream, { mimeType: supportedType }) : new MediaRecorder(recordingStream);
       recorder.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
       };

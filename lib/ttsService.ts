@@ -225,3 +225,78 @@ export function cancel(): void {
     window.speechSynthesis.cancel();
   }
 }
+
+// ---------------------------------------------------------------------------
+// BUG FIX (product report: "In the video play recording I only heard the
+// users voice but did not hear the AI voice"): speak() above plays the AI's
+// ElevenLabs audio straight to the default output device via the shared
+// <audio> element — that's real, audible playback for the candidate, but
+// it's NOT part of any MediaStream, so a Video-mode MediaRecorder recording
+// (which only ever captures the tracks it's explicitly given — the camera +
+// mic tracks from getUserMedia) could only ever end up with the
+// candidate's own voice on it, never the interviewer's.
+//
+// buildRecordingStream() routes the SAME shared <audio> element's output
+// through a Web Audio graph so it becomes a real, capturable MediaStream
+// track, mixed together with the candidate's own mic input into ONE
+// combined audio track (MediaRecorder does not reliably mix multiple
+// separate audio tracks handed to it across browsers — the mixing has to
+// happen in the audio graph itself, before MediaRecorder ever sees it).
+// The element is also explicitly reconnected to the AudioContext's own
+// destination, since attaching a MediaElementSourceNode to an element
+// silences its normal output unless something re-connects it onward.
+// ---------------------------------------------------------------------------
+
+let sharedAudioContext: AudioContext | null = null;
+let sharedTtsSourceNode: MediaElementAudioSourceNode | null = null;
+let sharedMixDestNode: MediaStreamAudioDestinationNode | null = null;
+
+/**
+ * Returns a new MediaStream combining `cameraStream`'s video track with ONE
+ * mixed audio track containing both the candidate's own mic input AND
+ * whatever the AI voice is speaking through ttsService.speak() at the time —
+ * for MediaRecorder to record instead of `cameraStream` directly. Falls
+ * back to returning `cameraStream` unchanged (AI voice will be missing from
+ * the recording, same as before this fix) if the Web Audio API isn't
+ * available in this browser at all. Safe to call once per recording
+ * session — the underlying AudioContext/source node are created lazily and
+ * cached at module scope, since createMediaElementSource can only ever be
+ * attached to a given <audio> element once for its whole lifetime.
+ */
+export function buildRecordingStream(cameraStream: MediaStream): MediaStream {
+  const audio = getAudioEl();
+  const AudioContextCtor = typeof window !== "undefined" ? window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext : undefined;
+  if (!audio || !AudioContextCtor) return cameraStream;
+  try {
+    if (!sharedAudioContext) {
+      sharedAudioContext = new AudioContextCtor();
+    }
+    if (sharedAudioContext.state === "suspended") {
+      void sharedAudioContext.resume();
+    }
+    if (!sharedMixDestNode) {
+      sharedMixDestNode = sharedAudioContext.createMediaStreamDestination();
+    }
+    if (!sharedTtsSourceNode) {
+      sharedTtsSourceNode = sharedAudioContext.createMediaElementSource(audio);
+      sharedTtsSourceNode.connect(sharedAudioContext.destination); // keep it audible to the candidate
+      sharedTtsSourceNode.connect(sharedMixDestNode); // also capturable
+    }
+    const micTracks = cameraStream.getAudioTracks();
+    if (micTracks.length > 0) {
+      // A fresh MediaStreamSourceNode per call — the mic track comes from a
+      // brand new getUserMedia stream each interview session, so there's no
+      // stale node to reuse here the way the TTS element's node is reused.
+      // NOT connected to sharedAudioContext.destination — the raw mic
+      // input already reaches the candidate acoustically; routing it back
+      // out through the speakers here would just create an echo.
+      const micSource = sharedAudioContext.createMediaStreamSource(new MediaStream(micTracks));
+      micSource.connect(sharedMixDestNode);
+    }
+    return new MediaStream([...cameraStream.getVideoTracks(), ...sharedMixDestNode.stream.getAudioTracks()]);
+  } catch {
+    // Any Web Audio failure — fall back to recording just the camera/mic
+    // stream, still better than no recording at all.
+    return cameraStream;
+  }
+}
