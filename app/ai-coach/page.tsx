@@ -157,6 +157,29 @@ function AiCoachPageInner() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // BUG FIX (product report: "The AI greeting in the AI coach is getting in
+  // English instead of the user's preferred language"). load() above only
+  // ever computes coachGreetingText ONCE, in the render that runs right as
+  // authLoading flips to false, then freezes that resolved string into
+  // messages state. But the user's saved locale is applied by a SEPARATE,
+  // slower effect (I18nProvider's profile?.locale effect, which itself
+  // awaits the async i18n.changeLanguage() call) that can easily still be
+  // in flight at that exact moment — so the greeting bubble got stuck
+  // showing whatever i18n.language happened to be a beat too early
+  // (typically the English/browser-default boot language), never
+  // retranslating even once the real locale landed a moment later. This
+  // re-syncs the greeting's text whenever the resolved translation changes,
+  // but ONLY while the thread is still nothing but that untouched greeting
+  // — the same guard the "suggested topics" screen below already uses to
+  // detect that state — so it never overwrites a real conversation.
+  useEffect(() => {
+    setMessages((prev) =>
+      prev.length === 1 && prev[0].id === "msg_greeting" && prev[0].text !== coachGreetingText
+        ? [{ ...prev[0], text: coachGreetingText }]
+        : prev
+    );
+  }, [coachGreetingText]);
+
   // Web port of mobile's Chat.tsx initialPrompt handling — "Discuss this
   // feedback"/"Discuss this interview with your coach" buttons elsewhere in
   // the app (e.g. app/practice/session/[id]/page.tsx) link here with

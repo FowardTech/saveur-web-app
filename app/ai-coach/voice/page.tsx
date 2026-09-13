@@ -391,18 +391,41 @@ function VoiceCoachPageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveTranscript, phase]);
 
-  // Whether the static local greeting has already been spoken this page
-  // visit — only ever spoken once, the first time the user starts a
-  // session, same as VoiceCoachView's own one-shot intro on mobile.
-  const greetedRef = useRef(false);
+  // BUG FIX (product report: "The AI greeting in the AI voice chat is
+  // always saying that every time. It should always say the greeting
+  // once, the first time the user enters that screen for the first
+  // time"). This used to be a plain per-mount `useRef(false)` — reset
+  // every single time this page component mounts, i.e. every visit, so
+  // the intro got spoken again on every visit instead of truly once ever.
+  // Mirrors mobile's own fix for the identical bug (VoiceCoachView.tsx's
+  // isFirstEverCoachVisit): the real signal for "has this user ever
+  // talked to the coach before" is whether their persisted coach thread
+  // (GET /api/v1/coach/messages — the exact same endpoint/thread Text
+  // mode reads and shares) has any real messages in it yet, not a local
+  // flag that resets on every page visit. null = not resolved yet; true =
+  // has real history (or the check failed — best-effort, same as
+  // mobile's "a failed history fetch shouldn't block listening", skip the
+  // intro rather than risk repeating it); false = genuinely first-ever
+  // visit, still to be greeted.
+  const hasRealCoachHistoryRef = useRef<boolean | null>(null);
+  useEffect(() => {
+    apiClient
+      .get<{ messages: unknown[] }>("/api/v1/coach/messages")
+      .then((data) => {
+        hasRealCoachHistoryRef.current = data.messages.length > 0;
+      })
+      .catch(() => {
+        hasRealCoachHistoryRef.current = true;
+      });
+  }, []);
 
   const startSession = useCallback(() => {
     setErrorMsg(null);
     setProRequired(false);
     networkErrorStreakRef.current = 0;
     sessionActiveRef.current = true;
-    if (!greetedRef.current) {
-      greetedRef.current = true;
+    if (hasRealCoachHistoryRef.current === false) {
+      hasRealCoachHistoryRef.current = true;
       // BUG FIX (mobile parity — VoiceCoachView.tsx speaks a hardcoded,
       // purely local intro line via native TTS the moment Voice mode is
       // engaged, entirely independent of any LLM call; see that file's own
@@ -438,7 +461,7 @@ function VoiceCoachPageInner() {
       setProRequired(false);
       networkErrorStreakRef.current = 0;
       sessionActiveRef.current = true;
-      greetedRef.current = true;
+      hasRealCoachHistoryRef.current = true;
       setPhase("thinking");
       void sendTurn(topic);
     },
