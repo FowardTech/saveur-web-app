@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -139,6 +139,7 @@ function formatSessionDate(iso: string) {
 
 export default function PracticeSessionDetailPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { loading: authLoading } = useAuth();
   const params = useParams<{ id: string }>();
   const sessionId = params?.id;
@@ -290,6 +291,23 @@ export default function PracticeSessionDetailPage() {
 
   function sessionTypeLabel(type: string) {
     return t(`web:practice.mockInterviews.types.${type}`, { defaultValue: fallbackLabelFor(type) });
+  }
+
+  // Web port of mobile's InterviewFeedback.tsx onDiscussWithCoach — seeds
+  // the coach conversation with this screen's own real data (interview
+  // type + overall score) instead of a generic "let's talk" placeholder,
+  // so the coach's first reply can engage with real numbers immediately.
+  // Product report: "The discuss this feedback feature is not in the web
+  // version."
+  function onDiscussWithCoach() {
+    if (!session || !feedback) return;
+    const typeLabel = sessionTypeLabel(session.type);
+    const message = t("web:practice.session.discussPrompt", {
+      defaultValue: "I just finished a {{type}} mock interview and scored {{score}}%. Can you help me understand my results and how I can improve?",
+      type: typeLabel,
+      score: Math.round(feedback.overall_score),
+    }).toString();
+    router.push(`/ai-coach?prompt=${encodeURIComponent(message)}`);
   }
 
   function skillLabel(key: keyof FeedbackScores) {
@@ -618,6 +636,13 @@ export default function PracticeSessionDetailPage() {
                     </div>
                   )}
                 </div>
+              )}
+
+              {feedback && feedback.status === "ready" && (
+                <Button variant="outline" onClick={onDiscussWithCoach} className="w-fit">
+                  <EvaIcon name="message-circle-outline" size={16} className="mr-1.5" />
+                  {t("web:practice.session.discussWithCoach", { defaultValue: "Discuss this interview with your coach" })}
+                </Button>
               )}
             </>
           )}

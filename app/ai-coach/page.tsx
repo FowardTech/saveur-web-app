@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -59,9 +59,21 @@ const GREETING_MESSAGE: CoachMessage = {
   text: COACH_GREETING_TEXT,
 };
 
+// useSearchParams() (reads ?prompt= — see the initial-prompt effect below)
+// requires a Suspense boundary around anything that calls it, same as
+// app/ai-coach/voice/page.tsx's identical wrapper.
 export default function AiCoachPage() {
+  return (
+    <Suspense fallback={null}>
+      <AiCoachPageInner />
+    </Suspense>
+  );
+}
+
+function AiCoachPageInner() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loading: authLoading, profile } = useAuth();
   const coachGreetingText = t("common:coach.greeting", { defaultValue: COACH_GREETING_TEXT });
   const [messages, setMessages] = useState<CoachMessage[]>([]);
@@ -144,6 +156,26 @@ export default function AiCoachPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Web port of mobile's Chat.tsx initialPrompt handling — "Discuss this
+  // feedback"/"Discuss this interview with your coach" buttons elsewhere in
+  // the app (e.g. app/practice/session/[id]/page.tsx) link here with
+  // ?prompt=<message>, auto-sending it as a real question the moment the
+  // thread has loaded, instead of just opening the coach on a blank screen
+  // and making the user retype what they just saw. (Product report: "The
+  // discuss this feedback feature is not in the web version.")
+  const hasSentInitialPromptRef = useRef(false);
+  useEffect(() => {
+    if (!loaded || hasSentInitialPromptRef.current) return;
+    const prompt = searchParams?.get("prompt");
+    if (!prompt) return;
+    hasSentInitialPromptRef.current = true;
+    // Strip the query param so a later refresh of this screen doesn't
+    // silently resend the same prompt as a brand new question.
+    router.replace("/ai-coach");
+    void sendQuestion(prompt);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, searchParams]);
 
   // Stop any in-flight speech if the user navigates away mid-reply.
   useEffect(() => {
