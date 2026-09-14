@@ -350,25 +350,60 @@ export default function LearningPage() {
                 <>
                   <p className="text-sm font-semibold text-primary">{t("web:learning.goalPrefix", { defaultValue: "Goal: {{goal}}", goal: curriculum.goal })}</p>
                   <div className="flex flex-col gap-3">
-                    {curriculum.weeks.map((w) => (
-                      <div key={w.week} className="flex items-center gap-4 rounded-card border border-border bg-surface-1 p-4">
-                        <span
-                          className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                            w.completed ? "bg-tint-mint text-tint-mint-text" : w.unlocked ? "bg-brand/10 text-brand" : "bg-surface-3 text-hint"
-                          }`}
-                        >
-                          {w.completed ? <EvaIcon name="checkmark-outline" size={16} /> : w.week}
-                        </span>
-                        <div className="flex-1">
-                          <h3 className="font-medium text-primary">{w.topic}</h3>
-                          <p className="text-xs text-hint">
-                            {t("web:learning.weekLabel", { defaultValue: "Week {{week}}", week: w.week })}
-                            {w.level ? ` · ${w.level}` : ""}
-                            {!w.unlocked && !w.completed ? ` · ${t("web:learning.locked", { defaultValue: "Locked" })}` : ""}
-                          </p>
+                    {curriculum.weeks.map((w) => {
+                      // BUG FIX (product report: "The AI generated curriculum
+                      // in the learning course has no buttons to click to
+                      // begin the leaning"). This used to be a plain
+                      // read-only row — real progress data (w.completed,
+                      // w.unlocked) rendered, but nothing on the row was ever
+                      // clickable, so there was no way to actually enter a
+                      // week's course at all short of finding it again via
+                      // "Learn Anything"/the catalog below. Mirrors mobile's
+                      // LearningCourses.tsx onStartCurriculumWeek: curriculum
+                      // weeks always run at the "basic" level (MODULES_PER_LEVEL.basic),
+                      // same courseIdFor(topic, "basic") + `?topic=` deep-link
+                      // convention the catalog cards below and the AI Coach's
+                      // "Learn more about X" chip already use.
+                      const weekCourseId = courseIdFor(w.topic, "basic");
+                      const completedModules = byCourse[weekCourseId]?.completed_modules ?? 0;
+                      const locked = !w.unlocked && !w.completed;
+                      return (
+                        <div key={w.week} className="flex items-center gap-4 rounded-card border border-border bg-surface-1 p-4">
+                          <span
+                            className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
+                              w.completed ? "bg-tint-mint text-tint-mint-text" : w.unlocked ? "bg-brand/10 text-brand" : "bg-surface-3 text-hint"
+                            }`}
+                          >
+                            {w.completed ? <EvaIcon name="checkmark-outline" size={16} /> : w.week}
+                          </span>
+                          <div className="flex-1">
+                            <h3 className="font-medium text-primary">{w.topic}</h3>
+                            <p className="text-xs text-hint">
+                              {t("web:learning.weekLabel", { defaultValue: "Week {{week}}", week: w.week })}
+                              {w.level ? ` · ${w.level}` : ""}
+                              {locked ? ` · ${t("web:learning.locked", { defaultValue: "Locked" })}` : ""}
+                            </p>
+                          </div>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            disabled={locked}
+                            className="w-auto shrink-0"
+                            onClick={() => {
+                              const qs = new URLSearchParams({ topic: w.topic });
+                              router.push(`/learning/course/${encodeURIComponent(weekCourseId)}?${qs.toString()}`);
+                            }}
+                          >
+                            {w.completed
+                              ? t("web:learning.review", { defaultValue: "Review" })
+                              : completedModules > 0
+                              ? t("web:learning.continue", { defaultValue: "Continue" })
+                              : t("web:learning.start", { defaultValue: "Start" })}
+                          </Button>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </>
               ) : isAutoGenerating ? (
