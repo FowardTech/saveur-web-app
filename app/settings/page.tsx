@@ -1,13 +1,29 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ActionCard } from "@/components/ui/ActionCard";
+import { EvaIcon } from "@/components/icons/EvaIcon";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { resetAppTour } from "@/components/dashboard/AppTour";
 
 export default function SettingsPage() {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { profile } = useAuth();
+
+  // "Show app tour" replay entry — mobile's More menu equivalent
+  // (src/more/MoreSrc.tsx's onReplayTour). Clears the local "seen" flag and
+  // navigates to /dashboard, where AppTour's own mount effect picks it up
+  // immediately (same clear-then-navigate-back-to-Home pattern mobile
+  // uses).
+  function onReplayTour() {
+    resetAppTour(profile?.uid);
+    router.push("/dashboard");
+  }
 
   const settingsLinks = [
     {
@@ -53,6 +69,15 @@ export default function SettingsPage() {
               <ActionCard key={link.href} href={link.href} icon={link.icon} title={link.title} description={link.description} tint={link.tint} />
             ))}
           </div>
+
+          <button
+            type="button"
+            onClick={onReplayTour}
+            className="flex w-fit items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2.5 text-sm font-medium text-primary transition hover:bg-surface-3"
+          >
+            <EvaIcon name="compass-outline" size={16} className="text-brand" />
+            {t("web:settings.hub.showAppTour", { defaultValue: "Show app tour" })}
+          </button>
         </div>
       </AppShell>
     </RequireAuth>

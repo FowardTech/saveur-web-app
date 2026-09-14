@@ -58,6 +58,7 @@ const ICONS = [
   "checkmark-circle-2-outline",
   "checkmark-outline",
   "checkmark-circle-outline",
+  "checkmark-square-2-outline",
   "arrow-forward-outline",
   "arrow-right-outline",
   "arrow-circle-right-outline",

@@ -16,6 +16,7 @@ import { needsOnboarding } from "@/lib/types";
 import { quickActions, tintCycle } from "@/lib/navigation";
 import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard";
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
+import { AppTour } from "@/components/dashboard/AppTour";
 
 function useGreeting() {
   const { t } = useTranslation();
@@ -78,6 +79,12 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <WelcomeModal />
+      {/* One-time "how this app works" walkthrough (product report: "The
+          web version does not have tour guide. You need to implement
+          that") — see AppTour's own header comment for why it's a step
+          carousel rather than a spotlight overlay, and how it sequences
+          after WelcomeModal. Replayable from Settings. */}
+      <AppTour />
       <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
         <div>
           <h1 className="text-2xl font-bold text-primary">
