@@ -477,6 +477,14 @@ export interface CourseVideo {
   topic?: string | null;
   moduleTitle?: string | null;
   courseId?: string | null;
+  // Only populated on rows coming back from getContinueVideo()/getSavedVideos()
+  // below (product report: "Continue video is not implemented in the web
+  // version" / "the app should always know where i stopped in the video and
+  // then i can continue from where i stopped") — the recommendation list
+  // from getModuleVideos never sets these, since a video just being
+  // recommended has no watch history yet. Mirrors mobile's CourseVideo.
+  lastPositionSeconds?: number;
+  durationSeconds?: number | null;
 }
 
 interface CourseVideoWire {
@@ -490,6 +498,8 @@ interface CourseVideoWire {
   topic?: string | null;
   module_title?: string | null;
   course_id?: string | null;
+  last_position_seconds?: number;
+  duration_seconds?: number | null;
 }
 
 function fromVideoWire(w: CourseVideoWire): CourseVideo {
@@ -504,6 +514,8 @@ function fromVideoWire(w: CourseVideoWire): CourseVideo {
     topic: w.topic,
     moduleTitle: w.module_title,
     courseId: w.course_id,
+    lastPositionSeconds: w.last_position_seconds,
+    durationSeconds: w.duration_seconds,
   };
 }
 
@@ -577,6 +589,51 @@ export async function setVideoSaved(video: CourseVideo, saved: boolean, context?
     return true;
   } catch {
     return false;
+  }
+}
+
+/**
+ * Reports the current playback position (product report: "the app should
+ * always know where i stopped in the video and then i can continue from
+ * where i stopped"). Called by components/learning/InAppVideoPlayer.tsx on
+ * a throttled interval while actually playing, plus once more on
+ * pause/end — never on every single player tick. Only needs the video id +
+ * a position; the backend just updates an already-existing row from
+ * logVideoWatch's earlier call (see video_activity_service.update_position's
+ * own comment for why full metadata isn't required here). Fire-and-forget,
+ * same tolerance as logVideoWatch above: a dropped position report should
+ * never interrupt playback.
+ */
+export async function updateVideoPosition(
+  videoId: string,
+  positionSeconds: number,
+  durationSeconds?: number
+): Promise<void> {
+  try {
+    await apiClient.post("/api/v1/learning/videos/position", {
+      video_id: videoId,
+      position_seconds: positionSeconds,
+      duration_seconds: durationSeconds,
+    });
+  } catch {
+    // best-effort
+  }
+}
+
+/**
+ * The single most recently watched, not-yet-finished video (or null) —
+ * backs the web dashboard's "Continue Watching" card (product report:
+ * "Continue video is not implemented in the web version"). Mirrors
+ * mobile's ContinueLearningCard.tsx / GET /api/v1/learning/videos/continue.
+ * `lastPositionSeconds`/`durationSeconds` on the returned CourseVideo tell
+ * the card how far in to resume and how much is left.
+ */
+export async function getContinueVideo(): Promise<CourseVideo | null> {
+  try {
+    const data = await apiClient.get<{ video?: CourseVideoWire | null }>("/api/v1/learning/videos/continue");
+    return data.video ? fromVideoWire(data.video) : null;
+  } catch {
+    return null;
   }
 }
 

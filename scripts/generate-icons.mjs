@@ -109,6 +109,7 @@ const ICONS = [
   "refresh-outline",
   "loader-outline",
   "code-download-outline",
+  "video-off-outline",
 ];
 
 function extractInner(svg) {

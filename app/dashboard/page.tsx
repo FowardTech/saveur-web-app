@@ -15,6 +15,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
 import { quickActions, tintCycle } from "@/lib/navigation";
 import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard";
+import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCard";
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
 import { AppTour } from "@/components/dashboard/AppTour";
 
@@ -111,6 +112,13 @@ export default function DashboardPage() {
             nothing scheduled (see app/practice/schedule/page.tsx for the
             scheduling entry point, reached from the Practice hub). */}
         <UpcomingSessionCard />
+
+        {/* Continue Watching — product report: "Continue video is not
+            implemented in the web version." Self-contained, renders
+            nothing when there's no in-progress video (see
+            components/learning/InAppVideoPlayer.tsx for the real position
+            tracking that feeds this). */}
+        <ContinueWatchingCard />
 
         {/* Promo banner */}
         <div className="flex flex-col items-start gap-4 rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-6 sm:flex-row sm:items-center sm:justify-between">
