@@ -276,10 +276,21 @@ export default function LearningPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
-          <PageHeader
-            title={t("web:learning.title", { defaultValue: "Learning Courses" })}
-            subtitle={t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal — or teach yourself anything." })}
-          />
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <PageHeader
+              title={t("web:learning.title", { defaultValue: "Learning Courses" })}
+              subtitle={t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal — or teach yourself anything." })}
+            />
+            {/* Product report: "The Saved card is not implemented in the
+                web app" — see app/learning/saved/page.tsx. */}
+            <Link
+              href="/learning/saved"
+              className="flex shrink-0 items-center gap-1.5 rounded-pill border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-primary transition hover:bg-surface-3"
+            >
+              <EvaIcon name="star-outline" size={14} className="text-warning-text" />
+              {t("web:learning.savedVideosLink", { defaultValue: "Saved Videos" })}
+            </Link>
+          </div>
 
           {error && <p className="text-sm text-danger">{error}</p>}
           {curriculum === undefined && <SkeletonRows count={4} />}

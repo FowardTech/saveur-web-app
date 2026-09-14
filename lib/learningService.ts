@@ -470,6 +470,13 @@ export interface CourseVideo {
   embedUrl: string;
   thumbnailUrl: string;
   isSaved?: boolean;
+  // Only populated by getSavedVideos() below (GET /videos/saved returns
+  // full UserVideo rows, which carry the course context a video was
+  // recommended under — mobile's SavedVideos.tsx shows this as "From:
+  // <lesson>" under each saved card).
+  topic?: string | null;
+  moduleTitle?: string | null;
+  courseId?: string | null;
 }
 
 interface CourseVideoWire {
@@ -480,6 +487,9 @@ interface CourseVideoWire {
   embed_url: string;
   thumbnail_url: string;
   is_saved?: boolean;
+  topic?: string | null;
+  module_title?: string | null;
+  course_id?: string | null;
 }
 
 function fromVideoWire(w: CourseVideoWire): CourseVideo {
@@ -491,6 +501,9 @@ function fromVideoWire(w: CourseVideoWire): CourseVideo {
     embedUrl: w.embed_url,
     thumbnailUrl: w.thumbnail_url,
     isSaved: w.is_saved,
+    topic: w.topic,
+    moduleTitle: w.module_title,
+    courseId: w.course_id,
   };
 }
 
@@ -564,5 +577,23 @@ export async function setVideoSaved(video: CourseVideo, saved: boolean, context?
     return true;
   } catch {
     return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Saved Videos — web port of mobile's src/more/SavedVideos.tsx (product
+// report: "The Saved card is not implemented in the web app. You need to
+// implement it" — confirmed to mean the bookmark toggle on a recommended-
+// video card above, plus the standalone list screen those saved videos
+// show up on afterward; the toggle itself already existed on web via
+// setVideoSaved, this was the missing "review what you saved" half).
+// Real backend contract: GET /api/v1/learning/videos/saved -> {videos: [...]},
+// newest-saved first (Saveur-Backend/app/api/learning.py's list_saved_videos).
+export async function getSavedVideos(): Promise<CourseVideo[]> {
+  try {
+    const data = await apiClient.get<{ videos?: CourseVideoWire[] }>("/api/v1/learning/videos/saved");
+    return (data.videos ?? []).map(fromVideoWire);
+  } catch {
+    return [];
   }
 }
