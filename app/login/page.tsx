@@ -67,15 +67,20 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <TextField
-          label={t("common:fields.password", { defaultValue: "Password" })}
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="flex flex-col gap-1.5">
+          <TextField
+            label={t("common:fields.password", { defaultValue: "Password" })}
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Link href="/forgot-password" className="self-end text-xs font-medium text-link hover:underline">
+            {t("web:auth.forgotPassword", { defaultValue: "Forgot password?" })}
+          </Link>
+        </div>
         {error && <p className="text-sm text-danger">{error}</p>}
         <Button type="submit" disabled={loading} className="mt-1 w-full">
           {loading ? t("common:actions.signingIn", { defaultValue: "Signing in…" }) : t("common:actions.signIn", { defaultValue: "Sign In" })}
