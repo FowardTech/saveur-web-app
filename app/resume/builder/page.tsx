@@ -58,13 +58,44 @@ interface ResumePayload {
   ats_score: number | null;
 }
 
+// BUG FIX (product report, screenshots: Contact/Education/Projects showing
+// raw `{"degree":"...","school":"..."}` JSON text instead of readable
+// fields): only the experience section ever got a real structured renderer
+// below — every other object-shaped section (contact is a single object;
+// education/projects/volunteer/references are arrays of objects, per
+// Saveur-Backend's RESUME_JSON_SCHEMA) fell through to this function, whose
+// only non-string handling was `JSON.stringify(...)` — literally dumping
+// the raw wire format at the user. That's what both the "Your resume" cards
+// AND the "Organize into editable sections with AI" result (same render
+// path) were showing.
+//
+// Real fix: dedicated card renderers for contact/education/projects/
+// volunteer/references below (matching the polish the experience section
+// already had). This function now only remains as the fallback for arrays
+// of plain strings (core_skills, certifications, awards, languages — which
+// were already fine) and as a defensive LAST resort for any object shape
+// that isn't one of the sections special-cased below (e.g. a future schema
+// field) — even that fallback no longer prints raw JSON, it formats
+// "Label: value" pairs instead, so nothing ever shows a user a raw JSON
+// blob again regardless of what the backend adds next.
+function formatFieldLabel(key: string): string {
+  return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function renderPlainObject(obj: Record<string, unknown>): string {
+  return Object.entries(obj)
+    .filter(([, v]) => v !== null && v !== undefined && v !== "" && !(Array.isArray(v) && v.length === 0))
+    .map(([k, v]) => `${formatFieldLabel(k)}: ${Array.isArray(v) ? v.join(", ") : String(v)}`)
+    .join(" · ");
+}
+
 function renderSectionValue(value: unknown): string {
   if (Array.isArray(value)) {
     return value
-      .map((item) => (typeof item === "string" ? item : JSON.stringify(item)))
+      .map((item) => (typeof item === "string" ? item : typeof item === "object" && item !== null ? renderPlainObject(item as Record<string, unknown>) : String(item ?? "")))
       .join(" · ");
   }
-  if (typeof value === "object" && value !== null) return JSON.stringify(value);
+  if (typeof value === "object" && value !== null) return renderPlainObject(value as Record<string, unknown>);
   return String(value ?? "");
 }
 
@@ -562,6 +593,165 @@ export default function ResumeBuilderPage() {
                                     </ul>
                                   ) : (
                                     <p className="whitespace-pre-wrap text-sm text-hint">{renderSectionValue(record.description)}</p>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // Contact — the one section that's a single object, not
+                    // an array (see RESUME_JSON_SCHEMA: {name, email, phone,
+                    // location, links: [str]}). Rendered as labeled rows
+                    // instead of the generic fallback's "Label: value ·
+                    // Label: value" one-liner, and links are real clickable
+                    // anchors instead of plain URL text.
+                    if (key === "contact" && typeof value === "object" && value !== null && !Array.isArray(value)) {
+                      const c = value as Record<string, unknown>;
+                      const links = Array.isArray(c.links) ? (c.links as unknown[]).filter((l): l is string => typeof l === "string" && l.length > 0) : [];
+                      const rows: { label: string; text: string }[] = [
+                        { label: t("web:resume.builder.contactName", { defaultValue: "Name" }).toString(), text: typeof c.name === "string" ? c.name : "" },
+                        { label: t("common:fields.email", { defaultValue: "Email" }).toString(), text: typeof c.email === "string" ? c.email : "" },
+                        { label: t("web:resume.generate.phone", { defaultValue: "Phone" }).toString(), text: typeof c.phone === "string" ? c.phone : "" },
+                        { label: t("web:resume.generate.location", { defaultValue: "Location" }).toString(), text: typeof c.location === "string" ? c.location : "" },
+                      ].filter((r) => r.text);
+                      return (
+                        <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
+                          <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
+                          <dl className="mt-2 grid grid-cols-1 gap-x-6 gap-y-1.5 sm:grid-cols-2">
+                            {rows.map((r) => (
+                              <div key={r.label} className="flex gap-1.5 text-sm">
+                                <dt className="text-hint">{r.label}:</dt>
+                                <dd className="text-primary">{r.text}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                          {links.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                              {links.map((link, i) => {
+                                const href = /^https?:\/\//.test(link) ? link : `https://${link}`;
+                                return (
+                                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="text-sm text-brand hover:underline">
+                                    {link}
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          )}
+                          {rows.length === 0 && links.length === 0 && <p className="mt-1.5 text-sm text-hint">{renderSectionValue(value)}</p>}
+                        </div>
+                      );
+                    }
+
+                    // Education / Projects / Volunteer — arrays of objects
+                    // with a shared "card per entry" shape (title line +
+                    // optional subtitle/date line + optional body text),
+                    // same visual treatment as the experience cards above
+                    // rather than the generic JSON-dump fallback. Also
+                    // handles a single bare object here (not wrapped in an
+                    // array) as one entry — the schema calls for an array,
+                    // but a single-project resume coming out of "Organize
+                    // into editable sections with AI" is exactly the shape
+                    // the bug report's screenshot showed for `projects`, so
+                    // this is normalized rather than falling through to the
+                    // generic fallback just because it isn't wrapped in [].
+                    if (
+                      (key === "education" || key === "projects" || key === "volunteer") &&
+                      ((Array.isArray(value) && value.length > 0) || (typeof value === "object" && value !== null && !Array.isArray(value)))
+                    ) {
+                      const entries: unknown[] = Array.isArray(value) ? value : [value];
+                      return (
+                        <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
+                          <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
+                          <div className="mt-2 flex flex-col gap-3">
+                            {entries.map((entry, entryIndex) => {
+                              if (typeof entry !== "object" || entry === null) {
+                                return (
+                                  <p key={entryIndex} className="whitespace-pre-wrap text-sm text-hint">
+                                    {renderSectionValue(entry)}
+                                  </p>
+                                );
+                              }
+                              const record = entry as Record<string, unknown>;
+                              let titleLine = "";
+                              let dateLine = "";
+                              let bodyText = "";
+                              let linkHref: string | null = null;
+                              if (key === "education") {
+                                titleLine = [record.degree, record.field].filter(Boolean).join(" in ");
+                                dateLine = [record.start, record.end].filter(Boolean).join(" – ");
+                                bodyText = typeof record.school === "string" ? record.school : "";
+                              } else if (key === "projects") {
+                                titleLine = typeof record.name === "string" ? record.name : "";
+                                bodyText = typeof record.description === "string" ? record.description : "";
+                                linkHref = typeof record.link === "string" && record.link ? record.link : null;
+                              } else {
+                                titleLine = [record.role, record.org].filter(Boolean).join(" · ");
+                                bodyText = typeof record.description === "string" ? record.description : "";
+                              }
+                              return (
+                                <div key={entryIndex} className="rounded-lg border border-border bg-surface-1 p-3">
+                                  {(titleLine || dateLine) && (
+                                    <div className="mb-1 flex flex-wrap items-baseline justify-between gap-1">
+                                      {titleLine && <p className="text-sm font-semibold text-primary">{titleLine}</p>}
+                                      {dateLine && <p className="text-xs text-hint">{dateLine}</p>}
+                                    </div>
+                                  )}
+                                  {bodyText && <p className="whitespace-pre-wrap text-sm text-hint">{bodyText}</p>}
+                                  {linkHref && (
+                                    <a
+                                      href={/^https?:\/\//.test(linkHref) ? linkHref : `https://${linkHref}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="mt-1 inline-block text-sm text-brand hover:underline"
+                                    >
+                                      {linkHref}
+                                    </a>
+                                  )}
+                                  {!titleLine && !dateLine && !bodyText && !linkHref && (
+                                    <p className="whitespace-pre-wrap text-sm text-hint">{renderSectionValue(record)}</p>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // References — array of {name, relationship, contact}.
+                    // Same array-or-bare-object normalization as
+                    // education/projects/volunteer above.
+                    if (
+                      key === "references" &&
+                      ((Array.isArray(value) && value.length > 0) || (typeof value === "object" && value !== null && !Array.isArray(value)))
+                    ) {
+                      const entries: unknown[] = Array.isArray(value) ? value : [value];
+                      return (
+                        <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
+                          <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
+                          <div className="mt-2 flex flex-col gap-3">
+                            {entries.map((entry, entryIndex) => {
+                              if (typeof entry !== "object" || entry === null) {
+                                return (
+                                  <p key={entryIndex} className="whitespace-pre-wrap text-sm text-hint">
+                                    {renderSectionValue(entry)}
+                                  </p>
+                                );
+                              }
+                              const record = entry as Record<string, unknown>;
+                              const name = typeof record.name === "string" ? record.name : "";
+                              const relationship = typeof record.relationship === "string" ? record.relationship : "";
+                              const contactInfo = typeof record.contact === "string" ? record.contact : "";
+                              return (
+                                <div key={entryIndex} className="rounded-lg border border-border bg-surface-1 p-3">
+                                  {name && <p className="text-sm font-semibold text-primary">{name}</p>}
+                                  {relationship && <p className="text-xs text-hint">{relationship}</p>}
+                                  {contactInfo && <p className="mt-0.5 text-sm text-hint">{contactInfo}</p>}
+                                  {!name && !relationship && !contactInfo && (
+                                    <p className="whitespace-pre-wrap text-sm text-hint">{renderSectionValue(record)}</p>
                                   )}
                                 </div>
                               );
