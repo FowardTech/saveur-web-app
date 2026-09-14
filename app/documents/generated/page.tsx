@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -33,11 +34,26 @@ function formatDate(iso: string | null): string {
 
 export default function GeneratedDocumentsPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [documents, setDocuments] = useState<GeneratedDocument[] | null>(null);
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
   const [renamingDoc, setRenamingDoc] = useState<GeneratedDocument | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [savingRename, setSavingRename] = useState(false);
+  // BUG FIX (product report: "when a CV or Cover letter is generated and
+  // it's saved, the user should be able to come and edit and update that
+  // same generated CV or cover later"). A resume/CV's real editable source
+  // already lives in Resume Builder (structured sections, always
+  // up to date there) — the "Edit" pencil for that kind just deep-links
+  // there. A cover letter had nowhere at all to go back to — no source
+  // text was ever saved, only the final rendered file — so this is the
+  // real fix for that kind: an inline editor for the saved letter text,
+  // saving via PATCH /api/v1/resume/documents/{id}, which re-renders the
+  // file in place (see generatedDocumentsService.updateGeneratedDocumentContent).
+  const [editingDoc, setEditingDoc] = useState<GeneratedDocument | null>(null);
+  const [editLabel, setEditLabel] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -61,6 +77,39 @@ export default function GeneratedDocumentsPage() {
   function onOpenRename(doc: GeneratedDocument) {
     setRenamingDoc(doc);
     setRenameValue(doc.label);
+  }
+
+  function onOpenEdit(doc: GeneratedDocument) {
+    if (doc.kind === "resume") {
+      router.push("/resume/builder");
+      return;
+    }
+    if (doc.kind === "resume_variant") {
+      router.push("/resume/variants");
+      return;
+    }
+    // cover_letter — the only kind with real editable text saved on the
+    // document itself.
+    setEditingDoc(doc);
+    setEditLabel(doc.label);
+    setEditContent(doc.content ?? "");
+  }
+
+  async function onSaveEdit() {
+    if (!editingDoc) return;
+    const content = editContent.trim();
+    if (!content) return;
+    setSavingEdit(true);
+    setError(null);
+    try {
+      const updated = await generatedDocumentsService.updateGeneratedDocumentContent(editingDoc.id, content, editLabel.trim() || editingDoc.label);
+      setDocuments((prev) => (prev ? prev.map((d) => (d.id === updated.id ? updated : d)) : prev));
+      setEditingDoc(null);
+    } catch {
+      setError(t("web:documents.generated.editFailed", { defaultValue: "Couldn't save your changes to this cover letter. Please try again." }));
+    } finally {
+      setSavingEdit(false);
+    }
   }
 
   async function onSaveRename() {
@@ -123,8 +172,11 @@ export default function GeneratedDocumentsPage() {
                         {doc.createdAt ? ` · ${formatDate(doc.createdAt)}` : ""}
                       </p>
                     </div>
-                    <button type="button" onClick={() => onOpenRename(doc)} className="p-1.5 text-hint hover:text-primary" aria-label={t("common:actions.edit", { defaultValue: "Edit" })}>
+                    <button type="button" onClick={() => onOpenEdit(doc)} className="p-1.5 text-hint hover:text-primary" aria-label={t("common:actions.edit", { defaultValue: "Edit" })}>
                       <EvaIcon name="edit-2-outline" size={16} />
+                    </button>
+                    <button type="button" onClick={() => onOpenRename(doc)} className="p-1.5 text-hint hover:text-primary" aria-label={t("web:documents.generated.rename", { defaultValue: "Rename" })}>
+                      <EvaIcon name="pricetags-outline" size={16} />
                     </button>
                     <button
                       type="button"
@@ -154,6 +206,32 @@ export default function GeneratedDocumentsPage() {
                     {savingRename ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("common:save", { defaultValue: "Save" })}
                   </Button>
                   <Button type="button" variant="outline" onClick={() => setRenamingDoc(null)} disabled={savingRename}>
+                    {t("common:cancel", { defaultValue: "Cancel" })}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {editingDoc && (
+            <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => !savingEdit && setEditingDoc(null)}>
+              <div className="flex w-full max-w-lg flex-col gap-4 rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+                <h2 className="font-semibold text-primary">{t("web:documents.generated.editTitle", { defaultValue: "Edit cover letter" })}</h2>
+                <TextField label={t("web:documents.generated.nameLabel", { defaultValue: "Document name" })} value={editLabel} onChange={(e) => setEditLabel(e.target.value)} />
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-medium text-primary">{t("web:documents.generated.letterTextLabel", { defaultValue: "Letter text" })}</label>
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    rows={12}
+                    className="w-full resize-y rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Button type="button" onClick={onSaveEdit} disabled={!editContent.trim() || savingEdit}>
+                    {savingEdit ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("common:save", { defaultValue: "Save" })}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setEditingDoc(null)} disabled={savingEdit}>
                     {t("common:cancel", { defaultValue: "Cancel" })}
                   </Button>
                 </div>
