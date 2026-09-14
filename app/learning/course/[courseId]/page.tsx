@@ -35,6 +35,7 @@ import {
   type CourseVideo,
 } from "@/lib/learningService";
 import { InAppVideoPlayer } from "@/components/learning/InAppVideoPlayer";
+import * as ttsService from "@/lib/ttsService";
 
 // Real module-by-module course viewer — web port of Saveur/src/more/
 // CourseSession.tsx, replacing the "that full course viewer is coming to
@@ -109,6 +110,16 @@ function CourseSessionInner() {
   // the search.
   const [videosByModule, setVideosByModule] = useState<Record<number, CourseVideo[]>>({});
   const [playerVideo, setPlayerVideo] = useState<CourseVideo | null>(null);
+
+  // Voice/Text mode (product report: "Why is there no voice feature in the
+  // learning course, only text? You need to add that too") — mirrors
+  // mobile's CourseSession.tsx exactly: Voice mode auto-narrates the
+  // module body (then the check-understanding question, if there is one)
+  // aloud via the same real ElevenLabs TTS pipeline the AI Coach already
+  // uses (lib/ttsService.ts), with a visible "Speaking… / Stop" control.
+  // Text mode (the default) is unchanged from before this feature existed.
+  const [mode, setMode] = useState<"voice" | "text">("text");
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   // Resume where the learner left off, same as mobile's CourseSession —
   // reads real GET /api/v1/learning/progress instead of always restarting
@@ -233,6 +244,44 @@ function CourseSessionInner() {
   }, [currentModule, moduleIndex, courseId, topic]);
   const currentVideos = videosByModule[moduleIndex];
 
+  // Voice mode — auto-narrate as soon as a module's content is ready, same
+  // trigger/order as mobile's CourseSession.tsx (body, then the
+  // check-understanding question if there is one).
+  useEffect(() => {
+    if (mode !== "voice" || !currentModule) return;
+    let cancelled = false;
+    (async () => {
+      setIsSpeaking(true);
+      try {
+        await ttsService.speak(currentModule.body, { language });
+        if (!cancelled && currentModule.checkQuestion) {
+          await ttsService.speak(currentModule.checkQuestion, { language });
+        }
+      } finally {
+        if (!cancelled) setIsSpeaking(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+      ttsService.cancel();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, currentModule]);
+
+  // Stop any in-flight narration if the learner navigates away mid-speech.
+  useEffect(() => {
+    return () => {
+      ttsService.cancel();
+    };
+  }, []);
+
+  function onToggleMode(next: "voice" | "text") {
+    if (next === mode) return;
+    ttsService.cancel();
+    setIsSpeaking(false);
+    setMode(next);
+  }
+
   async function onToggleSaveVideo(video: CourseVideo) {
     const nextSaved = !video.isSaved;
     setVideosByModule((prev) => ({
@@ -261,6 +310,7 @@ function CourseSessionInner() {
   }
 
   function onNext() {
+    ttsService.cancel();
     setAnswer("");
     setFeedback(null);
     markModuleProgress(courseId, moduleIndex, true);
@@ -278,6 +328,7 @@ function CourseSessionInner() {
 
   function onPrevious() {
     if (moduleIndex === 0) return;
+    ttsService.cancel();
     setAnswer("");
     setFeedback(null);
     setModuleIndex((i) => i - 1);
@@ -439,7 +490,7 @@ function CourseSessionInner() {
     <div className="mx-auto flex max-w-6xl flex-col gap-5 pb-16">
       <BackLink href={backHref} t={t} />
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm font-semibold text-hint">
           {t("web:learning.session.moduleProgress", {
             defaultValue: "{{level}} · Module {{current}} of {{total}}",
@@ -448,6 +499,29 @@ function CourseSessionInner() {
             total: totalModules,
           })}
         </p>
+        {/* Voice/Text mode toggle (product report: "Why is there no voice
+            feature in the learning course, only text? You need to add
+            that too") — mirrors mobile's CourseSession.tsx pill pair. */}
+        <div className="flex shrink-0 gap-2">
+          <button
+            type="button"
+            onClick={() => onToggleMode("text")}
+            className={`rounded-pill px-3.5 py-1.5 text-xs font-bold transition ${
+              mode === "text" ? "bg-brand text-white" : "bg-surface-2 text-primary"
+            }`}
+          >
+            {t("web:learning.session.modeText", { defaultValue: "Text" })}
+          </button>
+          <button
+            type="button"
+            onClick={() => onToggleMode("voice")}
+            className={`rounded-pill px-3.5 py-1.5 text-xs font-bold transition ${
+              mode === "voice" ? "bg-brand text-white" : "bg-surface-2 text-primary"
+            }`}
+          >
+            {t("web:learning.session.modeVoice", { defaultValue: "Voice" })}
+          </button>
+        </div>
       </div>
 
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
@@ -467,7 +541,9 @@ function CourseSessionInner() {
           <SkeletonText width="w-full" className="mt-3" />
           <SkeletonText width="w-2/3" />
           <p className="mt-1 text-center text-sm text-hint">
-            {t("web:learning.session.writingModule", { defaultValue: "Writing this module…" })}
+            {mode === "voice"
+              ? t("web:learning.session.preparingLesson", { defaultValue: "Preparing your lesson…" })
+              : t("web:learning.session.writingModule", { defaultValue: "Writing this module…" })}
           </p>
         </div>
       ) : loadError ? (
@@ -491,6 +567,23 @@ function CourseSessionInner() {
       ) : currentModule ? (
         <>
           <h2 className="text-lg font-bold text-primary">{currentModule.title}</h2>
+
+          {mode === "voice" && isSpeaking && (
+            <div className="flex items-center gap-3">
+              <EvaIcon name="headphones-outline" size={16} className="text-hint" />
+              <span className="text-sm text-link">{t("web:learning.session.speaking", { defaultValue: "Speaking…" })}</span>
+              <button
+                type="button"
+                className="text-sm font-bold text-danger"
+                onClick={() => {
+                  ttsService.cancel();
+                  setIsSpeaking(false);
+                }}
+              >
+                {t("web:learning.session.stopSpeaking", { defaultValue: "Stop" })}
+              </button>
+            </div>
+          )}
 
           {currentImage ? (
             // eslint-disable-next-line @next/next/no-img-element
