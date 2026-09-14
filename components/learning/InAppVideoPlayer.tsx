@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import * as learningService from "@/lib/learningService";
 import type { CourseVideo, CourseVideoContext } from "@/lib/learningService";
@@ -98,6 +99,7 @@ const YT_STATE_PAUSED = 2;
 const YT_STATE_ENDED = 0;
 
 export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAppVideoPlayerProps) {
+  const { t } = useTranslation();
   const [isSaved, setIsSaved] = useState(!!video?.isSaved);
   const [isSaving, setIsSaving] = useState(false);
   const [playbackError, setPlaybackError] = useState(false);
@@ -226,7 +228,7 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
               type="button"
               onClick={onToggleSave}
               disabled={isSaving}
-              aria-label="Save video"
+              aria-label={t("web:learning.videoPlayer.saveVideo", { defaultValue: "Save video" }).toString()}
               className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-60"
             >
               <EvaIcon name="star-outline" size={18} className={isSaved ? "text-warning-text" : "text-white"} />
@@ -234,7 +236,7 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close video"
+              aria-label={t("web:learning.videoPlayer.closeVideo", { defaultValue: "Close video" }).toString()}
               className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
             >
               <EvaIcon name="close-outline" size={20} />
@@ -247,7 +249,9 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
             // error chrome, same as mobile's player.
             <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-6 text-center">
               <EvaIcon name="video-off-outline" size={28} className="text-white/60" />
-              <p className="text-sm text-white/80">This video can&apos;t be played right now.</p>
+              <p className="text-sm text-white/80">
+                {t("web:learning.videoPlayer.playbackError", { defaultValue: "This video can't be played right now." })}
+              </p>
             </div>
           ) : (
             <div key={video.videoId} ref={containerRef} className="h-full w-full" />

@@ -64,12 +64,13 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 }
 
 function ChipList({ items, onRemove }: { items: string[]; onRemove: (i: number) => void }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap gap-2">
       {items.map((item, i) => (
         <span key={i} className="inline-flex items-center gap-1.5 rounded-pill bg-surface-3 px-3 py-1.5 text-sm font-medium text-primary">
           {item}
-          <button type="button" onClick={() => onRemove(i)} aria-label="Remove">
+          <button type="button" onClick={() => onRemove(i)} aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
             <EvaIcon name="close-outline" size={12} />
           </button>
         </span>
@@ -107,6 +108,7 @@ function AddInline({ placeholder, onAdd }: { placeholder: string; onAdd: (value:
 }
 
 function StringListEditor({ items, onChange, placeholder }: { items: string[]; onChange: (next: string[]) => void; placeholder: string }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-2">
       {items.map((item, i) => (
@@ -120,7 +122,7 @@ function StringListEditor({ items, onChange, placeholder }: { items: string[]; o
             }}
             className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
-          <button type="button" onClick={() => onChange(items.filter((_, ri) => ri !== i))} className="p-1.5 text-hint hover:text-danger" aria-label="Remove">
+          <button type="button" onClick={() => onChange(items.filter((_, ri) => ri !== i))} className="p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
             <EvaIcon name="trash-2-outline" size={14} />
           </button>
         </div>
@@ -131,12 +133,13 @@ function StringListEditor({ items, onChange, placeholder }: { items: string[]; o
 }
 
 function ReorderControls({ index, count, onMove }: { index: number; count: number; onMove: (from: number, to: number) => void }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-0.5">
-      <button type="button" disabled={index === 0} onClick={() => onMove(index, index - 1)} className="p-0.5 text-hint hover:text-primary disabled:opacity-30" aria-label="Move up">
+      <button type="button" disabled={index === 0} onClick={() => onMove(index, index - 1)} className="p-0.5 text-hint hover:text-primary disabled:opacity-30" aria-label={t("web:resume.generate.moveUp", { defaultValue: "Move up" }).toString()}>
         <EvaIcon name="chevron-up-outline" size={14} />
       </button>
-      <button type="button" disabled={index === count - 1} onClick={() => onMove(index, index + 1)} className="p-0.5 text-hint hover:text-primary disabled:opacity-30" aria-label="Move down">
+      <button type="button" disabled={index === count - 1} onClick={() => onMove(index, index + 1)} className="p-0.5 text-hint hover:text-primary disabled:opacity-30" aria-label={t("web:resume.generate.moveDown", { defaultValue: "Move down" }).toString()}>
         <EvaIcon name="chevron-down-outline" size={14} />
       </button>
     </div>
@@ -360,7 +363,7 @@ function GenerateResumeInner() {
                     placeholder={t("web:resume.generate.addHighlight", { defaultValue: "Add highlight…" }).toString()}
                   />
                 </div>
-                <button type="button" onClick={() => update("experience", content.experience.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label="Remove">
+                <button type="button" onClick={() => update("experience", content.experience.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
                   <EvaIcon name="trash-2-outline" size={14} />
                 </button>
               </div>
@@ -384,7 +387,7 @@ function GenerateResumeInner() {
                     {fieldInput(entry.end, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, end: v } : e))), t("web:resume.generate.end", { defaultValue: "End (or Present)" }).toString())}
                   </div>
                 </div>
-                <button type="button" onClick={() => update("education", content.education.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label="Remove">
+                <button type="button" onClick={() => update("education", content.education.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
                   <EvaIcon name="trash-2-outline" size={14} />
                 </button>
               </div>
@@ -404,7 +407,7 @@ function GenerateResumeInner() {
                   {fieldInput(entry.name, (v) => update("projects", content.projects.map((e, ei) => (ei === i ? { ...e, name: v } : e))), t("web:resume.generate.projectName", { defaultValue: "Project name" }).toString())}
                   {fieldInput(entry.description, (v) => update("projects", content.projects.map((e, ei) => (ei === i ? { ...e, description: v } : e))), t("web:resume.generate.description", { defaultValue: "Description" }).toString())}
                 </div>
-                <button type="button" onClick={() => update("projects", content.projects.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label="Remove">
+                <button type="button" onClick={() => update("projects", content.projects.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
                   <EvaIcon name="trash-2-outline" size={14} />
                 </button>
               </div>
@@ -424,7 +427,7 @@ function GenerateResumeInner() {
                   {fieldInput(entry.role, (v) => update("volunteer", content.volunteer.map((e, ei) => (ei === i ? { ...e, role: v } : e))), t("web:resume.generate.role", { defaultValue: "Role" }).toString())}
                   {fieldInput(entry.org, (v) => update("volunteer", content.volunteer.map((e, ei) => (ei === i ? { ...e, org: v } : e))), t("web:resume.generate.organization", { defaultValue: "Organization" }).toString())}
                 </div>
-                <button type="button" onClick={() => update("volunteer", content.volunteer.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label="Remove">
+                <button type="button" onClick={() => update("volunteer", content.volunteer.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
                   <EvaIcon name="trash-2-outline" size={14} />
                 </button>
               </div>
@@ -451,7 +454,7 @@ function GenerateResumeInner() {
                   {fieldInput(entry.relationship, (v) => update("references", content.references.map((e, ei) => (ei === i ? { ...e, relationship: v } : e))), t("web:resume.generate.relationship", { defaultValue: "Relationship" }).toString())}
                   {fieldInput(entry.contact, (v) => update("references", content.references.map((e, ei) => (ei === i ? { ...e, contact: v } : e))), t("web:resume.generate.contactInfo", { defaultValue: "Contact info" }).toString())}
                 </div>
-                <button type="button" onClick={() => update("references", content.references.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label="Remove">
+                <button type="button" onClick={() => update("references", content.references.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
                   <EvaIcon name="trash-2-outline" size={14} />
                 </button>
               </div>
@@ -514,11 +517,16 @@ function GenerateResumeInner() {
   );
 }
 
+function GenerateResumeFallback() {
+  const { t } = useTranslation();
+  return <div className="mx-auto max-w-6xl py-10 text-sm text-hint">{t("common:actions.loading", { defaultValue: "Loading…" })}</div>;
+}
+
 export default function GenerateResumePage() {
   return (
     <RequireAuth>
       <AppShell>
-        <Suspense fallback={<div className="mx-auto max-w-6xl py-10 text-sm text-hint">Loading…</div>}>
+        <Suspense fallback={<GenerateResumeFallback />}>
           <GenerateResumeInner />
         </Suspense>
       </AppShell>
