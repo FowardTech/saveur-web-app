@@ -15,6 +15,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
 import { quickActions, tintCycle } from "@/lib/navigation";
 import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard";
+import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
 
 function useGreeting() {
   const { t } = useTranslation();
@@ -91,6 +92,13 @@ export default function DashboardPage() {
 
         {/* Home banner */}
         <HomeBanner />
+
+        {/* "Getting Started" checklist — product report: "When a user logs
+            in for the first time, the app should suggest important steps
+            to the user things like Upload a resume, Tell us about
+            yourself, ... Update your profile etc." Self-contained, renders
+            nothing once every item is done or dismissed. */}
+        <GettingStartedChecklist />
 
         {/* Upcoming Session — self-contained, renders nothing when there's
             nothing scheduled (see app/practice/schedule/page.tsx for the

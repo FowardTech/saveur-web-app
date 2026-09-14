@@ -33,6 +33,8 @@ export default function ProfileSettingsPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [bio, setBio] = useState("");
+  const [hobbies, setHobbies] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -83,6 +85,8 @@ export default function ProfileSettingsPage() {
       setName(profile.name || "");
       setPhone(profile.phoneNumber || "");
       setAddress(profile.homeAddress || "");
+      setBio(profile.bio || "");
+      setHobbies(profile.hobbies || "");
       // BUG FIX (same class of bug mobile's JobPreferences.tsx already
       // fixed, see that file's own comment: "the target roles and
       // countries... overrides... the cap in the job alert") — a profile
@@ -163,7 +167,7 @@ export default function ProfileSettingsPage() {
     setError(null);
     setSaved(false);
     try {
-      await updateProfile({ name: name.trim(), phoneNumber: phone.trim(), homeAddress: address.trim() });
+      await updateProfile({ name: name.trim(), phoneNumber: phone.trim(), homeAddress: address.trim(), bio: bio.trim(), hobbies: hobbies.trim() });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
@@ -221,6 +225,31 @@ export default function ProfileSettingsPage() {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
+            {/* "Getting Started" checklist fields (product report: "the app
+                should suggest important steps to the user... Tell us about
+                yourself... Whats are your hobbies") — filling these in is
+                what marks those two checklist items done, see
+                components/dashboard/GettingStartedChecklist.tsx. */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-primary">{t("web:settings.profile.bioLabel", { defaultValue: "Tell us about yourself" })}</span>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder={t("web:settings.profile.bioPlaceholder", { defaultValue: "A short intro — your background, what you're working toward, anything you'd want a coach to know." })}
+                rows={3}
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+            </label>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-primary">{t("web:settings.profile.hobbiesLabel", { defaultValue: "What do you like to do in your free time?" })}</span>
+              <textarea
+                value={hobbies}
+                onChange={(e) => setHobbies(e.target.value)}
+                placeholder={t("web:settings.profile.hobbiesPlaceholder", { defaultValue: "Hobbies, interests, anything outside of work." })}
+                rows={2}
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+            </label>
             {error && <p className="text-sm text-danger">{error}</p>}
             {saved && <p className="text-sm text-success-text">{t("web:settings.profile.saved", { defaultValue: "Saved." })}</p>}
             <Button type="submit" disabled={saving} className="mt-1 w-full">

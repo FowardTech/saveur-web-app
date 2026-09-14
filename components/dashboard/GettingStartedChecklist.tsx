@@ -1,0 +1,150 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { EvaIcon } from "@/components/icons/EvaIcon";
+import { useAuth } from "@/app/providers/AuthProvider";
+import * as documentsService from "@/lib/documentsService";
+
+// "Getting Started" checklist — product report: "When a user logs in for
+// the first time, the app should suggest important steps to the user
+// things like 1. Upload a resume, Tell us about yourself, What do you like
+// to do at your free time, Whats are your hobbies, Update your profile
+// etc." Net-new — neither this nor mobile had any concrete "next steps"
+// nudge before this (the existing WelcomeModal is a one-time static pitch,
+// not a checklist; see that component's own header comment). Self-
+// contained: fetches its own data (profile is already loaded by
+// AuthProvider; resume presence needs its own GET /api/v1/documents call)
+// and renders nothing once every item is done or the user has dismissed it.
+//
+// Dismissible per account, remembered in localStorage keyed by uid — same
+// convention as components/dashboard/AnnouncementBanner.tsx's
+// homeBannerDismissed key. Unlike that banner, this doesn't need a
+// fingerprint (there's no admin-editable copy to invalidate an old
+// dismissal): once dismissed, it stays dismissed, same as it re-appearing
+// automatically anyway the moment any item becomes incomplete again isn't
+// a concern here since profile fields don't un-fill themselves.
+function dismissedStorageKey(uid?: string | null): string {
+  return `saveur.gettingStartedDismissed.${uid || "anon"}`;
+}
+
+interface ChecklistItem {
+  key: string;
+  label: string;
+  href: string;
+  done: boolean;
+}
+
+export function GettingStartedChecklist() {
+  const { t } = useTranslation();
+  const { profile } = useAuth();
+  const [hasResume, setHasResume] = useState<boolean | undefined>(undefined);
+  // undefined = still reading localStorage — render nothing yet, same
+  // "avoid a one-frame flash" reasoning as AnnouncementBanner's identical
+  // guard.
+  const [dismissed, setDismissed] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    documentsService
+      .listDocuments()
+      .then((docs) => setHasResume(docs.some((d) => d.kind === "resume")))
+      .catch(() => setHasResume(false));
+  }, []);
+
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDismissed(window.localStorage.getItem(dismissedStorageKey(profile?.uid)) === "1");
+    } catch {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDismissed(false);
+    }
+  }, [profile?.uid]);
+
+  function onDismiss() {
+    setDismissed(true);
+    try {
+      window.localStorage.setItem(dismissedStorageKey(profile?.uid), "1");
+    } catch {
+      // Private browsing / storage disabled — dismissal just won't persist
+      // across reloads, a safe degrade rather than a crash.
+    }
+  }
+
+  if (!profile || dismissed === undefined || dismissed || hasResume === undefined) return null;
+
+  const items: ChecklistItem[] = [
+    {
+      key: "resume",
+      label: t("web:dashboard.gettingStarted.uploadResume", { defaultValue: "Upload a resume" }),
+      href: "/documents",
+      done: hasResume,
+    },
+    {
+      key: "bio",
+      label: t("web:dashboard.gettingStarted.tellUsAboutYou", { defaultValue: "Tell us about yourself" }),
+      href: "/settings/profile",
+      done: !!profile.bio?.trim(),
+    },
+    {
+      key: "hobbies",
+      label: t("web:dashboard.gettingStarted.hobbies", { defaultValue: "Share your hobbies & free time" }),
+      href: "/settings/profile",
+      done: !!profile.hobbies?.trim(),
+    },
+    {
+      key: "profile",
+      label: t("web:dashboard.gettingStarted.updateProfile", { defaultValue: "Update your profile" }),
+      href: "/settings/profile",
+      done: !!(profile.name?.trim() && (profile.phoneNumber?.trim() || profile.homeAddress?.trim())),
+    },
+  ];
+
+  const remaining = items.filter((i) => !i.done);
+  if (remaining.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="font-semibold text-primary">{t("web:dashboard.gettingStarted.title", { defaultValue: "Finish setting up your account" })}</h2>
+          <p className="mt-0.5 text-sm text-hint">
+            {t("web:dashboard.gettingStarted.subtitle", {
+              defaultValue: "{{count}} quick steps left — these help us personalize your coaching.",
+              count: remaining.length,
+            })}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onDismiss}
+          aria-label={t("common:actions.close", { defaultValue: "Close" })}
+          className="shrink-0 rounded-full p-1 text-hint transition hover:bg-surface-3 hover:text-primary"
+        >
+          <EvaIcon name="close-outline" size={16} />
+        </button>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {items.map((item) => (
+          <Link
+            key={item.key}
+            href={item.href}
+            className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition hover:bg-surface-3 ${
+              item.done ? "text-hint line-through" : "font-medium text-primary"
+            }`}
+          >
+            <EvaIcon
+              name={item.done ? "checkmark-circle-2-outline" : "arrow-circle-right-outline"}
+              size={16}
+              className={item.done ? "shrink-0 text-success" : "shrink-0 text-brand"}
+            />
+            {item.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default GettingStartedChecklist;

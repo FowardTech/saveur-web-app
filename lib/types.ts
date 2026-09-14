@@ -17,6 +17,14 @@ export interface UserProfile {
   avatarUrl?: string;
   phoneNumber?: string;
   homeAddress?: string;
+  // "Getting Started" checklist fields (see components/dashboard/
+  // GettingStartedChecklist.tsx and Saveur-Backend's app/models/user.py's
+  // bio/hobbies columns) — product report: "the app should suggest
+  // important steps to the user... Tell us about yourself... Whats are
+  // your hobbies". Empty/undefined is exactly what marks those two
+  // checklist items as not-yet-done.
+  bio?: string;
+  hobbies?: string;
   notificationsEnabled: boolean;
   jobAlertDailyLimit: number;
   country?: string | null;
@@ -47,6 +55,8 @@ export interface UserProfileWire {
   avatar_url?: string;
   phone_number?: string;
   home_address?: string;
+  bio?: string;
+  hobbies?: string;
   notifications_enabled?: boolean;
   job_alert_daily_limit?: number;
   country?: string | null;
@@ -68,6 +78,8 @@ export function profileFromWire(wire: UserProfileWire): UserProfile {
     avatarUrl: wire.avatar_url,
     phoneNumber: wire.phone_number ?? "",
     homeAddress: wire.home_address ?? "",
+    bio: wire.bio ?? "",
+    hobbies: wire.hobbies ?? "",
     // subscriptionTier deliberately removed (see lib/billingService.ts's
     // header comment) — Saveur-Backend's User.to_dict() has never sent a
     // `subscription_tier` field, so this was always silently `undefined` ??
@@ -104,6 +116,8 @@ export function profileToWirePatch(partial: Partial<UserProfile>): Record<string
   if (partial.jobAlertDailyLimit !== undefined) wire.job_alert_daily_limit = partial.jobAlertDailyLimit;
   if (partial.phoneNumber !== undefined) wire.phone_number = partial.phoneNumber;
   if (partial.homeAddress !== undefined) wire.home_address = partial.homeAddress;
+  if (partial.bio !== undefined) wire.bio = partial.bio;
+  if (partial.hobbies !== undefined) wire.hobbies = partial.hobbies;
   if (partial.hasSeenWelcomeModal !== undefined) wire.has_seen_welcome_modal = partial.hasSeenWelcomeModal;
   return wire;
 }
