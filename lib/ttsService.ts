@@ -31,7 +31,33 @@ interface TtsSpeakResponse {
 let audioEl: HTMLAudioElement | null = null;
 function getAudioEl(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
-  if (!audioEl) audioEl = new Audio();
+  if (!audioEl) {
+    audioEl = new Audio();
+    // BUG FIX (product report: "The AI voice is not heard when the video
+    // replay is playing, Just the user's voice that is heard" — still
+    // reproducing even after buildRecordingStream below was wired up to
+    // mix the AI's audio into the recording). Root cause: the TTS audio
+    // is served from the BACKEND's origin (API_BASE_URL), a different
+    // origin than the web app itself, and a plain <audio> element with no
+    // `crossOrigin` set fetches cross-origin media in a mode the browser
+    // always treats as "opaque"/tainted for Web Audio API purposes --
+    // regardless of whether the server sends CORS headers. A tainted
+    // source plays back completely normally through speakers (which is
+    // why the candidate always DID hear the AI voice live, masking this)
+    // but produces pure SILENCE the moment anything tries to read its
+    // actual audio samples via the Web Audio graph -- exactly what
+    // buildRecordingStream's createMediaElementSource()->
+    // MediaStreamAudioDestinationNode capture does. `crossOrigin =
+    // "anonymous"` makes the browser fetch it as a real (uncredentialed)
+    // CORS request instead, so the captured samples are no longer
+    // silenced -- the backend's GET /api/v1/tts/audio/<id>.mp3 needs no
+    // auth and CORS_ORIGINS already covers the web app's own origin
+    // (same CORS config every other API call here already relies on), so
+    // this needs no server-side change. Must be set before any `src` is
+    // ever assigned (see playAudioUrl below), which is why this lives
+    // right here at creation time on this shared singleton element.
+    audioEl.crossOrigin = "anonymous";
+  }
   return audioEl;
 }
 
