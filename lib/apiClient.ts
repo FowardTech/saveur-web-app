@@ -104,7 +104,25 @@ async function upload<T>(path: string, formData: FormData): Promise<T> {
  */
 async function downloadBlob(path: string): Promise<Blob> {
   const url = path.startsWith("http") ? path : `${API_BASE_URL}${path}`;
-  const authHeaders = await authHeader();
+  // BUG FIX (product report: "Resume and cover letter downloading is not
+  // working in the web version"): every resume/cover-letter export returns
+  // a real https `url` — in production that's an S3/DigitalOcean Spaces
+  // PRESIGNED url (see Saveur-Backend's s3_service.py's S3Storage.get_url),
+  // already self-authenticating via its query string, on a completely
+  // different origin than this app's own API. Attaching our own Firebase
+  // Authorization header to that fetch turns it into a cross-origin request
+  // with a non-simple header, which forces a CORS preflight — and that
+  // storage origin was never configured (nor can it easily be, it's outside
+  // this Flask app's own CORS(app, resources={r"/api/*": ...}) setup) to
+  // allow it, so the browser silently blocks the whole download. Mobile
+  // never hit this because RNBlobUtil.fetch() there sends no extra headers
+  // at all (see Saveur/services/documentDownloadService.ts) — matching that:
+  // only attach our own auth header for a same-origin request against our
+  // own API, never for an absolute URL pointing somewhere else (whether a
+  // presigned Spaces link, or local dev's own unauthenticated
+  // /api/v1/documents/files/<key> route, which needs no auth either).
+  const isOwnApi = !path.startsWith("http") || url.startsWith(API_BASE_URL);
+  const authHeaders = isOwnApi ? await authHeader() : {};
   const res = await fetch(url, { headers: { ...authHeaders } });
   if (!res.ok) throw new Error(`Download failed with status ${res.status}`);
   return res.blob();
