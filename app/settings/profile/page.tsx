@@ -14,6 +14,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import type { ApiError } from "@/lib/apiClient";
 import { COUNTRIES } from "@/lib/countries";
 import { jobRoleCountryCaps } from "@/lib/jobPreferenceCaps";
+import * as studentVerificationService from "@/lib/studentVerificationService";
 
 // Same real target-role/country list job onboarding (app/onboarding/
 // page.tsx) & mobile's src/more/JobPreferences.tsx use — see lib/
@@ -51,6 +52,18 @@ export default function ProfileSettingsPage() {
   const [capMessage, setCapMessage] = useState<string | null>(null);
   const [savingPrefs, setSavingPrefs] = useState(false);
   const [prefsSaved, setPrefsSaved] = useState(false);
+
+  // Verified-student badge (mirrors mobile's src/more/ProfileSrc.tsx —
+  // product report: "I noticed that you did not implement the student
+  // package in the onboarding and in the dashboard. Why?"). Shown until
+  // graduation; see app/settings/student/page.tsx for the actual
+  // verification flow this links to.
+  const [studentDiscountActive, setStudentDiscountActive] = useState(false);
+  useEffect(() => {
+    studentVerificationService.getStatus().then((status) => {
+      setStudentDiscountActive(!!status?.studentDiscountActive);
+    });
+  }, []);
 
   const countryLabel = (country: string) => t(`common:countries.${country}`, { defaultValue: country });
 
@@ -168,6 +181,13 @@ export default function ProfileSettingsPage() {
             title={t("web:settings.profile.title", { defaultValue: "Profile" })}
             subtitle={t("web:settings.profile.subtitle", { defaultValue: "Update your account details." })}
           />
+
+          {studentDiscountActive && (
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-pill border border-brand/30 bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand">
+              <EvaIcon name="award-outline" size={14} />
+              {t("web:settings.profile.studentBadge", { defaultValue: "Verified Student" })}
+            </span>
+          )}
 
           {!profile && (
             <>

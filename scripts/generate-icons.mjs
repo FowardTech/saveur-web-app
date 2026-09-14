@@ -65,6 +65,7 @@ const ICONS = [
   "star-outline",
   "shield-outline",
   "lock-outline",
+  "percent-outline",
   "email-outline",
   "eye-outline",
   "eye-off-outline",

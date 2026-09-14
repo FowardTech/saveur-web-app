@@ -14,6 +14,7 @@ import { COUNTRIES } from "@/lib/countries";
 import { CountryFlag } from "@/components/ui/CountryFlag";
 import { jobRoleCountryCaps } from "@/lib/jobPreferenceCaps";
 import { ChooseUsernameStep } from "@/components/auth/ChooseUsernameStep";
+import { StudentVerificationStep } from "@/components/onboarding/StudentVerificationStep";
 
 // Step 0 is the "choose your username" step (see ChooseUsernameStep) — ports
 // mobile's src/auth/Signup/ChooseUsername.tsx, which SignupThirdStep.tsx's
@@ -25,9 +26,15 @@ import { ChooseUsernameStep } from "@/components/auth/ChooseUsernameStep";
 // of those three separate call sites, it lives here as this wizard's first
 // step, which is the single point they all funnel through and matches the
 // "right after account creation, before the rest of onboarding" timing.
-// Steps 1-3 (previously 0-2) are the pre-existing name/goals/roles/countries
-// wizard, unchanged apart from shifting their step indices by one.
-const TOTAL_STEPS = 5;
+// Step 1 is the "student verification" step (see StudentVerificationStep) —
+// product report: "I noticed that you did not implement the student
+// package in the onboarding and in the dashboard. Why?" — ported from
+// mobile's src/auth/Signup/ChooseUsername.tsx -> src/more/
+// StudentVerification.tsx chain, i.e. right after username, before the
+// rest of onboarding. Entirely optional/skippable, same as mobile.
+// Steps 2-5 (previously 1-4) are the pre-existing name/goals/roles/countries
+// wizard, unchanged apart from shifting their step indices by one further.
+const TOTAL_STEPS = 6;
 
 function Chip({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -170,7 +177,7 @@ export default function OnboardingPage() {
   }
 
   const canContinue =
-    step === 1 ? name.trim().length > 0 : step === 2 ? goals.length > 0 : step === 3 ? roles.length > 0 : true;
+    step === 2 ? name.trim().length > 0 : step === 3 ? goals.length > 0 : step === 4 ? roles.length > 0 : true;
 
   async function handleFinish() {
     setSubmitting(true);
@@ -211,6 +218,10 @@ export default function OnboardingPage() {
           )}
 
           {step === 1 && (
+            <StudentVerificationStep onDone={() => setStep(2)} />
+          )}
+
+          {step === 2 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step0.title", { defaultValue: "What should we call you?" })}</h1>
@@ -226,7 +237,7 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step1.title", { defaultValue: "What's your primary goal?" })}</h1>
@@ -242,7 +253,7 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step2.title", { defaultValue: "What roles are you targeting?" })}</h1>
@@ -291,7 +302,7 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step3.title", { defaultValue: "Where are you looking to work?" })}</h1>
@@ -368,12 +379,14 @@ export default function OnboardingPage() {
 
           {error && <p className="mt-4 text-sm text-danger">{error}</p>}
 
-          {/* Step 0 (username) has its own Skip/Continue actions built into
-              ChooseUsernameStep — it does its own async work (regenerate,
-              or validate+save a custom handle) before calling onDone(),
-              which this shared bottom nav can't drive, so it's hidden
-              rather than duplicated for that step. */}
-          {step > 0 && (
+          {/* Steps 0 (username) and 1 (student verification) each have their
+              own Skip/Continue actions built into their own components —
+              ChooseUsernameStep does its own async work (regenerate, or
+              validate+save a custom handle) and StudentVerificationStep
+              does its own multi-stage verify flow, both before calling
+              onDone(), which this shared bottom nav can't drive, so it's
+              hidden rather than duplicated for those two steps. */}
+          {step > 1 && (
             <div className="mt-8 flex items-center justify-between gap-3">
               <Button
                 type="button"
@@ -382,7 +395,7 @@ export default function OnboardingPage() {
                   setCapMessage(null);
                   setStep((s) => Math.max(0, s - 1));
                 }}
-                className={step === 1 ? "invisible" : ""}
+                className={step === 2 ? "invisible" : ""}
               >
                 {t("common:actions.back", { defaultValue: "Back" })}
               </Button>

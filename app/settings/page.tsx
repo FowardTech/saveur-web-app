@@ -31,6 +31,13 @@ export default function SettingsPage() {
       description: t("web:settings.hub.securityDescription", { defaultValue: "Two-factor authentication and account security." }),
       tint: { bg: "bg-tint-orange", text: "text-tint-orange-text" },
     },
+    {
+      href: "/settings/student",
+      icon: "award-outline" as const,
+      title: t("web:settings.hub.studentTitle", { defaultValue: "Student Package" }),
+      description: t("web:settings.hub.studentDescription", { defaultValue: "Verify your school email for a discount and student-tailored AI." }),
+      tint: { bg: "bg-tint-mint", text: "text-tint-mint-text" },
+    },
   ];
 
   return (

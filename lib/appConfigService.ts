@@ -34,11 +34,30 @@ export interface FeatureFlags {
   outlook_inbox_scan: boolean;
   google_calendar_scan: boolean;
   outlook_calendar_scan: boolean;
+  // Student verification + discounted billing (product report: "I noticed
+  // that you did not implement the student package in the onboarding and
+  // in the dashboard. Why?") — same key mobile's services/configService.ts
+  // FeatureFlags already reads, defaulting to true there and here (an admin
+  // kill-switch, not something that should silently hide the feature on a
+  // config-fetch failure).
+  student_verification: boolean;
+}
+
+// Student verification eligibility + discount (see
+// Saveur-Web/lib/studentVerificationService.ts and
+// Saveur-Backend's app_config_service.py "student_eligibility" section,
+// mobile's services/configService.ts StudentEligibilityConfig). discount_percent
+// is admin-editable (Admin > Config > Student Eligibility), not a hardcoded
+// literal, so both clients read the same live value.
+export interface StudentEligibilityConfig {
+  eligible_countries: string[];
+  discount_percent: number;
 }
 
 export interface AppConfig {
   home_banner: HomeBannerConfig;
   feature_flags: FeatureFlags;
+  student_eligibility: StudentEligibilityConfig;
   // Other sections (release, faq, about, etc.) exist on the backend
   // response too but aren't modeled here yet — add them as web grows to
   // need them, same pattern as this one.
@@ -58,6 +77,12 @@ const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   outlook_inbox_scan: false,
   google_calendar_scan: false,
   outlook_calendar_scan: false,
+  student_verification: true,
+};
+
+const DEFAULT_STUDENT_ELIGIBILITY: StudentEligibilityConfig = {
+  eligible_countries: [],
+  discount_percent: 3,
 };
 
 // Module-scope cache — good enough for "no need to replicate mobile's pub/sub
@@ -84,6 +109,7 @@ export async function getAppConfig(language?: string): Promise<AppConfig> {
         ...data,
         home_banner: { ...DEFAULT_HOME_BANNER, ...data.home_banner },
         feature_flags: { ...DEFAULT_FEATURE_FLAGS, ...data.feature_flags },
+        student_eligibility: { ...DEFAULT_STUDENT_ELIGIBILITY, ...data.student_eligibility },
       } as AppConfig;
     } catch {
       // Network/backend unavailable — fail open with defaults so a config
@@ -92,7 +118,11 @@ export async function getAppConfig(language?: string): Promise<AppConfig> {
       // fail CLOSED — see that const's own comment — this outer fail-open
       // is only about the fetch itself, not what those individual flags
       // default to.)
-      cached = { home_banner: DEFAULT_HOME_BANNER, feature_flags: DEFAULT_FEATURE_FLAGS };
+      cached = {
+        home_banner: DEFAULT_HOME_BANNER,
+        feature_flags: DEFAULT_FEATURE_FLAGS,
+        student_eligibility: DEFAULT_STUDENT_ELIGIBILITY,
+      };
     }
     return cached;
   })();
@@ -108,4 +138,13 @@ export async function getAppConfig(language?: string): Promise<AppConfig> {
  * this helper itself never triggers a fetch. */
 export function isFeatureEnabled(key: keyof FeatureFlags): boolean {
   return (cached?.feature_flags ?? DEFAULT_FEATURE_FLAGS)[key] !== false;
+}
+
+/** Synchronous read of whichever student_eligibility section was last
+ * fetched by getAppConfig() (or the default {eligible_countries: [],
+ * discount_percent: 3} if it hasn't resolved yet this session) — same
+ * "await getAppConfig() first, then re-render off its result" contract as
+ * isFeatureEnabled() above. */
+export function getStudentEligibilityConfig(): StudentEligibilityConfig {
+  return cached?.student_eligibility ?? DEFAULT_STUDENT_ELIGIBILITY;
 }
