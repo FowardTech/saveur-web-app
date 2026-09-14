@@ -46,7 +46,7 @@ interface OptimizeResult {
 }
 
 export default function LinkedInOptimizerPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { loading: authLoading } = useAuth();
   const [headline, setHeadline] = useState("");
   const [about, setAbout] = useState("");
@@ -85,6 +85,7 @@ export default function LinkedInOptimizerPage() {
         about: about.trim() || undefined,
         experience_bullets: bullets.length ? bullets : undefined,
         target_role: targetRole.trim() || undefined,
+        language: i18n.language || "en",
       });
       setResult(data);
       apiClient

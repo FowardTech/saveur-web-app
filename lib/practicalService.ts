@@ -1,4 +1,9 @@
+import i18n from "i18next";
 import apiClient, { type ApiError } from "./apiClient";
+
+function currentLanguage(): string {
+  return i18n.language || "en";
+}
 
 // ---------------------------------------------------------------------------
 // practicalService — Practical Scenarios (product request): "coding practice
@@ -196,6 +201,7 @@ export async function createSession(
   const data = await apiClient.post<{ session: WireSession; step: WireStep }>("/api/v1/practical/sessions", {
     type,
     role: role || undefined,
+    language: currentLanguage(),
   });
   return { session: mapSession(data.session), step: mapStep(data.step) };
 }

@@ -70,7 +70,7 @@ const stepBadge: Record<PlanStep["status"], string> = {
 };
 
 export default function WhatsNextPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isPremium, loading: authLoading } = useAuth();
 
   const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
@@ -143,6 +143,7 @@ export default function WhatsNextPage() {
         current_offer: currentOffer.trim(),
         target_ask: targetAsk.trim(),
         start_date: startDate || "",
+        language: i18n.language || "en",
       });
       setPlan(data);
       setShowForm(false);

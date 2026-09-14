@@ -28,7 +28,7 @@ interface ResumeVariant {
 }
 
 export default function ResumeVariantsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { loading: authLoading } = useAuth();
   const [variants, setVariants] = useState<ResumeVariant[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +67,7 @@ export default function ResumeVariantsPage() {
         label: label.trim(),
         target_role: targetRole.trim(),
         target_company: targetCompany.trim() || undefined,
+        language: i18n.language || "en",
       });
       setLabel("");
       setTargetRole("");

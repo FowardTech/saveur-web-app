@@ -1,4 +1,9 @@
+import i18n from "i18next";
 import apiClient from "./apiClient";
+
+function currentLanguage(): string {
+  return i18n.language || "en";
+}
 
 // ---------------------------------------------------------------------------
 // dreamCompaniesService — Dream Company Dashboard (product request item): a
@@ -128,12 +133,13 @@ export async function addDreamCompany(company: string, role?: string): Promise<D
   const data = await apiClient.post<DreamCompanyWire>("/api/v1/dream-companies", {
     company,
     role: role || "",
+    language: currentLanguage(),
   });
   return fromWire(data);
 }
 
 export async function refreshDreamCompany(id: number): Promise<DreamCompany> {
-  const data = await apiClient.post<DreamCompanyWire>(`/api/v1/dream-companies/${id}/refresh`);
+  const data = await apiClient.post<DreamCompanyWire>(`/api/v1/dream-companies/${id}/refresh`, { language: currentLanguage() });
   return fromWire(data);
 }
 

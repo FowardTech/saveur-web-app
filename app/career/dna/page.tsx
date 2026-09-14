@@ -25,7 +25,7 @@ interface CareerDnaPayload {
 }
 
 export default function CareerDnaPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<CareerDnaPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export default function CareerDnaPage() {
     setRefreshing(true);
     setError(null);
     try {
-      const data = await apiClient.post<CareerDnaPayload>("/api/v1/career-dna/refresh");
+      const data = await apiClient.post<CareerDnaPayload>("/api/v1/career-dna/refresh", { language: i18n.language || "en" });
       setProfile(data);
     } catch (err) {
       setError((err as ApiError).message || t("web:career.dna.refreshFailedDefault", { defaultValue: "Couldn't refresh your profile right now." }));

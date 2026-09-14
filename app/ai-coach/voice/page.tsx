@@ -325,6 +325,7 @@ function VoiceCoachPageInner() {
             history: requestHistory,
             persist_to_history: true,
             mode: "voice",
+            language: i18n.language || "en",
           }
         );
         if (!sessionActiveRef.current) return;

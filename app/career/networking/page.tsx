@@ -107,7 +107,7 @@ function formatEventDate(iso?: string) {
 const emptyForm = { name: "", company: "", role: "", note: "" };
 
 function NetworkingAssistantInner() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { firebaseUser, loading: authLoading } = useAuth();
@@ -275,6 +275,7 @@ function NetworkingAssistantInner() {
         recipient_role: contact.role,
         context: messageContext.trim(),
         tone: messageTone,
+        language: i18n.language || "en",
       });
       setGeneratedMessage(data.message);
     } catch (err) {

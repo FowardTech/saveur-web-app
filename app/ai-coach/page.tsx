@@ -248,7 +248,7 @@ function AiCoachPageInner() {
 
     try {
       const history = messages.slice(-10).map((m) => ({ role: m.role, text: m.text }));
-      const body: Record<string, unknown> = { question, history, persist_to_history: true };
+      const body: Record<string, unknown> = { question, history, persist_to_history: true, language: i18n.language || "en" };
       if (mode) body.mode = mode;
       // BUG FIX (product report: "The AI career coach navigating to screens
       // is not working on web"): `suggested_action` was already coming back

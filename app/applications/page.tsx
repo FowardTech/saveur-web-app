@@ -133,7 +133,7 @@ function formatSessionDate(iso: string) {
 }
 
 function InterviewsPageInner() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   // BUG FIX (real root cause of "Request failed with status 401" on every
   // page refresh): both fetch effects below used to fire unconditionally
@@ -402,7 +402,7 @@ function InterviewsPageInner() {
     setDraft(null);
     setError(null);
     try {
-      const data = await apiClient.post<{ subject: string; body: string }>(`/api/v1/tracker/applications/${app.id}/draft-followup`);
+      const data = await apiClient.post<{ subject: string; body: string }>(`/api/v1/tracker/applications/${app.id}/draft-followup`, { language: i18n.language || "en" });
       setDraft({ id: app.id, ...data });
     } catch (err) {
       setError((err as ApiError).message || t("web:applications.draftFailedDefault", { defaultValue: "Couldn't generate a follow-up draft right now." }));

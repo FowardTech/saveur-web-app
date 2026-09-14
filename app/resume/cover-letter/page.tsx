@@ -23,7 +23,7 @@ import { downloadUrlAsFile } from "@/lib/downloadFile";
 // cover letter right now" error as any other failure. Same preemptive-isPro
 // + reactive-402 pattern as app/career/company-intelligence/page.tsx.
 function CoverLetterPageInner() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isPro } = useAuth();
   const searchParams = useSearchParams();
   // Prefills from the Dream Company Dashboard's "Generate cover letter"
@@ -57,6 +57,7 @@ function CoverLetterPageInner() {
         role: role.trim() || undefined,
         hiring_manager: hiringManager.trim() || undefined,
         jd_text: jdText.trim() || undefined,
+        language: i18n.language || "en",
       });
       setLetter(data.cover_letter);
     } catch (err) {

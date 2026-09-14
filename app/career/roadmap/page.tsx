@@ -60,7 +60,7 @@ const TYPE_META: Record<RoadmapStep["type"], { label: string; icon: EvaIconName;
 };
 
 export default function CareerRoadmapPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { loading: authLoading } = useAuth();
   const [roadmap, setRoadmap] = useState<Roadmap | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
@@ -114,6 +114,7 @@ export default function CareerRoadmapPage() {
       const data = await apiClient.post<Roadmap>("/api/v1/roadmap/generate", {
         target_role: targetRole.trim(),
         current_role: currentRole.trim() || undefined,
+        language: i18n.language || "en",
       });
       setRoadmap(data);
     } catch (err) {

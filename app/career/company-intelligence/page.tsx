@@ -37,7 +37,7 @@ interface Intel {
 }
 
 function CompanyIntelligencePageInner() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isPro } = useAuth();
   const searchParams = useSearchParams();
   // Prefills from the Dream Company Dashboard's "Look up any company" link
@@ -61,6 +61,7 @@ function CompanyIntelligencePageInner() {
       const data = await apiClient.post<Intel>("/api/v1/company-intel/research", {
         company: company.trim(),
         role: role.trim() || undefined,
+        language: i18n.language || "en",
       });
       setIntel(data);
     } catch (err) {
