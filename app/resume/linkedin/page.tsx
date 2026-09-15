@@ -45,6 +45,12 @@ interface OptimizeResult {
   profile_strength_score: number | null;
 }
 
+interface WirePrefill {
+  headline?: string;
+  about?: string;
+  experience_bullets?: string[];
+}
+
 export default function LinkedInOptimizerPage() {
   const { t, i18n } = useTranslation();
   const { loading: authLoading } = useAuth();
@@ -57,6 +63,7 @@ export default function LinkedInOptimizerPage() {
   const [premiumRequired, setPremiumRequired] = useState(false);
   const [result, setResult] = useState<OptimizeResult | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [prefilledFromResume, setPrefilledFromResume] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -64,6 +71,31 @@ export default function LinkedInOptimizerPage() {
       .get<{ history: HistoryEntry[] }>("/api/v1/linkedin/history")
       .then((data) => setHistory(data.history ?? []))
       .catch(() => {});
+  }, [authLoading]);
+
+  // BUG FIX (product report: "The linkedIn Optimizer in the web does not
+  // auto fill why?"): mobile's LinkedInOptimizer.tsx already prefills from
+  // GET /api/v1/linkedin/prefill — the endpoint looks for a source="linkedin"
+  // upload (ResumeBuilder's "LinkedIn" import slot) first, falling back to
+  // whichever other resume is structured, and runs one LLM extraction pass
+  // when it only has raw uploaded text. Web never called this endpoint at
+  // all; this port is otherwise a straight copy of mobile's effect (only
+  // fills in genuinely empty fields, so it never clobbers anything the user
+  // already typed if this resolves after they've started).
+  useEffect(() => {
+    if (authLoading) return;
+    apiClient
+      .get<WirePrefill>("/api/v1/linkedin/prefill", { params: { language: i18n.language || "en" } })
+      .then((data) => {
+        if (!data) return;
+        if (headline.trim() || about.trim() || bulletsText.trim()) return;
+        if (data.headline) setHeadline(data.headline);
+        if (data.about) setAbout(data.about);
+        if (data.experience_bullets?.length) setBulletsText(data.experience_bullets.join("\n"));
+        if (data.headline || data.about || data.experience_bullets?.length) setPrefilledFromResume(true);
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
 
   const previousScore = history.find((h) => h.profile_strength_score != null)?.profile_strength_score ?? null;
@@ -119,6 +151,14 @@ export default function LinkedInOptimizerPage() {
             title={t("web:resume.linkedin.title", { defaultValue: "LinkedIn Optimizer" })}
             subtitle={t("web:resume.linkedin.subtitle", { defaultValue: "Paste your current profile text for an AI critique and rewrite." })}
           />
+
+          {prefilledFromResume && !premiumRequired && (
+            <p className="text-sm font-medium text-brand">
+              {t("web:resume.linkedin.prefilledNotice", {
+                defaultValue: "Filled in from your uploaded resume/LinkedIn profile — edit anything below before optimizing.",
+              })}
+            </p>
+          )}
 
           {premiumRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
