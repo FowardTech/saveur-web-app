@@ -174,39 +174,39 @@ function AlertKanbanCard({
         onDragStart();
       }}
       onDragEnd={onDragEnd}
-      className={`cursor-grab flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-3 shadow-sm transition active:cursor-grabbing ${
+      className={`cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
         isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-md"
       }`}
     >
-      <Link href={`/job-alerts/${alert.id}`} className="flex items-start gap-2.5">
-        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={alert.company} size={32} className="mt-0.5 shrink-0 bg-tint-mint" />
+      <Link href={`/job-alerts/${alert.id}`} className="flex items-start gap-3">
+        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={alert.company} size={40} className="mt-0.5 shrink-0 bg-tint-mint" />
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-primary">{alert.title}</p>
-          <p className="truncate text-xs text-hint">
+          <p className="truncate text-base font-semibold text-primary">{alert.title}</p>
+          <p className="truncate text-sm text-hint">
             {alert.company}
             {alert.location ? ` · ${alert.location}` : ""}
           </p>
         </div>
       </Link>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={() => onTogglePin(alert)}
-          className={`inline-flex flex-1 items-center justify-center gap-1 rounded-pill border px-2 py-1 text-xs font-semibold transition ${
+          className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-pill border px-3 py-1.5 text-sm font-semibold transition ${
             alert.pinned ? "border-brand bg-brand/10 text-brand" : "border-border text-hint hover:border-brand/50 hover:text-primary"
           }`}
         >
-          <EvaIcon name="star-outline" size={12} />
+          <EvaIcon name="star-outline" size={14} />
           {alert.pinned ? t("web:jobTracker.saved", { defaultValue: "Saved" }) : t("web:jobTracker.save", { defaultValue: "Save" })}
         </button>
         {alert.apply_url && (
           <button
             type="button"
             onClick={apply.openApply}
-            className="inline-flex flex-1 items-center justify-center gap-1 rounded-pill bg-brand px-2 py-1 text-xs font-semibold text-white transition hover:bg-brand-600"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-pill bg-brand px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-600"
           >
             {t("web:jobTracker.apply", { defaultValue: "Apply" })}
-            <EvaIcon name="external-link-outline" size={11} />
+            <EvaIcon name="external-link-outline" size={13} />
           </button>
         )}
       </div>
@@ -247,15 +247,15 @@ function ApplicationKanbanCard({
         onDragStart();
       }}
       onDragEnd={onDragEnd}
-      className={`group cursor-grab flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-3 shadow-sm transition active:cursor-grabbing ${
+      className={`group cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
         isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-md"
       }`}
     >
-      <div className="flex items-start gap-2.5">
-        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={app.company} size={32} className="mt-0.5 shrink-0 bg-tint-purple" />
+      <div className="flex items-start gap-3">
+        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={app.company} size={40} className="mt-0.5 shrink-0 bg-tint-purple" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-primary">{app.role}</p>
-          <p className="truncate text-xs text-hint">
+          <p className="truncate text-base font-semibold text-primary">{app.role}</p>
+          <p className="truncate text-sm text-hint">
             {app.company}
             {app.location ? ` · ${app.location}` : ""}
           </p>
@@ -266,11 +266,11 @@ function ApplicationKanbanCard({
           aria-label={t("common:actions.delete", { defaultValue: "Delete" })}
           className="shrink-0 text-hint opacity-0 transition hover:text-danger group-hover:opacity-100"
         >
-          <EvaIcon name="trash-2-outline" size={14} />
+          <EvaIcon name="trash-2-outline" size={16} />
         </button>
       </div>
-      {app.next_step && <p className="text-xs text-hint">{t("web:jobTracker.nextStep", { defaultValue: "Next: {{step}}", step: app.next_step })}</p>}
-      <Link href="/applications" className="text-xs font-semibold text-link hover:underline">
+      {app.next_step && <p className="text-sm text-hint">{t("web:jobTracker.nextStep", { defaultValue: "Next: {{step}}", step: app.next_step })}</p>}
+      <Link href="/applications" className="text-sm font-semibold text-link hover:underline">
         {t("web:jobTracker.viewInApplications", { defaultValue: "View details →" })}
       </Link>
     </div>
@@ -504,13 +504,23 @@ export default function JobTrackerPage() {
             </div>
           )}
 
+          {/* BUG FIX (product report: "Remove the horizontal scroll from
+              the Job Tracker and the cards should be 3 cards in a row and
+              make them bigger"): this used to force all 6 columns into a
+              single horizontally-scrolling row via lg:grid-flow-col +
+              lg:auto-cols-[260px] (a fixed 260px per column, however many
+              there were) -- the exact "horizontal scroll" being reported.
+              A plain wrapping grid at 3 columns per row (2 rows for 6
+              columns) removes the scrollbar entirely and lets each column
+              flex to a real fraction of the page width instead of a fixed
+              260px, which is what actually makes them bigger. */}
           {!proRequired && !loading && totalCount > 0 && (
-            <div className="grid grid-cols-1 gap-4 overflow-x-auto sm:grid-cols-2 lg:grid-flow-col lg:auto-cols-[260px] lg:grid-cols-none">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {columns.map((col) => {
                 const cards = columnCards(col.key);
                 const isOver = dragOverColumn === col.key;
                 return (
-                  <div key={col.key} className="flex min-w-0 flex-col lg:min-w-[260px]">
+                  <div key={col.key} className="flex min-w-0 flex-col">
                     <ColumnHeader icon={COLUMN_ICON[col.key]} label={col.label} count={cards.length} />
                     <div
                       onDragOver={(e) => {
