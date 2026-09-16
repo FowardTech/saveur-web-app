@@ -129,7 +129,20 @@ function AiCoachPageInner() {
       .catch(() => {});
   }, [authLoading, profile?.goals, profile?.desiredRoles, i18n.language]);
 
+  // BUG FIX (product report: "I cant still see the suggested topics in
+  // the web AI career coach"): the inline topics row below the chat only
+  // ever shows on a genuinely EMPTY thread (messages.length === 1, just
+  // the opening/greeting bubble) -- correct for a brand-new conversation,
+  // but it means topics silently disappear forever the moment there's any
+  // real history at all (which is most of the time this screen gets
+  // reopened), with no other way to reach them. This adds a persistent
+  // "Topics" button in the header, always available regardless of thread
+  // length, so suggested topics are never just a one-time, easy-to-miss
+  // affordance.
+  const [showTopicsMenu, setShowTopicsMenu] = useState(false);
+
   function onTapTopic(title: string) {
+    setShowTopicsMenu(false);
     router.push(`/ai-coach/voice?topic=${encodeURIComponent(title)}`);
   }
 
@@ -404,7 +417,40 @@ function AiCoachPageInner() {
               title={t("web:aiCoach.title", { defaultValue: "AI Coach" })}
               subtitle={t("web:aiCoach.subtitle", { defaultValue: "Ask anything about your job search, interviews, or career." })}
             />
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="relative flex shrink-0 items-center gap-2">
+              {topics.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowTopicsMenu((v) => !v)}
+                  className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-1 px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-surface-3"
+                >
+                  <EvaIcon name="bulb-outline" size={16} />
+                  {t("web:aiCoach.topicsButton", { defaultValue: "Topics" })}
+                </button>
+              )}
+              {showTopicsMenu && (
+                <div
+                  className="absolute right-0 top-full z-20 mt-2 w-72 rounded-card border border-border bg-surface-2 p-3 shadow-xl"
+                  onMouseLeave={() => setShowTopicsMenu(false)}
+                >
+                  <p className="mb-2 text-xs font-medium text-hint">
+                    {t("web:aiCoach.suggestedTopicsHint", { defaultValue: "Tap a topic to start a voice conversation" })}
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {topics.map((topic) => (
+                      <button
+                        key={topic.id}
+                        type="button"
+                        onClick={() => onTapTopic(topic.title)}
+                        className="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-left text-xs font-medium text-primary transition hover:bg-surface-3"
+                      >
+                        <EvaIcon name="mic-outline" size={13} className="mt-0.5 shrink-0 text-brand" />
+                        {topic.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {/* Entry point into the dedicated Voice Coach screen — mirrors
                   mobile Chat.tsx's "Speak" pill (waveform icon) that
                   switches into VoiceCoachView, except this opens a real
