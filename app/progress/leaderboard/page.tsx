@@ -14,6 +14,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import * as gamificationService from "@/lib/gamificationService";
 import type { GamificationStreak, LeaderboardEntry, LeaderboardPeriod } from "@/lib/gamificationService";
 import type { ApiError } from "@/lib/apiClient";
+import { tintCycle } from "@/lib/navigation";
 
 // Web port of Saveur/src/home/Leaderboard.tsx — "Your standing" (streak/XP
 // ring + Check-In button), Daily/Weekly/Monthly period tabs, top-3 podium,
@@ -188,15 +189,15 @@ function LeaderboardPageInner() {
             <>
               {/* Top-3 podium */}
               <div className="flex items-end gap-3">
-                {PODIUM_ORDER.map((rank) => {
+                {PODIUM_ORDER.map((rank, i) => {
                   const entry = podiumEntry(rank);
                   const style = PODIUM_STYLE[rank];
                   if (!entry) return <div key={rank} className="flex-1" />;
                   return (
                     <div
                       key={rank}
-                      className="relative flex flex-1 flex-col items-center rounded-card bg-surface-2 px-2 pb-4 pt-5 shadow-sm"
-                      style={{ minHeight: rank === 1 ? 210 : 180 }}
+                      className="animate-card-in relative flex flex-1 flex-col items-center rounded-card bg-surface-2 px-2 pb-4 pt-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                      style={{ minHeight: rank === 1 ? 210 : 180, animationDelay: `${i * 60}ms` }}
                     >
                       <span className={`absolute left-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white ${style.badgeBg}`}>{rank}</span>
                       <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-brand/10 text-base font-bold text-brand shadow-sm">
@@ -220,10 +221,16 @@ function LeaderboardPageInner() {
                 <div className="flex flex-col gap-1">
                   <h3 className="mb-1 text-sm font-bold text-primary">{t("web:progress.leaderboardPage.moreRankings", { defaultValue: "More Rankings" })}</h3>
                   <div className="flex flex-col divide-y divide-border rounded-card bg-surface-2 shadow-sm">
-                    {rest.map((entry) => (
-                      <div key={entry.id} className={`flex items-center gap-3 p-3 ${entry.isCurrentUser ? "bg-brand/5" : ""}`}>
+                    {rest.map((entry, index) => (
+                      <div
+                        key={entry.id}
+                        className={`animate-card-in flex items-center gap-3 p-3 ${entry.isCurrentUser ? "bg-brand/5" : ""}`}
+                        style={{ animationDelay: `${index * 40}ms` }}
+                      >
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-3 text-xs font-bold text-hint">{entry.rank}</span>
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-xs font-bold text-brand">
+                        <span
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${tintCycle[index % tintCycle.length].bg} ${tintCycle[index % tintCycle.length].text}`}
+                        >
                           {entry.name?.[0]?.toUpperCase() ?? "?"}
                         </span>
                         <span className="flex-1 truncate text-sm font-semibold text-primary">

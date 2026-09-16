@@ -14,6 +14,7 @@ import { Skeleton, SkeletonRows } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { getCareerGoalLabel } from "@/lib/careerGoalLabels";
+import { tintCycle } from "@/lib/navigation";
 import * as gamificationService from "@/lib/gamificationService";
 import type { DailyChallenge, GamificationStreak, LeaderboardEntry } from "@/lib/gamificationService";
 
@@ -390,19 +391,28 @@ function ProgressPageInner() {
 
               {/* 3 stat tiles */}
               <div className="grid grid-cols-3 gap-3">
-                <div className="flex flex-col items-center rounded-card border border-border bg-tint-mint p-4">
+                <div
+                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-mint p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  style={{ animationDelay: "0ms" }}
+                >
                   <CircularProgress progress={Math.min(100, (completed.length / 10) * 100)} size={56} strokeWidth={5} progressClassName="text-tint-mint-text" trackClassName="text-white/60">
                     <span className="text-sm font-bold text-tint-mint-text">{completed.length}</span>
                   </CircularProgress>
                   <span className="mt-2 text-center text-xs font-bold text-tint-mint-text">{t("web:progress.sessionsCompleted", { defaultValue: "Sessions completed" })}</span>
                 </div>
-                <div className="flex flex-col items-center rounded-card border border-border bg-tint-orange p-4">
+                <div
+                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-orange p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  style={{ animationDelay: "50ms" }}
+                >
                   <CircularProgress progress={Math.min(100, (streakDays / 7) * 100)} size={56} strokeWidth={5} progressClassName="text-tint-orange-text" trackClassName="text-white/60">
                     <span className="text-sm font-bold text-tint-orange-text">{streakDays}</span>
                   </CircularProgress>
                   <span className="mt-2 text-center text-xs font-bold text-tint-orange-text">{t("web:progress.dayStreak", { defaultValue: "Day streak" })}</span>
                 </div>
-                <div className="flex flex-col items-center rounded-card border border-border bg-tint-purple p-4">
+                <div
+                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-purple p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  style={{ animationDelay: "100ms" }}
+                >
                   <CircularProgress progress={avgScore ?? 0} size={56} strokeWidth={5} progressClassName="text-tint-purple-text" trackClassName="text-white/60">
                     <span className="text-sm font-bold text-tint-purple-text">{avgScore != null ? avgScore : "—"}</span>
                   </CircularProgress>
@@ -441,10 +451,16 @@ function ProgressPageInner() {
                 {leaderboard && leaderboard.length === 0 && <p className="text-sm text-hint">{t("web:progress.leaderboardEmpty", { defaultValue: "No leaderboard data yet." })}</p>}
                 {leaderboard && leaderboard.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    {leaderboard.slice(0, 3).map((entry) => (
-                      <div key={entry.id} className={`flex items-center gap-3 rounded-card border border-border p-3 ${entry.isCurrentUser ? "bg-brand/5" : "bg-surface-2"}`}>
+                    {leaderboard.slice(0, 3).map((entry, index) => (
+                      <div
+                        key={entry.id}
+                        className={`animate-card-in flex items-center gap-3 rounded-card border border-border p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${entry.isCurrentUser ? "bg-brand/5" : "bg-surface-2"}`}
+                        style={{ animationDelay: `${index * 50}ms` }}
+                      >
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-3 text-xs font-bold text-hint">{entry.rank}</span>
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-xs font-bold text-brand">
+                        <span
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${tintCycle[index % tintCycle.length].bg} ${tintCycle[index % tintCycle.length].text}`}
+                        >
                           {entry.name?.[0]?.toUpperCase() ?? "?"}
                         </span>
                         <span className="flex-1 truncate text-sm font-semibold text-primary">
@@ -469,8 +485,8 @@ function ProgressPageInner() {
               {heatMapLoading && <SkeletonRows count={4} />}
               {!heatMapLoading && heatMap && heatMap.length > 0 && heatMapSessionCount > 0 && (
                 <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-5">
-                  {heatMap.map((entry) => (
-                    <div key={entry.key}>
+                  {heatMap.map((entry, index) => (
+                    <div key={entry.key} className="animate-card-in" style={{ animationDelay: `${index * 50}ms` }}>
                       <div className="mb-1.5 flex items-center justify-between">
                         <span className="text-sm font-semibold text-primary">{entry.label}</span>
                         <span className="text-sm font-semibold text-link">{entry.score}%</span>
@@ -512,8 +528,8 @@ function ProgressPageInner() {
                   </p>
                 ) : (
                   <div className="flex flex-col divide-y divide-border rounded-card border border-border bg-surface-2">
-                    {recentSessions.map((s) => (
-                      <div key={s.id} className="flex items-center justify-between gap-3 p-4">
+                    {recentSessions.map((s, index) => (
+                      <div key={s.id} className="animate-card-in flex items-center justify-between gap-3 p-4" style={{ animationDelay: `${index * 50}ms` }}>
                         <div className="min-w-0">
                           <p className="truncate text-sm font-semibold text-primary">{t(`web:practice.mockInterviews.types.${s.type}`, { defaultValue: fallbackTypeLabel(s.type) })}</p>
                           <p className="mt-0.5 text-xs text-hint">{new Date(s.started_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</p>

@@ -236,8 +236,12 @@ export default function CareerRoadmapPage() {
               )}
 
               <div className="flex flex-col gap-3">
-                {roadmap.steps.map((step) => (
-                  <div key={step.order} className="flex items-start gap-4 rounded-card border border-border bg-surface-2 p-4">
+                {roadmap.steps.map((step, index) => (
+                  <div
+                    key={step.order}
+                    className="animate-card-in flex items-start gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
                     <span className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${statusStyles[step.status] ?? "bg-surface-3 text-hint"}`}>
                       {step.status === "completed" ? <EvaIcon name="checkmark-outline" size={16} /> : step.status === "locked" ? <EvaIcon name="lock-outline" size={14} /> : step.order}
                     </span>
@@ -277,19 +281,21 @@ export default function CareerRoadmapPage() {
                     <h2 className="text-sm font-semibold text-primary">{t("web:career.roadmap.milestoneOverview", { defaultValue: "Milestone Overview" })}</h2>
                     {pairs.map((pair, i) => (
                       <div key={i} className="flex gap-3">
-                        {pair.map((group) => (
-                          <StatMiniCard
-                            key={group.type}
-                            icon={TYPE_META[group.type].icon}
-                            iconTint={TYPE_META[group.type].tint}
-                            title={t(`web:career.roadmap.type.${group.type}`, { defaultValue: TYPE_META[group.type].label })}
-                            value={t("web:career.roadmap.completedOfTotal", { defaultValue: "{{completed}} of {{total}}", completed: group.completed, total: group.total })}
-                            valueColor={TYPE_META[group.type].tint}
-                            caption={t("web:career.roadmap.typeCaption", { defaultValue: "{{completed}} of {{total}} steps complete", completed: group.completed, total: group.total })}
-                            progressPercent={group.total > 0 ? Math.round((group.completed / group.total) * 100) : 0}
-                            progressColor={TYPE_META[group.type].tint}
-                            backgroundColor={TYPE_META[group.type].bg}
-                          />
+                        {pair.map((group, j) => (
+                          <div key={group.type} className="animate-card-in flex flex-1" style={{ animationDelay: `${(i * 2 + j) * 50}ms` }}>
+                            <StatMiniCard
+                              icon={TYPE_META[group.type].icon}
+                              iconTint={TYPE_META[group.type].tint}
+                              title={t(`web:career.roadmap.type.${group.type}`, { defaultValue: TYPE_META[group.type].label })}
+                              value={t("web:career.roadmap.completedOfTotal", { defaultValue: "{{completed}} of {{total}}", completed: group.completed, total: group.total })}
+                              valueColor={TYPE_META[group.type].tint}
+                              caption={t("web:career.roadmap.typeCaption", { defaultValue: "{{completed}} of {{total}} steps complete", completed: group.completed, total: group.total })}
+                              progressPercent={group.total > 0 ? Math.round((group.completed / group.total) * 100) : 0}
+                              progressColor={TYPE_META[group.type].tint}
+                              backgroundColor={TYPE_META[group.type].bg}
+                              className="w-full"
+                            />
+                          </div>
                         ))}
                       </div>
                     ))}

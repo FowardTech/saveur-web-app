@@ -15,6 +15,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { tintCycle } from "@/lib/navigation";
 
 // Web counterpart to Saveur/src/more/NetworkingAssistant.tsx: ONE screen
 // with a pill tab bar switching between "Career Events" (index 0, default)
@@ -356,10 +357,19 @@ function NetworkingAssistantInner() {
 
                   {events &&
                     events.length > 0 &&
-                    events.map((ev) => (
-                      <div key={ev.id} className="flex items-start justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm">
+                    events.map((ev, index) => (
+                      <div
+                        key={ev.id}
+                        className="animate-card-in flex items-start justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                        style={{ animationDelay: `${index * 50}ms` }}
+                      >
                         <a href={ev.url} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-start gap-3">
-                          <CompanyLogoAvatar logoUrl={ev.logo_url ?? null} companyName={ev.organizer || ev.title} size={44} className="shrink-0 bg-tint-orange" />
+                          <CompanyLogoAvatar
+                            logoUrl={ev.logo_url ?? null}
+                            companyName={ev.organizer || ev.title}
+                            size={44}
+                            className={`shrink-0 ${tintCycle[index % tintCycle.length].bg}`}
+                          />
                           <div className="flex-1">
                             <h3 className="font-medium text-primary">{ev.title}</h3>
                             <p className="text-sm text-hint">{[ev.organizer, ev.location].filter(Boolean).join(" · ")}</p>
@@ -388,8 +398,12 @@ function NetworkingAssistantInner() {
                       title={t("web:career.networking.noContacts", { defaultValue: "No contacts yet — add someone you met networking." })}
                     />
                   ) : (
-                    contacts.map((contact) => (
-                      <div key={contact.id} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4">
+                    contacts.map((contact, index) => (
+                      <div
+                        key={contact.id}
+                        className="animate-card-in flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                        style={{ animationDelay: `${index * 50}ms` }}
+                      >
                         <div className="flex items-start justify-between gap-3">
                           <h3 className="font-semibold text-primary">{contact.name}</h3>
                           <button
