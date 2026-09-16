@@ -18,6 +18,7 @@ import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard"
 import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCard";
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
 import { AppTour } from "@/components/dashboard/AppTour";
+import { CoachingReportCard } from "@/components/dashboard/CoachingReportCard";
 
 function useGreeting() {
   const { t } = useTranslation();
@@ -155,6 +156,13 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
+
+        {/* Coaching report — product report: "the web app dashboard look
+            so empty" [Yoodli's own dashboard report card]. Self-contained,
+            renders nothing while loading and shows an honest empty state
+            (with a CTA) rather than fabricated content for a new user with
+            fewer than 2 graded mock interviews. */}
+        <CoachingReportCard />
       </div>
     </AppShell>
   );
