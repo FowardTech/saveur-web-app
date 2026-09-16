@@ -13,6 +13,47 @@ import { getMoreBadges, badgeCountFor, type MoreBadges } from "@/lib/moreBadges"
 import { getSharedWithMeBadgeCount } from "@/lib/sharesService";
 import { onForegroundMessage } from "@/lib/messaging";
 
+// Product report: "The sidebar items icons in the web app should have
+// linear gradient background just as the items in the mobile app settings"
+// -- exact same 10-color two-stop gradient pairs as src/more/MoreSrc.tsx's
+// ICON_GRADIENTS (mobile Settings row icon badges), cycled by position the
+// same way (gradientFor(i)) rather than per-item hardcoded colors, so a nav
+// item's color is stable by its position in the list but the whole set
+// doesn't need hand-picking a color per feature.
+const ICON_GRADIENTS: [string, string][] = [
+  ["#2d76dbff", "#3B9DFF"], // blue
+  ["#dc5d2bff", "#FB923C"], // orange
+  ["#28b35bff", "#4ADE80"], // green
+  ["#8449e2ff", "#A78BFA"], // purple
+  ["#d6355dff", "#FB7185"], // red/pink
+  ["#1ca3c8ff", "#22D3EE"], // teal/cyan
+  ["#dd8039ff", "#FBBF24"], // amber
+  ["#5950d9ff", "#818CF8"], // indigo
+  ["#5d636eff", "#9CA3AF"], // slate/gray
+  ["#ba693aff", "#D97706"], // brown
+];
+function gradientFor(index: number): [string, string] {
+  return ICON_GRADIENTS[index % ICON_GRADIENTS.length];
+}
+
+/** The gradient badge behind each nav item's icon glyph — a small rounded
+ * square filled with a CSS linear-gradient (Tailwind has no utility for an
+ * arbitrary two-stop gradient pair, hence the inline style) with a white
+ * icon on top, matching mobile's ButtonOptional icon-badge shape/size
+ * closely enough to read as the same visual language while staying at the
+ * smaller scale a sidebar row needs. */
+function NavIconBadge({ icon, index }: { icon: Parameters<typeof EvaIcon>[0]["name"]; index: number }) {
+  const [from, to] = gradientFor(index);
+  return (
+    <span
+      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+      style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
+    >
+      <EvaIcon name={icon} size={14} className="text-white" />
+    </span>
+  );
+}
+
 /** Small unread-count pill — mirrors mobile MainDrawer.tsx's `styles.navBadge`
  * (rounded, brand-colored background, white text) and its `item.badge > 9 ?
  * '9+' : item.badge` convention. */
@@ -30,12 +71,14 @@ function NavLink({
   label,
   active,
   badge,
+  gradientIndex,
 }: {
   href: string;
   icon: Parameters<typeof EvaIcon>[0]["name"];
   label: string;
   active: boolean;
   badge?: number;
+  gradientIndex: number;
 }) {
   return (
     <Link
@@ -44,7 +87,7 @@ function NavLink({
         active ? "bg-brand/10 text-brand font-medium" : "text-hint hover:bg-surface-3 hover:text-primary"
       }`}
     >
-      <EvaIcon name={icon} size={18} />
+      <NavIconBadge icon={icon} index={gradientIndex} />
       <span className="truncate">{label}</span>
       {!!badge && <NavBadge count={badge} />}
     </Link>
@@ -55,10 +98,12 @@ function NavGroupItem({
   item,
   pathname,
   badges,
+  gradientIndex,
 }: {
   item: Extract<NavItem, { children: unknown[] }>;
   pathname: string;
   badges: MoreBadges | null;
+  gradientIndex: number;
 }) {
   const { t } = useTranslation();
   const hasActiveChild = item.children.some((c) => pathname.startsWith(c.href));
@@ -73,7 +118,7 @@ function NavGroupItem({
           hasActiveChild ? "text-brand font-medium" : "text-hint hover:bg-surface-3 hover:text-primary"
         }`}
       >
-        <EvaIcon name={item.icon} size={18} />
+        <NavIconBadge icon={item.icon} index={gradientIndex} />
         <span className="flex-1 truncate text-left">
           {item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label}
         </span>
@@ -82,7 +127,7 @@ function NavGroupItem({
       </button>
       {open && (
         <div className="ml-4 mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
-          {item.children.map((child) => (
+          {item.children.map((child, i) => (
             <NavLink
               key={child.href}
               href={child.href}
@@ -90,6 +135,7 @@ function NavGroupItem({
               label={child.labelKey ? t(`common:nav.${child.labelKey}`, { defaultValue: child.label }) : child.label}
               active={pathname === child.href}
               badge={badgeCountFor(child.badgeKey, badges)}
+              gradientIndex={gradientIndex + i + 1}
             />
           ))}
         </div>
@@ -243,7 +289,15 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   }, [firebaseUser, loading]);
 
   return (
-    <div className="flex h-full w-64 flex-col bg-surface-1">
+    // BUG FIX (product report: "I want the dashboard sidebar background to
+    // be white not gray") -- was bg-surface-1 (#f6faf8, the pale mint-gray
+    // task #45 already moved the main content area OFF of, onto bg-page).
+    // Uses that same bg-page white token instead of a fresh surface-2
+    // reference so the two stay in sync if `--page` is ever retuned. The
+    // existing border-r border-border wrap around <Sidebar /> in
+    // AppShell.tsx already gives it a visible edge against the (also now
+    // white) main content, so this doesn't need its own border/shadow.
+    <div className="flex h-full w-64 flex-col bg-page">
       <div className="flex items-center gap-2 px-5 py-5">
         <Image src="/logo-badge.png" alt="" width={28} height={28} priority className="rounded-[22%]" />
         <span className="font-brand text-xl tracking-tight text-primary">
@@ -253,9 +307,9 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <nav className="flex-1 overflow-y-auto scrollbar-hide px-3" onClick={onNavigate}>
         <div className="flex flex-col gap-0.5">
-          {primaryNav.map((item) =>
+          {primaryNav.map((item, i) =>
             isNavGroup(item) ? (
-              <NavGroupItem key={item.label} item={item} pathname={pathname} badges={badges} />
+              <NavGroupItem key={item.label} item={item} pathname={pathname} badges={badges} gradientIndex={i} />
             ) : (
               <NavLink
                 key={item.href}
@@ -264,6 +318,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 label={item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label}
                 active={pathname === item.href}
                 badge={badgeCountFor(item.badgeKey, badges)}
+                gradientIndex={i}
               />
             )
           )}
@@ -272,7 +327,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <div className="my-3 border-t border-border" />
 
         <div className="flex flex-col gap-0.5 pb-4">
-          {secondaryNav.map((item) => (
+          {secondaryNav.map((item, i) => (
             <NavLink
               key={item.href}
               href={item.href}
@@ -280,6 +335,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               label={item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label}
               active={pathname === item.href}
               badge={badgeCountFor(item.badgeKey, badges)}
+              gradientIndex={primaryNav.length + i}
             />
           ))}
         </div>
