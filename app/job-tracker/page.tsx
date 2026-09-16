@@ -11,8 +11,6 @@ import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import { guessCompanyLogoUrl } from "@/lib/companyData";
-import { DidYouApplyModal } from "@/components/jobAlerts/DidYouApplyModal";
-import { useApplyTracking } from "@/hooks/useApplyTracking";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 
 // Product request: "I checked the dashboard of those web apps... there is a
@@ -141,29 +139,15 @@ function AlertKanbanCard({
   onDragStart,
   onDragEnd,
   onTogglePin,
-  onDragToApplied,
 }: {
   alert: JobAlert;
   isDragging: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
   onTogglePin: (alert: JobAlert) => void;
-  onDragToApplied: () => void;
 }) {
   const { t } = useTranslation();
   const logoUrl = alert.company_logo_url ?? guessCompanyLogoUrl(alert.company);
-  const apply = useApplyTracking({
-    company: alert.company,
-    role: alert.title,
-    location: alert.location,
-    applyUrl: alert.apply_url,
-    companyLogoUrl: logoUrl,
-  });
-
-  async function handleConfirmApplied() {
-    const succeeded = await apply.confirmApplied();
-    if (succeeded) onDragToApplied();
-  }
 
   return (
     <div
@@ -200,25 +184,26 @@ function AlertKanbanCard({
           {alert.pinned ? t("web:jobTracker.saved", { defaultValue: "Saved" }) : t("web:jobTracker.save", { defaultValue: "Save" })}
         </button>
         {alert.apply_url && (
-          <button
-            type="button"
-            onClick={apply.openApply}
+          // BUG FIX (product report, with screenshot: "The apply button
+          // should first navigate to the in app job detail screen first
+          // not directly to the job site") -- was onClick={apply.openApply},
+          // opening the external apply URL in a new tab directly from the
+          // board. The in-app detail page (app/job-alerts/[id]/page.tsx)
+          // already owns the full real apply flow (its own Apply button,
+          // the "did you apply?" return-to-tab prompt, and the actual
+          // POST /api/v1/tracker/applications tracking call on confirm) --
+          // this now lands there first instead of duplicating that flow
+          // here, so applying always goes through the same real detail
+          // view no matter which screen the user started from.
+          <Link
+            href={`/job-alerts/${alert.id}`}
             className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-pill bg-brand px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-600"
           >
             {t("web:jobTracker.apply", { defaultValue: "Apply" })}
-            <EvaIcon name="external-link-outline" size={13} />
-          </button>
+            <EvaIcon name="arrow-forward-outline" size={13} />
+          </Link>
         )}
       </div>
-      <DidYouApplyModal
-        open={apply.promptOpen}
-        company={alert.company}
-        role={alert.title}
-        isSubmitting={apply.isSubmitting}
-        feedback={apply.feedback}
-        onConfirm={handleConfirmApplied}
-        onDismiss={apply.dismissPrompt}
-      />
     </div>
   );
 }
@@ -312,6 +297,13 @@ export default function JobTrackerPage() {
     }
   }, []);
 
+  // Fetches fresh on every real mount of this page -- including navigating
+  // back to it from the in-app job detail page (Next.js's app router mounts
+  // a genuinely new instance of this component on a route change, it isn't
+  // preserved/cached the way a tab-switch would be), so a newly-tracked
+  // application from that detail page's own real apply-confirm flow (see
+  // AlertKanbanCard's own comment on why Apply now routes there first)
+  // shows up here without needing a manual refresh.
   useEffect(() => {
     loadAlerts();
     loadApplications();
@@ -545,7 +537,6 @@ export default function JobTrackerPage() {
                               onDragStart={() => setDraggingId(alert.id)}
                               onDragEnd={() => setDraggingId(null)}
                               onTogglePin={handleTogglePin}
-                              onDragToApplied={() => createApplicationFromAlert(alert, "Applied")}
                             />
                           ))
                         : (cards as Application[]).map((app) => (
