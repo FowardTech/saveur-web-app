@@ -132,7 +132,7 @@ export function ShareToUserModal({ open, onClose, contentType, contentId }: Shar
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
-      <div className="w-full max-w-sm rounded-card border border-border bg-surface-2 p-5 shadow-2xl">
+      <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-card border border-border bg-surface-2 p-5 shadow-2xl">
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 className="font-semibold text-primary">{t("web:jobAlerts.details.shareToSaveurUser", { defaultValue: "Share with a Saveur user" })}</h2>
           <button

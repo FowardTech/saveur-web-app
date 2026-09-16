@@ -22,7 +22,11 @@
   --accent-purple: #8b5cf6;
 
   /* light mode */
-  --page: #f5f5f6;
+  /* Product report: "I want the app background in the web app to be
+     white not gray." Cards (--surface-2, already #ffffff) still read as
+     distinct from this via border-border + shadow-sm, same as most
+     white-on-white SaaS UIs -- not by making the page itself off-white. */
+  --page: #ffffff;
   --surface-1: #f6faf8;
   --surface-2: #ffffff;
   --surface-3: #f0f0f0;

@@ -25,7 +25,7 @@ export function DidYouApplyModal({ open, company, role, isSubmitting, feedback, 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
-      <div className="w-full max-w-sm rounded-card border border-border bg-surface-2 p-5 shadow-2xl">
+      <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-card border border-border bg-surface-2 p-5 shadow-2xl">
         <h2 className="mb-2 font-semibold text-primary">
           {t("web:jobAlerts.details.didYouApplyTitle", { defaultValue: "Did you apply for this job?" })}
         </h2>

@@ -177,7 +177,7 @@ export default function CareerDiaryPage() {
 
         {showComposer && (
           <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => !saving && setShowComposer(false)}>
-            <div className="w-full max-w-md rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+            <div className="max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-semibold text-primary">{t("web:careerDiary.addEntry", { defaultValue: "Add Entry" })}</h2>
                 <button type="button" onClick={() => setShowComposer(false)} aria-label={t("common:actions.close", { defaultValue: "Close" })}>

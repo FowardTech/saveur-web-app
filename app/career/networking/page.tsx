@@ -494,7 +494,7 @@ function NetworkingAssistantInner() {
             <form
               onSubmit={onSaveContact}
               onClick={(e) => e.stopPropagation()}
-              className="flex w-full max-w-md flex-col gap-4 rounded-card border border-border bg-surface-2 p-6 shadow-2xl"
+              className="flex max-h-[85vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-card border border-border bg-surface-2 p-6 shadow-2xl"
             >
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-primary">

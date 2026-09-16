@@ -441,7 +441,7 @@ export default function DreamCompaniesPage() {
             <form
               onSubmit={handleAdd}
               onClick={(e) => e.stopPropagation()}
-              className="flex w-full max-w-md flex-col gap-4 rounded-card border border-border bg-surface-2 p-6 shadow-2xl"
+              className="flex max-h-[85vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-card border border-border bg-surface-2 p-6 shadow-2xl"
             >
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-primary">{t("web:career.dreamCompanies.add", { defaultValue: "Add to Dashboard" })}</h2>
@@ -819,7 +819,7 @@ function CompareModal({
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[85vh] w-full max-w-2xl flex-col gap-4 rounded-t-card border border-border bg-surface-2 p-6 shadow-2xl sm:rounded-card"
+        className="flex max-h-[85vh] w-full max-w-2xl flex-col gap-4 overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 shadow-2xl sm:rounded-card"
       >
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-primary">{t("web:career.dreamCompanies.compareTitle", { defaultValue: "Compare companies" })}</h2>

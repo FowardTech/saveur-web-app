@@ -198,7 +198,7 @@ export default function GeneratedDocumentsPage() {
 
           {renamingDoc && (
             <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => !savingRename && setRenamingDoc(null)}>
-              <div className="w-full max-w-sm rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+              <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
                 <h2 className="mb-4 font-semibold text-primary">{t("web:documents.generated.renameTitle", { defaultValue: "Rename document" })}</h2>
                 <TextField label={t("web:documents.generated.nameLabel", { defaultValue: "Document name" })} value={renameValue} onChange={(e) => setRenameValue(e.target.value)} autoFocus />
                 <div className="mt-4 flex flex-col gap-2">
@@ -215,7 +215,7 @@ export default function GeneratedDocumentsPage() {
 
           {editingDoc && (
             <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => !savingEdit && setEditingDoc(null)}>
-              <div className="flex w-full max-w-lg flex-col gap-4 rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+              <div className="flex max-h-[85vh] w-full max-w-lg flex-col gap-4 overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
                 <h2 className="font-semibold text-primary">{t("web:documents.generated.editTitle", { defaultValue: "Edit cover letter" })}</h2>
                 <TextField label={t("web:documents.generated.nameLabel", { defaultValue: "Document name" })} value={editLabel} onChange={(e) => setEditLabel(e.target.value)} />
                 <div className="flex flex-col gap-1.5">

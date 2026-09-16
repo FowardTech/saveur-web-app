@@ -286,7 +286,7 @@ export default function JDAnalyzerPage() {
         {/* Build Resume choice sheet: fresh vs. tailor an existing one. */}
         {showBuildResumeChoices && (
           <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => setShowBuildResumeChoices(false)}>
-            <div className="w-full max-w-sm rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+            <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
               <h2 className="mb-1 font-semibold text-primary">{t("web:jdAnalyzer.buildResumeCta", { defaultValue: "Build Resume" })}</h2>
               <p className="mb-4 text-sm text-hint">{t("web:jdAnalyzer.buildResumeChoiceDescription", { defaultValue: "Tailor a resume you already have to this job, or build a brand-new one from scratch." })}</p>
               <div className="flex flex-col gap-2">
@@ -306,7 +306,7 @@ export default function JDAnalyzerPage() {
 
         {showTailorChoices && (
           <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => setShowTailorChoices(false)}>
-            <div className="w-full max-w-sm rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+            <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
               <h2 className="mb-4 font-semibold text-primary">{t("web:jdAnalyzer.buildResumeTailor", { defaultValue: "Tailor an existing resume" })}</h2>
               <div className="flex flex-col gap-2">
                 <Button type="button" onClick={onTailorFromStoredResume}>
