@@ -136,7 +136,31 @@ function AiCoachPageInner() {
   async function load() {
     try {
       const data = await apiClient.get<{ messages: CoachMessage[] }>("/api/v1/coach/messages");
-      setMessages(data.messages.length > 0 ? data.messages : [{ ...GREETING_MESSAGE, text: coachGreetingText }]);
+      if (data.messages.length > 0) {
+        setMessages(data.messages);
+      } else {
+        // Product report: "I want the AI coach... to feel so real" [the
+        // reference: Yoodli's AI coach proactively asked about the
+        // user's role, why it's a fit, their dream companies, etc.,
+        // rather than just waiting for the first message]. This used to
+        // always show a single hardcoded greeting string, identical for
+        // every user and never persisted. GET /api/v1/coach/opening now
+        // generates (or, on a repeat visit, just returns) a real,
+        // personalized opener that references whatever's already known
+        // about this user and asks a genuine question back — see
+        // Saveur-Backend's coach.py _get_or_generate_opening for the full
+        // reasoning. Falls back to the old static text if that call
+        // fails for any reason, so a coach screen never fails to load
+        // over this.
+        try {
+          const opening = await apiClient.get<{ reply: string; id: string | null }>("/api/v1/coach/opening", {
+            params: { language: i18n.language },
+          });
+          setMessages([{ id: opening.id ?? "msg_opening", role: "coach", text: opening.reply || coachGreetingText }]);
+        } catch {
+          setMessages([{ ...GREETING_MESSAGE, text: coachGreetingText }]);
+        }
+      }
     } catch (err) {
       const apiErr = err as ApiError;
       if (apiErr.status === 402 || apiErr.status === 403) {
@@ -485,7 +509,7 @@ function AiCoachPageInner() {
                 )}
               </div>
 
-              {messages.length === 1 && messages[0].id === "msg_greeting" && topics.length > 0 && (
+              {messages.length === 1 && messages[0].role === "coach" && topics.length > 0 && (
                 <div className="flex flex-col gap-2">
                   <p className="text-xs font-medium text-hint">
                     {t("web:aiCoach.suggestedTopicsHint", { defaultValue: "Tap a topic to start a voice conversation" })}
