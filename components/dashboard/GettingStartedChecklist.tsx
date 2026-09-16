@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
 import * as documentsService from "@/lib/documentsService";
+import * as onboardingAssessmentService from "@/lib/onboardingAssessmentService";
 
 // "Getting Started" checklist — product report: "When a user logs in for
 // the first time, the app should suggest important steps to the user
@@ -44,12 +45,23 @@ export function GettingStartedChecklist() {
   // "avoid a one-frame flash" reasoning as AnnouncementBanner's identical
   // guard.
   const [dismissed, setDismissed] = useState<boolean | undefined>(undefined);
+  // Product request: "I want us to add prep test and many other
+  // personality test during onboarding and also when user enters the
+  // dashboard for the first time" — a checklist item for anyone who
+  // skipped app/onboarding/assessment/page.tsx at signup. Checks the
+  // backend's real completion status (not just a local flag) so a user
+  // who already did it doesn't see a stale "not done" item.
+  const [assessmentCompleted, setAssessmentCompleted] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     documentsService
       .listDocuments()
       .then((docs) => setHasResume(docs.some((d) => d.kind === "resume")))
       .catch(() => setHasResume(false));
+    onboardingAssessmentService
+      .getStatus()
+      .then((status) => setAssessmentCompleted(status.personalityCompleted))
+      .catch(() => setAssessmentCompleted(true)); // fail open — don't nag on a failed check
   }, []);
 
   useEffect(() => {
@@ -72,7 +84,7 @@ export function GettingStartedChecklist() {
     }
   }
 
-  if (!profile || dismissed === undefined || dismissed || hasResume === undefined) return null;
+  if (!profile || dismissed === undefined || dismissed || hasResume === undefined || assessmentCompleted === undefined) return null;
 
   const items: ChecklistItem[] = [
     {
@@ -80,6 +92,12 @@ export function GettingStartedChecklist() {
       label: t("web:dashboard.gettingStarted.uploadResume", { defaultValue: "Upload a resume" }),
       href: "/documents",
       done: hasResume,
+    },
+    {
+      key: "careerAssessment",
+      label: t("web:dashboard.gettingStarted.careerAssessment", { defaultValue: "Take your career assessment" }),
+      href: "/onboarding/assessment",
+      done: assessmentCompleted,
     },
     {
       key: "bio",

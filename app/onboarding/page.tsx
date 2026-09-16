@@ -189,7 +189,14 @@ export default function OnboardingPage() {
         desiredRoles: roles,
         preferredCountries: countries,
       });
-      router.push("/dashboard");
+      // Product request: "I want us to add prep test and many other
+      // personality test during onboarding and also when user enters the
+      // dashboard for the first time" — route through the new Career
+      // Assessment + Skills Prep Quiz screen before the dashboard itself;
+      // that screen's own skip options are what actually reach /dashboard
+      // (mirrors mobile's SuccessScr, which now offers the assessment as
+      // its own option alongside "See your dashboard").
+      router.push("/onboarding/assessment?from=onboarding");
     } catch (err: unknown) {
       const message = getErrorMessage(err, t("web:onboarding.saveFailedDefault", { defaultValue: "Something went wrong saving your profile. Please try again." }));
       setError(message);
