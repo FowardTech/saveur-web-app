@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
@@ -23,7 +24,17 @@ import type { ApiError } from "@/lib/apiClient";
 // differ in query params / the sessionStorage handoff below.
 //
 // Real backend — Saveur-Backend/app/api/resume_gen.py + resume.py:
-//   POST  /api/v1/resume/generate -> ResumeSections (Basic feature, @require_pro)
+//   POST  /api/v1/resume/generate -> ResumeSections (used to be @require_pro,
+//     now shares the free-plan combined pool of 2 resume-tool actions/month
+//     with ats-score/rewrite-bullet/cover-letter — see
+//     entitlements_service.py's "Resume tools free-plan cap" section. This
+//     page had NOT been updated for that migration: it still blanket-locked
+//     everyone without isPro behind an "Upgrade to Basic" wall before ever
+//     attempting a request, even though the backend would have let a free
+//     user in on their remaining free actions. Fixed by removing that
+//     pre-emptive gate and relying on the same reactive 402
+//     resume_tool_limit_reached handling + usage banner as
+//     app/resume/builder/page.tsx and app/resume/cover-letter/page.tsx.)
 //   PATCH /api/v1/resume          -> saves {sections}
 //   POST  /api/v1/resume/export   -> {url} (renders real .docx/.pdf server-side)
 //
@@ -166,7 +177,7 @@ function fieldInput(value: string | undefined, onChange: (v: string) => void, pl
 
 function GenerateResumeInner() {
   const { t } = useTranslation();
-  const { isPro, loading: authLoading } = useAuth();
+  const { isPro, loading: authLoading, subscriptionStatus, refreshSubscriptionStatus } = useAuth();
   const searchParams = useSearchParams();
   const docType = (searchParams.get("docType") === "cv" ? "cv" : "resume") as "resume" | "cv";
 
@@ -175,7 +186,12 @@ function GenerateResumeInner() {
   const [content, setContent] = useState<ResumeSections | null>(null);
   const [isGenerating, setIsGenerating] = useState(true);
   const [genError, setGenError] = useState<string | null>(null);
-  const [proRequired, setProRequired] = useState(false);
+  // Renamed from the old `proRequired` (this action is no longer
+  // Pro-only — see the header comment above) -- set on 402
+  // resume_tool_limit_reached, same shared-pool handling as
+  // app/resume/builder/page.tsx and app/resume/cover-letter/page.tsx.
+  const [limitReached, setLimitReached] = useState(false);
+  const [limitMessage, setLimitMessage] = useState<string | null>(null);
   const [downloadingFormat, setDownloadingFormat] = useState<"pdf" | "docx" | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -185,7 +201,7 @@ function GenerateResumeInner() {
     async (targetRole: string, handoff: HandoffInput) => {
       setIsGenerating(true);
       setGenError(null);
-      setProRequired(false);
+      setLimitReached(false);
       try {
         let existingResume: ResumeSections | null | undefined;
         if (handoff.useStoredResume) {
@@ -198,10 +214,12 @@ function GenerateResumeInner() {
           existingResumeDocumentId: existingResume ? undefined : handoff.existingResumeDocumentId,
         });
         setContent(generated);
+        void refreshSubscriptionStatus();
       } catch (err) {
         const apiErr = err as ApiError;
-        if (apiErr.status === 402 || apiErr.status === 403) {
-          setProRequired(true);
+        if (apiErr.status === 402 && apiErr.error === "resume_tool_limit_reached") {
+          setLimitReached(true);
+          setLimitMessage(apiErr.message);
         } else {
           setGenError(apiErr.message || t("web:resume.generate.genFailedDefault", { defaultValue: "Could not generate resume content." }));
         }
@@ -209,7 +227,7 @@ function GenerateResumeInner() {
         setIsGenerating(false);
       }
     },
-    [t],
+    [t, refreshSubscriptionStatus],
   );
 
   useEffect(() => {
@@ -269,21 +287,40 @@ function GenerateResumeInner() {
 
   const title = docType === "cv" ? t("web:resume.generate.titleCv", { defaultValue: "Build My CV" }) : t("web:resume.generate.titleResume", { defaultValue: "Build Matching Resume" });
 
-  if (!isPro) {
-    return (
-      <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-          <EvaIcon name="lock-outline" size={20} />
-        </span>
-        <h2 className="font-semibold text-primary">{t("web:resume.generate.proRequiredTitle", { defaultValue: "Building a resume/CV is a Basic feature" })}</h2>
-        <p className="text-sm text-hint">{t("web:resume.generate.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to unlock AI resume generation." })}</p>
-      </div>
-    );
-  }
-
+  // No more pre-emptive `if (!isPro) return <lock/>` here -- see the header
+  // comment for why (generate() shares the free-tier capped pool now, it
+  // isn't Pro-only). Free users see the real form and the usage banner
+  // below; the limitReached card only appears if a request actually comes
+  // back 402 resume_tool_limit_reached.
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
       <PageHeader title={title} subtitle={t("web:resume.generate.subtitle", { defaultValue: "Edit any section, then download as Word or PDF." })} />
+
+      {/* Free-plan usage banner -- same shared pool as
+          app/resume/builder/page.tsx and app/resume/cover-letter/page.tsx. */}
+      {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
+        <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <EvaIcon name="flash-outline" size={18} className="text-brand" />
+            {(() => {
+              const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
+              return (
+                <p className={`text-sm ${remaining > 0 ? "text-primary" : "text-danger"}`}>
+                  {remaining > 0
+                    ? t("web:resume.generate.freeActionsRemaining", {
+                        defaultValue: `${remaining} free resume tool action${remaining === 1 ? "" : "s"} left this month`,
+                        count: remaining,
+                      })
+                    : t("web:resume.generate.freeActionsUsedUp", { defaultValue: "You've used all your free resume tool actions this month" })}
+                </p>
+              );
+            })()}
+          </div>
+          <Link href="/subscription" className="whitespace-nowrap text-sm font-medium text-brand hover:underline">
+            {t("web:resume.generate.upgrade", { defaultValue: "Upgrade" })}
+          </Link>
+        </div>
+      )}
 
       <div className="flex items-end gap-2 rounded-card border border-border bg-surface-2 p-4">
         <div className="flex-1">
@@ -294,13 +331,16 @@ function GenerateResumeInner() {
         </Button>
       </div>
 
-      {proRequired && (
+      {limitReached && (
         <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
           <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
             <EvaIcon name="lock-outline" size={20} />
           </span>
-          <h2 className="font-semibold text-primary">{t("web:resume.generate.proRequiredTitle", { defaultValue: "Building a resume/CV is a Basic feature" })}</h2>
-          <p className="text-sm text-hint">{t("web:resume.generate.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to unlock AI resume generation." })}</p>
+          <h2 className="font-semibold text-primary">{t("web:resume.generate.limitReachedTitle", { defaultValue: "You've used your free resume tool actions this month" })}</h2>
+          <p className="text-sm text-hint">{limitMessage || t("web:resume.generate.limitReachedSubtitle", { defaultValue: "Upgrade to Saveur Basic or above for unlimited access." })}</p>
+          <Link href="/subscription" className="text-sm font-medium text-brand hover:underline">
+            {t("web:resume.generate.upgrade", { defaultValue: "Upgrade" })}
+          </Link>
         </div>
       )}
 
@@ -320,7 +360,7 @@ function GenerateResumeInner() {
         </div>
       )}
 
-      {!isGenerating && content && !proRequired && (
+      {!isGenerating && content && !limitReached && (
         <div className="flex flex-col gap-5 rounded-card border border-border bg-surface-2 p-6">
           <SectionHeading>{t("web:resume.generate.contact", { defaultValue: "Contact Info" })}</SectionHeading>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
