@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -92,6 +93,25 @@ export default function LiveInterviewSessionPage() {
   const [effectiveMode, setEffectiveMode] = useState<"voice" | "text" | "video" | null>(null);
   const [isEnding, setIsEnding] = useState(false);
   const [endError, setEndError] = useState<string | null>(null);
+
+  // BUG FIX (product report: "I thought i asked you to make it full
+  // screen? Looks like you tampered with a lot of things during these
+  // changes"): the video-mode `fixed inset-0` layer below was always
+  // correctly full-screen -- what broke it was an UNRELATED later change,
+  // AppShell.tsx's page-entrance animation (`.animate-page-in`, a
+  // `transform: translateY(...)` keyframe with `animation-fill-mode:
+  // both`). Per the CSS spec, any ancestor with a non-none `transform`
+  // becomes the containing block for `position: fixed` descendants --
+  // so once AppShell started wrapping every route's children in that
+  // animated div, this page's "full screen" video layer silently started
+  // being positioned relative to that small wrapper instead of the real
+  // viewport, producing the tiny boxed-in video the user saw. Rendering
+  // the video layer through a portal straight onto document.body sidesteps
+  // any transformed ancestor entirely, regardless of what AppShell (or any
+  // future wrapper) does. `mounted` guards against calling
+  // document.body during SSR, where `document` doesn't exist yet.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // Countdown — mirrors mobile's hard time-limit enforcement in
   // LiveInterviewSession.tsx (counts DOWN from the duration picked at
@@ -587,6 +607,26 @@ export default function LiveInterviewSessionPage() {
     speakAndListen(currentQuestion);
   }
 
+  // BUG FIX (product report: "the camera should automatically open once
+  // the interface just loads the user dont need to click the play button
+  // before the camera turns on"): startVideoSession() used to ONLY ever
+  // fire from the orb button's onClick, mirroring the initial build where
+  // a deliberate tap-to-start made sense for permission-priming, but
+  // mobile's LiveInterviewSession.tsx auto-requests camera/mic on mount.
+  // Fires once, as soon as Video mode is confirmed and a real first
+  // question is loaded (both set together in the session-load effect
+  // above); getUserMedia's own native browser permission prompt is still
+  // the real gate the user interacts with, this just removes the extra
+  // in-app tap before that prompt appears. The orb button still works as
+  // a manual fallback/interrupt control afterward (see its onClick above).
+  const autoStartedVideoRef = useRef(false);
+  useEffect(() => {
+    if (effectiveMode !== "video" || !currentQuestion || voiceStarted || autoStartedVideoRef.current) return;
+    autoStartedVideoRef.current = true;
+    void startVideoSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectiveMode, currentQuestion, voiceStarted]);
+
   // Voice input (SpeechRecognition) backs the Q&A loop in BOTH Voice and
   // Video mode — check support for either as soon as either is selected.
   useEffect(() => {
@@ -790,7 +830,7 @@ export default function LiveInterviewSessionPage() {
                       semi-transparent "glass" card floating OVER the video
                       (bg-black/45 + backdrop-blur) instead of in an opaque
                       white card below it — mobile's own captionGlassCard. */}
-                  {effectiveMode === "video" && (
+                  {effectiveMode === "video" && mounted && createPortal(
                     <div className="fixed inset-0 z-[100] flex flex-col bg-black">
                       {voiceUnsupported || cameraError ? (
                         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
@@ -882,7 +922,7 @@ export default function LiveInterviewSessionPage() {
                             <div className="max-w-md rounded-card bg-black/45 px-4 py-3 text-center backdrop-blur">
                               <p className="text-xs font-medium text-white/70">
                                 {!voiceStarted
-                                  ? t("web:practice.interview.tapToStartVideo", { defaultValue: "Tap to turn on your camera and start the interview" })
+                                  ? t("web:practice.interview.startingVideo", { defaultValue: "Turning on your camera…" })
                                   : voicePhase === "listening"
                                   ? t("web:aiCoach.voiceStatusListeningPrompt", { defaultValue: "I'm listening — go ahead" })
                                   : voicePhase === "thinking"
@@ -943,7 +983,8 @@ export default function LiveInterviewSessionPage() {
                           </div>
                         </>
                       )}
-                    </div>
+                    </div>,
+                    document.body
                   )}
 
                   {endError && <p className="text-sm text-danger">{endError}</p>}
