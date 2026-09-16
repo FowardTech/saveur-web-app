@@ -156,12 +156,10 @@
     "greetingEvening": "좋은 저녁이에요",
     "greetingHello": "안녕하세요",
     "greetingMorning": "좋은 아침이에요",
+    "homeBannerCta": "지금 시작하기",
     "homeBannerSubtitle": "오늘 모의 면접을 연습해 보세요 — AI 면접관 매칭과 즉각적인 피드백은 보통 10분도 채 걸리지 않습니다.",
     "homeBannerTitle": "이 기세를 계속 이어가세요.",
     "loading": "대시보드를 불러오는 중…",
-    "promoCta": "지금 시작하기",
-    "promoSubtitle": "목표 직무에 맞는 AI 면접관과 매칭되어 몇 분 안에 피드백을 받을 수 있습니다.",
-    "promoTitle": "오늘 모의 면접을 연습해 보세요",
     "quickActions": {
       "aiCoach": "커리어 고민 나누기",
       "careerRoadmap": "나만의 맞춤 커리어 경로 확인하기",

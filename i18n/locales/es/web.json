@@ -156,12 +156,10 @@
     "greetingEvening": "Buenas noches",
     "greetingHello": "Hola",
     "greetingMorning": "Buenos días",
+    "homeBannerCta": "Empezar ahora",
     "homeBannerSubtitle": "Practica una entrevista simulada hoy — emparejarte con un entrevistador de IA y recibir comentarios instantáneos suele tardar menos de 10 minutos.",
     "homeBannerTitle": "Sigue avanzando.",
     "loading": "Cargando tu panel…",
-    "promoCta": "Empezar ahora",
-    "promoSubtitle": "Te emparejamos con un entrevistador de IA para tu puesto objetivo y recibes comentarios en minutos.",
-    "promoTitle": "Practica una entrevista simulada hoy",
     "quickActions": {
       "aiCoach": "Conversa sobre tus dudas profesionales",
       "careerRoadmap": "Ve tu camino personalizado a seguir",

@@ -156,12 +156,10 @@
     "greetingEvening": "Bonsoir",
     "greetingHello": "Bonjour",
     "greetingMorning": "Bonjour",
+    "homeBannerCta": "Commencer",
     "homeBannerSubtitle": "Essayez un entretien simulé aujourd'hui — être mis en relation avec un intervieweur IA et recevoir un retour instantané prend généralement moins de 10 minutes.",
     "homeBannerTitle": "Continuez sur votre lancée.",
     "loading": "Chargement de votre tableau de bord…",
-    "promoCta": "Commencer",
-    "promoSubtitle": "Soyez mis en relation avec un intervieweur IA pour le poste visé et recevez un retour en quelques minutes.",
-    "promoTitle": "Essayez un entretien simulé aujourd'hui",
     "quickActions": {
       "aiCoach": "Échangez sur vos questions de carrière",
       "careerRoadmap": "Découvrez votre parcours personnalisé",

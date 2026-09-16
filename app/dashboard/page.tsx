@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { ActionCard } from "@/components/ui/ActionCard";
-import { LinkButton } from "@/components/ui/Button";
-import { EvaIcon } from "@/components/icons/EvaIcon";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { WelcomeModal } from "@/components/dashboard/WelcomeModal";
@@ -218,27 +216,6 @@ export default function DashboardPage() {
             components/learning/InAppVideoPlayer.tsx for the real position
             tracking that feeds this). */}
         <ContinueWatchingCard />
-
-        {/* Promo banner */}
-        <div
-          data-tour="dashboard-promo"
-          className="flex flex-col items-start gap-4 rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-6 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div className="flex items-start gap-3">
-            <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand text-white">
-              <EvaIcon name="flash-outline" size={20} />
-            </span>
-            <div>
-              <h2 className="font-semibold text-primary">{t("web:dashboard.promoTitle", { defaultValue: "Try a mock interview today" })}</h2>
-              <p className="mt-1 text-sm text-hint">
-                {t("web:dashboard.promoSubtitle", { defaultValue: "Get matched with an AI interviewer for your target role and receive feedback in minutes." })}
-              </p>
-            </div>
-          </div>
-          <LinkButton href="/practice/mock-interviews" size="md" className="shrink-0">
-            {t("web:dashboard.promoCta", { defaultValue: "Start now" })}
-          </LinkButton>
-        </div>
 
         {/* Quick actions */}
         <div data-tour="dashboard-quick-actions" className="flex flex-col gap-4">

@@ -156,12 +156,10 @@
     "greetingEvening": "こんばんは",
     "greetingHello": "こんにちは",
     "greetingMorning": "おはようございます",
+    "homeBannerCta": "今すぐ始める",
     "homeBannerSubtitle": "今日、模擬面接を試してみましょう — AI面接官とのマッチングと即時フィードバックは通常10分もかかりません。",
     "homeBannerTitle": "この勢いを維持しましょう。",
     "loading": "ダッシュボードを読み込んでいます…",
-    "promoCta": "今すぐ始める",
-    "promoSubtitle": "目指す職種に合わせたAI面接官とマッチングし、数分でフィードバックを受け取れます。",
-    "promoTitle": "今日、模擬面接を試してみましょう",
     "quickActions": {
       "aiCoach": "キャリアの疑問について話す",
       "careerRoadmap": "あなた専用の今後の道筋を見る",

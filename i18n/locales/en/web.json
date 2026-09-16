@@ -240,12 +240,10 @@
     "greetingEvening": "Good evening",
     "greetingHello": "Hello",
     "greetingMorning": "Good morning",
+    "homeBannerCta": "Start now",
     "homeBannerSubtitle": "Try a mock interview today — matching you with an AI interviewer and instant feedback usually takes less than 10 minutes.",
     "homeBannerTitle": "Keep building momentum.",
     "loading": "Loading your dashboard…",
-    "promoCta": "Start now",
-    "promoSubtitle": "Get matched with an AI interviewer for your target role and receive feedback in minutes.",
-    "promoTitle": "Try a mock interview today",
     "quickActions": {
       "aiCoach": "Chat through your career questions",
       "careerRoadmap": "See your personalized path forward",

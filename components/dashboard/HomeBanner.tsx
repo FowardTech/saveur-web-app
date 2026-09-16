@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { LinkButton } from "@/components/ui/Button";
 import { ArtMissionPhone } from "./HomeBannerArt";
 
 /** Dashboard counterpart to the landing page's HeroBanner — same boxed/
@@ -14,7 +15,17 @@ import { ArtMissionPhone } from "./HomeBannerArt";
  * circles and a small floating flash-icon badge standing in for
  * decoration. Replaced that badge with ArtMissionPhone (mobile's own
  * dashboard-hero illustration, see HomeBannerArt.tsx), kept the blurred
- * circles as a soft color backdrop behind it. */
+ * circles as a soft color backdrop behind it.
+ *
+ * BUG FIX (task #43 redundancy audit): app/dashboard/page.tsx used to
+ * ALSO render a separate "Promo banner" block right below this one, with
+ * near-identical copy ("Try a mock interview today" / AI interviewer /
+ * feedback in minutes) and the same /practice/mock-interviews
+ * destination, on the same page one screenful apart -- a real button was
+ * missing here, so a second whole card existed mainly to carry a "Start
+ * now" CTA. That block is now deleted and its CTA lives here instead,
+ * making this one banner both the visual hero AND the actionable one
+ * rather than needing a second, mostly-redundant card just for a button. */
 export function HomeBanner() {
   const { t } = useTranslation();
   return (
@@ -30,7 +41,7 @@ export function HomeBanner() {
         />
 
         <div className="relative flex items-center justify-between gap-4">
-          <div className="flex max-w-lg flex-col items-start gap-2">
+          <div className="flex max-w-lg flex-col items-start gap-3">
             <h2 className="text-2xl font-bold leading-tight text-primary">
               {t("web:dashboard.homeBannerTitle", { defaultValue: "Keep building momentum." })}
             </h2>
@@ -40,6 +51,9 @@ export function HomeBanner() {
                   "Try a mock interview today — matching you with an AI interviewer and instant feedback usually takes less than 10 minutes.",
               })}
             </p>
+            <LinkButton href="/practice/mock-interviews" size="md">
+              {t("web:dashboard.homeBannerCta", { defaultValue: "Start now" })}
+            </LinkButton>
           </div>
           <div className="hidden shrink-0 md:block">
             <ArtMissionPhone size={128} />

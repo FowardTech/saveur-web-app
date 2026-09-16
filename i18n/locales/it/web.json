@@ -156,12 +156,10 @@
     "greetingEvening": "Buonasera",
     "greetingHello": "Ciao",
     "greetingMorning": "Buongiorno",
+    "homeBannerCta": "Inizia ora",
     "homeBannerSubtitle": "Prova un colloquio simulato oggi — l'abbinamento con un intervistatore IA e il feedback istantaneo richiedono di solito meno di 10 minuti.",
     "homeBannerTitle": "Continua a costruire slancio.",
     "loading": "Caricamento della tua dashboard…",
-    "promoCta": "Inizia ora",
-    "promoSubtitle": "Ti abbiniamo a un intervistatore IA per il tuo ruolo di riferimento e ricevi un feedback in pochi minuti.",
-    "promoTitle": "Prova un colloquio simulato oggi",
     "quickActions": {
       "aiCoach": "Parla delle tue domande di carriera",
       "careerRoadmap": "Guarda il tuo percorso personalizzato",

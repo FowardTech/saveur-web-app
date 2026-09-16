@@ -156,12 +156,10 @@
     "greetingEvening": "晚上好",
     "greetingHello": "你好",
     "greetingMorning": "早上好",
+    "homeBannerCta": "立即开始",
     "homeBannerSubtitle": "今天就练习一次模拟面试——匹配AI面试官并获得即时反馈通常不到10分钟。",
     "homeBannerTitle": "保持你的势头。",
     "loading": "正在加载你的主页…",
-    "promoCta": "立即开始",
-    "promoSubtitle": "我们会为你匹配针对目标职位的AI面试官，几分钟内即可获得反馈。",
-    "promoTitle": "今天就练习一次模拟面试",
     "quickActions": {
       "aiCoach": "畅聊你的职业问题",
       "careerRoadmap": "查看你的个性化发展路径",

@@ -62,19 +62,20 @@ const STEPS: TourStep[] = [
     bodyDefault: "Your career coach, job search, and interview prep — all in one app. Let's take a quick look around your dashboard.",
   },
   {
+    // BUG FIX (task #43 redundancy audit): this used to be two consecutive
+    // steps -- this one saying "keeps you pointed at... jumping into a
+    // mock interview", immediately followed by a second step on a
+    // separate "Promo banner" card saying almost the same thing again
+    // ("One tap here matches you with an AI interviewer... feedback in
+    // minutes"). That second card was a near-duplicate of this banner and
+    // has been removed (see app/dashboard/page.tsx and HomeBanner.tsx),
+    // its "Start now" button folded into this banner instead -- so this
+    // single step now covers what used to take two.
     selector: '[data-tour="dashboard-home-banner"]',
     icon: "flash-outline",
     titleKey: "web:tour.momentumTitle",
     titleDefault: "Your momentum, at a glance",
     bodyKey: "web:tour.momentumBody",
-    bodyDefault: "This banner keeps you pointed at the highest-impact thing to do next, like jumping into a mock interview.",
-  },
-  {
-    selector: '[data-tour="dashboard-promo"]',
-    icon: "mic-outline",
-    titleKey: "web:tour.practiceTitle",
-    titleDefault: "Practice interviews anytime",
-    bodyKey: "web:tour.practiceBody",
     bodyDefault: "One tap here matches you with an AI interviewer for your target role and gives you real feedback in minutes.",
   },
   {
