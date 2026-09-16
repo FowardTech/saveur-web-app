@@ -29,7 +29,7 @@ import * as studentVerificationService from "@/lib/studentVerificationService";
 // account, not editable from a profile form on either client).
 export default function ProfileSettingsPage() {
   const { t } = useTranslation();
-  const { profile, updateProfile, isPro, isPremium } = useAuth();
+  const { profile, updateProfile, isPro, isPremium, deleteAccount } = useAuth();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -174,6 +174,42 @@ export default function ProfileSettingsPage() {
       setError((err as ApiError).message || t("web:settings.profile.saveFailedDefault", { defaultValue: "Couldn't save your profile right now." }));
     } finally {
       setSaving(false);
+    }
+  }
+
+  // BUG FIX (product report: "You did not add delete account to the
+  // profile screen in the web app") — DELETE /api/users/me already existed
+  // server-side and mobile's src/more/ProfileSrc.tsx has always exposed it;
+  // web's AuthProvider just never wired up an equivalent, so there was
+  // nowhere in the web UI to reach it at all. Same confirm-then-delete flow
+  // as mobile, using window.confirm() -- the same lightweight destructive-
+  // action pattern this app already uses elsewhere (e.g. app/practice/
+  // coding/projects/page.tsx's onDelete) rather than a one-off modal built
+  // just for this. No explicit redirect after success: deleteAccount()
+  // signs out locally, and RequireAuth's own effect already redirects to
+  // /login the moment firebaseUser goes null, same as UserMenu.tsx's plain
+  // sign-out button relies on.
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  async function onDeleteAccount() {
+    const confirmed = window.confirm(
+      isPro
+        ? t("web:settings.profile.deleteAccountConfirmPro", {
+            defaultValue:
+              "Permanently delete your account? This can't be undone. It will also cancel your subscription immediately — you'll lose access right away, not at the end of your billing period.",
+          }).toString()
+        : t("web:settings.profile.deleteAccountConfirm", {
+            defaultValue: "Permanently delete your account? This can't be undone. All of your data will be permanently deleted.",
+          }).toString(),
+    );
+    if (!confirmed || isDeletingAccount) return;
+    setIsDeletingAccount(true);
+    setDeleteError(null);
+    try {
+      await deleteAccount();
+    } catch (err) {
+      setDeleteError((err as ApiError).message || t("web:settings.profile.deleteAccountFailedDefault", { defaultValue: "Couldn't delete your account. Please try again in a moment." }));
+      setIsDeletingAccount(false);
     }
   }
 
@@ -369,6 +405,31 @@ export default function ProfileSettingsPage() {
               {savingPrefs ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("web:settings.profile.saveChanges", { defaultValue: "Save changes" })}
             </Button>
           </form>
+
+          {/* Danger zone -- mirrors mobile's src/more/ProfileSrc.tsx, which
+              deliberately moved this off the top-level Settings list onto
+              the Profile screen so it's not a single careless tap away. */}
+          <div className="flex flex-col gap-3 rounded-card border border-danger/30 bg-surface-2 p-6">
+            <div>
+              <h2 className="font-semibold text-danger">{t("web:settings.profile.dangerZoneTitle", { defaultValue: "Danger zone" })}</h2>
+              <p className="text-sm text-hint">
+                {t("web:settings.profile.dangerZoneSubtitle", { defaultValue: "Permanently delete your account and all associated data. This cannot be undone." })}
+              </p>
+            </div>
+            {deleteError && <p className="text-sm text-danger">{deleteError}</p>}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onDeleteAccount}
+              disabled={isDeletingAccount}
+              className="w-fit border-danger text-danger hover:bg-danger/10"
+            >
+              <EvaIcon name="trash-2-outline" size={16} />
+              {isDeletingAccount
+                ? t("web:settings.profile.deletingAccount", { defaultValue: "Deleting account…" })
+                : t("web:settings.profile.deleteAccount", { defaultValue: "Delete Account" })}
+            </Button>
+          </div>
           </>
           )}
         </div>

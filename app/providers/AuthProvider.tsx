@@ -17,6 +17,14 @@ interface AuthContextValue {
   refreshProfile: () => Promise<UserProfile | null>;
   updateProfile: (partial: Partial<UserProfile>) => Promise<UserProfile | null>;
   signOut: () => Promise<void>;
+  /** Permanently deletes the backend user row AND the Firebase Auth account
+   * itself server-side (Saveur-Backend's account_deletion_service.py), plus
+   * immediately cancels any active Stripe subscription — mirrors mobile's
+   * AuthContext.deleteAccount. Callers don't need to separately delete the
+   * Firebase account client-side afterward; this just signs out locally
+   * once the backend call resolves. See app/settings/profile/page.tsx for
+   * the confirmation UI. */
+  deleteAccount: () => Promise<void>;
   /** Real entitlement state (GET /api/v1/billing/subscription) — see
    * lib/billingService.ts's own header comment for why this replaced the
    * old (always-broken) `profile.subscriptionTier` checks. `null` while
@@ -40,6 +48,7 @@ const AuthContext = React.createContext<AuthContextValue>({
   refreshProfile: async () => null,
   updateProfile: async () => null,
   signOut: async () => {},
+  deleteAccount: async () => {},
   subscriptionStatus: null,
   isPro: false,
   isPremium: false,
@@ -118,6 +127,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSubscriptionStatus(null);
   }, []);
 
+  // BUG FIX (product report: "You did not add delete account to the
+  // profile screen in the web app") — DELETE /api/users/me already exists
+  // and mobile has always called it (services/authService.ts's
+  // deleteAccount), but web's AuthProvider never exposed an equivalent, so
+  // there was nowhere in the UI to reach it. Same real endpoint, same
+  // "server deletes the Firebase account too, then we just clear local
+  // state" flow as mobile's AuthContext.deleteAccount (see that file's own
+  // comment for why calling firebaseUser.delete() here would be wrong —
+  // the account is already gone server-side by the time this resolves).
+  const deleteAccount = React.useCallback(async () => {
+    await apiClient.delete("/api/users/me");
+    await firebaseSignOut(firebaseAuth);
+    setProfile(null);
+    setSubscriptionStatus(null);
+  }, []);
+
   const isPro = isProTier(subscriptionStatus);
   const isPremium = isPremiumTier(subscriptionStatus);
 
@@ -130,12 +155,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       refreshProfile,
       updateProfile,
       signOut,
+      deleteAccount,
       subscriptionStatus,
       isPro,
       isPremium,
       refreshSubscriptionStatus,
     }),
-    [firebaseUser, profile, loading, syncProfile, refreshProfile, updateProfile, signOut, subscriptionStatus, isPro, isPremium, refreshSubscriptionStatus]
+    [firebaseUser, profile, loading, syncProfile, refreshProfile, updateProfile, signOut, deleteAccount, subscriptionStatus, isPro, isPremium, refreshSubscriptionStatus]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
