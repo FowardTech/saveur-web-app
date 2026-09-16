@@ -101,6 +101,27 @@ function renderSectionValue(value: unknown): string {
   return String(value ?? "");
 }
 
+// BUG FIX (product report: "That resume builder screen in the web app
+// look so unorganized. Please organize it so that the ordinary person can
+// understand it") — the page used to be one long unlabeled stack of cards
+// (import grid, two unrelated CTA buttons, a usage banner, the generate
+// form, the resume view, an ATS card, a bullet-rewrite card) with no
+// visual grouping to tell a first-time visitor what order to do things
+// in. This small numbered-step header is reused for every major section
+// below so the page reads as a clear 1-2-3-4 flow instead of an
+// undifferentiated list of boxes.
+function StepHeading({ step, title, subtitle }: { step: number; title: string; subtitle?: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">{step}</span>
+      <div>
+        <h2 className="font-semibold text-primary">{title}</h2>
+        {subtitle && <p className="mt-0.5 text-sm text-hint">{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
+
 export default function ResumeBuilderPage() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -200,13 +221,6 @@ export default function ResumeBuilderPage() {
     education: t("web:resume.builder.sections.education", { defaultValue: "Education" }),
     projects: t("web:resume.builder.sections.projects", { defaultValue: "Projects" }),
     certifications: t("web:resume.builder.sections.certifications", { defaultValue: "Certifications" }),
-    // Raw text stored by POST /resume/upload before any AI generation has
-    // run (Saveur-Backend/app/api/resume.py's upload() — parsed_json is
-    // literally just {extracted_text: <raw blob>} at that point). Without
-    // this entry it fell through to the literal key name "extracted_text"
-    // as a section header, which is what the user's bug report screenshot
-    // showed.
-    extracted_text: t("web:resume.builder.sections.extracted_text", { defaultValue: "Uploaded Resume (unformatted)" }),
   };
 
   async function load() {
@@ -398,11 +412,19 @@ export default function ResumeBuilderPage() {
           {error && <p className="text-sm text-danger">{error}</p>}
           {importError && <p className="text-sm text-danger">{importError}</p>}
 
-          {/* "Import from" grid — mobile's ResumeBuilder.tsx equivalent
-              (device picker or "choose from My Documents") for the five
-              fixed source slots the backend tracks. */}
+          {/* Step 1 — "Import from" grid: mobile's ResumeBuilder.tsx
+              equivalent (device picker or "choose from My Documents") for
+              the five fixed source slots the backend tracks. Numbered
+              step headers (here and on the three sections below) replace
+              what used to be an unlabeled stack of same-weight cards, so
+              a first-time visitor can tell at a glance what order to do
+              things in. */}
           <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-            <h2 className="font-semibold text-primary">{t("web:resume.builder.importFromTitle", { defaultValue: "Import from" })}</h2>
+            <StepHeading
+              step={1}
+              title={t("web:resume.builder.importFromTitle", { defaultValue: "Import your resume" }).toString()}
+              subtitle={t("web:resume.builder.importFromSubtitle", { defaultValue: "Upload an existing resume, LinkedIn export, or other source — or skip this and generate one from scratch below." }).toString()}
+            />
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {IMPORT_OPTIONS.map((opt) => {
                 const file = imported[opt.key];
@@ -438,57 +460,49 @@ export default function ResumeBuilderPage() {
             title={t("web:resume.builder.chooseMyDocumentsTitle", { defaultValue: "Choose a file to import" }).toString()}
           />
 
-          {/* "Create My CV" / "Generate Cover Letter" — mobile's
-              ResumeBuilder.tsx CTAs below the import grid. Reuses the same
-              /resume/generate screen JD Analyzer's "Build Resume" uses,
-              just with docType=cv. */}
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => router.push(`/resume/generate?docType=cv${targetRole.trim() ? `&role=${encodeURIComponent(targetRole.trim())}` : profile?.desiredRoles?.[0] ? `&role=${encodeURIComponent(profile.desiredRoles[0])}` : ""}`)}
-            >
-              {t("web:resume.builder.createMyCv", { defaultValue: "Create My CV" })}
-            </Button>
-            <Link href="/resume/cover-letter" className="flex-1">
-              <Button type="button" variant="outline" className="w-full">
-                {t("web:resume.builder.generateCoverLetter", { defaultValue: "Generate Cover Letter" })}
-              </Button>
-            </Link>
-          </div>
+          {/* Step 2 — Generate. Combines the AI section-generation form
+              with the two quick-template shortcuts (mobile's
+              ResumeBuilder.tsx "Create My CV" / "Generate Cover Letter"
+              CTAs) so all three ways to produce a resume live under one
+              clearly labeled step instead of being scattered as
+              unlabeled buttons above the form. */}
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <StepHeading
+              step={2}
+              title={t("web:resume.builder.generateSectionTitle", { defaultValue: "Generate an AI-tailored resume" }).toString()}
+              subtitle={t("web:resume.builder.generateSectionSubtitle", { defaultValue: "Tell us the role you're targeting and we'll write or rewrite your resume sections to match it." }).toString()}
+            />
 
-          {/* Combined free-plan usage banner (generate + ats-score +
-              rewrite-bullet here, plus cover-letter on its own page, all
-              share this one pool) — mirrors mock-interviews/page.tsx's
-              remainingFreeSessions banner so free users see this
-              proactively instead of only after hitting a 402. */}
-          {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
-            <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <EvaIcon name="flash-outline" size={18} className="text-brand" />
-                {(() => {
-                  const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
-                  return (
-                    <p className={`text-sm ${remaining > 0 ? "text-primary" : "text-danger"}`}>
-                      {remaining > 0
-                        ? t("web:resume.builder.freeActionsRemaining", {
-                            defaultValue: `${remaining} free resume tool action${remaining === 1 ? "" : "s"} left this month`,
-                            count: remaining,
-                          })
-                        : t("web:resume.builder.freeActionsUsedUp", { defaultValue: "You've used all your free resume tool actions this month" })}
-                    </p>
-                  );
-                })()}
+            {/* Combined free-plan usage banner (generate + ats-score +
+                rewrite-bullet here, plus cover-letter on its own page, all
+                share this one pool) — mirrors mock-interviews/page.tsx's
+                remainingFreeSessions banner so free users see this
+                proactively instead of only after hitting a 402. */}
+            {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
+              <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-1 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <EvaIcon name="flash-outline" size={18} className="text-brand" />
+                  {(() => {
+                    const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
+                    return (
+                      <p className={`text-sm ${remaining > 0 ? "text-primary" : "text-danger"}`}>
+                        {remaining > 0
+                          ? t("web:resume.builder.freeActionsRemaining", {
+                              defaultValue: `${remaining} free resume tool action${remaining === 1 ? "" : "s"} left this month`,
+                              count: remaining,
+                            })
+                          : t("web:resume.builder.freeActionsUsedUp", { defaultValue: "You've used all your free resume tool actions this month" })}
+                      </p>
+                    );
+                  })()}
+                </div>
+                <Link href="/subscription" className="whitespace-nowrap text-sm font-medium text-brand hover:underline">
+                  {t("web:resume.builder.upgrade", { defaultValue: "Upgrade" })}
+                </Link>
               </div>
-              <Link href="/subscription" className="whitespace-nowrap text-sm font-medium text-brand hover:underline">
-                {t("web:resume.builder.upgrade", { defaultValue: "Upgrade" })}
-              </Link>
-            </div>
-          )}
+            )}
 
-          <form ref={generateFormRef} onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
-            <h2 className="font-semibold text-primary">{t("web:resume.builder.generateSectionTitle", { defaultValue: "Generate a tailored resume" })}</h2>
+            <form ref={generateFormRef} onSubmit={handleGenerate} className="flex flex-col gap-4">
             <TextField
               ref={targetRoleRef}
               label={t("web:resume.builder.targetRoleLabel", { defaultValue: "Target role" })}
@@ -522,7 +536,32 @@ export default function ResumeBuilderPage() {
             <Button type="submit" disabled={generating || !targetRole.trim()} className="mt-1 w-full">
               {generating ? t("web:resume.builder.generating", { defaultValue: "Generating…" }) : t("web:resume.builder.generateResume", { defaultValue: "Generate resume" })}
             </Button>
-          </form>
+            </form>
+
+            {/* Quick-template shortcuts — mobile's ResumeBuilder.tsx
+                "Create My CV" / "Generate Cover Letter" CTAs. These are a
+                different flow from the form above (a formatted-document
+                template render rather than the AI section-generation
+                this page's PATCH /resume flow uses), so they're set off
+                as clearly-labeled alternatives rather than mixed into the
+                form itself. */}
+            <div className="flex flex-col gap-2 border-t border-border pt-4 sm:flex-row">
+              <p className="hidden shrink-0 self-center text-xs text-hint sm:block">{t("web:resume.builder.orLabel", { defaultValue: "Or:" })}</p>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => router.push(`/resume/generate?docType=cv${targetRole.trim() ? `&role=${encodeURIComponent(targetRole.trim())}` : profile?.desiredRoles?.[0] ? `&role=${encodeURIComponent(profile.desiredRoles[0])}` : ""}`)}
+              >
+                {t("web:resume.builder.createMyCv", { defaultValue: "Create My CV from a template" })}
+              </Button>
+              <Link href="/resume/cover-letter" className="flex-1">
+                <Button type="button" variant="outline" className="w-full">
+                  {t("web:resume.builder.generateCoverLetter", { defaultValue: "Generate Cover Letter" })}
+                </Button>
+              </Link>
+            </div>
+          </div>
 
           {resume === null && !error && (
             <div className="flex flex-col gap-4">
@@ -533,9 +572,13 @@ export default function ResumeBuilderPage() {
 
           {resume && (
             <div className="flex flex-col gap-4">
+              <StepHeading
+                step={3}
+                title={t("web:resume.builder.yourResume", { defaultValue: "Your resume" }).toString()}
+                subtitle={t("web:resume.builder.yourResumeSubtitle", { defaultValue: "Review what we have, check your ATS score, and fine-tune any section." }).toString()}
+              />
               <div className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-5">
                 <div>
-                  <h2 className="font-semibold text-primary">{t("web:resume.builder.yourResume", { defaultValue: "Your resume" })}</h2>
                   {resume.ats_score == null && !atsResult && <p className="text-sm text-hint">{t("web:resume.builder.noAtsScore", { defaultValue: "No ATS score yet" })}</p>}
                 </div>
                 {/* Redesign parity (mobile's ResumeBuilder.tsx ProgressCard
@@ -581,28 +624,36 @@ export default function ResumeBuilderPage() {
               ) : (
                 <div className="flex flex-col gap-3">
                   {sectionEntries.map(([key, value]) => {
-                    // Raw, not-yet-organized text from /resume/upload
-                    // (see SECTION_LABELS['extracted_text'] comment above) —
-                    // preserve its original line breaks instead of
-                    // collapsing them into one dense paragraph, and surface
-                    // the real fix (AI generation) right on the card.
+                    // BUG FIX (product report: "Remove this 'Uploaded
+                    // Resume (unformatted)' section in the resume
+                    // builder"): this used to dump the entire raw
+                    // /resume/upload text blob onto the page — exactly the
+                    // unpolished, hard-to-read block the user was pointing
+                    // at. An ordinary person doesn't need to see their own
+                    // unformatted resume text reflected back at them; they
+                    // need to know it uploaded successfully and how to turn
+                    // it into something usable. So this now renders as a
+                    // plain confirmation + single CTA, with no raw text
+                    // shown at all — the actual content only ever appears
+                    // once it's been organized into the real sections
+                    // below (contact/experience/education/etc.).
                     if (key === "extracted_text") {
                       return (
-                        <div key={key} className="rounded-card border border-border bg-surface-2 p-4">
-                          <h3 className="text-sm font-semibold text-primary">{SECTION_LABELS[key] || key}</h3>
-                          <p className="mt-1.5 whitespace-pre-wrap text-sm text-hint">{renderSectionValue(value)}</p>
-                          <div className="mt-3 flex flex-col items-start gap-2 rounded-lg border border-brand/30 bg-surface-1 p-3">
-                            <p className="text-sm text-primary">
-                              {t("web:resume.builder.extractedTextCtaDescription", {
-                                defaultValue: "This is your raw uploaded text, unformatted. Organize it into clean, editable resume sections with AI.",
-                              })}
-                            </p>
-                            <Button type="button" size="sm" onClick={handleOrganizeCta} disabled={generating}>
-                              {generating
-                                ? t("web:resume.builder.generating", { defaultValue: "Generating…" })
-                                : t("web:resume.builder.organizeWithAi", { defaultValue: "Organize into editable sections with AI" })}
-                            </Button>
+                        <div key={key} className="flex flex-col items-start gap-2 rounded-card border border-brand/30 bg-surface-2 p-4">
+                          <div className="flex items-center gap-2">
+                            <EvaIcon name="checkmark-circle-2-outline" size={16} className="text-success-text" />
+                            <p className="text-sm font-medium text-primary">{t("web:resume.builder.extractedTextUploaded", { defaultValue: "Resume uploaded" })}</p>
                           </div>
+                          <p className="text-sm text-hint">
+                            {t("web:resume.builder.extractedTextCtaDescription", {
+                              defaultValue: "It hasn't been organized into sections yet — do that now so it's easy to read and edit.",
+                            })}
+                          </p>
+                          <Button type="button" size="sm" onClick={handleOrganizeCta} disabled={generating}>
+                            {generating
+                              ? t("web:resume.builder.generating", { defaultValue: "Generating…" })
+                              : t("web:resume.builder.organizeWithAi", { defaultValue: "Organize into editable sections with AI" })}
+                          </Button>
                         </div>
                       );
                     }
@@ -839,12 +890,16 @@ export default function ResumeBuilderPage() {
                 </div>
               )}
 
-              {/* "Rewrite a Bullet with AI" — was entirely missing on web
-                  (see mobile's ResumeBuilder.tsx, same feature/endpoint). */}
+              {/* Step 4 — "Rewrite a Bullet with AI" (was entirely missing
+                  on web, see mobile's ResumeBuilder.tsx, same
+                  feature/endpoint). */}
+              <StepHeading
+                step={4}
+                title={t("web:resume.builder.aiBulletRewrite", { defaultValue: "Improve a bullet with AI" }).toString()}
+              />
               <div ref={rewriteCardRef} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
                 <div>
-                  <h3 className="font-semibold text-primary">{t("web:resume.builder.aiBulletRewrite", { defaultValue: "Rewrite a Bullet with AI" })}</h3>
-                  <p className="mt-1 text-sm text-hint">
+                  <p className="text-sm text-hint">
                     {activeBulletTarget
                       ? t("web:resume.builder.aiBulletRewriteFromEntry", {
                           defaultValue: "Editing a bullet from \"{{label}}\" — rewrite it, then apply it back in place.",
