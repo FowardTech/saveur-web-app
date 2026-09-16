@@ -49,6 +49,11 @@ interface CoachMessage {
   suggested_course_topic?: string | null;
   suggested_action?: SuggestedActionId | null;
   created_at?: string;
+  // Product request: "I want the AI career coach ... to always detect
+  // inappropriate words and caution the user" -- set on a 'coach' message
+  // when app/api/coach.py's advice() moderation check flagged the user's
+  // preceding message. Rendered with a distinct caution style below.
+  flagged?: boolean;
 }
 
 const COACH_GREETING_TEXT =
@@ -256,7 +261,7 @@ function AiCoachPageInner() {
       // it into state at all, so it silently vanished. See
       // lib/suggestedActions.ts for the ~40-destination registry this now
       // wires up (ported from mobile's services/suggestedActions.ts).
-      const data = await apiClient.post<{ reply: string; suggested_course: string | null; suggested_action: SuggestedActionId | null }>(
+      const data = await apiClient.post<{ reply: string; suggested_course: string | null; suggested_action: SuggestedActionId | null; flagged?: boolean }>(
         "/api/v1/coach/advice",
         body
       );
@@ -268,6 +273,7 @@ function AiCoachPageInner() {
           text: data.reply,
           suggested_course_topic: data.suggested_course,
           suggested_action: data.suggested_action,
+          flagged: !!data.flagged,
         },
       ]);
       if (mode === "voice") {
@@ -432,7 +438,15 @@ function AiCoachPageInner() {
                         <div className={`flex flex-col gap-1 ${m.role === "user" ? "items-end" : "items-start"}`}>
                           <div
                             className={`max-w-[85%] whitespace-pre-wrap rounded-card px-4 py-2.5 text-sm ${
-                              m.role === "user" ? "bg-brand text-white" : "border border-border bg-surface-1 text-primary"
+                              m.role === "user"
+                                ? "bg-brand text-white"
+                                : m.flagged
+                                  // Product request: "I want the AI career coach
+                                  // ... to always detect inappropriate words and
+                                  // caution the user" -- distinct amber caution
+                                  // style instead of the normal coach bubble.
+                                  ? "border border-amber-400 bg-amber-50 text-amber-900"
+                                  : "border border-border bg-surface-1 text-primary"
                             }`}
                           >
                             {m.text}

@@ -106,6 +106,22 @@ export default function LiveInterviewSessionPage() {
   const [submittingAnswer, setSubmittingAnswer] = useState(false);
   const [answerError, setAnswerError] = useState<string | null>(null);
 
+  // Product request: "I want ... the AI interviewer to always detect
+  // inappropriate words and caution the user during interview session when
+  // they respond inappropriately" -- set from interviewService.submitAnswer's
+  // {flagged, caution} response (both text and voice call sites below).
+  // Never blocks the interview, just shows a brief on-screen caution banner.
+  const [moderationCaution, setModerationCaution] = useState<string | null>(null);
+  const moderationCautionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showModerationCaution = useCallback((text: string) => {
+    if (moderationCautionTimerRef.current) clearTimeout(moderationCautionTimerRef.current);
+    setModerationCaution(text);
+    moderationCautionTimerRef.current = setTimeout(() => setModerationCaution(null), 6000);
+  }, []);
+  useEffect(() => () => {
+    if (moderationCautionTimerRef.current) clearTimeout(moderationCautionTimerRef.current);
+  }, []);
+
   // --- Voice mode --- (same state machine as app/ai-coach/voice/page.tsx)
   const [voicePhase, setVoicePhase] = useState<VoicePhase>("idle");
   const [voiceStarted, setVoiceStarted] = useState(false);
@@ -287,7 +303,8 @@ export default function LiveInterviewSessionPage() {
     setTranscript((prev) => [...prev, { role: "candidate", text: trimmed }]);
     setAnswerText("");
     try {
-      await interviewService.submitAnswer(sessionId, trimmed);
+      const result = await interviewService.submitAnswer(sessionId, trimmed);
+      if (result.flagged && result.caution) showModerationCaution(result.caution);
       const next = await interviewService.getNextQuestion(sessionId);
       setCurrentQuestion(next.text);
       setTranscript((prev) => [...prev, { role: "interviewer", text: next.text }]);
@@ -388,7 +405,8 @@ export default function LiveInterviewSessionPage() {
       setVoiceError(null);
       setTranscript((prev) => [...prev, { role: "candidate", text: trimmed }]);
       try {
-        await interviewService.submitAnswer(sessionId, trimmed);
+        const result = await interviewService.submitAnswer(sessionId, trimmed);
+        if (result.flagged && result.caution) showModerationCaution(result.caution);
         const next = await interviewService.getNextQuestion(sessionId);
         if (!sessionActiveRef.current) return;
         setCurrentQuestion(next.text);
@@ -399,7 +417,7 @@ export default function LiveInterviewSessionPage() {
         if (sessionActiveRef.current) startRecognitionInternal();
       }
     },
-    [sessionId, speakAndListen, startRecognitionInternal, t]
+    [sessionId, speakAndListen, startRecognitionInternal, t, showModerationCaution]
   );
 
   // Silence-based turn detection.
@@ -647,6 +665,16 @@ export default function LiveInterviewSessionPage() {
                   </span>
                 )}
               </div>
+
+              {moderationCaution && (
+                // Product request: "I want ... the AI interviewer to always
+                // detect inappropriate words and caution the user during
+                // interview session when they respond inappropriately".
+                <div className="flex items-center gap-2 rounded-card border border-amber-400 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900">
+                  <EvaIcon name="alert-triangle-outline" size={16} />
+                  {moderationCaution}
+                </div>
+              )}
 
               {effectiveMode !== null && (
                 <>

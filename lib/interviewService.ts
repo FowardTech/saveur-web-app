@@ -95,8 +95,23 @@ export async function getNextQuestion(sessionId: string | number): Promise<NextQ
 /** POST /api/v1/interviews/sessions/:id/answer — records the candidate's
  * answer (typed in Text mode, transcribed in Voice mode via the Web Speech
  * API) as the next message in the transcript. */
-export async function submitAnswer(sessionId: string | number, text: string): Promise<void> {
-  await apiClient.post(`/api/v1/interviews/sessions/${sessionId}/answer`, { text });
+// Product request: "I want ... the AI interviewer to always detect
+// inappropriate words and caution the user during interview session when
+// they respond inappropriately" -- app/api/interviews.py's answer()
+// endpoint now runs a moderation check on the candidate's text and returns
+// {ok, flagged, caution}. Never blocks/censors the submitted answer itself
+// (informational only) -- see that endpoint's own comment.
+export interface SubmitAnswerResult {
+  flagged: boolean;
+  caution?: string;
+}
+
+export async function submitAnswer(sessionId: string | number, text: string): Promise<SubmitAnswerResult> {
+  const data = await apiClient.post<{ ok?: boolean; flagged?: boolean; caution?: string | null }>(
+    `/api/v1/interviews/sessions/${sessionId}/answer`,
+    { text }
+  );
+  return { flagged: !!data?.flagged, caution: data?.caution || undefined };
 }
 
 /** POST /api/v1/interviews/sessions/:id/end — marks the session completed
