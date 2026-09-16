@@ -69,6 +69,13 @@ export const primaryNav: NavItem[] = [
       { label: "Dream Companies", labelKey: "dreamCompanies", href: "/career/dream-companies", icon: "star-outline" },
       { label: "Company Intelligence", labelKey: "companyIntelligence", href: "/career/company-intelligence", icon: "search-outline" },
       { label: "Salary Negotiation", labelKey: "salaryNegotiation", href: "/career/salary-negotiation", icon: "bar-chart-2-outline" },
+      // Product request: "See the Salary analyser too" [resume.io's
+      // /app/offer-analyzer-result] -- a one-shot numeric market-rate
+      // calculator, deliberately separate from Salary Negotiation above
+      // (a conversational round-based simulator). See
+      // app/career/offer-analyzer/page.tsx's own header comment for the
+      // full "complementary, not redundant" reasoning.
+      { label: "Offer Analyzer", labelKey: "offerAnalyzer", href: "/career/offer-analyzer", icon: "pie-chart-outline" },
       // Mobile: src/more/CareerDiary.tsx — a plain journal (did/learned/
       // achieved) tied to a role/career/job. Nested here rather than
       // top-level since it's a lower-frequency personal-record tool, same
