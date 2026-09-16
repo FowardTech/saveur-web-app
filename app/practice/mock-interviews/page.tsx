@@ -11,6 +11,7 @@ import { Button, LinkButton } from "@/components/ui/Button";
 import { Pill, PillCard } from "@/components/ui/Pill";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
+import { QuickPracticeQuestions } from "@/components/practice/QuickPracticeQuestions";
 import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { getAppConfig } from "@/lib/appConfigService";
@@ -332,6 +333,16 @@ function MockInterviewSetupInner() {
             title={t("web:practice.mockInterviews.title", { defaultValue: "Mock Interview" })}
             subtitle={t("web:practice.mockInterviews.subtitle", { defaultValue: "Set up a session and practice with an AI interviewer." })}
           />
+
+          {/* Ready-made "5 min" question cards — product report: "I checked
+              the dashboard of those web apps... there is a lot of designs
+              and features" [resume.io's Interview Prep page]. This is the
+              lighter, browse-first-then-practice-one-question tier sitting
+              above the full "45 min" session setup below; answering one is
+              graded instantly via the existing free STAR endpoint, no
+              session created. Tracks whatever type/role is currently
+              selected in the form beneath it. */}
+          {!session && <QuickPracticeQuestions interviewType={interviewType.label.toLowerCase()} role={role} />}
 
           {!session && isFreeTier && remainingFreeSessions !== null && !selectedTypeAddonOwned && (
             <Link
