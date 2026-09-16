@@ -132,3 +132,68 @@
     scrollbar-width: none;
   }
 }
+
+/* ---------------------------------------------------------------------
+ * Choreographed flow animations (product request: "I see a lot of
+ * animations that connect with each other from the app dashboard to
+ * every part of the app and back ... why is ours not like that?").
+ *
+ * Two pieces, deliberately kept to plain CSS (no animation library —
+ * this app has no existing motion dependency and these two effects don't
+ * need one):
+ *
+ * 1. `.animate-page-in` — a page-level fade + rise, applied once in
+ *    components/shell/AppShell.tsx around every authenticated page's
+ *    content (keyed by pathname there so it re-plays on every
+ *    navigation). This is the actual "dashboard to every part of the app
+ *    and back" choreography: every single route change gets the same
+ *    entrance motion, app-wide, from one shared wrapper rather than
+ *    needing a bespoke transition hand-added to every page.
+ * 2. `.animate-card-in` — a smaller per-item entrance (fade + rise) for
+ *    grids/lists of cards (dashboard quick actions, job alert cards,
+ *    course cards), staggered via each item's own inline
+ *    `animation-delay` so a grid visibly cascades in rather than
+ *    popping in all at once — the same "one recognizable motion
+ *    language reused everywhere" idea, one level down from full pages.
+ *
+ * `prefers-reduced-motion` is respected globally (last rule) rather than
+ * per-class, so this degrades to an instant, motion-free appearance for
+ * anyone who's asked their OS for that — the content is never hidden or
+ * delayed behind the animation, only its entrance is skipped.
+ * --------------------------------------------------------------------- */
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-in {
+  animation: page-fade-in 0.28s ease-out both;
+}
+
+.animate-card-in {
+  animation: card-fade-in 0.32s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-page-in,
+  .animate-card-in {
+    animation: none;
+  }
+}

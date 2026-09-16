@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
@@ -12,6 +13,16 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Product request: "I see a lot of animations that connect ... from the
+  // app dashboard to every part of the app and back ... why is ours not
+  // like that?" -- one shared entrance transition (see globals.css's
+  // .animate-page-in) applied here, the single choke point every
+  // authenticated page's content already passes through as `children`.
+  // Keyed by pathname so React remounts (and therefore re-plays the CSS
+  // animation on) this wrapper on every navigation -- this is what makes
+  // the motion a real connective thread between the dashboard and every
+  // other screen, rather than a one-off effect on a single page.
+  const pathname = usePathname();
 
   return (
     <div className="flex min-h-screen">
@@ -44,7 +55,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-h-screen flex-1 flex-col">
         <Topbar showMenuButton onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 bg-page px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <main className="flex-1 bg-page px-4 py-6 sm:px-6 lg:px-8">
+          <div key={pathname} className="animate-page-in">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );

@@ -11,10 +11,10 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import Link from "next/link";
-import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import { guessCompanyLogoUrl } from "@/lib/companyData";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { JobAlertCard } from "@/components/jobAlerts/JobAlertCard";
 
 // Real backend contract — Saveur-Backend/app/api/job_alerts.py
 //   GET  /api/v1/job-alerts -> {data: JobAlert[], next_cursor: string | null}
@@ -65,6 +65,14 @@ function JobAlertsPageInner() {
   const [rolesText, setRolesText] = useState("");
   const [savingPrefs, setSavingPrefs] = useState(false);
   const [togglingPinId, setTogglingPinId] = useState<string | null>(null);
+  // Product request: "See the Job Page too I like the layout and structure"
+  // [resume.io's /app/job-search — a Recommended/Search toggle above the
+  // list]. Client-side only: GET /api/v1/job-alerts already returns the
+  // user's full alert list in one page and there's no backend search
+  // endpoint to call into, so "Search" here just re-filters what's already
+  // been fetched by title/company/location rather than issuing a new request.
+  const [viewMode, setViewMode] = useState<"recommended" | "search">("recommended");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     // Syncs the roles text field from the async-loaded profile once it
@@ -127,11 +135,28 @@ function JobAlertsPageInner() {
     }
   }
 
+  // Local state update once JobAlertCard's DidYouApplyModal flow confirms a
+  // POST /api/v1/application-tracker entry — mirrors handleTogglePin's
+  // optimistic-patch pattern so the "Applied" badge appears immediately
+  // without refetching the whole list.
+  function handleMarkApplied(id: string) {
+    setAlerts((prev) => (prev ? prev.map((a) => (a.id === id ? { ...a, applied: true } : a)) : prev));
+  }
+
   const visibleAlerts = useMemo(() => {
     if (!alerts) return alerts;
     if (!companyFilter) return alerts;
     return alerts.filter((a) => a.company.toLowerCase() === companyFilter.toLowerCase());
   }, [alerts, companyFilter]);
+
+  const displayedAlerts = useMemo(() => {
+    if (!visibleAlerts) return visibleAlerts;
+    if (viewMode !== "search" || !searchQuery.trim()) return visibleAlerts;
+    const q = searchQuery.trim().toLowerCase();
+    return visibleAlerts.filter(
+      (a) => a.title.toLowerCase().includes(q) || a.company.toLowerCase().includes(q) || (a.location || "").toLowerCase().includes(q)
+    );
+  }, [visibleAlerts, viewMode, searchQuery]);
 
   async function handleSavePreferences(e: React.FormEvent) {
     e.preventDefault();
@@ -202,22 +227,61 @@ function JobAlertsPageInner() {
             </Button>
           </form>
 
+          {alerts !== null && !proRequired && (
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="inline-flex w-fit rounded-pill border border-border bg-surface-2 p-1">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("recommended")}
+                  className={`rounded-pill px-4 py-1.5 text-sm font-semibold transition ${
+                    viewMode === "recommended" ? "bg-brand text-white" : "text-hint hover:text-primary"
+                  }`}
+                >
+                  {t("web:jobAlerts.recommendedTab", { defaultValue: "Recommended" })}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("search")}
+                  className={`rounded-pill px-4 py-1.5 text-sm font-semibold transition ${
+                    viewMode === "search" ? "bg-brand text-white" : "text-hint hover:text-primary"
+                  }`}
+                >
+                  {t("web:jobAlerts.searchTab", { defaultValue: "Search" })}
+                </button>
+              </div>
+              {viewMode === "search" && (
+                <div className="relative w-full sm:max-w-xs">
+                  <EvaIcon name="search-outline" size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-hint" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={t("web:jobAlerts.searchPlaceholder", { defaultValue: "Search title, company, or location" }).toString()}
+                    className="w-full rounded-pill border border-border bg-surface-1 py-2 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
           {alerts === null && !proRequired && !error && <SkeletonRows count={5} />}
 
-          {visibleAlerts && visibleAlerts.length === 0 && !proRequired && (
+          {displayedAlerts && displayedAlerts.length === 0 && !proRequired && (
             <EmptyState
-              illustration={companyFilter ? "search" : "list"}
+              illustration={companyFilter || (viewMode === "search" && searchQuery.trim()) ? "search" : "list"}
               title={
                 companyFilter
                   ? t("web:jobAlerts.emptyForCompany", { defaultValue: "No open job alerts for {{company}} yet.", company: companyFilter })
-                  : t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })
+                  : viewMode === "search" && searchQuery.trim()
+                    ? t("web:jobAlerts.emptyForSearch", { defaultValue: "No alerts match \"{{query}}\".", query: searchQuery.trim() })
+                    : t("web:jobAlerts.empty", { defaultValue: "No job alerts yet — check back after your next refresh." })
               }
             />
           )}
 
-          {visibleAlerts && visibleAlerts.length > 0 && (
+          {displayedAlerts && displayedAlerts.length > 0 && (
             <div className="flex flex-col gap-3">
-              {visibleAlerts.map((a) => {
+              {displayedAlerts.map((a, index) => {
                 // Backend (Saveur-Backend/app/services/company_logo_service.py)
                 // only reliably fills company_logo_url when a company domain
                 // was confidently resolved at discovery time — many rows,
@@ -228,44 +292,15 @@ function JobAlertsPageInner() {
                 // reasonable logo instead of the generic briefcase icon.
                 const logoUrl = a.company_logo_url ?? guessCompanyLogoUrl(a.company);
                 return (
-                  <div
+                  <JobAlertCard
                     key={a.id}
-                    className={`flex items-center justify-between gap-4 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                      !a.read ? "border-accent-purple" : "border-border"
-                    }`}
-                  >
-                    <Link href={`/job-alerts/${a.id}`} className="flex flex-1 items-center gap-3">
-                      <CompanyLogoAvatar logoUrl={logoUrl} companyName={a.company} size={44} className="shrink-0 bg-tint-mint" />
-                      <div>
-                        {!a.read && (
-                          <span className="mb-1 inline-block rounded-pill bg-accent-purple/15 px-2 py-0.5 text-xs font-semibold text-accent-purple">
-                            {t("web:jobAlerts.newBadge", { defaultValue: "New" })}
-                          </span>
-                        )}
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium text-primary">{a.title}</h3>
-                          {a.applied && (
-                            <span className="inline-flex items-center rounded-pill bg-tint-purple px-2 py-0.5 text-xs font-medium text-tint-purple-text">
-                              {t("web:jobAlerts.appliedBadge", { defaultValue: "Applied" })}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-hint">
-                          {a.company}
-                          {a.location ? ` · ${a.location}` : ""}
-                        </p>
-                      </div>
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => handleTogglePin(a)}
-                      disabled={togglingPinId === a.id}
-                      aria-label={t("web:jobAlerts.pinAria", { defaultValue: "Pin this alert" })}
-                      className="shrink-0 text-hint transition hover:text-brand disabled:opacity-50"
-                    >
-                      <EvaIcon name="star-outline" size={18} className={a.pinned ? "text-brand" : undefined} />
-                    </button>
-                  </div>
+                    alert={a}
+                    logoUrl={logoUrl}
+                    togglingPin={togglingPinId === a.id}
+                    onTogglePin={handleTogglePin}
+                    onMarkApplied={handleMarkApplied}
+                    animationDelayMs={index * 40}
+                  />
                 );
               })}
             </div>
