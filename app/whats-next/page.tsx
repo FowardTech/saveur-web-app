@@ -8,7 +8,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
-import { EvaIcon } from "@/components/icons/EvaIcon";
+import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
@@ -61,7 +61,66 @@ interface OfferApplication {
   role: string;
   offer_amount?: number | null;
   offer_currency?: string | null;
+  stage?: string;
 }
+
+// BUG FIX (product report: "the content should be customized to every
+// role the user got an offer for. But if it has not gotten any offer then
+// it should just display a general whats next contents"): this page used
+// to show the exact same empty-state CTA (a blank form to manually type in
+// offer details) regardless of whether the user actually had a tracked
+// offer or not -- there was no real "general content" path at all, and no
+// way to tell the difference between "no offer yet" and "has one or more
+// offers" other than a silent auto-fill that only worked for exactly one
+// Offer-stage application. General, honest job-search guidance (real links
+// into features this app already has, not fabricated personalized advice)
+// for the zero-offer case, plus a real picker when there are 2+ tracked
+// offers -- the backend only ever holds one active plan per user
+// (PostOfferPlan.user_id is unique), so switching offers still means
+// generating a fresh plan for the one you pick, same as "Start over"
+// already did, rather than holding multiple plans at once.
+const GENERAL_NEXT_STEPS: { icon: EvaIconName; titleKey: string; titleDefault: string; bodyKey: string; bodyDefault: string; href: string; ctaKey: string; ctaDefault: string }[] = [
+  {
+    icon: "mic-outline",
+    titleKey: "web:whatsNext.general.practiceTitle",
+    titleDefault: "Keep your interview skills sharp",
+    bodyKey: "web:whatsNext.general.practiceBody",
+    bodyDefault: "Run a mock interview for the roles you're applying to and get AI feedback on your answers.",
+    href: "/practice/mock-interviews",
+    ctaKey: "web:whatsNext.general.practiceCta",
+    ctaDefault: "Practice an interview",
+  },
+  {
+    icon: "file-text-outline",
+    titleKey: "web:whatsNext.general.resumeTitle",
+    titleDefault: "Make sure your resume is working for you",
+    bodyKey: "web:whatsNext.general.resumeBody",
+    bodyDefault: "Tailor your resume to each role and check your ATS score before you apply.",
+    href: "/resume/builder",
+    ctaKey: "web:whatsNext.general.resumeCta",
+    ctaDefault: "Open Resume Builder",
+  },
+  {
+    icon: "briefcase-outline",
+    titleKey: "web:whatsNext.general.alertsTitle",
+    titleDefault: "Stay on top of new openings",
+    bodyKey: "web:whatsNext.general.alertsBody",
+    bodyDefault: "Check your daily job alerts matched to your desired roles, and track everything you apply to in one place.",
+    href: "/job-tracker",
+    ctaKey: "web:whatsNext.general.alertsCta",
+    ctaDefault: "Open Job Tracker",
+  },
+  {
+    icon: "people-outline",
+    titleKey: "web:whatsNext.general.networkingTitle",
+    titleDefault: "Grow your network",
+    bodyKey: "web:whatsNext.general.networkingBody",
+    bodyDefault: "Log the people you've reached out to and get help drafting a follow-up message.",
+    href: "/career/networking",
+    ctaKey: "web:whatsNext.general.networkingCta",
+    ctaDefault: "Open Networking Assistant",
+  },
+];
 
 const stepBadge: Record<PlanStep["status"], string> = {
   completed: "bg-tint-mint text-tint-mint-text",
@@ -85,6 +144,11 @@ export default function WhatsNextPage() {
   const [togglingId, setTogglingId] = useState<number | null>(null);
   const [completingOrder, setCompletingOrder] = useState<number | null>(null);
   const [autoDetected, setAutoDetected] = useState(false);
+  // Offer-stage tracked applications — drives which empty-state the page
+  // shows: general job-search content (zero offers), a plain auto-filled
+  // CTA (exactly one, unchanged from before), or a picker (two or more).
+  const [offers, setOffers] = useState<OfferApplication[]>([]);
+  const [offersLoaded, setOffersLoaded] = useState(false);
 
   const [pendingCheckIn, setPendingCheckIn] = useState<CheckIn | null>(null);
   const [checkInText, setCheckInText] = useState("");
@@ -105,24 +169,39 @@ export default function WhatsNextPage() {
     load();
   }, [authLoading]);
 
-  // Auto-detect a single Offer-stage tracked application and pre-fill the
-  // form sheet from it — mirrors mobile's WhatsNext.tsx (does nothing when
-  // there are zero or multiple Offer-stage applications).
+  // Finds every Offer-stage tracked application — auto-fills the form when
+  // there's exactly one (unchanged from before), and otherwise feeds the
+  // general-content / picker branches below.
   useEffect(() => {
     if (authLoading || plan !== null) return;
     apiClient
       .get<OfferApplication[]>("/api/v1/tracker/applications")
       .then((apps) => {
-        const offers = (apps as (OfferApplication & { stage?: string })[]).filter((a) => a.stage === "Offer");
-        if (offers.length !== 1) return;
-        const offer = offers[0];
-        setCompany(offer.company ?? "");
-        setRole(offer.role ?? "");
-        if (offer.offer_amount != null) setCurrentOffer(`${offer.offer_currency ?? ""} ${offer.offer_amount}`.trim());
-        setAutoDetected(true);
+        const offerApps = (apps as (OfferApplication & { stage?: string })[]).filter((a) => a.stage === "Offer");
+        setOffers(offerApps);
+        if (offerApps.length === 1) {
+          const offer = offerApps[0];
+          setCompany(offer.company ?? "");
+          setRole(offer.role ?? "");
+          if (offer.offer_amount != null) setCurrentOffer(`${offer.offer_currency ?? ""} ${offer.offer_amount}`.trim());
+          setAutoDetected(true);
+        }
       })
-      .catch(() => {});
+      .catch(() => setOffers([]))
+      .finally(() => setOffersLoaded(true));
   }, [authLoading, plan]);
+
+  // Picking a specific offer from the 2+-offers picker below — pre-fills
+  // and opens the same form sheet the single-offer/manual flows already
+  // use, so reviewing/editing target ask + start date before generating
+  // works identically no matter how the company/role got filled in.
+  function pickOffer(offer: OfferApplication) {
+    setCompany(offer.company ?? "");
+    setRole(offer.role ?? "");
+    setCurrentOffer(offer.offer_amount != null ? `${offer.offer_currency ?? ""} ${offer.offer_amount}`.trim() : "");
+    setAutoDetected(true);
+    setShowForm(true);
+  }
 
   useEffect(() => {
     if (authLoading || !plan) return;
@@ -276,19 +355,84 @@ export default function WhatsNextPage() {
           )}
 
           {!plan ? (
-            <div className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface-2 p-8 text-center">
-              <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-                <EvaIcon name="compass-outline" size={26} />
-              </span>
-              <p className="max-w-sm text-sm text-hint">
-                {t("web:whatsNext.description", {
-                  defaultValue: "Tell the AI about your offer, and it builds your negotiation talking points, a pre-start checklist, and a plan for navigating your first 90 days.",
-                })}
-              </p>
-              <Button type="button" onClick={() => setShowForm(true)} className="w-full max-w-xs">
-                {t("web:whatsNext.getStartedCta", { defaultValue: "Get started" })}
-              </Button>
-            </div>
+            !offersLoaded ? (
+              <SkeletonRows count={2} />
+            ) : offers.length === 0 ? (
+              // No tracked offer yet — real general job-search content
+              // instead of a form that presumes an offer already exists.
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                    <EvaIcon name="compass-outline" size={20} />
+                  </span>
+                  <h2 className="font-semibold text-primary">{t("web:whatsNext.general.title", { defaultValue: "No offer yet — here's what to focus on" })}</h2>
+                  <p className="text-sm text-hint">
+                    {t("web:whatsNext.general.subtitle", {
+                      defaultValue: "Once you mark an application as \"Offer\" in your Job Tracker, this page builds a negotiation, pre-start, and 90-day plan tailored to that specific role.",
+                    })}
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {GENERAL_NEXT_STEPS.map((step) => (
+                    <Link key={step.href} href={step.href} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 transition hover:border-brand/40">
+                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand/10 text-brand">
+                        <EvaIcon name={step.icon} size={16} />
+                      </span>
+                      <p className="text-sm font-semibold text-primary">{t(step.titleKey, { defaultValue: step.titleDefault })}</p>
+                      <p className="text-xs text-hint">{t(step.bodyKey, { defaultValue: step.bodyDefault })}</p>
+                      <span className="mt-1 text-xs font-medium text-brand">{t(step.ctaKey, { defaultValue: step.ctaDefault })} →</span>
+                    </Link>
+                  ))}
+                </div>
+                <button type="button" onClick={() => setShowForm(true)} className="w-fit text-sm font-medium text-brand hover:underline">
+                  {t("web:whatsNext.general.haveOfferCta", { defaultValue: "Already have an offer? Build your plan" })}
+                </button>
+              </div>
+            ) : offers.length === 1 ? (
+              <div className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface-2 p-8 text-center">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                  <EvaIcon name="compass-outline" size={26} />
+                </span>
+                <p className="max-w-sm text-sm text-hint">
+                  {t("web:whatsNext.description", {
+                    defaultValue: "Tell the AI about your offer, and it builds your negotiation talking points, a pre-start checklist, and a plan for navigating your first 90 days.",
+                  })}
+                </p>
+                <Button type="button" onClick={() => setShowForm(true)} className="w-full max-w-xs">
+                  {t("web:whatsNext.getStartedCta", { defaultValue: "Get started" })}
+                </Button>
+              </div>
+            ) : (
+              // 2+ tracked offers — a real picker instead of silently
+              // guessing which one to auto-fill (the old behavior only
+              // ever handled exactly one and otherwise left the form
+              // blank with no explanation).
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col items-start gap-1.5 rounded-card border border-border bg-surface-2 p-5">
+                  <h2 className="font-semibold text-primary">{t("web:whatsNext.picker.title", { defaultValue: "You have {{count}} offers — which one first?", count: offers.length })}</h2>
+                  <p className="text-sm text-hint">
+                    {t("web:whatsNext.picker.subtitle", { defaultValue: "You can build a plan for one offer at a time — pick another later from \"Start over\"." })}
+                  </p>
+                </div>
+                {offers.map((offer, i) => (
+                  <button
+                    key={`${offer.company}-${offer.role}-${i}`}
+                    type="button"
+                    onClick={() => pickOffer(offer)}
+                    className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:border-brand/40"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-primary">{offer.role}</p>
+                      <p className="text-sm text-hint">{offer.company}</p>
+                    </div>
+                    <EvaIcon name="arrow-forward-outline" size={16} className="shrink-0 text-brand" />
+                  </button>
+                ))}
+                <button type="button" onClick={() => setShowForm(true)} className="w-fit text-sm font-medium text-brand hover:underline">
+                  {t("web:whatsNext.general.haveOfferCta2", { defaultValue: "None of these? Enter it manually" })}
+                </button>
+              </div>
+            )
           ) : (
             <>
               <div className="flex items-start justify-between rounded-card border border-border bg-surface-2 p-5">
