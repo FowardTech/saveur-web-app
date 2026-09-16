@@ -22,7 +22,7 @@ import {
 import * as ttsService from "@/lib/ttsService";
 import { courseIdFor } from "@/lib/learningService";
 import { ACTION_META, actionTitle, runSuggestedAction, type SuggestedActionId } from "@/lib/suggestedActions";
-import { getSuggestedTopics, type SuggestedTopic } from "@/lib/coachService";
+import { getSuggestedTopics, uploadChatImage, type SuggestedTopic } from "@/lib/coachService";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py
 //   GET    /api/v1/coach/messages -> {messages: CoachMessage[]}
@@ -54,6 +54,14 @@ interface CoachMessage {
   // when app/api/coach.py's advice() moderation check flagged the user's
   // preceding message. Rendered with a distinct caution style below.
   flagged?: boolean;
+  // BUG FIX (product report: "The AI career coach does not have file and
+  // image attachment like the mobile app does") -- mirrors mobile's
+  // Chat.tsx: a picked photo is uploaded first (POST
+  // /api/v1/coach/messages/image -> hosted URL), then sent as this field
+  // on POST /api/v1/coach/advice, and GET /api/v1/coach/messages already
+  // echoes it back per-message (CoachMessage.image_url on the backend) --
+  // no backend changes needed, this was purely a missing web frontend.
+  image_url?: string | null;
 }
 
 const COACH_GREETING_TEXT =
@@ -111,6 +119,18 @@ function AiCoachPageInner() {
   // describeSpeechError/safeStartRecognition for the full root-cause writeup.
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const recognitionRef = useRef<MinimalSpeechRecognition | null>(null);
+
+  // Image attachment — mobile parity (product report: "The AI career coach
+  // does not have file and image attachment like the mobile app does").
+  // Mirrors mobile's onImagePicked: upload immediately on pick, then send
+  // straight away with a fixed, non-editable caption — mobile has no
+  // "attach to composer, type a caption, then press Send" intermediate
+  // step, so this doesn't add one either. `attachingImage` covers the
+  // upload window (mobile has no visible indicator for this at all; a
+  // brief "Attaching photo…" hint here is a small improvement rather than
+  // a functional gap).
+  const [attachingImage, setAttachingImage] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -280,11 +300,11 @@ function AiCoachPageInner() {
     runSuggestedAction(action, router).catch(() => {});
   }
 
-  async function sendQuestion(question: string, mode?: "voice") {
-    if (!question || sending) return;
+  async function sendQuestion(question: string, mode?: "voice", imageUrl?: string) {
+    if ((!question && !imageUrl) || sending) return;
     setError(null);
 
-    const optimisticUser: CoachMessage = { id: `local-${Date.now()}`, role: "user", text: question };
+    const optimisticUser: CoachMessage = { id: `local-${Date.now()}`, role: "user", text: question, image_url: imageUrl };
     setMessages((prev) => [...prev, optimisticUser]);
     setSending(true);
 
@@ -292,6 +312,7 @@ function AiCoachPageInner() {
       const history = messages.slice(-10).map((m) => ({ role: m.role, text: m.text }));
       const body: Record<string, unknown> = { question, history, persist_to_history: true, language: i18n.language || "en" };
       if (mode) body.mode = mode;
+      if (imageUrl) body.image_url = imageUrl;
       // BUG FIX (product report: "The AI career coach navigating to screens
       // is not working on web"): `suggested_action` was already coming back
       // from this exact endpoint the whole time — this page just never read
@@ -342,6 +363,36 @@ function AiCoachPageInner() {
       setMessages([{ ...GREETING_MESSAGE, text: coachGreetingText }]);
     } catch {
       // no-op
+    }
+  }
+
+  function onPickImageClick() {
+    imageInputRef.current?.click();
+  }
+
+  // Mirrors mobile's onImagePicked (Chat.tsx): upload immediately, then
+  // send right away with a fixed caption — no composer preview/cancel step
+  // on mobile either, so this matches that exactly rather than inventing a
+  // richer flow mobile doesn't have.
+  async function onImageChosen(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || attachingImage || sending) return;
+    setAttachingImage(true);
+    setError(null);
+    try {
+      const url = await uploadChatImage(file);
+      const caption = t("web:aiCoach.sentPhotoCaption", { defaultValue: "📷 Sent a photo" }).toString();
+      await sendQuestion(caption, undefined, url);
+    } catch (err) {
+      const apiErr = err as ApiError;
+      if (apiErr.status === 402 || apiErr.status === 403) {
+        setProRequired(true);
+      } else {
+        setError(apiErr.message || t("web:aiCoach.imageUploadFailedDefault", { defaultValue: "Couldn't attach that image. Please try again." }));
+      }
+    } finally {
+      setAttachingImage(false);
     }
   }
 
@@ -506,6 +557,20 @@ function AiCoachPageInner() {
                           />
                         )}
                         <div className={`flex flex-col gap-1 ${m.role === "user" ? "items-end" : "items-start"}`}>
+                          {/* Mobile parity: a picked photo is rendered as a
+                              thumbnail on the message bubble it was sent
+                              with (mobile's gifted-chat MessageImage). Shown
+                              above the text bubble since the caption here is
+                              the fixed "Sent a photo" string, not a real
+                              user-written message. */}
+                          {m.image_url && (
+                            // eslint-disable-next-line @next/next/no-img-element -- remote, backend-hosted URL; next/image would need a configured domain for what could be any S3 host.
+                            <img
+                              src={m.image_url}
+                              alt=""
+                              className="max-h-64 max-w-[85%] rounded-card border border-border object-cover"
+                            />
+                          )}
                           <div
                             className={`max-w-[85%] whitespace-pre-wrap rounded-card px-4 py-2.5 text-sm ${
                               m.role === "user"
@@ -581,8 +646,27 @@ function AiCoachPageInner() {
               {voiceError && <p className="text-sm text-danger">{voiceError}</p>}
               {listening && <p className="text-sm text-hint">{t("web:aiCoach.listening", { defaultValue: "Listening…" })}</p>}
               {speaking && <p className="text-sm text-hint">{t("web:aiCoach.speakingHint", { defaultValue: "Speaking… (tap the mic to stop)" })}</p>}
+              {attachingImage && <p className="text-sm text-hint">{t("web:aiCoach.attachingImage", { defaultValue: "Attaching photo…" })}</p>}
 
               <form onSubmit={handleSend} className="flex items-center gap-3">
+                <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={onImageChosen} />
+                {/* Mobile parity: mobile's "+" attach button (Chat.tsx's
+                    Composer, "Photo Library"/"Take Photo" rows) — a browser
+                    file input with accept="image/*" covers both a device's
+                    photo library and its camera capture UI (mobile opens a
+                    picker sheet for the choice; the browser's own native
+                    file picker already offers "Camera" on phones, so one
+                    button covers both). */}
+                <button
+                  type="button"
+                  onClick={onPickImageClick}
+                  disabled={attachingImage || sending}
+                  aria-label={t("web:aiCoach.attachImage", { defaultValue: "Attach a photo" }).toString()}
+                  title={t("web:aiCoach.attachImage", { defaultValue: "Attach a photo" }).toString()}
+                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface-1 text-hint transition hover:text-primary disabled:opacity-50"
+                >
+                  <EvaIcon name="camera-outline" size={18} />
+                </button>
                 <input
                   type="text"
                   value={input}

@@ -61,3 +61,19 @@ export async function getSuggestedTopics(context?: SuggestedTopicsContext): Prom
   }
   return buildFallbackTopics(context);
 }
+
+// BUG FIX (product report: "The AI career coach does not have file and
+// image attachment like the mobile app does"). Mobile's Chat.tsx uploads a
+// picked photo via this exact endpoint FIRST (getting back a hosted URL),
+// then sends that URL as part of a normal POST /api/v1/coach/advice call
+// (see services/coachService.ts's uploadChatImage + sendMessage) rather
+// than inlining the image as base64 — same upload-then-reference pattern
+// as lib/documentsService.ts's uploadDocument, reusing apiClient.upload's
+// existing multipart plumbing instead of adding a new one. Gated
+// @require_pro server-side, same as the rest of the AI Coach.
+export async function uploadChatImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file, file.name);
+  const data = await apiClient.upload<{ url: string }>("/api/v1/coach/messages/image", formData);
+  return data.url;
+}
