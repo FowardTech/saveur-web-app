@@ -33,6 +33,17 @@ export function isNavGroup(item: NavItem): item is NavGroup {
 export const primaryNav: NavItem[] = [
   { label: "Home", labelKey: "home", href: "/dashboard", icon: "home-outline" },
   { label: "AI Coach", labelKey: "aiCoach", href: "/ai-coach", icon: "message-circle-outline" },
+  // Mobile: src/more/EmotionalCoach.tsx -- a Premium-only mood check-in
+  // (pick how you're feeling about your job search + an optional note,
+  // get a supportive AI response + suggested next actions), ALSO a
+  // first-class "More" menu row there (src/more/MoreSrc.tsx), not just an
+  // AI Coach suggested_action destination. Web previously had no page at
+  // all for this -- lib/suggestedActions.ts's own comment used to list
+  // "emotional_coach" among ids "with no web page to land on at all yet"
+  // (product report: "the AI coach tried to navigate me there but it did
+  // not go"). Placed right after AI Coach, same adjacency as mobile's
+  // grouping of coaching-style features.
+  { label: "Emotional Coach", labelKey: "emotionalCoach", href: "/emotional-coach", icon: "heart-outline" },
   {
     label: "Practice",
     labelKey: "practice",

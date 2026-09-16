@@ -17,11 +17,14 @@ import { hasAddon, ADDON_CODES } from "./billingService";
 // suggested_action correctly the whole time.
 //
 // A handful of mobile's ~44 ids have no web page to land on at all yet
-// (faq, policy, about, saved_videos, weekly_career_report, emotional_coach,
+// (faq, policy, about, saved_videos, weekly_career_report,
 // student_verification, my_ratings, career_goal) — SCREEN_MAP simply omits
 // them, same as mobile's own `if (!entry) return;` for a genuinely-unmapped
 // id, so the coach just won't offer a chip for those rather than linking
 // somewhere wrong. Nothing here pretends a page exists that doesn't.
+// (emotional_coach used to be in that list too -- product report: "the AI
+// coach tried to navigate me there but it did not go" -- now has a real
+// page, see app/emotional-coach/page.tsx.)
 
 export type SuggestedActionId =
   | "mock_interview"
@@ -97,6 +100,7 @@ export const ACTION_META: Partial<Record<SuggestedActionId, ActionMeta>> = {
   resume_variants: { title: "your Resume Evolution", icon: "file-text-outline" },
   generated_documents: { title: "your Generated Documents", icon: "download-outline" },
   linkedin_optimizer: { title: "the LinkedIn Optimizer", icon: "linkedin-outline" },
+  emotional_coach: { title: "the Emotional Coach", icon: "heart-outline" },
   company_intelligence: { title: "Company Intelligence", icon: "briefcase-outline" },
   salary_negotiation: { title: "Salary Negotiation practice", icon: "trending-up-outline" },
   system_design_whiteboard: { title: "System Design Practice", icon: "grid-outline" },
@@ -139,6 +143,7 @@ const SCREEN_MAP: Partial<Record<SuggestedActionId, string>> = {
   resume_variants: "/resume/variants",
   generated_documents: "/documents/generated",
   linkedin_optimizer: "/resume/linkedin",
+  emotional_coach: "/emotional-coach",
   company_intelligence: "/career/company-intelligence",
   salary_negotiation: "/career/salary-negotiation",
   learning_courses: "/learning",
