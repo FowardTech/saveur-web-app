@@ -7,6 +7,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
@@ -179,10 +180,15 @@ function LeaderboardPageInner() {
           {isLoading && <SkeletonRows count={4} />}
           {loadError && !isLoading && <p className="text-sm text-danger">{loadError}</p>}
 
+          {/* BUG FIX (task #46 visual quality pass): was a single bare
+              <p> in a shadow-sm box -- no icon at all -- a jarring gap
+              next to this page's otherwise-polished podium cards. */}
           {!isLoading && !loadError && leaderboard && leaderboard.length === 0 && (
-            <p className="rounded-card bg-surface-2 p-6 text-center text-sm text-hint shadow-sm">
-              {t("web:progress.leaderboardEmpty", { defaultValue: "No leaderboard data yet." })}
-            </p>
+            <EmptyState
+              illustration="list"
+              title={t("web:progress.leaderboardEmpty", { defaultValue: "No leaderboard data yet." })}
+              description={t("web:progress.leaderboardEmptyDescription", { defaultValue: "Check back once you and others have logged some practice activity." })}
+            />
           )}
 
           {!isLoading && !loadError && leaderboard && leaderboard.length > 0 && (

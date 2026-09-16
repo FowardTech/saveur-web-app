@@ -9,6 +9,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Skeleton, SkeletonText } from "@/components/ui/Skeleton";
+import { ArtTrophy } from "@/components/dashboard/GettingStartedArt";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { type ApiError } from "@/lib/apiClient";
 import {
@@ -363,9 +364,16 @@ function CourseSessionInner() {
     return (
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 pb-10 text-center">
         <BackLink href={backHref} t={t} />
-        <span className="mt-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
-          <EvaIcon name="award-outline" size={36} />
-        </span>
+        {/* BUG FIX (task #46 visual quality pass): was a generic
+            award-outline icon in a plain circle for the single most
+            celebratory moment in Learning (finishing a whole tier) --
+            reused ArtTrophy (see components/dashboard/GettingStartedArt.tsx),
+            the same illustration this app already uses for "you're fully
+            set up" moments, rather than commissioning new art for what is
+            the same underlying idea (a milestone worth celebrating). */}
+        <div className="mt-4">
+          <ArtTrophy size={96} />
+        </div>
         <h1 className="text-xl font-bold text-primary">
           {t("web:learning.session.tierComplete", {
             defaultValue: "{{level}} Tier Complete!",

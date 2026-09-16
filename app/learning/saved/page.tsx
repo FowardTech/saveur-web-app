@@ -6,6 +6,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { SkeletonRows } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { getSavedVideos, setVideoSaved, type CourseVideo } from "@/lib/learningService";
@@ -78,13 +79,18 @@ export default function SavedVideosPage() {
 
           {videos === null && <SkeletonRows count={3} />}
 
+          {/* BUG FIX (task #46 visual quality pass): was a hand-rolled
+              empty state (bare icon, no circular background, no bold
+              title) instead of the shared EmptyState component every
+              other empty list in the app uses (applications, job alerts,
+              career diary, etc.) -- inconsistent and visibly lower-
+              fidelity than its siblings. */}
           {videos !== null && videos.length === 0 && (
-            <div className="flex flex-col items-center gap-2 rounded-card border border-border bg-surface-2 p-10 text-center">
-              <EvaIcon name="star-outline" size={28} className="text-hint" />
-              <p className="text-sm text-hint">
-                {t("web:learning.savedVideos.empty", { defaultValue: "Videos you save from a Learning Course lesson will show up here." })}
-              </p>
-            </div>
+            <EmptyState
+              icon="star-outline"
+              title={t("web:learning.savedVideos.emptyTitle", { defaultValue: "No saved videos yet" })}
+              description={t("web:learning.savedVideos.empty", { defaultValue: "Videos you save from a Learning Course lesson will show up here." })}
+            />
           )}
 
           {videos !== null && videos.length > 0 && (

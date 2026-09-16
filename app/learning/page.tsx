@@ -12,6 +12,7 @@ import { SelectField } from "@/components/ui/SelectField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { ArtLearningCourses } from "@/components/learning/LearningArt";
 import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import {
@@ -293,11 +294,38 @@ export default function LearningPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <PageHeader
-              title={t("web:learning.title", { defaultValue: "Learning Courses" })}
-              subtitle={t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal — or teach yourself anything." })}
-            />
+          {/* Hero -- task #46 visual quality pass ("Learning" explicitly
+              called out as looking sparse/unfinished): this page used to
+              open straight into a plain header with no illustration at
+              all, unlike the dashboard's illustrated HomeBanner. Same
+              gradient-card + right-side-art treatment, book illustration
+              (ArtLearningCourses, see LearningArt.tsx) instead of a
+              generic icon. */}
+          <div className="shadow-lg">
+            <section className="relative flex items-center justify-between gap-4 overflow-hidden rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-6 py-8 sm:px-8 sm:py-10">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
+              />
+              <div className="relative flex max-w-lg flex-col items-start gap-2">
+                {/* h1, not h2 -- this hero replaces what used to be the
+                    page's only PageHeader (the sole <h1>), so it keeps
+                    that same heading level rather than leaving the page
+                    with no h1 at all. */}
+                <h1 className="text-2xl font-bold leading-tight text-primary sm:text-3xl">
+                  {t("web:learning.title", { defaultValue: "Learning Courses" })}
+                </h1>
+                <p className="text-sm text-hint sm:text-base">
+                  {t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal — or teach yourself anything." })}
+                </p>
+              </div>
+              <div className="relative hidden shrink-0 md:block">
+                <ArtLearningCourses size={112} />
+              </div>
+            </section>
+          </div>
+
+          <div className="flex flex-wrap items-start justify-end gap-3">
             {/* Product report: "The Saved card is not implemented in the
                 web app" — see app/learning/saved/page.tsx. */}
             <Link
@@ -451,17 +479,42 @@ export default function LearningPage() {
             <div className="flex flex-col gap-3">
               <h2 className="text-lg font-bold text-primary">{t("web:learning.courseProgressTitle", { defaultValue: "Course progress" })}</h2>
               {courseIds.map((courseId) => {
-                const slugTopic = courseId.split("::")[0].replace(/-/g, " ");
+                const [rawTopic, rawLevel] = courseId.split("::");
+                const slugTopic = rawTopic.replace(/-/g, " ");
                 const displayTopic = slugTopic.replace(/\b\w/g, (c) => c.toUpperCase());
+                const level = (rawLevel as CourseLevel) in MODULES_PER_LEVEL ? (rawLevel as CourseLevel) : "basic";
+                const completedModules = byCourse[courseId].completed_modules;
+                const total = MODULES_PER_LEVEL[level];
+                const progressPct = total > 0 ? Math.round((completedModules / total) * 100) : 0;
+                const isDone = completedModules >= total;
                 return (
+                  // BUG FIX (task #46 visual quality pass): was a bare
+                  // text-only row (topic name + a "N module(s) completed"
+                  // caption, nothing else) sitting directly above the
+                  // catalog grid below, which has category chips, icons,
+                  // and a real progress bar -- the density mismatch
+                  // between two adjacent "your courses" lists on the same
+                  // page was jarring. Added the same progress-bar +
+                  // percentage treatment the catalog cards use.
                   <Link
                     key={courseId}
                     href={`/learning/course/${encodeURIComponent(courseId)}?${new URLSearchParams({ topic: displayTopic }).toString()}`}
-                    className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 transition hover:bg-surface-3"
+                    className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 transition hover:bg-surface-3"
                   >
-                    <span className="text-sm text-primary capitalize">{slugTopic}</span>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm font-medium text-primary capitalize">{slugTopic}</span>
+                      <span className={`text-xs font-semibold ${isDone ? "text-success" : "text-hint"}`}>
+                        {isDone ? t("web:learning.completed", { defaultValue: "Completed" }) : `${progressPct}%`}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
+                      <div
+                        className={`h-1.5 rounded-full transition-all ${isDone ? "bg-success" : "bg-brand"}`}
+                        style={{ width: `${progressPct}%` }}
+                      />
+                    </div>
                     <span className="text-xs text-hint">
-                      {t("web:learning.modulesCompleted", { defaultValue: "{{count}} module(s) completed", count: byCourse[courseId].completed_modules })}
+                      {t("web:learning.modulesCompleted", { defaultValue: "{{count}} module(s) completed", count: completedModules })}
                     </span>
                   </Link>
                 );
