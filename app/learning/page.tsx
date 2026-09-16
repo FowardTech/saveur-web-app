@@ -25,7 +25,7 @@ import {
   type CourseProgressSummary,
   type TopicCheckResult,
 } from "@/lib/learningService";
-import { DATA_COURSES } from "@/lib/courseCatalog";
+import { DATA_COURSES, type CatalogCourse } from "@/lib/courseCatalog";
 
 // Real backend contract — Saveur-Backend/app/api/learning.py
 //   GET  /api/v1/learning/curriculum -> {curriculum: {goal, weeks: Week[]} | null}
@@ -92,6 +92,23 @@ const LEVEL_DEFAULTS: Record<CourseLevel, string> = {
   basic: "Basic",
   intermediate: "Intermediate",
   advanced: "Advanced",
+};
+
+// Product request: "Redesign Saveur-Web to be cleaner/brighter like
+// resume.io" [learning.resume.io's course grid: a responsive card grid with
+// a colored category chip + icon per card, rather than a single stacked
+// column]. Reuses the same tint-* tokens (globals.css) every other card
+// treatment in this app already draws from, one per category, so the grid
+// reads as organized-by-topic at a glance rather than a wall of identical
+// white cards.
+const CATEGORY_STYLE: Record<CatalogCourse["category"], { chip: string; icon: string }> = {
+  Behavioral: { chip: "bg-tint-purple text-tint-purple-text", icon: "message-circle-outline" },
+  Technical: { chip: "bg-tint-mint text-tint-mint-text", icon: "code-outline" },
+  "Salary Negotiation": { chip: "bg-tint-orange text-tint-orange-text", icon: "pie-chart-outline" },
+  Resume: { chip: "bg-tint-rose text-tint-rose-text", icon: "file-text-outline" },
+  "System Design": { chip: "bg-tint-mint text-tint-mint-text", icon: "layers-outline" },
+  Networking: { chip: "bg-tint-purple text-tint-purple-text", icon: "people-outline" },
+  Onboarding: { chip: "bg-tint-orange text-tint-orange-text", icon: "briefcase-outline" },
 };
 
 export default function LearningPage() {
@@ -587,17 +604,23 @@ export default function LearningPage() {
               already fetched above into `byCourse`), computed the same way
               as mobile's catalogProgress() — courseIdFor(title, "basic") —
               not a static mock number. */}
-          <div className="flex flex-col gap-3">
-            {DATA_COURSES.map((course) => {
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {DATA_COURSES.map((course, index) => {
               const catalogCourseId = courseIdFor(course.title, "basic");
               const completedModules = byCourse[catalogCourseId]?.completed_modules ?? 0;
               const totalModules = course.totalModules;
               const progressPct = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
               const isCourseComplete = completedModules >= totalModules;
+              const style = CATEGORY_STYLE[course.category];
               return (
-                <div key={course.id} className="rounded-card border border-border bg-surface-2 p-5">
+                <div
+                  key={course.id}
+                  className="animate-card-in flex flex-col rounded-card border border-border bg-surface-2 p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
                   <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center rounded-pill bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">
+                    <span className={`inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-semibold ${style.chip}`}>
+                      <EvaIcon name={style.icon} size={13} />
                       {course.category}
                     </span>
                     <span className="text-xs text-hint">
@@ -605,7 +628,7 @@ export default function LearningPage() {
                     </span>
                   </div>
                   <h3 className="mt-3 font-semibold text-primary">{course.title}</h3>
-                  <p className="mt-1 text-sm text-hint">{course.description}</p>
+                  <p className="mt-1 flex-1 text-sm text-hint">{course.description}</p>
 
                   <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
                     <div
@@ -631,7 +654,7 @@ export default function LearningPage() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      className="w-auto !border-black !bg-transparent !text-black hover:!bg-black/5"
+                      className="w-auto"
                       onClick={() => {
                         const qs = new URLSearchParams({ topic: course.title });
                         router.push(`/learning/course/${encodeURIComponent(catalogCourseId)}?${qs.toString()}`);
