@@ -203,7 +203,8 @@ export default function DashboardPage() {
             in for the first time, the app should suggest important steps
             to the user things like Upload a resume, Tell us about
             yourself, ... Update your profile etc." Self-contained, renders
-            nothing once every item is done or dismissed. */}
+            nothing only once the user dismisses it -- reaching 100% no
+            longer auto-hides it, see that component's own header comment. */}
         <GettingStartedChecklist />
 
         {/* Upcoming Session — self-contained, renders nothing when there's

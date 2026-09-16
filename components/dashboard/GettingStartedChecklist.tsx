@@ -7,6 +7,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
 import * as documentsService from "@/lib/documentsService";
 import * as onboardingAssessmentService from "@/lib/onboardingAssessmentService";
+import { ArtRoadmapPath, ArtTrophy } from "./GettingStartedArt";
 
 // "Getting Started" checklist — product report: "When a user logs in for
 // the first time, the app should suggest important steps to the user
@@ -16,16 +17,31 @@ import * as onboardingAssessmentService from "@/lib/onboardingAssessmentService"
 // nudge before this (the existing WelcomeModal is a one-time static pitch,
 // not a checklist; see that component's own header comment). Self-
 // contained: fetches its own data (profile is already loaded by
-// AuthProvider; resume presence needs its own GET /api/v1/documents call)
-// and renders nothing once every item is done or the user has dismissed it.
+// AuthProvider; resume presence needs its own GET /api/v1/documents call).
+//
+// BUG FIX (product report: "I need a beautiful illustration or a nice
+// image on this card place on the right side. And also When user have
+// completed all the tasked. A readiness indicattion should appear in the
+// card. The card should not auto disappear even when all tasks are
+// completed the user can decide to close or leave it"): this used to
+// `return null` the instant `remaining.length === 0`, so a user who
+// finished every item never saw any confirmation of that — the card just
+// vanished on whatever render happened to notice. Now it stays mounted and
+// switches to a "You're all set" readiness state (ArtTrophy + a green
+// "Profile ready" badge) instead, and the ONLY way it goes away is the
+// explicit close button below (same dismissal mechanism as before). Also
+// added a right-side illustration (GettingStartedArt.tsx, ported from
+// mobile's src/home/HomeHeroArt.tsx) for both states — a winding road
+// while steps remain, the trophy once they're done.
 //
 // Dismissible per account, remembered in localStorage keyed by uid — same
 // convention as components/dashboard/AnnouncementBanner.tsx's
 // homeBannerDismissed key. Unlike that banner, this doesn't need a
 // fingerprint (there's no admin-editable copy to invalidate an old
-// dismissal): once dismissed, it stays dismissed, same as it re-appearing
-// automatically anyway the moment any item becomes incomplete again isn't
-// a concern here since profile fields don't un-fill themselves.
+// dismissal): once dismissed, it stays dismissed. A user who reaches 100%
+// and dismisses the readiness state won't have it silently reappear later
+// either, same "once dismissed, stays dismissed" rule as the in-progress
+// state always had.
 function dismissedStorageKey(uid?: string | null): string {
   return `saveur.gettingStartedDismissed.${uid || "anon"}`;
 }
@@ -120,47 +136,77 @@ export function GettingStartedChecklist() {
   ];
 
   const remaining = items.filter((i) => !i.done);
-  if (remaining.length === 0) return null;
+  const allDone = remaining.length === 0;
 
   return (
-    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="font-semibold text-primary">{t("web:dashboard.gettingStarted.title", { defaultValue: "Finish setting up your account" })}</h2>
-          <p className="mt-0.5 text-sm text-hint">
-            {t("web:dashboard.gettingStarted.subtitle", {
-              defaultValue: "{{count}} quick steps left — these help us personalize your coaching.",
-              count: remaining.length,
-            })}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={onDismiss}
-          aria-label={t("common:actions.close", { defaultValue: "Close" })}
-          className="shrink-0 rounded-full p-1 text-hint transition hover:bg-surface-3 hover:text-primary"
-        >
-          <EvaIcon name="close-outline" size={16} />
-        </button>
-      </div>
-      <div className="flex flex-col gap-1.5">
-        {items.map((item) => (
-          <Link
-            key={item.key}
-            href={item.href}
-            className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition hover:bg-surface-3 ${
-              item.done ? "text-hint line-through" : "font-medium text-primary"
-            }`}
+    <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-center sm:gap-6">
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="font-semibold text-primary">
+                {allDone
+                  ? t("web:dashboard.gettingStarted.doneTitle", { defaultValue: "You're all set up!" })
+                  : t("web:dashboard.gettingStarted.title", { defaultValue: "Finish setting up your account" })}
+              </h2>
+              {/* Readiness indicator (product report: "when user have
+                  completed all the tasked, a readiness indication should
+                  appear in the card") -- a plain title swap alone read too
+                  similar to the in-progress heading at a glance, so this
+                  adds an unmissable status pill too. */}
+              {allDone && (
+                <span className="inline-flex items-center gap-1 rounded-pill bg-tint-mint px-2.5 py-0.5 text-xs font-semibold text-tint-mint-text">
+                  <EvaIcon name="checkmark-circle-2-outline" size={12} />
+                  {t("web:dashboard.gettingStarted.readyBadge", { defaultValue: "Profile ready" })}
+                </span>
+              )}
+            </div>
+            <p className="mt-0.5 text-sm text-hint">
+              {allDone
+                ? t("web:dashboard.gettingStarted.doneSubtitle", {
+                    defaultValue: "Your profile is fully filled in — Saveur can now personalize coaching, practice, and recommendations for you.",
+                  })
+                : t("web:dashboard.gettingStarted.subtitle", {
+                    defaultValue: "{{count}} quick steps left — these help us personalize your coaching.",
+                    count: remaining.length,
+                  })}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onDismiss}
+            aria-label={t("common:actions.close", { defaultValue: "Close" })}
+            className="shrink-0 rounded-full p-1 text-hint transition hover:bg-surface-3 hover:text-primary"
           >
-            <EvaIcon
-              name={item.done ? "checkmark-circle-2-outline" : "arrow-circle-right-outline"}
-              size={16}
-              className={item.done ? "shrink-0 text-success" : "shrink-0 text-brand"}
-            />
-            {item.label}
-          </Link>
-        ))}
+            <EvaIcon name="close-outline" size={16} />
+          </button>
+        </div>
+        <div className="mt-3 flex flex-col gap-1.5">
+          {items.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition hover:bg-surface-3 ${
+                item.done ? "text-hint line-through" : "font-medium text-primary"
+              }`}
+            >
+              <EvaIcon
+                name={item.done ? "checkmark-circle-2-outline" : "arrow-circle-right-outline"}
+                size={16}
+                className={item.done ? "shrink-0 text-success" : "shrink-0 text-brand"}
+              />
+              {item.label}
+            </Link>
+          ))}
+        </div>
       </div>
+
+      {/* Illustration -- product report: "I need a beautiful illustration
+          or a nice image on this card placed on the right side." Hidden
+          below `sm` purely for space (a 5-item checklist plus a 96px
+          illustration doesn't fit a narrow phone-width card), not tied to
+          done/dismiss state. */}
+      <div className="hidden shrink-0 sm:block">{allDone ? <ArtTrophy size={96} /> : <ArtRoadmapPath size={96} />}</div>
     </div>
   );
 }
