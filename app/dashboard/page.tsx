@@ -150,6 +150,7 @@ export default function DashboardPage() {
                 title={action.labelKey ? t(`common:nav.${action.labelKey}`, { defaultValue: action.label }) : action.label}
                 description={action.descriptionKey ? t(action.descriptionKey, { defaultValue: action.description }) : action.description}
                 tint={tintCycle[i % tintCycle.length]}
+                animationDelayMs={i * 50}
               />
             ))}
           </div>
