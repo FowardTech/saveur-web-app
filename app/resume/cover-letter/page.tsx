@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
@@ -16,15 +17,20 @@ import { downloadUrlAsFile } from "@/lib/downloadFile";
 // Real backend contract — Saveur-Backend/app/api/resume_gen.py
 //   POST /api/v1/resume/cover-letter -> {cover_letter: str}
 //   body: {company?, role?, hiring_manager?, jd_text?} — at least one of company/role/jd_text required
-// @require_pro — matches mobile's src/more/CoverLetterGenerator.tsx AND
-// src/more/JDCoverLetterGenerator.tsx (both "a Basic feature", both merged
-// into this one page via the optional jd_text field). GATING GAP FIX: this
-// page used to swallow a 402 into the same generic "Couldn't generate a
-// cover letter right now" error as any other failure. Same preemptive-isPro
-// + reactive-402 pattern as app/career/company-intelligence/page.tsx.
+// BUG FIX (product report: "the user should only be able to generate 2
+// cover letters, use the resume builder for anything just twice"): this
+// used to be fully @require_pro-walled (the blanket `!isPro` lock below,
+// zero free access at all). The backend now allows free users a combined
+// 2 actions/month shared with Resume Builder's generate/ats-score/
+// rewrite-bullet (entitlements_service.py's FREE_RESUME_TOOL_ACTIONS_PER_MONTH),
+// enforced via a 402 resume_tool_limit_reached response once exhausted.
+// So the page is no longer locked behind isPro — everyone sees the real
+// form, and the free-plan usage banner + reactive 402 handling below take
+// over as the actual gate (same shared-pool pattern as
+// app/resume/builder/page.tsx).
 function CoverLetterPageInner() {
   const { t, i18n } = useTranslation();
-  const { isPro } = useAuth();
+  const { isPro, subscriptionStatus, refreshSubscriptionStatus } = useAuth();
   const searchParams = useSearchParams();
   // Prefills from the Dream Company Dashboard's "Generate cover letter"
   // quick action (app/career/dream-companies/page.tsx, ?company=<name>&role=<role>).
@@ -34,7 +40,8 @@ function CoverLetterPageInner() {
   const [jdText, setJdText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [proRequired, setProRequired] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
+  const [limitMessage, setLimitMessage] = useState<string | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   // Download as PDF/Word — was entirely missing here (see mobile's
@@ -50,6 +57,7 @@ function CoverLetterPageInner() {
     if (!canSubmit) return;
     setLoading(true);
     setError(null);
+    setLimitReached(false);
     setLetter(null);
     try {
       const data = await apiClient.post<{ cover_letter: string }>("/api/v1/resume/cover-letter", {
@@ -60,10 +68,12 @@ function CoverLetterPageInner() {
         language: i18n.language || "en",
       });
       setLetter(data.cover_letter);
+      void refreshSubscriptionStatus();
     } catch (err) {
       const apiErr = err as ApiError;
-      if (apiErr.status === 402 || apiErr.status === 403) {
-        setProRequired(true);
+      if (apiErr.status === 402 && apiErr.error === "resume_tool_limit_reached") {
+        setLimitReached(true);
+        setLimitMessage(apiErr.message);
       } else {
         setError(apiErr.message || t("web:resume.coverLetter.generateFailedDefault", { defaultValue: "Couldn't generate a cover letter right now." }));
       }
@@ -110,17 +120,47 @@ function CoverLetterPageInner() {
             subtitle={t("web:resume.coverLetter.subtitle", { defaultValue: "Generate a tailored cover letter from your resume and a target role." })}
           />
 
-          {(proRequired || !isPro) && (
+          {/* Combined free-plan usage banner — shared pool with Resume
+              Builder's generate/ats-score/rewrite-bullet (see
+              app/resume/builder/page.tsx for the identical pattern). */}
+          {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
+            <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
+              <div className="flex items-center gap-3">
+                <EvaIcon name="flash-outline" size={18} className="text-brand" />
+                {(() => {
+                  const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
+                  return (
+                    <p className={`text-sm ${remaining > 0 ? "text-primary" : "text-danger"}`}>
+                      {remaining > 0
+                        ? t("web:resume.coverLetter.freeActionsRemaining", {
+                            defaultValue: `${remaining} free resume tool action${remaining === 1 ? "" : "s"} left this month`,
+                            count: remaining,
+                          })
+                        : t("web:resume.coverLetter.freeActionsUsedUp", { defaultValue: "You've used all your free resume tool actions this month" })}
+                    </p>
+                  );
+                })()}
+              </div>
+              <Link href="/subscription" className="whitespace-nowrap text-sm font-medium text-brand hover:underline">
+                {t("web:resume.coverLetter.upgrade", { defaultValue: "Upgrade" })}
+              </Link>
+            </div>
+          )}
+
+          {limitReached && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">{t("web:resume.coverLetter.proRequiredTitle", { defaultValue: "Cover Letter Generator is a Basic feature" })}</h2>
-              <p className="text-sm text-hint">{t("web:resume.coverLetter.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to generate a tailored cover letter from your resume." })}</p>
+              <h2 className="font-semibold text-primary">{t("web:resume.coverLetter.limitReachedTitle", { defaultValue: "You've used your free resume tool actions this month" })}</h2>
+              <p className="text-sm text-hint">{limitMessage || t("web:resume.coverLetter.limitReachedSubtitle", { defaultValue: "Upgrade to Saveur Basic or above for unlimited access." })}</p>
+              <Link href="/subscription" className="text-sm font-medium text-brand hover:underline">
+                {t("web:resume.coverLetter.upgrade", { defaultValue: "Upgrade" })}
+              </Link>
             </div>
           )}
 
-          {isPro && !proRequired && (
+          {!limitReached && (
           <>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

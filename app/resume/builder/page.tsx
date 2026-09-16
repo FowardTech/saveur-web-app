@@ -35,15 +35,17 @@ const IMPORT_OPTIONS: { key: ResumeImportSourceKey; labelKey: string; labelDefau
 ];
 
 // Real backend contract — Saveur-Backend/app/api/resume.py + resume_gen.py.
-// Unlike mobile (whole ResumeBuilder.tsx screen wrapped in
-// `if (!isPro) return <ProLockGate variant="pro" .../>`), the backend only
-// actually enforces @require_pro on POST /api/v1/resume/generate — viewing
-// your resume (GET), the ATS score check, and the bullet rewrite are all
-// ungated at the API level (no @require_pro on resume.py's routes at all).
-// So rather than blocking the whole page (which would over-restrict a free
-// user away from features the backend genuinely lets them use), only the
-// "Generate a tailored resume" action shows the upsell — reactively, on the
-// real 402 from /generate — matching what the backend actually requires.
+// BUG FIX (product report: "I noticed that the Resume Builder is free in
+// the free plan. No -- the user should only be able to generate 2 cover
+// letters, use the resume builder for anything just twice"): generate(),
+// generate_cover_letter(), ats_score(), and rewrite_bullet() now share ONE
+// combined pool of 2 free actions/month (entitlements_service.py's
+// FREE_RESUME_TOOL_ACTIONS_PER_MONTH), enforced server-side via a 402
+// `resume_tool_limit_reached` response once the pool is exhausted for the
+// current calendar month. Pro/Premium are unlimited. Viewing your resume
+// (GET /api/v1/resume) and saving edits (PATCH) are NOT part of the cap --
+// only the four AI actions above count. See limitReached state below for
+// the shared 402 handling and the usage banner right under the form.
 
 // Real backend contract — Saveur-Backend/app/api/resume.py + resume_gen.py
 //   GET   /api/v1/resume         -> {sources, sections, ats_score}
@@ -102,13 +104,20 @@ function renderSectionValue(value: unknown): string {
 export default function ResumeBuilderPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { profile, loading: authLoading } = useAuth();
+  const { profile, loading: authLoading, subscriptionStatus, isPro, refreshSubscriptionStatus } = useAuth();
   const [resume, setResume] = useState<ResumePayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [targetRole, setTargetRole] = useState("");
   const [jdText, setJdText] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [proRequired, setProRequired] = useState(false);
+  // Shared by all four resume-tool actions (generate, ats-score,
+  // rewrite-bullet below, and the separate Cover Letter Generator page) --
+  // set whenever the backend returns 402 resume_tool_limit_reached, i.e.
+  // the combined free-plan pool (2/month) is exhausted. `limitMessage`
+  // carries the backend's own user-facing copy so it never drifts from
+  // what the server actually enforces.
+  const [limitReached, setLimitReached] = useState(false);
+  const [limitMessage, setLimitMessage] = useState<string | null>(null);
   const [scoring, setScoring] = useState(false);
   const [atsResult, setAtsResult] = useState<{ score: number; suggestions: string[] } | null>(null);
   // "Rewrite a Bullet with AI" — was entirely missing from this page (see
@@ -221,14 +230,14 @@ export default function ResumeBuilderPage() {
   // Core generation call, shared by the "Generate a tailored resume" form
   // submit AND the "Organize into editable sections with AI" CTA on the raw
   // extracted-text card below — same POST /resume/generate + PATCH
-  // /resume flow either way, so the CTA path gets the exact same
-  // Pro-gating (402/403 -> proRequired banner) and error handling instead
-  // of a separate, less-safe request.
+  // /resume flow either way, so the CTA path gets the exact same cap
+  // handling (402 resume_tool_limit_reached -> limitReached banner) and
+  // error handling instead of a separate, less-safe request.
   async function runGenerate() {
     if (!targetRole.trim()) return;
     setGenerating(true);
     setError(null);
-    setProRequired(false);
+    setLimitReached(false);
     try {
       const sections = await apiClient.post<Sections>("/api/v1/resume/generate", {
         target_role: targetRole.trim(),
@@ -236,10 +245,12 @@ export default function ResumeBuilderPage() {
       });
       const saved = await apiClient.patch<ResumePayload>("/api/v1/resume", { sections });
       setResume(saved);
+      void refreshSubscriptionStatus();
     } catch (err) {
       const apiErr = err as ApiError;
-      if (apiErr.status === 402 || apiErr.status === 403) {
-        setProRequired(true);
+      if (apiErr.status === 402 && apiErr.error === "resume_tool_limit_reached") {
+        setLimitReached(true);
+        setLimitMessage(apiErr.message);
       } else {
         setError(apiErr.message || t("web:resume.builder.generateFailedDefault", { defaultValue: "Couldn't generate a resume right now." }));
       }
@@ -319,11 +330,19 @@ export default function ResumeBuilderPage() {
     setScoring(true);
     setError(null);
     setAtsResult(null);
+    setLimitReached(false);
     try {
       const data = await apiClient.post<{ score: number; suggestions: string[] }>("/api/v1/resume/ats-score", {});
       setAtsResult(data);
+      void refreshSubscriptionStatus();
     } catch (err) {
-      setError((err as ApiError).message || t("web:resume.builder.scoreFailedDefault", { defaultValue: "Couldn't score your resume right now." }));
+      const apiErr = err as ApiError;
+      if (apiErr.status === 402 && apiErr.error === "resume_tool_limit_reached") {
+        setLimitReached(true);
+        setLimitMessage(apiErr.message);
+      } else {
+        setError(apiErr.message || t("web:resume.builder.scoreFailedDefault", { defaultValue: "Couldn't score your resume right now." }));
+      }
     } finally {
       setScoring(false);
     }
@@ -333,14 +352,22 @@ export default function ResumeBuilderPage() {
     if (!bulletText.trim() || rewriting) return;
     setRewriting(true);
     setRewriteResult(null);
+    setLimitReached(false);
     try {
       const data = await apiClient.post<{ rewritten: string; explanation: string }>("/api/v1/resume/rewrite-bullet", {
         bullet: bulletText.trim(),
         role: targetRole.trim() || undefined,
       });
       setRewriteResult(data);
+      void refreshSubscriptionStatus();
     } catch (err) {
-      setError((err as ApiError).message || t("web:resume.builder.rewriteFailedDefault", { defaultValue: "Couldn't rewrite that bullet right now." }));
+      const apiErr = err as ApiError;
+      if (apiErr.status === 402 && apiErr.error === "resume_tool_limit_reached") {
+        setLimitReached(true);
+        setLimitMessage(apiErr.message);
+      } else {
+        setError(apiErr.message || t("web:resume.builder.rewriteFailedDefault", { defaultValue: "Couldn't rewrite that bullet right now." }));
+      }
     } finally {
       setRewriting(false);
     }
@@ -431,6 +458,35 @@ export default function ResumeBuilderPage() {
             </Link>
           </div>
 
+          {/* Combined free-plan usage banner (generate + ats-score +
+              rewrite-bullet here, plus cover-letter on its own page, all
+              share this one pool) — mirrors mock-interviews/page.tsx's
+              remainingFreeSessions banner so free users see this
+              proactively instead of only after hitting a 402. */}
+          {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
+            <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
+              <div className="flex items-center gap-3">
+                <EvaIcon name="flash-outline" size={18} className="text-brand" />
+                {(() => {
+                  const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
+                  return (
+                    <p className={`text-sm ${remaining > 0 ? "text-primary" : "text-danger"}`}>
+                      {remaining > 0
+                        ? t("web:resume.builder.freeActionsRemaining", {
+                            defaultValue: `${remaining} free resume tool action${remaining === 1 ? "" : "s"} left this month`,
+                            count: remaining,
+                          })
+                        : t("web:resume.builder.freeActionsUsedUp", { defaultValue: "You've used all your free resume tool actions this month" })}
+                    </p>
+                  );
+                })()}
+              </div>
+              <Link href="/subscription" className="whitespace-nowrap text-sm font-medium text-brand hover:underline">
+                {t("web:resume.builder.upgrade", { defaultValue: "Upgrade" })}
+              </Link>
+            </div>
+          )}
+
           <form ref={generateFormRef} onSubmit={handleGenerate} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <h2 className="font-semibold text-primary">{t("web:resume.builder.generateSectionTitle", { defaultValue: "Generate a tailored resume" })}</h2>
             <TextField
@@ -451,13 +507,16 @@ export default function ResumeBuilderPage() {
                 className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
             </label>
-            {proRequired && (
+            {limitReached && (
               <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-1 p-4">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                   <EvaIcon name="lock-outline" size={16} />
                 </span>
-                <p className="text-sm font-semibold text-primary">{t("web:resume.builder.proRequiredTitle", { defaultValue: "Generating a tailored resume is a Basic feature" })}</p>
-                <p className="text-sm text-hint">{t("web:resume.builder.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to unlock AI resume generation." })}</p>
+                <p className="text-sm font-semibold text-primary">{t("web:resume.builder.limitReachedTitle", { defaultValue: "You've used your free resume tool actions this month" })}</p>
+                <p className="text-sm text-hint">{limitMessage || t("web:resume.builder.limitReachedSubtitle", { defaultValue: "Upgrade to Saveur Basic or above for unlimited access." })}</p>
+                <Link href="/subscription" className="text-sm font-medium text-brand hover:underline">
+                  {t("web:resume.builder.upgrade", { defaultValue: "Upgrade" })}
+                </Link>
               </div>
             )}
             <Button type="submit" disabled={generating || !targetRole.trim()} className="mt-1 w-full">
@@ -491,6 +550,15 @@ export default function ResumeBuilderPage() {
                   {scoring ? t("web:resume.builder.scoring", { defaultValue: "Scoring…" }) : t("web:resume.builder.checkAtsScore", { defaultValue: "Check ATS score" })}
                 </Button>
               </div>
+
+              {limitReached && (
+                <div className="rounded-card border border-border bg-surface-1 p-4">
+                  <p className="text-sm text-danger">{limitMessage || t("web:resume.builder.limitReachedTitle", { defaultValue: "You've used your free resume tool actions this month" })}</p>
+                  <Link href="/subscription" className="text-sm font-medium text-brand hover:underline">
+                    {t("web:resume.builder.upgrade", { defaultValue: "Upgrade" })}
+                  </Link>
+                </div>
+              )}
 
               {atsResult && (
                 <div className="rounded-card border border-border bg-surface-2 p-5">
@@ -802,6 +870,14 @@ export default function ResumeBuilderPage() {
                 <Button onClick={handleRewriteBullet} disabled={rewriting || !bulletText.trim()} className="w-fit">
                   {rewriting ? t("web:resume.builder.rewriting", { defaultValue: "Rewriting…" }) : t("web:resume.builder.rewriteWithAi", { defaultValue: "Rewrite with AI" })}
                 </Button>
+                {limitReached && (
+                  <div className="rounded-card border border-border bg-surface-1 p-4">
+                    <p className="text-sm text-danger">{limitMessage || t("web:resume.builder.limitReachedTitle", { defaultValue: "You've used your free resume tool actions this month" })}</p>
+                    <Link href="/subscription" className="text-sm font-medium text-brand hover:underline">
+                      {t("web:resume.builder.upgrade", { defaultValue: "Upgrade" })}
+                    </Link>
+                  </div>
+                )}
                 {rewriteResult && (
                   <div className="flex flex-col gap-3">
                     <div className="rounded-lg bg-surface-1 p-4">

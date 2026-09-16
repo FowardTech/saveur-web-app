@@ -59,6 +59,12 @@ export interface SubscriptionStatus {
   cancelAtPeriodEnd: boolean;
   sessionsUsed: number;
   sessionsLimit: number | null;
+  /** Combined free-plan pool shared by Resume Builder generate, Cover
+   * Letter Generator, ATS Score, and Rewrite Bullet (2/month for free
+   * users, null/unlimited for Pro+) — mirrors sessionsUsed/sessionsLimit
+   * above but for entitlements_service.py's resume-tool cap. */
+  resumeToolActionsUsed: number;
+  resumeToolActionsLimit: number | null;
 }
 
 interface SubscriptionStatusWire {
@@ -70,6 +76,8 @@ interface SubscriptionStatusWire {
   cancel_at_period_end?: boolean;
   sessions_used: number;
   sessions_limit: number | null;
+  resume_tool_actions_used?: number;
+  resume_tool_actions_limit?: number | null;
 }
 
 function subscriptionStatusFromWire(wire: SubscriptionStatusWire): SubscriptionStatus {
@@ -81,6 +89,8 @@ function subscriptionStatusFromWire(wire: SubscriptionStatusWire): SubscriptionS
     cancelAtPeriodEnd: !!wire.cancel_at_period_end,
     sessionsUsed: wire.sessions_used ?? 0,
     sessionsLimit: wire.sessions_limit ?? null,
+    resumeToolActionsUsed: wire.resume_tool_actions_used ?? 0,
+    resumeToolActionsLimit: wire.resume_tool_actions_limit ?? null,
   };
 }
 
