@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { ArtWelcomeWave } from "@/components/dashboard/HomeBannerArt";
 
 const STORAGE_KEY = "saveur_welcome_modal_seen";
 
@@ -66,14 +67,13 @@ export function WelcomeModal() {
           </button>
         </div>
 
+        {/* Kept in sync with components/dashboard/WelcomeModal.tsx's
+            identical swap (task #37: "Add real illustrations to web
+            dashboard, not SVG shapes") -- this teaser and that modal are
+            documented as sharing the same visual design, and both had the
+            same fake "app screenshot" mockup here. */}
         <div className="flex items-center justify-center bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-5 py-8">
-          <svg width="140" height="100" viewBox="0 0 140 100" fill="none" aria-hidden="true">
-            <rect x="10" y="20" width="120" height="70" rx="10" className="fill-surface-1 stroke-border" strokeWidth="1.5" />
-            <rect x="24" y="34" width="60" height="8" rx="4" className="fill-brand" opacity="0.8" />
-            <rect x="24" y="48" width="92" height="6" rx="3" className="fill-tint-mint-text" opacity="0.5" />
-            <rect x="24" y="60" width="70" height="6" rx="3" className="fill-tint-purple-text" opacity="0.5" />
-            <circle cx="108" cy="38" r="10" className="fill-accent-purple" opacity="0.8" />
-          </svg>
+          <ArtWelcomeWave size={120} />
         </div>
 
         <div className="px-5 pb-6 pt-4">

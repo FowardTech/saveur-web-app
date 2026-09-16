@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { ArtWelcomeWave } from "./HomeBannerArt";
 
 // First-login "Welcome to Saveur" onboarding popup — shown exactly once per
 // account, the first time a signed-in user lands on /dashboard. Same
@@ -91,14 +92,15 @@ export function WelcomeModal() {
           </button>
         </div>
 
+        {/* BUG FIX (task #37: "Add real illustrations to web dashboard, not
+            SVG shapes"): was a fake "app screenshot" mockup (a bordered
+            rect standing in for a card, with a few colored bars/a dot for
+            text lines) rather than an actual illustration. Replaced with
+            ArtWelcomeWave (mobile's own welcome-screen art — a waving
+            figure with an AI-Coach chat-bubble accent), same as
+            components/landing/WelcomeModal.tsx's identical swap. */}
         <div className="flex items-center justify-center bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-5 py-8">
-          <svg width="140" height="100" viewBox="0 0 140 100" fill="none" aria-hidden="true">
-            <rect x="10" y="20" width="120" height="70" rx="10" className="fill-surface-1 stroke-border" strokeWidth="1.5" />
-            <rect x="24" y="34" width="60" height="8" rx="4" className="fill-brand" opacity="0.8" />
-            <rect x="24" y="48" width="92" height="6" rx="3" className="fill-tint-mint-text" opacity="0.5" />
-            <rect x="24" y="60" width="70" height="6" rx="3" className="fill-tint-purple-text" opacity="0.5" />
-            <circle cx="108" cy="38" r="10" className="fill-accent-purple" opacity="0.8" />
-          </svg>
+          <ArtWelcomeWave size={120} />
         </div>
 
         <div className="px-5 pb-6 pt-4">

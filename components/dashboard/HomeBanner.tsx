@@ -1,12 +1,20 @@
 import { useTranslation } from "react-i18next";
-import { EvaIcon } from "@/components/icons/EvaIcon";
+import { ArtMissionPhone } from "./HomeBannerArt";
 
 /** Dashboard counterpart to the landing page's HeroBanner — same boxed/
  * gradient banner treatment, but no Register CTA or OAuth row since the
  * viewer is already signed in. The shadow lives on this outer wrapper
  * (not on the rounded+overflow-hidden inner element) — same convention as
  * the mobile app's cards, since shadow + overflow-hidden on the same
- * element silently clips the shadow in CSS. */
+ * element silently clips the shadow in CSS.
+ *
+ * BUG FIX (task #37: "Add real illustrations to web dashboard, not SVG
+ * shapes"): this banner — the very first thing a user sees on the
+ * dashboard — had no actual picture at all, just two blurred gradient
+ * circles and a small floating flash-icon badge standing in for
+ * decoration. Replaced that badge with ArtMissionPhone (mobile's own
+ * dashboard-hero illustration, see HomeBannerArt.tsx), kept the blurred
+ * circles as a soft color backdrop behind it. */
 export function HomeBanner() {
   const { t } = useTranslation();
   return (
@@ -20,23 +28,22 @@ export function HomeBanner() {
           aria-hidden="true"
           className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-accent-purple/20 blur-3xl"
         />
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute right-8 top-8 hidden h-14 w-14 rotate-6 items-center justify-center rounded-2xl bg-surface-2/60 text-brand shadow-sm backdrop-blur-sm sm:flex"
-        >
-          <EvaIcon name="flash-outline" size={24} />
-        </span>
 
-        <div className="relative flex max-w-lg flex-col items-start gap-2">
-          <h2 className="text-2xl font-bold leading-tight text-primary">
-            {t("web:dashboard.homeBannerTitle", { defaultValue: "Keep building momentum." })}
-          </h2>
-          <p className="text-sm text-hint sm:text-base">
-            {t("web:dashboard.homeBannerSubtitle", {
-              defaultValue:
-                "Try a mock interview today — matching you with an AI interviewer and instant feedback usually takes less than 10 minutes.",
-            })}
-          </p>
+        <div className="relative flex items-center justify-between gap-4">
+          <div className="flex max-w-lg flex-col items-start gap-2">
+            <h2 className="text-2xl font-bold leading-tight text-primary">
+              {t("web:dashboard.homeBannerTitle", { defaultValue: "Keep building momentum." })}
+            </h2>
+            <p className="text-sm text-hint sm:text-base">
+              {t("web:dashboard.homeBannerSubtitle", {
+                defaultValue:
+                  "Try a mock interview today — matching you with an AI interviewer and instant feedback usually takes less than 10 minutes.",
+              })}
+            </p>
+          </div>
+          <div className="hidden shrink-0 md:block">
+            <ArtMissionPhone size={128} />
+          </div>
         </div>
       </section>
     </div>
