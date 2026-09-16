@@ -34,15 +34,24 @@ interface Panel {
   key: keyof Pick<CoachingReport, "performing_well" | "key_insights" | "areas_to_improve" | "whats_next">;
   icon: EvaIconName;
   chip: string;
+  // BUG FIX (product report: "The Quick actions cards and the Your
+  // Coaching Report cards in the web dashboard look identical"): both
+  // used to be the exact same rounded-card/border-border/bg-surface-2/p-4
+  // shell (ActionCard.tsx's own visual DNA, copy-pasted here). `accent`
+  // gives each panel its own soft tinted background + colored left edge
+  // instead of flat white, so the report reads as a distinct, colorful
+  // "report" surface rather than four more of the same gray tiles as the
+  // quick-actions grid above it.
+  accent: string;
   titleKey: string;
   titleDefault: string;
 }
 
 const PANELS: Panel[] = [
-  { key: "performing_well", icon: "checkmark-circle-2", chip: "bg-tint-mint text-tint-mint-text", titleKey: "web:coachingReport.performingWell", titleDefault: "Performing Well" },
-  { key: "key_insights", icon: "bulb-outline", chip: "bg-tint-purple text-tint-purple-text", titleKey: "web:coachingReport.keyInsights", titleDefault: "Key Insights" },
-  { key: "areas_to_improve", icon: "flag-outline", chip: "bg-tint-orange text-tint-orange-text", titleKey: "web:coachingReport.areasToImprove", titleDefault: "Areas to Improve" },
-  { key: "whats_next", icon: "arrow-forward-outline", chip: "bg-tint-rose text-tint-rose-text", titleKey: "web:coachingReport.whatsNext", titleDefault: "What's Next" },
+  { key: "performing_well", icon: "checkmark-circle-2", chip: "bg-tint-mint text-tint-mint-text", accent: "border-l-4 border-l-tint-mint-text bg-tint-mint/30", titleKey: "web:coachingReport.performingWell", titleDefault: "Performing Well" },
+  { key: "key_insights", icon: "bulb-outline", chip: "bg-tint-purple text-tint-purple-text", accent: "border-l-4 border-l-tint-purple-text bg-tint-purple/30", titleKey: "web:coachingReport.keyInsights", titleDefault: "Key Insights" },
+  { key: "areas_to_improve", icon: "flag-outline", chip: "bg-tint-orange text-tint-orange-text", accent: "border-l-4 border-l-tint-orange-text bg-tint-orange/30", titleKey: "web:coachingReport.areasToImprove", titleDefault: "Areas to Improve" },
+  { key: "whats_next", icon: "arrow-forward-outline", chip: "bg-tint-rose text-tint-rose-text", accent: "border-l-4 border-l-tint-rose-text bg-tint-rose/30", titleKey: "web:coachingReport.whatsNext", titleDefault: "What's Next" },
 ];
 
 export function CoachingReportCard() {
@@ -61,11 +70,20 @@ export function CoachingReportCard() {
   // render, rather than showing a broken/error state on the dashboard.
   if (!report) return null;
 
+  // BUG FIX (product report: "The Quick actions cards and the Your
+  // Coaching Report cards in the web dashboard look identical. At least
+  // the Your Coaching Report cards should look a little bit different"):
+  // both the empty state and the populated report below now sit inside
+  // one bordered, gradient-tinted "report" frame (brand-colored border +
+  // a soft diagonal wash) instead of plain bg-surface-2 boxes — the same
+  // gradient treatment this dashboard's own HomeBanner uses, so the
+  // report reads as a distinct, cohesive surface rather than more of the
+  // same flat white tiles as the quick-actions grid directly above it.
   if (report.empty) {
     return (
-      <div className="flex flex-col items-start gap-3 rounded-card border border-dashed border-border bg-surface-2 p-6">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
-          <EvaIcon name="bar-chart-2-outline" size={18} />
+      <div className="flex flex-col items-start gap-3 rounded-card border-2 border-dashed border-brand/25 bg-gradient-to-br from-brand/5 via-accent-purple/5 to-transparent p-6">
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+          <EvaIcon name="bar-chart-2-outline" size={20} />
         </span>
         <div>
           <h2 className="font-semibold text-primary">{t("web:coachingReport.title", { defaultValue: "Your Coaching Report" })}</h2>
@@ -88,13 +106,23 @@ export function CoachingReportCard() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <h2 className="text-lg font-bold text-primary">{t("web:coachingReport.title", { defaultValue: "Your Coaching Report" })}</h2>
+    <div className="flex flex-col gap-4 rounded-card border-2 border-brand/15 bg-gradient-to-br from-brand/5 via-accent-purple/5 to-transparent p-5">
+      <div className="flex items-center gap-3">
+        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand text-white">
+          <EvaIcon name="bar-chart-2-outline" size={18} />
+        </span>
+        <div>
+          <h2 className="text-lg font-bold text-primary">{t("web:coachingReport.title", { defaultValue: "Your Coaching Report" })}</h2>
+          <p className="text-xs text-hint">
+            {t("web:coachingReport.basedOnSessions", { defaultValue: "Based on your last {{count}} mock interviews", count: report.completed_count })}
+          </p>
+        </div>
+      </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {PANELS.map((panel) => {
           const items = report[panel.key];
           return (
-            <div key={panel.key} className="flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4">
+            <div key={panel.key} className={`flex flex-col gap-2.5 rounded-card p-4 ${panel.accent}`}>
               <span className={`inline-flex w-fit items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-semibold ${panel.chip}`}>
                 <EvaIcon name={panel.icon} size={13} />
                 {t(panel.titleKey, { defaultValue: panel.titleDefault })}
