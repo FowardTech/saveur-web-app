@@ -19,6 +19,11 @@ import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCar
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
 import { AppTour } from "@/components/dashboard/AppTour";
 import { CoachingReportCard } from "@/components/dashboard/CoachingReportCard";
+import { DailyTipBanner } from "@/components/dashboard/DailyTipBanner";
+import { RatingModal } from "@/components/dashboard/RatingModal";
+import { DailyCheckInModal, type DailyCheckInMode } from "@/components/dashboard/DailyCheckInModal";
+import * as appRatingService from "@/lib/appRatingService";
+import * as dailyCheckinService from "@/lib/dailyCheckinService";
 
 function useGreeting() {
   const { t } = useTranslation();
@@ -53,6 +58,88 @@ export default function DashboardPage() {
   }, [loading, firebaseUser, profile, router]);
 
   const firstName = profile?.firstName || profile?.name?.split(" ")[0] || t("web:dashboard.defaultName", { defaultValue: "there" });
+
+  // BUG FIX (product report: "you did not implement ratings in the web
+  // app and also the regular check up and daily tips just the way it is
+  // in the mobile app"). Both backends already existed
+  // (Saveur-Backend/app/api/ratings.py, app/api/daily_checkin.py) --
+  // mobile's Home screen had this wired up the whole time, web never did.
+  //
+  // Rating prompt: server-authoritative due-check (see
+  // lib/appRatingService.ts), same as mobile's HomeSrc.tsx -- checked once
+  // per mount, not on every render, so a dismiss/submit that already
+  // closed the modal this session can't immediately re-trigger it.
+  const [showRatingPrompt, setShowRatingPrompt] = useState(false);
+  useEffect(() => {
+    if (loading || !firebaseUser) return;
+    let cancelled = false;
+    appRatingService.isRatingPromptDue().then((due) => {
+      if (due && !cancelled) setShowRatingPrompt(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [loading, firebaseUser]);
+
+  async function onSubmitRating(score: number) {
+    try {
+      await appRatingService.submitRating(score);
+    } finally {
+      setShowRatingPrompt(false);
+    }
+  }
+  async function onDismissRating() {
+    setShowRatingPrompt(false);
+    appRatingService.dismissRatingPrompt().catch(() => {});
+  }
+
+  // Daily career-goal check-in: mobile shows the "goal" prompt on login
+  // before noon (skipped if already answered today server-side, or
+  // dismissed-without-answering today per a local flag), and the
+  // "reflection" prompt from an evening push notification asking "how did
+  // your day go?". Web has no push channel, so the reflection prompt is
+  // approximated with a local afternoon/evening time gate instead (see
+  // lib/dailyCheckinService.ts's own comment) rather than being reachable
+  // at all, which is the actual gap here relative to mobile.
+  const [checkinModal, setCheckinModal] = useState<DailyCheckInMode | null>(null);
+  useEffect(() => {
+    if (loading || !firebaseUser) return;
+    const hour = new Date().getHours();
+    let cancelled = false;
+    dailyCheckinService
+      .getToday()
+      .then((today) => {
+        if (cancelled) return;
+        if (hour < 12) {
+          if (!today.goalAnswered && !dailyCheckinService.wasGoalPromptDismissedToday()) {
+            setCheckinModal("goal");
+          }
+        } else if (hour >= 15) {
+          if (today.goalAnswered && !today.reflectionAnswered && !dailyCheckinService.wasReflectionPromptDismissedToday()) {
+            setCheckinModal("reflection");
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [loading, firebaseUser]);
+
+  async function onSubmitCheckin(text: string) {
+    if (!checkinModal) return;
+    try {
+      if (checkinModal === "goal") await dailyCheckinService.submitGoal(text);
+      else await dailyCheckinService.submitReflection(text);
+    } finally {
+      setCheckinModal(null);
+    }
+  }
+  function onDismissCheckin() {
+    if (checkinModal === "goal") dailyCheckinService.dismissGoalPromptForToday();
+    else if (checkinModal === "reflection") dailyCheckinService.dismissReflectionPromptForToday();
+    setCheckinModal(null);
+  }
 
   if (loading || !firebaseUser) {
     return (
@@ -106,6 +193,11 @@ export default function DashboardPage() {
         <div data-tour="dashboard-home-banner">
           <HomeBanner />
         </div>
+
+        {/* Daily tip — product report: "you did not implement... daily
+            tips just the way it is in the mobile app". Self-contained,
+            renders nothing if the user has no active goals yet. */}
+        <DailyTipBanner />
 
         {/* "Getting Started" checklist — product report: "When a user logs
             in for the first time, the app should suggest important steps
@@ -177,6 +269,18 @@ export default function DashboardPage() {
           <CoachingReportCard />
         </div>
       </div>
+
+      {/* Mutual exclusion: never stack this on top of the daily check-in
+          modal (both are full-screen, centered dialogs) -- if a rating
+          becomes due while a check-in prompt is already showing, it'll
+          simply be shown the next time the dashboard mounts instead. */}
+      <RatingModal open={showRatingPrompt && checkinModal === null} onSubmit={onSubmitRating} onDismiss={onDismissRating} />
+      <DailyCheckInModal
+        open={checkinModal !== null}
+        mode={checkinModal ?? "goal"}
+        onSubmit={onSubmitCheckin}
+        onDismiss={onDismissCheckin}
+      />
     </AppShell>
   );
 }

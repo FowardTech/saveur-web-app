@@ -54,6 +54,13 @@ export default function SettingsPage() {
       description: t("web:settings.hub.studentDescription", { defaultValue: "Verify your school email for a discount and student-tailored AI." }),
       tint: { bg: "bg-tint-mint", text: "text-tint-mint-text" },
     },
+    {
+      href: "/settings/ratings",
+      icon: "star-outline" as const,
+      title: t("web:settings.hub.ratingsTitle", { defaultValue: "My Ratings" }),
+      description: t("web:settings.hub.ratingsDescription", { defaultValue: "Ratings you've submitted about your experience with Saveur." }),
+      tint: { bg: "bg-tint-rose", text: "text-tint-rose-text" },
+    },
   ];
 
   return (
