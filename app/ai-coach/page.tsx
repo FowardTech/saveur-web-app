@@ -421,11 +421,23 @@ function AiCoachPageInner() {
     recognition.lang = typeof navigator !== "undefined" ? navigator.language : "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
+    // BUG FIX (product report + screenshot: speaking into the mic sent
+    // multiple, progressively-growing messages into the chat instead of
+    // one — "What" then "What do you" then "What do you think" as
+    // separate bubbles). Even with interimResults=false, some browsers'
+    // SpeechRecognition still fires onresult more than once for a single
+    // continuous utterance as it keeps refining/re-finalizing what it
+    // heard, each firing with a longer/corrected transcript. The old
+    // handler called sendQuestion() directly INSIDE onresult, so every
+    // one of those firings sent its own chat message. Now onresult only
+    // records the latest transcript into a local variable; the message is
+    // sent exactly once, from onend (which fires exactly once when
+    // recognition genuinely stops), using whatever the last/best
+    // transcript turned out to be.
+    let finalTranscript = "";
     recognition.onresult = (event) => {
-      const transcript = event.results[0]?.[0]?.transcript?.trim();
-      if (transcript) {
-        sendQuestion(transcript, "voice");
-      }
+      const transcript = event.results[event.results.length - 1]?.[0]?.transcript?.trim();
+      if (transcript) finalTranscript = transcript;
     };
     // BUG FIX (real, reproducible root cause of "voice mode isn't working"):
     // the old onerror discarded the actual error code and just reset
@@ -438,7 +450,10 @@ function AiCoachPageInner() {
       const message = describeSpeechError(event?.error, t);
       if (message) setVoiceError(message);
     };
-    recognition.onend = () => setListening(false);
+    recognition.onend = () => {
+      setListening(false);
+      if (finalTranscript) sendQuestion(finalTranscript, "voice");
+    };
 
     recognitionRef.current = recognition;
     // BUG FIX: `listening` used to be set to true unconditionally BEFORE
