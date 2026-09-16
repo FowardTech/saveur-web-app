@@ -83,12 +83,15 @@ export default function DashboardPage() {
       <WelcomeModal />
       {/* One-time "how this app works" walkthrough (product report: "The
           web version does not have tour guide. You need to implement
-          that") — see AppTour's own header comment for why it's a step
-          carousel rather than a spotlight overlay, and how it sequences
-          after WelcomeModal. Replayable from Settings. */}
+          that", later: "The web tour guid is not professional at all.
+          Its supposed to move all around the screen pointing to every
+          section in the dashboard") — see AppTour's own header comment
+          for the real spotlight mechanics. The `data-tour="..."`
+          attributes below on stable wrapper divs are what it targets;
+          replayable from Settings. */}
       <AppTour />
       <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
-        <div>
+        <div data-tour="dashboard-greeting">
           <h1 className="text-2xl font-bold text-primary">
             {greeting}, {firstName}
           </h1>
@@ -100,7 +103,9 @@ export default function DashboardPage() {
         <AnnouncementBanner />
 
         {/* Home banner */}
-        <HomeBanner />
+        <div data-tour="dashboard-home-banner">
+          <HomeBanner />
+        </div>
 
         {/* "Getting Started" checklist — product report: "When a user logs
             in for the first time, the app should suggest important steps
@@ -122,7 +127,10 @@ export default function DashboardPage() {
         <ContinueWatchingCard />
 
         {/* Promo banner */}
-        <div className="flex flex-col items-start gap-4 rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div
+          data-tour="dashboard-promo"
+          className="flex flex-col items-start gap-4 rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-6 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div className="flex items-start gap-3">
             <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand text-white">
               <EvaIcon name="flash-outline" size={20} />
@@ -140,7 +148,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick actions */}
-        <div className="flex flex-col gap-4">
+        <div data-tour="dashboard-quick-actions" className="flex flex-col gap-4">
           <h2 className="text-lg font-bold text-primary">{t("web:dashboard.quickActionsTitle", { defaultValue: "Quick actions" })}</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {quickActions.map((action, i) => (
@@ -161,8 +169,13 @@ export default function DashboardPage() {
             so empty" [Yoodli's own dashboard report card]. Self-contained,
             renders nothing while loading and shows an honest empty state
             (with a CTA) rather than fabricated content for a new user with
-            fewer than 2 graded mock interviews. */}
-        <CoachingReportCard />
+            fewer than 2 graded mock interviews. The data-tour wrapper is
+            deliberately on this stable outer div rather than inside the
+            component, since the component itself can render nothing while
+            its data is still loading — see AppTour.tsx's STEPS comment. */}
+        <div data-tour="dashboard-coaching-report">
+          <CoachingReportCard />
+        </div>
       </div>
     </AppShell>
   );
