@@ -38,6 +38,21 @@ interface AuthContextValue {
    * is_premium. Use to gate anything @require_premium on the backend. */
   isPremium: boolean;
   refreshSubscriptionStatus: () => Promise<SubscriptionStatus | null>;
+  /** Mirrors Firebase's `currentUser.emailVerified` — mirrors mobile's
+   * AuthContext.emailVerified. Federated providers (Google/LinkedIn) assert
+   * a verified email at sign-in time, so this is only ever false for an
+   * email/password account that hasn't clicked its verification link yet.
+   * Not auto-refreshed — Firebase only updates this locally after an
+   * explicit `reload()`, so call `refreshEmailVerified()` (e.g. when the
+   * tab regains focus) to pick up a change made by tapping the emailed
+   * link. */
+  emailVerified: boolean;
+  refreshEmailVerified: () => Promise<boolean>;
+  /** POST /api/v1/email/send-verification — same real backend contract
+   * mobile already uses (Saveur-Backend/app/api/email.py's
+   * send_verification(): generates a Firebase-hosted verification link
+   * server-side and emails it via Resend). */
+  resendVerificationEmail: () => Promise<void>;
 }
 
 const AuthContext = React.createContext<AuthContextValue>({
@@ -53,6 +68,9 @@ const AuthContext = React.createContext<AuthContextValue>({
   isPro: false,
   isPremium: false,
   refreshSubscriptionStatus: async () => null,
+  emailVerified: false,
+  refreshEmailVerified: async () => false,
+  resendVerificationEmail: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -60,6 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = React.useState<UserProfile | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [subscriptionStatus, setSubscriptionStatus] = React.useState<SubscriptionStatus | null>(null);
+  const [emailVerified, setEmailVerified] = React.useState(false);
 
   const refreshSubscriptionStatus = React.useCallback(async (): Promise<SubscriptionStatus | null> => {
     try {
@@ -109,6 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
       setFirebaseUser(user);
+      setEmailVerified(!!user?.emailVerified);
       if (user) {
         await Promise.all([syncProfile(), refreshSubscriptionStatus()]);
       } else {
@@ -143,6 +163,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSubscriptionStatus(null);
   }, []);
 
+  // BUG FIX (product report: "there is no email verification step in the
+  // web app") — mobile has always sent a verification email right after
+  // email/password signup (AuthContext.tsx's signUp -> emailService.
+  // sendVerificationEmail) and shown a non-blocking "verify your email"
+  // banner with a resend action until Firebase reports the link was
+  // clicked (HomeSrc.tsx). Web never called the equivalent endpoint at
+  // all, so a password-signup web user's email was simply never verified
+  // and there was no UI anywhere hinting this mattered — even though the
+  // backend's require_verified_email gate (Saveur-Backend/app/auth.py,
+  // guards a couple of interview/practice routes) has been silently
+  // rejecting them with 403 email_not_verified this whole time.
+  //
+  // Firebase only updates `currentUser.emailVerified` locally after an
+  // explicit `reload()` — it doesn't push the change from tapping the
+  // emailed link. Call this when the tab regains focus (see
+  // components/shell/AppShell.tsx's visibilitychange listener) or from a
+  // manual "I've verified — refresh" action.
+  const refreshEmailVerified = React.useCallback(async (): Promise<boolean> => {
+    const user = firebaseAuth.currentUser;
+    if (!user) {
+      setEmailVerified(false);
+      return false;
+    }
+    await user.reload();
+    const verified = !!firebaseAuth.currentUser?.emailVerified;
+    setEmailVerified(verified);
+    // `user.reload()` only updates `currentUser.emailVerified` locally; it
+    // does NOT reissue the cached Firebase ID token. apiClient.ts's
+    // authHeader() calls `user.getIdToken()` without forceRefresh, so every
+    // backend call would keep sending the STALE token (still asserting
+    // email_verified: false) until it naturally expires up to an hour
+    // later — the backend's require_verified_email gate reads that claim,
+    // not a fresh DB lookup, so it would keep 403ing right after a user
+    // verifies. Force a fresh token now so the very next API call already
+    // carries the updated claim.
+    if (verified) {
+      try {
+        await user.getIdToken(true);
+      } catch {
+        // Best-effort — a failed forced refresh just means the natural
+        // token expiry still catches up eventually.
+      }
+    }
+    return verified;
+  }, []);
+
+  const resendVerificationEmail = React.useCallback(async () => {
+    await apiClient.post("/api/v1/email/send-verification", {});
+  }, []);
+
   const isPro = isProTier(subscriptionStatus);
   const isPremium = isPremiumTier(subscriptionStatus);
 
@@ -160,8 +230,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isPro,
       isPremium,
       refreshSubscriptionStatus,
+      emailVerified,
+      refreshEmailVerified,
+      resendVerificationEmail,
     }),
-    [firebaseUser, profile, loading, syncProfile, refreshProfile, updateProfile, signOut, deleteAccount, subscriptionStatus, isPro, isPremium, refreshSubscriptionStatus]
+    [firebaseUser, profile, loading, syncProfile, refreshProfile, updateProfile, signOut, deleteAccount, subscriptionStatus, isPro, isPremium, refreshSubscriptionStatus, emailVerified, refreshEmailVerified, resendVerificationEmail]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

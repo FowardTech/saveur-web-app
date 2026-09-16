@@ -7,6 +7,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { ActionCard } from "@/components/ui/ActionCard";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
+import { EmailVerificationBanner } from "@/components/dashboard/EmailVerificationBanner";
 import { WelcomeModal } from "@/components/dashboard/WelcomeModal";
 import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -182,6 +183,12 @@ export default function DashboardPage() {
           </h1>
           <p className="mt-1 text-sm text-hint">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
+
+        {/* Non-blocking "verify your email" nudge for a password-signup
+            account that hasn't clicked its emailed link yet — mirrors
+            mobile's Home screen placement (see EmailVerificationBanner's
+            own header comment). Renders nothing once verified/signed out. */}
+        <EmailVerificationBanner />
 
         {/* Admin-authored announcement strip (policy changes, etc.) — above
             the decorative HomeBanner hero card per product ask. */}

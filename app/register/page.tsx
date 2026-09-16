@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/Button";
 export default function RegisterPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { syncProfile, updateProfile } = useAuth();
+  const { syncProfile, updateProfile, resendVerificationEmail } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,6 +40,20 @@ export default function RegisterPage() {
       await syncProfile();
       if (name.trim()) {
         await updateProfile({ name: name.trim() });
+      }
+      // BUG FIX (product report: "there is no email verification step in
+      // the web app") — mobile has always sent this right after signup
+      // (AuthContext.tsx's signUp); web never called the equivalent
+      // endpoint at all, so a password-signup account's email was simply
+      // never verified. Best-effort: a real email/password account is
+      // genuinely unverified at this point, but a failure to *send* the
+      // link shouldn't fail signup itself — the user can always tap
+      // "Resend" later from the unverified-email banner (see
+      // components/shell/AppShell.tsx).
+      try {
+        await resendVerificationEmail();
+      } catch {
+        // Swallowed intentionally — see comment above.
       }
       // Brand-new account — always straight to onboarding.
       router.push("/onboarding");
