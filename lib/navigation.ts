@@ -118,21 +118,21 @@ export const primaryNav: NavItem[] = [
   // comment) since it had no route of its own yet; now a real top-level
   // entry, same prominence as Learning Courses/Job Alerts.
   { label: "Daily Industry News", labelKey: "dailyIndustryNews", href: "/news", icon: "globe-outline" },
-  { label: "Job Alerts", labelKey: "jobAlerts", href: "/job-alerts", icon: "briefcase-outline", badgeKey: "jobAlerts" },
-  // Mobile: MoreSrc.tsx's "Applications" row, landing on the same real
-  // "Interviews" screen (src/requests/RequestsSrc.tsx) as "Recent
-  // Interviews" above, just defaulting to the Applications tab instead of
-  // Practice History — see app/applications/page.tsx's own comment for why
-  // this is one merged route with two differently-labeled entry points
-  // rather than either a single nav row or two separate pages. Label
-  // renamed from "Application Tracker" to "Applications" to match MoreSrc's
-  // real row label (t('more:tab_interviews', {defaultValue: 'Applications'}));
-  // labelKey stays `applicationTracker` on purpose so existing translations
-  // aren't invalidated (same convention as this file's own "Support" rename
-  // below). Top-level here (not nested under Practice) since it's a
-  // Basic-and-up job-search tool in its own right, same tier/prominence as
-  // Job Alerts.
-  { label: "Applications", labelKey: "applicationTracker", href: "/applications", icon: "award-outline" },
+  // Product request: "the web app dashboard look so empty... look deeper at
+  // [resume.io/Yoodli] there are so many things in there that we don't
+  // have" -- specifically resume.io's Job Tracker, a single Kanban board
+  // (Recommended -> Shortlist -> Applied -> Interview -> Offer -> Rejected)
+  // rather than two disconnected screens. This ONE nav row replaces what
+  // used to be separate "Job Alerts" (href /job-alerts) and "Applications"
+  // (href /applications) rows -- both pages still exist and still work
+  // (deep links like Dream Companies' ?company= filter and the "Advanced
+  // tools" link from the new board both still land on them), they're just
+  // no longer separate top-level entry points now that app/job-tracker/
+  // page.tsx unifies discovery + tracking into one real board. badgeKey
+  // stays "jobAlerts" -- same unread-new-match count, still meaningful
+  // here since new matches surface directly in the board's Recommended
+  // column.
+  { label: "Job Tracker", labelKey: "jobTracker", href: "/job-tracker", icon: "grid-outline", badgeKey: "jobAlerts" },
   // Mobile: MoreSrc.tsx's "My Progress" row (title: t('more:my_progress'))
   // sits immediately after "Applications" and before the Resume Tools rows
   // in its flat DATA list — see that row's own comment for the "everything
@@ -238,12 +238,12 @@ export const quickActions: NavLeaf[] = [
     descriptionKey: "web:dashboard.quickActions.learningCourses",
   },
   {
-    label: "Job Alerts",
-    labelKey: "jobAlerts",
-    href: "/job-alerts",
-    icon: "briefcase-outline",
-    description: "Get matched to new openings daily",
-    descriptionKey: "web:dashboard.quickActions.jobAlerts",
+    label: "Job Tracker",
+    labelKey: "jobTracker",
+    href: "/job-tracker",
+    icon: "grid-outline",
+    description: "Track every job from match to offer",
+    descriptionKey: "web:dashboard.quickActions.jobTracker",
   },
   {
     label: "AI Coach",

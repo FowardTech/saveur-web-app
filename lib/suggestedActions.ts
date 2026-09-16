@@ -149,7 +149,7 @@ const SCREEN_MAP: Partial<Record<SuggestedActionId, string>> = {
   practical_scenarios: "/practice/scenarios",
   referral_program: "/referral",
   security_settings: "/settings/security",
-  job_alerts: "/job-alerts",
+  job_alerts: "/job-tracker",
   subscription: "/subscription",
   payment_history: "/settings/payment",
   shared_with_me: "/shared-with-me",
