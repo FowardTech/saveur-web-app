@@ -25,11 +25,21 @@ import { ArtMissionPhone } from "./HomeBannerArt";
  * missing here, so a second whole card existed mainly to carry a "Start
  * now" CTA. That block is now deleted and its CTA lives here instead,
  * making this one banner both the visual hero AND the actionable one
- * rather than needing a second, mostly-redundant card just for a button. */
+ * rather than needing a second, mostly-redundant card just for a button.
+ *
+ * BUG FIX (product report: "This card has like another white card behind
+ * it. I can see the white edges"): the outer shadow wrapper had no
+ * rounded-card class, so its box-shadow was cast as a sharp-cornered
+ * rectangle while the inner section it wraps is rounded -- the shadow's
+ * square corners stuck out past the card's rounded ones, reading as a
+ * second white card peeking out from behind. Every other shadow-lg
+ * wrapper in this codebase (SiteSearch, NotificationBell, Sidebar,
+ * UserMenu dropdowns) already pairs it with rounded-card on the same
+ * element; this one was just missing it. */
 export function HomeBanner() {
   const { t } = useTranslation();
   return (
-    <div className="shadow-lg">
+    <div className="rounded-card shadow-lg">
       <section className="relative overflow-hidden rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-6 py-8 sm:px-8 sm:py-10">
         <div
           aria-hidden="true"
