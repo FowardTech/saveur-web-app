@@ -100,6 +100,28 @@ const COLUMN_ICON: Record<ColumnKey, EvaIconName> = {
   rejected: "close-circle-outline",
 };
 
+// BUG FIX (product report: "most cards are white ... I want more designs
+// and colors ... differentiate them uniquely and also based on how
+// important they are in the work flow"): all 6 columns of this board used
+// the exact same bg-surface-2 header/card, so the board read as one plain
+// gray-on-gray grid with no visual distinction between "just recommended"
+// and "you have an offer" -- arguably the single biggest missed
+// opportunity for color on this whole page, since it's already a Kanban
+// board where lane color is a standard convention. Reuses the identical
+// tint mapping app/applications/page.tsx's stageCardBg established for
+// the 4 stages this board shares with that page (Applied/Interviewing/
+// Offer/Rejected), so a given application reads as the same color on
+// both screens; Recommended/Shortlisted (which only exist here) get their
+// own two tints.
+const COLUMN_TINT: Record<ColumnKey, { bg: string; text: string }> = {
+  recommended: { bg: "bg-tint-orange", text: "text-tint-orange-text" },
+  shortlisted: { bg: "bg-tint-purple", text: "text-tint-purple-text" },
+  applied: { bg: "bg-tint-orange", text: "text-tint-orange-text" },
+  interview: { bg: "bg-tint-purple", text: "text-tint-purple-text" },
+  offer: { bg: "bg-tint-mint", text: "text-tint-mint-text" },
+  rejected: { bg: "bg-tint-rose", text: "text-tint-rose-text" },
+};
+
 interface DragPayload {
   kind: "alert" | "application";
   id: string;
@@ -119,14 +141,14 @@ function readDragPayload(e: React.DragEvent): DragPayload | null {
   return null;
 }
 
-function ColumnHeader({ icon, label, count }: { icon: EvaIconName; label: string; count: number }) {
+function ColumnHeader({ icon, label, count, tint }: { icon: EvaIconName; label: string; count: number; tint: { bg: string; text: string } }) {
   return (
-    <div className="flex items-center justify-between rounded-t-card border border-b-0 border-border bg-surface-2 px-3 py-2.5">
-      <div className="flex items-center gap-1.5 text-sm font-semibold text-primary">
-        <EvaIcon name={icon} size={15} className="text-hint" />
+    <div className={`flex items-center justify-between rounded-t-card border border-b-0 border-border px-3 py-2.5 ${tint.bg}`}>
+      <div className={`flex items-center gap-1.5 text-sm font-semibold ${tint.text}`}>
+        <EvaIcon name={icon} size={15} className={tint.text} />
         {label}
       </div>
-      <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-pill bg-surface-3 px-1.5 text-xs font-semibold text-hint">
+      <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-pill bg-surface-1 px-1.5 text-xs font-semibold text-hint">
         {count}
       </span>
     </div>
@@ -139,12 +161,14 @@ function AlertKanbanCard({
   onDragStart,
   onDragEnd,
   onTogglePin,
+  tint,
 }: {
   alert: JobAlert;
   isDragging: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
   onTogglePin: (alert: JobAlert) => void;
+  tint: { bg: string; text: string };
 }) {
   const { t } = useTranslation();
   const logoUrl = alert.company_logo_url ?? guessCompanyLogoUrl(alert.company);
@@ -158,12 +182,12 @@ function AlertKanbanCard({
         onDragStart();
       }}
       onDragEnd={onDragEnd}
-      className={`cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
+      className={`cursor-grab flex flex-col gap-2.5 rounded-card border border-border p-4 shadow-sm transition active:cursor-grabbing ${tint.bg} ${
         isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-md"
       }`}
     >
       <Link href={`/job-alerts/${alert.id}`} className="flex items-start gap-3">
-        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={alert.company} size={40} className="mt-0.5 shrink-0 bg-tint-mint" />
+        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={alert.company} size={40} className="mt-0.5 shrink-0 bg-surface-1" />
         <div className="min-w-0">
           <p className="truncate text-base font-semibold text-primary">{alert.title}</p>
           <p className="truncate text-sm text-hint">
@@ -214,12 +238,14 @@ function ApplicationKanbanCard({
   onDragStart,
   onDragEnd,
   onDelete,
+  tint,
 }: {
   app: Application;
   isDragging: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
   onDelete: (app: Application) => void;
+  tint: { bg: string; text: string };
 }) {
   const { t } = useTranslation();
   const logoUrl = app.company_logo_url ?? guessCompanyLogoUrl(app.company);
@@ -232,12 +258,12 @@ function ApplicationKanbanCard({
         onDragStart();
       }}
       onDragEnd={onDragEnd}
-      className={`group cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
+      className={`group cursor-grab flex flex-col gap-2.5 rounded-card border border-border p-4 shadow-sm transition active:cursor-grabbing ${tint.bg} ${
         isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-md"
       }`}
     >
       <div className="flex items-start gap-3">
-        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={app.company} size={40} className="mt-0.5 shrink-0 bg-tint-purple" />
+        <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={app.company} size={40} className="mt-0.5 shrink-0 bg-surface-1" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-base font-semibold text-primary">{app.role}</p>
           <p className="truncate text-sm text-hint">
@@ -454,8 +480,8 @@ export default function JobTrackerPage() {
           </div>
 
           {proRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:jobTracker.proRequiredTitle", { defaultValue: "Job Tracker requires a paid plan" })}</h2>
@@ -467,19 +493,19 @@ export default function JobTrackerPage() {
 
           {!proRequired && analytics && analytics.total > 0 && (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
+              <div className="rounded-card border border-border bg-tint-orange p-4 text-center">
                 <p className="text-xl font-bold text-primary">{analytics.total}</p>
                 <p className="mt-1 text-xs text-hint">{t("web:jobTracker.stats.tracked", { defaultValue: "Tracked" })}</p>
               </div>
-              <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
+              <div className="rounded-card border border-border bg-tint-mint p-4 text-center">
                 <p className="text-xl font-bold text-primary">{analytics.response_rate ?? "—"}{analytics.response_rate !== null ? "%" : ""}</p>
                 <p className="mt-1 text-xs text-hint">{t("web:jobTracker.stats.responseRate", { defaultValue: "Response rate" })}</p>
               </div>
-              <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
+              <div className="rounded-card border border-border bg-tint-purple p-4 text-center">
                 <p className="text-xl font-bold text-primary">{analytics.avg_days_to_interview ?? "—"}</p>
                 <p className="mt-1 text-xs text-hint">{t("web:jobTracker.stats.avgDays", { defaultValue: "Avg. days to interview" })}</p>
               </div>
-              <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
+              <div className="rounded-card border border-border bg-tint-rose p-4 text-center">
                 <p className="text-xl font-bold text-primary">{analytics.stale_applications.length}</p>
                 <p className="mt-1 text-xs text-hint">{t("web:jobTracker.stats.stale", { defaultValue: "Gone quiet" })}</p>
               </div>
@@ -513,7 +539,7 @@ export default function JobTrackerPage() {
                 const isOver = dragOverColumn === col.key;
                 return (
                   <div key={col.key} className="flex min-w-0 flex-col">
-                    <ColumnHeader icon={COLUMN_ICON[col.key]} label={col.label} count={cards.length} />
+                    <ColumnHeader icon={COLUMN_ICON[col.key]} label={col.label} count={cards.length} tint={COLUMN_TINT[col.key]} />
                     <div
                       onDragOver={(e) => {
                         e.preventDefault();
@@ -537,6 +563,7 @@ export default function JobTrackerPage() {
                               onDragStart={() => setDraggingId(alert.id)}
                               onDragEnd={() => setDraggingId(null)}
                               onTogglePin={handleTogglePin}
+                              tint={COLUMN_TINT[col.key]}
                             />
                           ))
                         : (cards as Application[]).map((app) => (
@@ -547,6 +574,7 @@ export default function JobTrackerPage() {
                               onDragStart={() => setDraggingId(String(app.id))}
                               onDragEnd={() => setDraggingId(null)}
                               onDelete={handleDelete}
+                              tint={COLUMN_TINT[col.key]}
                             />
                           ))}
                     </div>
