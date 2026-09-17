@@ -95,12 +95,14 @@ export default function SavedVideosPage() {
 
           {videos !== null && videos.length > 0 && (
             <div className="flex flex-col gap-3">
-              {videos.map((video) => (
+              {videos.map((video, i) => (
                 <button
                   key={video.videoId}
                   type="button"
                   onClick={() => setPlayerVideo(video)}
-                  className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-3 text-left transition hover:border-brand/40"
+                  className={`flex items-center gap-3 rounded-card border border-border p-3 text-left transition hover:border-brand/40 ${
+                    ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
+                  }`}
                 >
                   <div className="relative h-[60px] w-[90px] shrink-0 overflow-hidden rounded-lg bg-surface-3">
                     {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, not a local/optimizable asset */}

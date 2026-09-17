@@ -309,7 +309,7 @@ function ProgressPageInner() {
                   </div>
                   <p className="mt-4 text-sm text-primary">{challenge.promptText}</p>
                   {challenge.completed ? (
-                    <div className="mt-4 rounded-lg bg-surface-2 p-3">
+                    <div className="mt-4 rounded-lg bg-surface-1 p-3">
                       <div className="flex items-center gap-1.5 text-sm font-semibold text-success">
                         <EvaIcon name="checkmark-circle-2-outline" size={16} />
                         {t("web:progress.dailyChallenge.completed", { defaultValue: "+{{xp}} XP earned", xp: challenge.xpAwarded })}
@@ -339,7 +339,7 @@ function ProgressPageInner() {
               )}
 
               {/* Career goal card */}
-              <div className="rounded-card border border-border bg-surface-2 p-5">
+              <div className="rounded-card border border-border bg-tint-purple p-5">
                 <h3 className="mb-2.5 text-sm font-bold text-primary">{t("web:progress.yourCareerGoal", { defaultValue: "Your career goal" })}</h3>
                 {goals.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
@@ -355,7 +355,7 @@ function ProgressPageInner() {
               </div>
 
               {/* Roadmap progress card */}
-              <div className="rounded-card border border-border bg-surface-2 p-5">
+              <div className="rounded-card border border-border bg-tint-mint p-5">
                 <h3 className="mb-3.5 text-sm font-bold text-primary">{t("web:progress.goalProgressTitle", { defaultValue: "Progress toward your goal" })}</h3>
                 {roadmap ? (
                   <>
@@ -423,7 +423,7 @@ function ProgressPageInner() {
               {/* Weekly bar chart */}
               <div className="flex flex-col gap-2">
                 <h3 className="text-sm font-bold text-primary">{t("web:progress.thisWeek", { defaultValue: "This week" })}</h3>
-                <div className="flex items-end justify-between gap-2 rounded-card border border-border bg-surface-2 p-5 pt-6">
+                <div className="flex items-end justify-between gap-2 rounded-card border border-border bg-tint-orange p-5 pt-6">
                   {weeklyPractice.map((count, i) => (
                     <div key={i} className="flex flex-1 flex-col items-center gap-2">
                       <div className="flex h-24 w-full items-end justify-center">
@@ -454,12 +454,12 @@ function ProgressPageInner() {
                     {leaderboard.slice(0, 3).map((entry, index) => (
                       <div
                         key={entry.id}
-                        className={`animate-card-in flex items-center gap-3 rounded-card border border-border p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${entry.isCurrentUser ? "bg-brand/5" : "bg-surface-2"}`}
+                        className={`animate-card-in flex items-center gap-3 rounded-card border border-border p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${entry.isCurrentUser ? "bg-brand/5" : tintCycle[index % tintCycle.length].bg}`}
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-3 text-xs font-bold text-hint">{entry.rank}</span>
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-1 text-xs font-bold text-hint">{entry.rank}</span>
                         <span
-                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${tintCycle[index % tintCycle.length].bg} ${tintCycle[index % tintCycle.length].text}`}
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-1 text-xs font-bold ${tintCycle[index % tintCycle.length].text}`}
                         >
                           {entry.name?.[0]?.toUpperCase() ?? "?"}
                         </span>
@@ -484,7 +484,7 @@ function ProgressPageInner() {
               <p className="mb-2 text-sm text-hint">{t("web:progress.skillHeatMapDescription", { defaultValue: "Your average across every scored interview — see what to work on next." })}</p>
               {heatMapLoading && <SkeletonRows count={4} />}
               {!heatMapLoading && heatMap && heatMap.length > 0 && heatMapSessionCount > 0 && (
-                <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-5">
+                <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-purple p-5">
                   {heatMap.map((entry, index) => (
                     <div key={entry.key} className="animate-card-in" style={{ animationDelay: `${index * 50}ms` }}>
                       <div className="mb-1.5 flex items-center justify-between">
@@ -511,7 +511,7 @@ function ProgressPageInner() {
 
           {!isLoading && !loadError && tab === "history" && (
             <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-2 rounded-card border border-border bg-surface-2 p-3">
+              <div className="flex items-center gap-2 rounded-card border border-border bg-tint-mint p-3">
                 {streak?.checkedInToday && (
                   <span className="inline-flex items-center gap-1 rounded-pill bg-success/10 px-2.5 py-1 text-xs font-semibold text-success">
                     <EvaIcon name="checkmark-circle-2-outline" size={13} />
@@ -527,7 +527,7 @@ function ProgressPageInner() {
                     {t("web:progress.completeFirstInterview", { defaultValue: "Complete your first mock interview to start tracking progress here." })}
                   </p>
                 ) : (
-                  <div className="flex flex-col divide-y divide-border rounded-card border border-border bg-surface-2">
+                  <div className="flex flex-col divide-y divide-border rounded-card border border-border bg-tint-purple">
                     {recentSessions.map((s, index) => (
                       <div key={s.id} className="animate-card-in flex items-center justify-between gap-3 p-4" style={{ animationDelay: `${index * 50}ms` }}>
                         <div className="min-w-0">

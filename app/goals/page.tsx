@@ -179,7 +179,7 @@ function GoalsPageInner() {
                   </span>
                   <h2 className="text-base font-bold text-primary">{t("web:goals.sectionCareer", { defaultValue: "Career" })}</h2>
                 </div>
-                <div className="flex flex-col rounded-card border border-border bg-surface-2 p-4">
+                <div className="flex flex-col rounded-card border border-border bg-tint-purple p-4">
                   <Link href="/settings/profile" className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-xs text-hint">{t("web:goals.currentGoal", { defaultValue: "Current goal" })}</p>
@@ -215,7 +215,7 @@ function GoalsPageInner() {
                   </span>
                   <h2 className="text-base font-bold text-primary">{t("web:goals.sectionWeeklyTargets", { defaultValue: "Weekly targets" })}</h2>
                 </div>
-                <div className="flex flex-col rounded-card border border-border bg-surface-2 p-4">
+                <div className="flex flex-col rounded-card border border-border bg-tint-orange p-4">
                   <div className="flex items-center gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-primary">{t("web:goals.practiceSessions", { defaultValue: "Practice sessions" })}</p>
@@ -300,7 +300,7 @@ function GoalsPageInner() {
                   </span>
                   <h2 className="text-base font-bold text-primary">{t("web:goals.sectionProgress", { defaultValue: "Progress" })}</h2>
                 </div>
-                <div className="flex flex-col rounded-card border border-border bg-surface-2 p-4">
+                <div className="flex flex-col rounded-card border border-border bg-tint-mint p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
                       <p className="text-xs text-hint">{t("web:goals.currentStreak", { defaultValue: "Current streak" })}</p>
