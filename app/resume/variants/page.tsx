@@ -185,8 +185,13 @@ export default function ResumeVariantsPage() {
 
           {variants && variants.length > 0 && (
             <div className="flex flex-col gap-3">
-              {variants.map((v) => (
-                <div key={v.id} className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4">
+              {variants.map((v, i) => (
+                <div
+                  key={v.id}
+                  className={`flex items-center justify-between rounded-card border border-border p-4 ${
+                    ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
+                  }`}
+                >
                   <div>
                     <h3 className="font-medium text-primary">{v.label}</h3>
                     <p className="text-sm text-hint">

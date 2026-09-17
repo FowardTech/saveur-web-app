@@ -299,7 +299,7 @@ function GenerateResumeInner() {
       {/* Free-plan usage banner -- same shared pool as
           app/resume/builder/page.tsx and app/resume/cover-letter/page.tsx. */}
       {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
-        <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
+        <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-tint-orange px-4 py-3">
           <div className="flex items-center gap-3">
             <EvaIcon name="flash-outline" size={18} className="text-brand" />
             {(() => {

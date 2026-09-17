@@ -171,7 +171,7 @@ export default function LinkedInOptimizerPage() {
           )}
 
           {!premiumRequired && history.length > 0 && (
-            <div className="rounded-card border border-border bg-surface-2 p-5">
+            <div className="rounded-card border border-border bg-tint-purple p-5">
               <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.scoreHistory", { defaultValue: "Score history" })}</h3>
               <div className="mt-2.5 flex flex-col gap-2">
                 {history.slice(0, 5).map((h) => (
@@ -231,7 +231,7 @@ export default function LinkedInOptimizerPage() {
           {result && (
             <div className="flex flex-col gap-4">
               {result.profile_strength_score != null && (
-                <div className="flex flex-col items-center gap-2 rounded-card border border-border bg-surface-2 p-6 text-center">
+                <div className="flex flex-col items-center gap-2 rounded-card border border-border bg-tint-purple p-6 text-center">
                   <CircularProgress progress={result.profile_strength_score} size={88} strokeWidth={8}>
                     <span className="text-xl font-bold text-primary">{result.profile_strength_score}%</span>
                   </CircularProgress>
@@ -245,12 +245,12 @@ export default function LinkedInOptimizerPage() {
                   )}
                 </div>
               )}
-              <div className="rounded-card border border-border bg-surface-2 p-5">
+              <div className="rounded-card border border-border bg-tint-orange p-5">
                 <p className="text-sm text-hint">{result.overall_feedback}</p>
               </div>
 
               {result.headline && (
-                <div className="rounded-card border border-border bg-surface-2 p-5">
+                <div className="rounded-card border border-border bg-tint-mint p-5">
                   <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.headlineLabel", { defaultValue: "Headline" })}</h3>
                   <p className="mt-2 text-sm text-primary">{result.headline.suggestion}</p>
                   <p className="mt-1.5 text-xs text-hint">{result.headline.feedback}</p>
@@ -258,7 +258,7 @@ export default function LinkedInOptimizerPage() {
               )}
 
               {result.about && (
-                <div className="rounded-card border border-border bg-surface-2 p-5">
+                <div className="rounded-card border border-border bg-tint-rose p-5">
                   <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.aboutLabel", { defaultValue: "About" })}</h3>
                   <p className="mt-2 whitespace-pre-wrap text-sm text-primary">{result.about.suggestion}</p>
                   <p className="mt-1.5 text-xs text-hint">{result.about.feedback}</p>
@@ -266,7 +266,7 @@ export default function LinkedInOptimizerPage() {
               )}
 
               {result.experience_bullets?.length > 0 && (
-                <div className="rounded-card border border-border bg-surface-2 p-5">
+                <div className="rounded-card border border-border bg-tint-purple p-5">
                   <h3 className="text-sm font-semibold text-primary">{t("web:resume.linkedin.experienceBulletsLabel", { defaultValue: "Experience bullets" })}</h3>
                   <div className="mt-2 flex flex-col gap-3">
                     {result.experience_bullets.map((b, i) => (
