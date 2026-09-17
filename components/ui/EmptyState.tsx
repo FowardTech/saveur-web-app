@@ -27,12 +27,13 @@ interface EmptyStateProps {
  * it here means every screen that adopts it automatically gets a real
  * illustration instead of plain text, with no per-page SVG work.
  *
- * The three illustrations are simple, brand-colored inline SVGs (no image
- * assets) built from this app's existing surface/border/brand CSS variables
- * (see app/globals.css's `:root`/`.dark` blocks), so they stay in sync with
- * the rest of the UI automatically in both light and dark mode — same
- * simple line-art spirit as EvaIcon rather than a photo or a busy vector
- * scene. */
+ * The three illustrations are real, freely-licensed unDraw illustrations
+ * (https://undraw.co — free for commercial and personal use, no
+ * attribution required), saved locally under public/illustrations/ so they
+ * render without any external network call (product report: "the
+ * illustrations you added ... are ones you created yourself ... use real
+ * illustrations" — these replaced a previous hand-drawn line-art
+ * treatment). */
 export function EmptyState({ title, description, illustration = "list", icon, action, className = "" }: EmptyStateProps) {
   return (
     <div
@@ -60,56 +61,21 @@ function EmptyIllustration({ variant }: { variant: EmptyStateIllustration }) {
   return <EmptyListArt />;
 }
 
-// Generic "empty list" — a lone card with a few placeholder lines, for any
-// screen whose main content is a list/grid of items the user hasn't created
-// yet (job alerts, career diary entries, resume variants, etc.).
+// Generic "empty list" — for any screen whose main content is a list/grid
+// of items the user hasn't created yet (job alerts, career diary entries,
+// resume variants, etc.). unDraw "Empty".
 function EmptyListArt() {
-  return (
-    <svg width="88" height="88" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="48" cy="48" r="40" fill="var(--surface-3)" />
-      <rect x="28" y="30" width="40" height="36" rx="6" fill="var(--surface-2)" stroke="var(--border)" strokeWidth="2" />
-      <line x1="36" y1="42" x2="60" y2="42" stroke="var(--border)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="36" y1="50" x2="60" y2="50" stroke="var(--border)" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="36" y1="58" x2="52" y2="58" stroke="var(--border)" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="67" cy="27" r="5" fill="var(--brand)" opacity="0.85" />
-    </svg>
-  );
+  return <img src="/illustrations/empty.svg" width="88" height="88" alt="" aria-hidden="true" />;
 }
 
-// "No results" — a magnifying glass, for a search/filter that came back
-// empty (e.g. a company filter with no matching job alerts).
+// "No results" — for a search/filter that came back empty (e.g. a company
+// filter with no matching job alerts). unDraw "Searching".
 function EmptySearchArt() {
-  return (
-    <svg width="88" height="88" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="48" cy="48" r="40" fill="var(--surface-3)" />
-      <circle cx="44" cy="42" r="16" fill="var(--surface-2)" stroke="var(--border)" strokeWidth="2.5" />
-      <line x1="55" y1="53" x2="68" y2="66" stroke="var(--border)" strokeWidth="3" strokeLinecap="round" />
-      <line x1="38" y1="42" x2="50" y2="42" stroke="var(--brand)" strokeWidth="2.5" strokeLinecap="round" opacity="0.85" />
-    </svg>
-  );
+  return <img src="/illustrations/searching.svg" width="88" height="88" alt="" aria-hidden="true" />;
 }
 
-// "Empty inbox" — a tray, for message/notification/request-style lists
-// (Shared With Me, Applications, notifications).
+// "Empty inbox" — for message/notification/request-style lists (Shared With
+// Me, Applications, notifications). unDraw "Empty Mailbox".
 function EmptyInboxArt() {
-  return (
-    <svg width="88" height="88" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="48" cy="48" r="40" fill="var(--surface-3)" />
-      <path
-        d="M28 46 L38 46 L44 54 L52 54 L58 46 L68 46 L68 64 Q68 68 64 68 L32 68 Q28 68 28 64 Z"
-        fill="var(--surface-2)"
-        stroke="var(--border)"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M28 46 L34 30 Q35 28 37 28 L59 28 Q61 28 62 30 L68 46"
-        fill="none"
-        stroke="var(--border)"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      <circle cx="66" cy="26" r="5" fill="var(--brand)" opacity="0.85" />
-    </svg>
-  );
+  return <img src="/illustrations/empty-mailbox.svg" width="88" height="88" alt="" aria-hidden="true" />;
 }
