@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LinkButton } from "@/components/ui/Button";
 import { ArtMissionPhone } from "./HomeBannerArt";
-import { getAppConfig } from "@/lib/appConfigService";
+import { getAppConfig, resolveDashboardHeroImage } from "@/lib/appConfigService";
 
 // Default gradient — unchanged from before this card's background became
 // admin-configurable (product request: "I want to be able to change the
@@ -51,11 +51,15 @@ const DEFAULT_BACKGROUND_CSS =
 export function HomeBanner() {
   const { t, i18n } = useTranslation();
   const [backgroundCss, setBackgroundCss] = useState(DEFAULT_BACKGROUND_CSS);
+  const [heroImageUrl, setHeroImageUrl] = useState("");
 
   useEffect(() => {
     let cancelled = false;
     getAppConfig(i18n.language).then((config) => {
-      if (!cancelled && config.dashboard_hero.background_css) {
+      if (cancelled) return;
+      const image = resolveDashboardHeroImage(config.dashboard_hero, i18n.language);
+      setHeroImageUrl(image);
+      if (!image && config.dashboard_hero.background_css) {
         setBackgroundCss(config.dashboard_hero.background_css);
       }
     });
@@ -64,27 +68,49 @@ export function HomeBanner() {
     };
   }, [i18n.language]);
 
+  // An admin-uploaded image takes over as the card's actual background
+  // (product report: "The web dashboard hero is not a css background I
+  // want uploading of image. Just like the way the homebanner for the
+  // mobile has homebanner for all the 12 languages") — same base-image +
+  // per-language-override upload as that mobile placement, see
+  // DashboardHeroConfig's own comment in lib/appConfigService.ts. A dark
+  // scrim keeps the title/subtitle/button legible over an arbitrary photo
+  // regardless of theme, and the decorative blur circles + illustration
+  // (which assume the built-in gradient) step aside so they don't clash
+  // with someone else's image.
+  const sectionStyle = heroImageUrl
+    ? {
+        backgroundImage: `linear-gradient(to bottom right, rgba(0,0,0,0.45), rgba(0,0,0,0.2)), url("${heroImageUrl}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }
+    : { background: backgroundCss };
+
   return (
     <div className="rounded-card shadow-lg">
       <section
         className="relative overflow-hidden rounded-card border border-border px-6 py-8 sm:px-8 sm:py-10"
-        style={{ background: backgroundCss }}
+        style={sectionStyle}
       >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-accent-purple/20 blur-3xl"
-        />
+        {!heroImageUrl && (
+          <>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-accent-purple/20 blur-3xl"
+            />
+          </>
+        )}
 
         <div className="relative flex items-center justify-between gap-4">
           <div className="flex max-w-lg flex-col items-start gap-3">
-            <h2 className="text-2xl font-bold leading-tight text-primary">
+            <h2 className={`text-2xl font-bold leading-tight ${heroImageUrl ? "text-white" : "text-primary"}`}>
               {t("web:dashboard.homeBannerTitle", { defaultValue: "Keep building momentum." })}
             </h2>
-            <p className="text-sm text-hint sm:text-base">
+            <p className={`text-sm sm:text-base ${heroImageUrl ? "text-white/85" : "text-hint"}`}>
               {t("web:dashboard.homeBannerSubtitle", {
                 defaultValue:
                   "Try a mock interview today — matching you with an AI interviewer and instant feedback usually takes less than 10 minutes.",
@@ -94,9 +120,11 @@ export function HomeBanner() {
               {t("web:dashboard.homeBannerCta", { defaultValue: "Start now" })}
             </LinkButton>
           </div>
-          <div className="hidden shrink-0 md:block">
-            <ArtMissionPhone size={150} />
-          </div>
+          {!heroImageUrl && (
+            <div className="hidden shrink-0 md:block">
+              <ArtMissionPhone size={150} />
+            </div>
+          )}
         </div>
       </section>
     </div>

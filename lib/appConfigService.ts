@@ -54,15 +54,22 @@ export interface StudentEligibilityConfig {
   discount_percent: number;
 }
 
-// Dashboard hero card background (product request: "I want to be able to
-// change the background of this card from the admin dashboard. Its the
-// web app hero card") — Saveur-Backend's app_config_service.py
-// "dashboard_hero" section. Deliberately just one field: a plain CSS
-// `background` shorthand string (a gradient, solid color, or a
-// `url(...)` if the admin hosts an image elsewhere) — see that section's
-// own DEFAULTS comment for why this isn't an image-upload field.
+// Dashboard hero card image (product report: "The web dashboard hero is
+// not a css background I want uploading of image. Just like the way the
+// homebanner for the mobile has homebanner for all the 12 languages") —
+// Saveur-Backend's app_config_service.py "dashboard_hero" section. Same
+// base-image + per-locale-override shape as the mobile Home banner ad
+// (Advertisement.image_url/image_urls_i18n) — background_image_url is the
+// default/English image, background_image_urls_i18n overrides it for any
+// of the other 11 supported languages. Resolved here client-side (via
+// resolveDashboardHeroImage below) rather than server-side, since
+// /content/config is public/unauthenticated with no per-request user
+// locale to key off. background_css is a plain CSS `background` fallback
+// used only when no image at all is set.
 export interface DashboardHeroConfig {
   background_css: string;
+  background_image_url: string;
+  background_image_urls_i18n: Record<string, string>;
 }
 
 export interface AppConfig {
@@ -103,6 +110,8 @@ const DEFAULT_STUDENT_ELIGIBILITY: StudentEligibilityConfig = {
 // section existed.
 const DEFAULT_DASHBOARD_HERO: DashboardHeroConfig = {
   background_css: "",
+  background_image_url: "",
+  background_image_urls_i18n: {},
 };
 
 // Module-scope cache — good enough for "no need to replicate mobile's pub/sub
@@ -172,9 +181,25 @@ export function getStudentEligibilityConfig(): StudentEligibilityConfig {
 }
 
 /** Synchronous read of whichever dashboard_hero section was last fetched by
- * getAppConfig() (or the default {background_css: ""} if it hasn't
+ * getAppConfig() (or the DEFAULT_DASHBOARD_HERO default if it hasn't
  * resolved yet this session) — same "await getAppConfig() first" contract
  * as the other synchronous getters above. */
 export function getDashboardHeroConfig(): DashboardHeroConfig {
   return cached?.dashboard_hero ?? DEFAULT_DASHBOARD_HERO;
+}
+
+/** Picks the right hero image for `language` out of a DashboardHeroConfig —
+ * same base-image + per-locale-override resolution as the backend's
+ * _localize_ad_image() (Saveur-Backend's app/api/ads.py) for the mobile
+ * Home banner ad, just done client-side here since /content/config is
+ * public/unauthenticated. Returns "" if no image at all is set (caller
+ * should fall back to background_css or its own default). */
+export function resolveDashboardHeroImage(config: DashboardHeroConfig, language?: string): string {
+  const base = config.background_image_url || "";
+  const code = language?.split("-")[0]?.toLowerCase();
+  if (code) {
+    const override = config.background_image_urls_i18n[code];
+    if (override) return override;
+  }
+  return base;
 }
