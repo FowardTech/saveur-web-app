@@ -73,6 +73,7 @@
     "updateFailedDefault": "Couldn't update that application right now."
   },
   "auth": {
+    "agreeTerms": "By continuing, you agree to our",
     "chooseUsernameDescription": "This is the only name other Saveur users ever see — on the Leaderboard and when sharing content with each other. It never shows your real name.",
     "chooseUsernameTitle": "Pick your username",
     "continueWithGoogle": "Continue with Google",
@@ -83,6 +84,7 @@
     "linkedinFailedDefault": "LinkedIn sign-in failed. Please try again.",
     "linkedinUnavailableDefault": "LinkedIn sign-in isn't available right now. Please try again later.",
     "loginSubtitle": "Sign in to continue your career prep.",
+    "mustAcceptTerms": "Please accept the Terms of Service and Privacy Policy to continue.",
     "redirecting": "Redirecting…",
     "registerSubtitle": "Start practicing with your AI career coach in minutes.",
     "registrationFailedDefault": "Registration failed. Please try again.",
@@ -294,6 +296,9 @@
     "step3Description": "Ship a stronger resume, get daily job alerts, and track your progress on one roadmap.",
     "step3Title": "Apply with confidence",
     "stepLabel": "Step {{step}}"
+  },
+  "legal": {
+    "loadFailed": "Couldn't load this content. Please try again."
   },
   "learning": {
     "buildCurriculum": "Build my curriculum",

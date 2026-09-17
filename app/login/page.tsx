@@ -14,6 +14,7 @@ import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LinkedInButton } from "@/components/auth/LinkedInButton";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { TermsAcceptanceRow } from "@/components/auth/TermsAcceptanceRow";
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -23,9 +24,25 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // BUG FIX (product report: "The user is supposed to accept the terms
+  // and conditions and privacy policy before they can sign up or
+  // login... I think the mobile already has for login") -- mirrors
+  // mobile's Login.tsx (agreedToTerms + requireTermsAcceptance) exactly,
+  // for parity: web previously had NO such gate on login OR signup at
+  // all.
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  function requireTermsAcceptance(): boolean {
+    if (agreedToTerms) return true;
+    setError(t("web:auth.mustAcceptTerms", {
+      defaultValue: "Please accept the Terms of Service and Privacy Policy to continue.",
+    }));
+    return false;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!requireTermsAcceptance()) return;
     if (!isFirebaseConfigured) {
       setError(t("web:auth.firebaseNotConfigured", { defaultValue: "Firebase isn't configured yet — see README.md for the two values still needed." }));
       return;
@@ -81,6 +98,7 @@ export default function LoginPage() {
             {t("web:auth.forgotPassword", { defaultValue: "Forgot password?" })}
           </Link>
         </div>
+        <TermsAcceptanceRow checked={agreedToTerms} onChange={setAgreedToTerms} />
         {error && <p className="text-sm text-danger">{error}</p>}
         <Button type="submit" disabled={loading} className="mt-1 w-full">
           {loading ? t("common:actions.signingIn", { defaultValue: "Signing in…" }) : t("common:actions.signIn", { defaultValue: "Sign In" })}
@@ -94,8 +112,8 @@ export default function LoginPage() {
       </div>
 
       <div className="flex flex-col gap-3">
-        <GoogleButton />
-        <LinkedInButton />
+        <GoogleButton beforeAuth={requireTermsAcceptance} />
+        <LinkedInButton beforeAuth={requireTermsAcceptance} />
       </div>
     </AuthLayout>
   );

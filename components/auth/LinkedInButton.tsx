@@ -11,7 +11,7 @@ import { getErrorMessage } from "@/lib/errors";
  * unknown-icon placeholder (a plain circle) instead of a LinkedIn mark. This
  * button's background is already LinkedIn's brand blue (#0A66C2), so the
  * glyph itself is rendered as a plain white "in" mark via `currentColor`. */
-function LinkedInGlyph({ size = 16 }: { size?: number }) {
+export function LinkedInGlyph({ size = 16 }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -34,7 +34,12 @@ function LinkedInGlyph({ size = 16 }: { size?: number }) {
  * redirects back to the backend's /callback, which 302s the browser to
  * /auth/linkedin/callback?token=...&is_new_user=... on this app — see that
  * page for the rest of the flow. */
-export function LinkedInButton({ label }: { label?: string }) {
+/** `beforeAuth`: see GoogleButton.tsx's identical param for the full
+ * write-up — same Terms/Privacy acceptance gate, called before the
+ * redirect to LinkedIn fires (this button leaves the page entirely on
+ * success, so there's no "after" point to check against — the gate has
+ * to run here, before handleClick does anything else). */
+export function LinkedInButton({ label, beforeAuth }: { label?: string; beforeAuth?: () => boolean }) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +47,7 @@ export function LinkedInButton({ label }: { label?: string }) {
   const unavailableMessage = t("web:auth.linkedinUnavailableDefault", { defaultValue: "LinkedIn sign-in isn't available right now. Please try again later." });
 
   async function handleClick() {
+    if (beforeAuth && !beforeAuth()) return;
     setLoading(true);
     setError(null);
     try {

@@ -54,6 +54,11 @@
     "name": "Name",
     "password": "Password"
   },
+  "legal": {
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
   "nav": {
     "aiCoach": "AI Coach",
     "applicationTracker": "Application Tracker",

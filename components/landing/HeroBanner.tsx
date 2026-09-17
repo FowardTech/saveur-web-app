@@ -2,8 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { LinkButton } from "@/components/ui/Button";
-import { GoogleButton } from "@/components/auth/GoogleButton";
-import { LinkedInButton } from "@/components/auth/LinkedInButton";
+import { LinkedInGlyph } from "@/components/auth/LinkedInButton";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 
 /** The landing page's hero — a distinctly-styled boxed/gradient banner
@@ -67,8 +66,28 @@ export function HeroBanner() {
         <div className="flex flex-col gap-2.5">
           <span className="text-xs uppercase tracking-wide text-hint">{t("common:auth.orContinueWith", { defaultValue: "Or Continue With" })}</span>
           <div className="flex flex-wrap items-center gap-3">
-            <GoogleButton label="Google" />
-            <LinkedInButton label="LinkedIn" />
+            {/* BUG FIX (product report: "The user is supposed to accept
+                the terms and conditions and privacy policy before they
+                can sign up or login"): these used to be the real
+                GoogleButton/LinkedInButton components, firing an actual
+                Firebase/OAuth sign-in immediately on click, right from
+                the landing page -- a signed-out visitor could create a
+                full account here without ever seeing (or being able to
+                see, there was nowhere to check it) the Terms/Privacy
+                gate that the actual /register page now enforces. The
+                primary "Get Started" button already correctly just
+                links to /register instead of acting directly; these two
+                now do the same; instead of duplicating the gate on the
+                marketing homepage itself, every real account-creation
+                path is funneled through the one gated form. */}
+            <LinkButton href="/register" variant="outline" className="!rounded-pill gap-2 !bg-surface-2 px-4 py-2.5 text-sm">
+              <EvaIcon name="google-outline" size={16} />
+              Google
+            </LinkButton>
+            <LinkButton href="/register" variant="outline" className="!rounded-pill gap-2 !border-transparent !bg-[#0A66C2] px-4 py-2.5 text-sm !text-white hover:!bg-[#0958a8]">
+              <LinkedInGlyph size={16} />
+              LinkedIn
+            </LinkButton>
           </div>
         </div>
       </div>

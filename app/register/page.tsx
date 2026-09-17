@@ -13,6 +13,7 @@ import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LinkedInButton } from "@/components/auth/LinkedInButton";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { TermsAcceptanceRow } from "@/components/auth/TermsAcceptanceRow";
 
 export default function RegisterPage() {
   const { t } = useTranslation();
@@ -23,9 +24,26 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // BUG FIX (product report: "The user is supposed to accept the terms
+  // and conditions and privacy policy before they can sign up or
+  // login... it does not have for signup. So implement for both mobile
+  // and web"): mirrors mobile's SignupThirdStep.tsx (agreedToTerms +
+  // requireTermsAcceptance) exactly -- unchecked by default every visit,
+  // not persisted, required before EVERY signup path below (email/
+  // password, Google, LinkedIn).
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  function requireTermsAcceptance(): boolean {
+    if (agreedToTerms) return true;
+    setError(t("web:auth.mustAcceptTerms", {
+      defaultValue: "Please accept the Terms of Service and Privacy Policy to continue.",
+    }));
+    return false;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!requireTermsAcceptance()) return;
     if (!isFirebaseConfigured) {
       setError(t("web:auth.firebaseNotConfigured", { defaultValue: "Firebase isn't configured yet — see README.md for the two values still needed." }));
       return;
@@ -107,6 +125,7 @@ export default function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <TermsAcceptanceRow checked={agreedToTerms} onChange={setAgreedToTerms} />
         {error && <p className="text-sm text-danger">{error}</p>}
         <Button type="submit" disabled={loading} className="mt-1 w-full">
           {loading ? t("common:actions.creatingAccount", { defaultValue: "Creating account…" }) : t("common:actions.register", { defaultValue: "Register" })}
@@ -120,8 +139,8 @@ export default function RegisterPage() {
       </div>
 
       <div className="flex flex-col gap-3">
-        <GoogleButton />
-        <LinkedInButton />
+        <GoogleButton beforeAuth={requireTermsAcceptance} />
+        <LinkedInButton beforeAuth={requireTermsAcceptance} />
       </div>
     </AuthLayout>
   );

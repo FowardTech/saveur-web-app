@@ -15,8 +15,19 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
  * third, handled separately by LinkedInButton.tsx since Firebase has no
  * built-in LinkedIn provider). Real Firebase popup sign-in; on success,
  * syncs the backend profile (POST /api/users/me) and routes to /onboarding
- * for a brand-new user or /dashboard for a returning one. */
-export function GoogleButton({ label }: { label?: string }) {
+ * for a brand-new user or /dashboard for a returning one.
+ *
+ * `beforeAuth` (product report: "The user is supposed to accept the terms
+ * and conditions and privacy policy before they can sign up or login...
+ * implement for both mobile and web" — mirrors mobile's
+ * requireTermsAcceptance() gate, called before every sign-in path
+ * including its own Google/LinkedIn buttons): optional guard called
+ * before the real Firebase popup fires. Return false to abort (e.g. the
+ * Terms/Privacy checkbox isn't checked yet) — the caller is expected to
+ * surface its own validation message itself, same as mobile's
+ * Alert.alert. Omit entirely for a plain, ungated "Continue with Google"
+ * (unchanged default behavior). */
+export function GoogleButton({ label, beforeAuth }: { label?: string; beforeAuth?: () => boolean }) {
   const { t } = useTranslation();
   const router = useRouter();
   const { syncProfile } = useAuth();
@@ -25,6 +36,7 @@ export function GoogleButton({ label }: { label?: string }) {
   const resolvedLabel = label ?? t("web:auth.continueWithGoogle", { defaultValue: "Continue with Google" });
 
   async function handleClick() {
+    if (beforeAuth && !beforeAuth()) return;
     if (!isFirebaseConfigured) {
       setError(t("web:auth.firebaseNotConfigured", { defaultValue: "Firebase isn't configured yet — see README.md for the two values still needed." }));
       return;
