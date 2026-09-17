@@ -178,19 +178,19 @@ export default function SharedContentDetailPage() {
               </p>
 
               {share.message && (
-                <div className="rounded-card border border-border bg-surface-2 p-4">
+                <div className="rounded-card border border-border bg-tint-orange p-4">
                   <p className="text-sm italic text-primary">&ldquo;{share.message}&rdquo;</p>
                 </div>
               )}
 
               {share.contentType === "job" ? (
-                <div className="flex flex-col gap-5 rounded-card border border-border bg-surface-2 p-6">
+                <div className="flex flex-col gap-5 rounded-card border border-border bg-tint-mint p-6">
                   <div className="flex items-start gap-3">
                     <CompanyLogoAvatar
                       logoUrl={content.company_logo_url ?? guessCompanyLogoUrl(content.company ?? "")}
                       companyName={content.company ?? ""}
                       size={56}
-                      className="shrink-0 bg-tint-mint"
+                      className="shrink-0 bg-surface-1"
                     />
                     <div className="flex-1">
                       <h1 className="text-lg font-bold text-primary">{content.title}</h1>
@@ -211,7 +211,7 @@ export default function SharedContentDetailPage() {
                 </div>
               ) : (
                 <>
-                  <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                  <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-6">
                     <p className="text-sm text-hint">
                       {[content.role, content.company].filter(Boolean).join(" · ") || content.interview_type}
                     </p>
@@ -231,13 +231,13 @@ export default function SharedContentDetailPage() {
                   </div>
 
                   {hasVideo && (
-                    <div className="overflow-hidden rounded-card border border-border bg-surface-2">
+                    <div className="overflow-hidden rounded-card border border-border bg-tint-mint">
                       <video src={content.video_url} controls className="aspect-video w-full bg-black" />
                     </div>
                   )}
 
                   {hasVideo && content.annotations && content.annotations.length > 0 && (
-                    <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                    <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-rose p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:sharedWithMe.detail.flaggedMoments", { defaultValue: "Flagged Moments" })}
                       </h2>
@@ -251,7 +251,7 @@ export default function SharedContentDetailPage() {
                   )}
 
                   {!isFeedbackPending && content.scores && (
-                    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                    <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-mint p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:practice.session.scores", { defaultValue: "Skill scores" })}
                       </h2>
@@ -272,7 +272,7 @@ export default function SharedContentDetailPage() {
                   )}
 
                   {!isFeedbackPending && content.summary && (
-                    <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                    <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-orange p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:practice.session.summary", { defaultValue: "Summary" })}
                       </h2>

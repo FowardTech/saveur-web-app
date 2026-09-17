@@ -262,7 +262,7 @@ export default function JDAnalyzerPage() {
                     ))}
                   </div>
 
-                  <div className="mt-4 flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-5">
+                  <div className="mt-4 flex flex-col gap-2 rounded-card border border-border bg-tint-orange p-5">
                     <h3 className="font-semibold text-primary">{t("web:jdAnalyzer.buildResumeTitle", { defaultValue: "Want a resume tailored to this job?" })}</h3>
                     <p className="text-sm text-hint">{t("web:jdAnalyzer.buildResumeDescription", { defaultValue: "We'll draft a resume around this job's keywords and skills, ready to download." })}</p>
                     <Button type="button" onClick={() => setShowBuildResumeChoices(true)} className="w-fit">
@@ -270,7 +270,7 @@ export default function JDAnalyzerPage() {
                     </Button>
                   </div>
 
-                  <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-5">
+                  <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-purple p-5">
                     <h3 className="font-semibold text-primary">{t("web:jdAnalyzer.buildCoverLetterTitle", { defaultValue: "Want a cover letter for this job?" })}</h3>
                     <p className="text-sm text-hint">{t("web:jdAnalyzer.buildCoverLetterDescription", { defaultValue: "We'll draft a cover letter tailored to this job description, ready to download." })}</p>
                     <Button type="button" onClick={onGenerateCoverLetter} className="w-fit">

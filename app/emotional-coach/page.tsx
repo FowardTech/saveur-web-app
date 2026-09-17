@@ -36,6 +36,14 @@ const MOODS: { id: Mood; emoji: string; labelKey: string; defaultLabel: string }
   { id: "discouraged", emoji: "😞", labelKey: "web:emotionalCoach.moods.discouraged", defaultLabel: "Discouraged" },
 ];
 
+const MOOD_CARD_BG: Record<Mood, string> = {
+  great: "bg-tint-mint",
+  okay: "bg-tint-orange",
+  stressed: "bg-tint-purple",
+  overwhelmed: "bg-tint-rose",
+  discouraged: "bg-tint-rose",
+};
+
 interface MoodCheckIn {
   id: string;
   mood: Mood;
@@ -172,9 +180,9 @@ export default function EmotionalCoachPage() {
           </div>
 
           {latest && (
-            <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+            <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-rose p-6">
               <div className="flex items-center gap-2">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-tint-rose text-tint-rose-text">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-1 text-tint-rose-text">
                   <EvaIcon name="heart-outline" size={16} />
                 </span>
                 <h2 className="font-semibold text-primary">{t("web:emotionalCoach.coachSays", { defaultValue: "Your coach says" })}</h2>
@@ -206,7 +214,7 @@ export default function EmotionalCoachPage() {
                 {historyExcludingLatest.map((h) => {
                   const meta = moodMeta(h.mood);
                   return (
-                    <div key={h.id} className="flex items-start gap-3 rounded-card border border-border bg-surface-2 p-4">
+                    <div key={h.id} className={`flex items-start gap-3 rounded-card border border-border p-4 ${MOOD_CARD_BG[h.mood] ?? "bg-surface-2"}`}>
                       <span className="text-lg">{meta?.emoji ?? "🙂"}</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold text-primary">

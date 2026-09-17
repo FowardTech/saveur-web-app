@@ -93,7 +93,12 @@ export default function NewsPage() {
           {items && items.length > 0 && (
             <div className="flex flex-col gap-3">
               {items.map((item, i) => (
-                <div key={i} className="rounded-card border border-border bg-surface-2 p-5">
+                <div
+                  key={i}
+                  className={`rounded-card border border-border p-5 ${
+                    ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
+                  }`}
+                >
                   <h2 className="font-semibold text-primary">{item.headline}</h2>
                   <p className="mt-2 text-sm text-hint">{item.summary}</p>
                   {item.source_url && (

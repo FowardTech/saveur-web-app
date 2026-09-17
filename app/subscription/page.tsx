@@ -95,7 +95,7 @@ export default function SubscriptionPage() {
         </div>
 
         {isPaidSubscriber && (
-          <div className="flex items-center justify-between rounded-card border border-border bg-surface-2 px-5 py-4">
+          <div className="flex items-center justify-between rounded-card border border-border bg-tint-mint px-5 py-4">
             <div className="flex items-center gap-3">
               <EvaIcon name="credit-card-outline" size={18} className="text-brand" />
               <p className="text-sm text-primary">

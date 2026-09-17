@@ -546,8 +546,8 @@ function VoiceCoachPageInner() {
           </div>
 
           {proRequired ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-card border border-border bg-surface-2 p-6 text-center">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-card border border-border bg-tint-purple p-6 text-center">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:aiCoach.proRequiredTitle", { defaultValue: "AI Coach requires a paid plan" })}</h2>

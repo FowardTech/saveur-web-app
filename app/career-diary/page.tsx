@@ -44,6 +44,12 @@ function fromWire(w: EntryWire): DiaryEntry {
 
 const CATEGORY_KEYS: DiaryCategory[] = ["did", "learned", "achieved"];
 const CATEGORY_DEFAULTS: Record<DiaryCategory, string> = { did: "Did", learned: "Learned", achieved: "Achieved" };
+const CATEGORY_CARD_BG: Record<DiaryCategory, string> = { did: "bg-tint-orange", learned: "bg-tint-purple", achieved: "bg-tint-mint" };
+const CATEGORY_PILL: Record<DiaryCategory, string> = {
+  did: "bg-surface-1 text-tint-orange-text",
+  learned: "bg-surface-1 text-tint-purple-text",
+  achieved: "bg-surface-1 text-tint-mint-text",
+};
 
 function formatDateHeader(dateStr: string, t: (k: string, o?: Record<string, unknown>) => string): string {
   if (!dateStr) return "";
@@ -135,7 +141,7 @@ export default function CareerDiaryPage() {
           <button
             type="button"
             onClick={() => setShowComposer(true)}
-            className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 text-left hover:border-brand/40"
+            className="flex items-center gap-3 rounded-card border border-border bg-tint-orange p-4 text-left hover:border-brand/40"
           >
             <EvaIcon name="plus-outline" size={18} className="text-brand" />
             <span className="flex-1 text-sm font-semibold text-primary">{t("web:careerDiary.addEntry", { defaultValue: "Add Entry" })}</span>
@@ -158,10 +164,14 @@ export default function CareerDiaryPage() {
             <div key={group.date} className="flex flex-col gap-2">
               <h2 className="text-sm font-semibold text-hint">{formatDateHeader(group.date, t)}</h2>
               {group.items.map((entry) => (
-                <div key={entry.id} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4">
+                <div key={entry.id} className={`flex flex-col gap-2 rounded-card border border-border p-4 ${entry.category && CATEGORY_KEYS.includes(entry.category) ? CATEGORY_CARD_BG[entry.category] : "bg-surface-2"}`}>
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      {entry.category && <span className="rounded-pill bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">{CATEGORY_KEYS.includes(entry.category) ? categoryLabel(entry.category) : entry.category}</span>}
+                      {entry.category && (
+                        <span className={`rounded-pill px-2.5 py-1 text-xs font-semibold ${CATEGORY_KEYS.includes(entry.category) ? CATEGORY_PILL[entry.category] : "bg-brand/10 text-brand"}`}>
+                          {CATEGORY_KEYS.includes(entry.category) ? categoryLabel(entry.category) : entry.category}
+                        </span>
+                      )}
                       {entry.role && <span className="rounded-pill bg-surface-3 px-2.5 py-1 text-xs font-semibold text-primary">{entry.role}</span>}
                     </div>
                     <button type="button" onClick={() => onDelete(entry)} className="p-1 text-hint hover:text-danger" aria-label={t("common:delete", { defaultValue: "Delete" })}>
