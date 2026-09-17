@@ -139,7 +139,7 @@ export function GettingStartedChecklist() {
   const allDone = remaining.length === 0;
 
   return (
-    <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-purple p-5 sm:flex-row sm:items-center sm:gap-6">
+    <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-center sm:gap-6">
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <div>
