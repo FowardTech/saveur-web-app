@@ -1,8 +1,9 @@
-// Illustrations for GettingStartedChecklist.tsx. REVERTED from unDraw back
-// to original hand-drawn flat-shape scenes, sized up -- see
-// HomeBannerArt.tsx's own comment for the full licensing writeup (same
-// reasoning applies here). Identical scenes to mobile's src/home/
-// HomeHeroArt.tsx ArtRoadmapPath/ArtTrophy, saved as static SVGs under
+// Illustrations for GettingStartedChecklist.tsx. Real, free IconScout
+// illustrations (see HomeBannerArt.tsx's own comment for how these were
+// sourced/licensed): road-to-knowledge.svg is "Free Maps Illustration" (a
+// dashed route across a map, matching the "here's the path, keep going"
+// framing), winners.svg is "Free The best team gets the trophy
+// Illustration" by Ilusiku Studio. Saved as static SVGs under
 // public/illustrations/ so they render without any external network call.
 interface ArtProps {
   size: number;

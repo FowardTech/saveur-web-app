@@ -1,8 +1,7 @@
-// Illustration for app/learning/page.tsx's hero. REVERTED from unDraw back
-// to an original hand-drawn open-book scene, sized up -- see
-// HomeBannerArt.tsx's own comment for the full licensing writeup (same
-// reasoning applies here). Identical scene to mobile's src/home/
-// HomeHeroArt.tsx ArtLearningCourses, saved as a static SVG under
+// Illustration for app/learning/page.tsx's hero. Real, free IconScout
+// illustration (see HomeBannerArt.tsx's own comment for how these were
+// sourced/licensed) -- "Free Online learning female student holding laptop
+// near mobile Illustration" by Arslan Haider. Saved as a static SVG under
 // public/illustrations/ so it renders without any external network call.
 interface ArtProps {
   size: number;

@@ -27,9 +27,17 @@ interface EmptyStateProps {
  * it here means every screen that adopts it automatically gets a real
  * illustration instead of plain text, with no per-page SVG work.
  *
- * The three illustrations are original hand-drawn flat-shape scenes (see
- * components/dashboard/HomeBannerArt.tsx's own comment for the full
- * licensing writeup on why these moved off unDraw), saved locally under
+ * The three illustrations here are still the original hand-drawn
+ * flat-shape scenes -- NOT yet real IconScout/Icons8/Humaaans sourced
+ * illustrations like the ones swapped in elsewhere (see
+ * components/dashboard/HomeBannerArt.tsx's own comment for that sourcing).
+ * Real replacements for these three (empty list / no search results /
+ * empty inbox) are blocked for now: IconScout's free plan hit its daily
+ * download cap after 5 other illustrations, Icons8 now paywalls every
+ * illustration download (no free PNG or SVG path found on any style
+ * tried), and Humaaans only ships as a Sketch/Figma/Adobe XD source file
+ * via a Gumroad checkout with no SVG export tooling available here. Swap
+ * these in once IconScout's limit resets. Saved locally under
  * public/illustrations/ so they render without any external network
  * call. */
 export function EmptyState({ title, description, illustration = "list", icon, action, className = "" }: EmptyStateProps) {
