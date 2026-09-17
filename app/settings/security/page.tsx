@@ -173,9 +173,9 @@ export default function SecuritySettingsPage() {
 
           {error && <p className="text-sm text-danger">{error}</p>}
 
-          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-mint p-6">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-mint-text">
                 <EvaIcon name="shield-outline" size={20} />
               </span>
               <div>
@@ -222,9 +222,9 @@ export default function SecuritySettingsPage() {
             )}
           </div>
 
-          <div className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-6">
+          <div className="flex items-center justify-between gap-4 rounded-card border border-border bg-tint-orange p-6">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-orange-text">
                 <EvaIcon name="bell-outline" size={20} />
               </span>
               <div>
@@ -259,9 +259,9 @@ export default function SecuritySettingsPage() {
               with FCM, and posts the device token to the backend. See
               lib/messaging.ts's own comment for why this no-ops gracefully
               when NEXT_PUBLIC_FIREBASE_VAPID_KEY isn't set yet. */}
-          <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+          <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-6">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
                 <EvaIcon name="flash-outline" size={20} />
               </span>
               <div>
