@@ -144,7 +144,18 @@ export default function SecuritySettingsPage() {
       } else if (result.reason === "unsupported") {
         setPushError(t("web:settings.security.pushUnsupported", { defaultValue: "Push notifications aren't supported in this browser." }));
       } else {
-        setPushError(t("web:settings.security.pushEnableFailedDefault", { defaultValue: "Couldn't enable push notifications right now." }));
+        // BUG FIX (product report: "Why does it always say 'Couldn't
+        // enable push notifications right now.'"): this used to be the
+        // exact same sentence for every possible failure (a stale/
+        // misconfigured Firebase build, the service worker failing to
+        // register, the backend call failing, etc.), which made a real,
+        // reproducible failure impossible to diagnose from a bug report
+        // alone. Appending result.detail (see lib/messaging.ts's
+        // EnablePushResult) now shows the real underlying reason so a
+        // future report is self-diagnosing instead of everyone seeing
+        // this identical sentence regardless of cause.
+        const base = t("web:settings.security.pushEnableFailedDefault", { defaultValue: "Couldn't enable push notifications right now." });
+        setPushError(result.detail ? `${base} (${result.detail})` : base);
       }
     } finally {
       setEnablingPush(false);

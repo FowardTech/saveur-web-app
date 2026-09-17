@@ -1,6 +1,6 @@
 "use client";
 
-import { firebaseApp } from "./firebase";
+import { firebaseApp, isFirebaseConfigured } from "./firebase";
 import { registerDeviceToken } from "./notifications";
 
 // Real web push, via Firebase Cloud Messaging's Web Push (firebase/messaging
@@ -65,6 +65,21 @@ export type EnablePushReason = "unsupported" | "not-configured" | "permission-de
 export interface EnablePushResult {
   ok: boolean;
   reason?: EnablePushReason;
+  // BUG FIX (product report: "Why does it always say 'Couldn't enable
+  // push notifications right now.'" -- with browser permission already
+  // granted, which rules out the one case the UI already had a specific
+  // message for): every failure inside the try block below -- service
+  // worker registration, getMessaging()/getToken() throwing, or the
+  // POST to /device-token failing -- used to collapse into the exact
+  // same generic `reason: "error"`, with the real cause only ever
+  // visible via `console.warn`, never in the UI. That's undiagnosable
+  // from a bug report alone (as this one demonstrates -- there was no
+  // way to tell which of several possible causes was actually
+  // happening). Now carries the real underlying error's message/name
+  // through to the caller, same "make the two failure branches
+  // distinguishable" approach already used for billing.py's checkout()
+  // error responses -- see that file's own comment for the reasoning.
+  detail?: string;
 }
 
 /** Requests browser notification permission, registers the FCM service
@@ -76,6 +91,21 @@ export interface EnablePushResult {
  * gesture in most browsers anyway. */
 export async function enableWebPush(): Promise<EnablePushResult> {
   if (!VAPID_KEY) return { ok: false, reason: "not-configured" };
+  // BUG FIX: VAPID_KEY alone being set doesn't mean Firebase itself is
+  // actually configured -- isFirebaseConfigured (lib/firebase.ts) checks
+  // the OTHER two required values (apiKey/appId) aren't still the
+  // REPLACE_WITH_* placeholders. Without this check, a deployment that
+  // has the VAPID key set but a stale/placeholder apiKey or appId baked
+  // in (e.g. from a build that predates those being filled in, then only
+  // restarted rather than rebuilt afterward -- NEXT_PUBLIC_* values are
+  // baked in at build time, not read at runtime) would render the
+  // "Enable browser push" button as if everything were ready, then fail
+  // inside getMessaging()/getToken() below with an unhelpful Firebase
+  // error -- exactly the generic, undiagnosable failure this product
+  // report is about.
+  if (!isFirebaseConfigured) {
+    return { ok: false, reason: "not-configured", detail: "firebase apiKey/appId not configured" };
+  }
   if (typeof window === "undefined" || !("Notification" in window)) {
     return { ok: false, reason: "unsupported" };
   }
@@ -97,12 +127,13 @@ export async function enableWebPush(): Promise<EnablePushResult> {
       vapidKey: VAPID_KEY,
       serviceWorkerRegistration: registration,
     });
-    if (!token) return { ok: false, reason: "error" };
+    if (!token) return { ok: false, reason: "error", detail: "getToken() returned no token" };
     await registerDeviceToken(token, "web");
     return { ok: true };
   } catch (err) {
     console.warn("[messaging] enableWebPush failed", err);
-    return { ok: false, reason: "error" };
+    const detail = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    return { ok: false, reason: "error", detail };
   }
 }
 
