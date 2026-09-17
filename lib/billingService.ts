@@ -106,6 +106,36 @@ export async function getSubscriptionStatus(): Promise<SubscriptionStatus> {
   return subscriptionStatusFromWire(data);
 }
 
+/**
+ * POST /api/v1/billing/subscription/confirm — call this on the Stripe
+ * success redirect from handleSubscribe() above (app/subscription/success/
+ * page.tsx), passing the `?session_id={CHECKOUT_SESSION_ID}` param Stripe
+ * appends to successUrl.
+ *
+ * BUG FIX (product report: "I have subscribed for the saveur premium
+ * plan. But the AI career coach, emotional coach and many other features
+ * are still gated"): unlike mobile's PaymentSheet flow (which calls this
+ * same backend endpoint right after presentPaymentSheet() resolves — see
+ * services/billingService.ts's confirmSubscription), web's hosted
+ * Checkout redirect used to land on /subscription/success and call
+ * NOTHING — the local Subscription row's plan/status was left entirely
+ * dependent on the async Stripe webhook actually reaching the backend.
+ * If that webhook is slow, misconfigured, or never fires for this
+ * deployment, a real, successfully-paying subscriber's plan simply never
+ * updates, and every @require_pro/@require_premium-gated feature keeps
+ * reading them as free tier indefinitely. This resolves the hosted
+ * Checkout Session server-side (same session_id Stripe's redirect
+ * carries) and reconciles synchronously against Stripe's own live
+ * subscription status, the same "don't wait on the webhook" approach
+ * mobile already relies on.
+ */
+export async function confirmSubscription(params: { sessionId: string }): Promise<SubscriptionStatus> {
+  const data = await apiClient.post<SubscriptionStatusWire>("/api/v1/billing/subscription/confirm", {
+    session_id: params.sessionId,
+  });
+  return subscriptionStatusFromWire(data);
+}
+
 /** Any active/trialing paid plan (Saveur Basic and up) — matches
  * entitlements_service.py's is_pro / mobile's isProTier. Use this for
  * anything gated by @require_pro on the backend (AI Coach, Job Alerts,
