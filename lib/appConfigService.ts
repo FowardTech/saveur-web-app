@@ -54,10 +54,22 @@ export interface StudentEligibilityConfig {
   discount_percent: number;
 }
 
+// Dashboard hero card background (product request: "I want to be able to
+// change the background of this card from the admin dashboard. Its the
+// web app hero card") — Saveur-Backend's app_config_service.py
+// "dashboard_hero" section. Deliberately just one field: a plain CSS
+// `background` shorthand string (a gradient, solid color, or a
+// `url(...)` if the admin hosts an image elsewhere) — see that section's
+// own DEFAULTS comment for why this isn't an image-upload field.
+export interface DashboardHeroConfig {
+  background_css: string;
+}
+
 export interface AppConfig {
   home_banner: HomeBannerConfig;
   feature_flags: FeatureFlags;
   student_eligibility: StudentEligibilityConfig;
+  dashboard_hero: DashboardHeroConfig;
   // Other sections (release, faq, about, etc.) exist on the backend
   // response too but aren't modeled here yet — add them as web grows to
   // need them, same pattern as this one.
@@ -85,6 +97,14 @@ const DEFAULT_STUDENT_ELIGIBILITY: StudentEligibilityConfig = {
   discount_percent: 3,
 };
 
+// Empty string is the real, meaningful default here (not a placeholder) —
+// HomeBanner.tsx treats "" as "use my own built-in gradient", so a
+// deployment with no admin-set value looks exactly like it did before this
+// section existed.
+const DEFAULT_DASHBOARD_HERO: DashboardHeroConfig = {
+  background_css: "",
+};
+
 // Module-scope cache — good enough for "no need to replicate mobile's pub/sub
 // complexity" per the product ask: one fetch per page session, shared by any
 // component that calls getAppConfig() while the promise is in flight or
@@ -110,6 +130,7 @@ export async function getAppConfig(language?: string): Promise<AppConfig> {
         home_banner: { ...DEFAULT_HOME_BANNER, ...data.home_banner },
         feature_flags: { ...DEFAULT_FEATURE_FLAGS, ...data.feature_flags },
         student_eligibility: { ...DEFAULT_STUDENT_ELIGIBILITY, ...data.student_eligibility },
+        dashboard_hero: { ...DEFAULT_DASHBOARD_HERO, ...data.dashboard_hero },
       } as AppConfig;
     } catch {
       // Network/backend unavailable — fail open with defaults so a config
@@ -122,6 +143,7 @@ export async function getAppConfig(language?: string): Promise<AppConfig> {
         home_banner: DEFAULT_HOME_BANNER,
         feature_flags: DEFAULT_FEATURE_FLAGS,
         student_eligibility: DEFAULT_STUDENT_ELIGIBILITY,
+        dashboard_hero: DEFAULT_DASHBOARD_HERO,
       };
     }
     return cached;
@@ -147,4 +169,12 @@ export function isFeatureEnabled(key: keyof FeatureFlags): boolean {
  * isFeatureEnabled() above. */
 export function getStudentEligibilityConfig(): StudentEligibilityConfig {
   return cached?.student_eligibility ?? DEFAULT_STUDENT_ELIGIBILITY;
+}
+
+/** Synchronous read of whichever dashboard_hero section was last fetched by
+ * getAppConfig() (or the default {background_css: ""} if it hasn't
+ * resolved yet this session) — same "await getAppConfig() first" contract
+ * as the other synchronous getters above. */
+export function getDashboardHeroConfig(): DashboardHeroConfig {
+  return cached?.dashboard_hero ?? DEFAULT_DASHBOARD_HERO;
 }

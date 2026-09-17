@@ -252,6 +252,33 @@ function AiCoachPageInner() {
   const hasSentInitialPromptRef = useRef(false);
   useEffect(() => {
     if (!loaded || hasSentInitialPromptRef.current) return;
+    // Feature addition (product request: "Analyze with your coach" button
+    // on Coding Projects, app/practice/coding/projects/[id]/page.tsx): that
+    // one caller's message can be far larger than any other initialPrompt
+    // call site here ever sends (a whole project's code, not a short fixed
+    // sentence), and stuffing that much text into a URL query string risks
+    // silently exceeding a reverse proxy's max URL/header length -- a
+    // failure mode none of the existing short ?prompt= callers below could
+    // ever hit. That caller hands the message off via sessionStorage
+    // instead and only leaves a small marker in the URL. Checked FIRST as a
+    // fully separate branch, and returns before reaching the plain ?prompt=
+    // check below, so this addition can never change that flow's existing
+    // behavior for any other caller.
+    if (searchParams?.get("promptSource") === "session") {
+      let stored: string | null = null;
+      try {
+        stored = sessionStorage.getItem("coach_pending_prompt");
+        sessionStorage.removeItem("coach_pending_prompt");
+      } catch {
+        stored = null;
+      }
+      if (stored) {
+        hasSentInitialPromptRef.current = true;
+        router.replace("/ai-coach");
+        void sendQuestion(stored);
+        return;
+      }
+    }
     const prompt = searchParams?.get("prompt");
     if (!prompt) return;
     hasSentInitialPromptRef.current = true;

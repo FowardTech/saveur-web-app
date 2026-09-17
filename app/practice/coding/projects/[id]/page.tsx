@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "next-themes";
 import CodeMirror from "@uiw/react-codemirror";
@@ -48,6 +48,7 @@ function formatBytes(bytes: number): string {
 export default function CodingProjectEditorPage() {
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
+  const router = useRouter();
   const params = useParams<{ id: string }>();
   const projectId = params?.id;
   const { loading: authLoading } = useAuth();
@@ -365,6 +366,54 @@ export default function CodingProjectEditorPage() {
     }
   }
 
+  // Product request: "when a user have created a project. There should be
+  // a button in the created folder or project saying 'Analyze with your
+  // coach' and then the AI coach can analyze the whole project together
+  // with the users." Reuses app/ai-coach/page.tsx's existing `?prompt=`
+  // deep-link (already read via useSearchParams() there and auto-sent as
+  // a normal /api/v1/coach/advice question — the same mechanism
+  // app/practice/session/[id]/page.tsx's "Discuss with your coach" link
+  // uses) rather than a new backend endpoint. Capped at MAX_CODE_CHARS so
+  // a large project can't blow up the coach prompt — every other
+  // ?prompt= call site sends a short, fixed-template sentence; this is
+  // the first one built from arbitrary user content, so it's the one
+  // place that needs an explicit size guard.
+  function onAnalyzeWithCoach() {
+    const MAX_CODE_CHARS = 6000;
+    let remaining = MAX_CODE_CHARS;
+    const parts: string[] = [];
+    let truncated = false;
+    for (const [path, content] of Object.entries(files)) {
+      if (remaining <= 0) {
+        truncated = true;
+        break;
+      }
+      const body = content.length > remaining ? content.slice(0, remaining) : content;
+      if (content.length > remaining) truncated = true;
+      parts.push(`--- ${path} ---\n${body}`);
+      remaining -= body.length;
+    }
+    const codeBlock = parts.join("\n\n") + (truncated ? "\n\n[...project truncated for length...]" : "");
+    const message = t("web:practice.codingProjects.analyzePrompt", {
+      defaultValue:
+        'I\'d like your feedback on my coding project "{{name}}". Here is the code:\n\n{{code}}\n\nCan you review it and suggest improvements?',
+      name: projectName || "Untitled",
+      code: codeBlock,
+    }).toString();
+    // Hand the (potentially large) message to /ai-coach via sessionStorage
+    // rather than a URL query string — see that page's own comment on the
+    // ?promptSource=session branch for why. Falls back to the plain
+    // ?prompt= URL, with a much smaller cap, only if sessionStorage itself
+    // is unavailable (e.g. a strict private-browsing mode).
+    try {
+      sessionStorage.setItem("coach_pending_prompt", message);
+      router.push("/ai-coach?promptSource=session");
+    } catch {
+      const safe = message.length > 1500 ? `${message.slice(0, 1500)}\n\n[...truncated...]` : message;
+      router.push(`/ai-coach?prompt=${encodeURIComponent(safe)}`);
+    }
+  }
+
   // ---- Render -------------------------------------------------------
   if (project === null) {
     return (
@@ -474,6 +523,10 @@ export default function CodingProjectEditorPage() {
               <Button type="button" size="sm" onClick={handleSaveClick} disabled={saving || !isDirty}>
                 <EvaIcon name="save-outline" size={14} />
                 {saving ? t("web:practice.codingProjects.saving", { defaultValue: "Saving…" }) : isDirty ? t("web:practice.codingProjects.saveUnsaved", { defaultValue: "Save*" }) : t("web:practice.codingProjects.saved", { defaultValue: "Saved" })}
+              </Button>
+              <Button type="button" variant="secondary" size="sm" onClick={onAnalyzeWithCoach} disabled={Object.keys(files).length === 0}>
+                <EvaIcon name="message-circle-outline" size={14} />
+                {t("web:practice.codingProjects.analyzeWithCoach", { defaultValue: "Analyze with your coach" })}
               </Button>
             </div>
           </div>

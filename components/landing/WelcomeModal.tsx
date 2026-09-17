@@ -73,7 +73,7 @@ export function WelcomeModal() {
             documented as sharing the same visual design, and both had the
             same fake "app screenshot" mockup here. */}
         <div className="flex items-center justify-center bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-5 py-8">
-          <ArtWelcomeWave size={120} />
+          <ArtWelcomeWave size={150} />
         </div>
 
         <div className="px-5 pb-6 pt-4">

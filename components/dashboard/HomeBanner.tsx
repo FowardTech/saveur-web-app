@@ -1,6 +1,18 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LinkButton } from "@/components/ui/Button";
 import { ArtMissionPhone } from "./HomeBannerArt";
+import { getAppConfig } from "@/lib/appConfigService";
+
+// Default gradient — unchanged from before this card's background became
+// admin-configurable (product request: "I want to be able to change the
+// background of this card from the admin dashboard. Its the web app hero
+// card"), so any deployment with no admin-set value looks exactly like it
+// always has.
+const DEFAULT_BACKGROUND_CSS =
+  "linear-gradient(to bottom right, color-mix(in srgb, var(--brand) 15%, transparent), color-mix(in srgb, var(--accent-purple) 10%, transparent), transparent)";
 
 /** Dashboard counterpart to the landing page's HeroBanner — same boxed/
  * gradient banner treatment, but no Register CTA or OAuth row since the
@@ -37,10 +49,27 @@ import { ArtMissionPhone } from "./HomeBannerArt";
  * UserMenu dropdowns) already pairs it with rounded-card on the same
  * element; this one was just missing it. */
 export function HomeBanner() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [backgroundCss, setBackgroundCss] = useState(DEFAULT_BACKGROUND_CSS);
+
+  useEffect(() => {
+    let cancelled = false;
+    getAppConfig(i18n.language).then((config) => {
+      if (!cancelled && config.dashboard_hero.background_css) {
+        setBackgroundCss(config.dashboard_hero.background_css);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [i18n.language]);
+
   return (
     <div className="rounded-card shadow-lg">
-      <section className="relative overflow-hidden rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-6 py-8 sm:px-8 sm:py-10">
+      <section
+        className="relative overflow-hidden rounded-card border border-border px-6 py-8 sm:px-8 sm:py-10"
+        style={{ background: backgroundCss }}
+      >
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
@@ -66,7 +95,7 @@ export function HomeBanner() {
             </LinkButton>
           </div>
           <div className="hidden shrink-0 md:block">
-            <ArtMissionPhone size={128} />
+            <ArtMissionPhone size={150} />
           </div>
         </div>
       </section>

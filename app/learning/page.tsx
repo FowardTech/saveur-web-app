@@ -320,7 +320,7 @@ export default function LearningPage() {
                 </p>
               </div>
               <div className="relative hidden shrink-0 md:block">
-                <ArtLearningCourses size={112} />
+                <ArtLearningCourses size={144} />
               </div>
             </section>
           </div>

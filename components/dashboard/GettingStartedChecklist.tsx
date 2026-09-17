@@ -139,7 +139,7 @@ export function GettingStartedChecklist() {
   const allDone = remaining.length === 0;
 
   return (
-    <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-5 sm:flex-row sm:items-center sm:gap-6">
+    <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-purple p-5 sm:flex-row sm:items-center sm:gap-6">
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -206,7 +206,7 @@ export function GettingStartedChecklist() {
           below `sm` purely for space (a 5-item checklist plus a 96px
           illustration doesn't fit a narrow phone-width card), not tied to
           done/dismiss state. */}
-      <div className="hidden shrink-0 sm:block">{allDone ? <ArtTrophy size={96} /> : <ArtRoadmapPath size={96} />}</div>
+      <div className="hidden shrink-0 sm:block">{allDone ? <ArtTrophy size={124} /> : <ArtRoadmapPath size={124} />}</div>
     </div>
   );
 }

@@ -46,9 +46,9 @@ export function ContinueWatchingCard() {
       <button
         type="button"
         onClick={() => setPlaying(true)}
-        className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md"
+        className="flex items-center gap-3 rounded-card border border-border bg-tint-mint p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md"
       >
-        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-1 text-tint-mint-text">
           <EvaIcon name="play-circle-outline" size={18} />
         </span>
         <div className="min-w-0 flex-1">

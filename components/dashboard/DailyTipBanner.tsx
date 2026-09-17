@@ -30,8 +30,8 @@ export function DailyTipBanner() {
   const tip = tips[index % tips.length];
 
   return (
-    <div className="flex items-start gap-3 rounded-card border border-border bg-surface-2 p-4">
-      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
+    <div className="flex items-start gap-3 rounded-card border border-border bg-tint-orange p-4">
+      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-1 text-tint-orange-text">
         <EvaIcon name="bulb-outline" size={16} />
       </span>
       <div className="min-w-0 flex-1">

@@ -27,13 +27,11 @@ interface EmptyStateProps {
  * it here means every screen that adopts it automatically gets a real
  * illustration instead of plain text, with no per-page SVG work.
  *
- * The three illustrations are real, freely-licensed unDraw illustrations
- * (https://undraw.co — free for commercial and personal use, no
- * attribution required), saved locally under public/illustrations/ so they
- * render without any external network call (product report: "the
- * illustrations you added ... are ones you created yourself ... use real
- * illustrations" — these replaced a previous hand-drawn line-art
- * treatment). */
+ * The three illustrations are original hand-drawn flat-shape scenes (see
+ * components/dashboard/HomeBannerArt.tsx's own comment for the full
+ * licensing writeup on why these moved off unDraw), saved locally under
+ * public/illustrations/ so they render without any external network
+ * call. */
 export function EmptyState({ title, description, illustration = "list", icon, action, className = "" }: EmptyStateProps) {
   return (
     <div
@@ -63,19 +61,19 @@ function EmptyIllustration({ variant }: { variant: EmptyStateIllustration }) {
 
 // Generic "empty list" — for any screen whose main content is a list/grid
 // of items the user hasn't created yet (job alerts, career diary entries,
-// resume variants, etc.). unDraw "Empty".
+// resume variants, etc.).
 function EmptyListArt() {
-  return <img src="/illustrations/empty.svg" width="88" height="88" alt="" aria-hidden="true" />;
+  return <img src="/illustrations/empty.svg" width="112" height="112" alt="" aria-hidden="true" />;
 }
 
 // "No results" — for a search/filter that came back empty (e.g. a company
-// filter with no matching job alerts). unDraw "Searching".
+// filter with no matching job alerts).
 function EmptySearchArt() {
-  return <img src="/illustrations/searching.svg" width="88" height="88" alt="" aria-hidden="true" />;
+  return <img src="/illustrations/searching.svg" width="112" height="112" alt="" aria-hidden="true" />;
 }
 
 // "Empty inbox" — for message/notification/request-style lists (Shared With
-// Me, Applications, notifications). unDraw "Empty Mailbox".
+// Me, Applications, notifications).
 function EmptyInboxArt() {
-  return <img src="/illustrations/empty-mailbox.svg" width="88" height="88" alt="" aria-hidden="true" />;
+  return <img src="/illustrations/empty-mailbox.svg" width="112" height="112" alt="" aria-hidden="true" />;
 }
