@@ -119,7 +119,7 @@ function CompanyIntelligencePageInner() {
 
           {intel && (
             <div className="flex flex-col gap-4">
-              <div className="rounded-card border border-border bg-surface-2 p-5">
+              <div className="rounded-card border border-border bg-tint-purple p-5">
                 <h2 className="font-semibold text-primary">{intel.company}</h2>
                 <p className="mt-2 text-sm text-hint">{intel.overview}</p>
               </div>
@@ -128,7 +128,7 @@ function CompanyIntelligencePageInner() {
                 <Section title={t("web:career.companyIntelligence.recentDevelopments", { defaultValue: "Recent developments" })} items={intel.recent_developments} />
               )}
               {intel.culture_notes && (
-                <div className="rounded-card border border-border bg-surface-2 p-5">
+                <div className="rounded-card border border-border bg-tint-mint p-5">
                   <h3 className="text-sm font-semibold text-primary">{t("web:career.companyIntelligence.cultureNotes", { defaultValue: "Culture notes" })}</h3>
                   <p className="mt-2 text-sm text-hint">{intel.culture_notes}</p>
                 </div>
@@ -140,13 +140,13 @@ function CompanyIntelligencePageInner() {
                 <Section title={t("web:career.companyIntelligence.talkingPoints", { defaultValue: "Talking points" })} items={intel.talking_points} />
               )}
               {intel.salary_range && (
-                <div className="rounded-card border border-border bg-surface-2 p-5">
+                <div className="rounded-card border border-border bg-tint-purple p-5">
                   <h3 className="text-sm font-semibold text-primary">{t("web:career.companyIntelligence.salaryRange", { defaultValue: "Salary range" })}</h3>
                   <p className="mt-2 text-sm text-hint">{intel.salary_range}</p>
                 </div>
               )}
               {intel.interview_process && (
-                <div className="rounded-card border border-border bg-surface-2 p-5">
+                <div className="rounded-card border border-border bg-tint-rose p-5">
                   <h3 className="text-sm font-semibold text-primary">{t("web:career.companyIntelligence.interviewProcess", { defaultValue: "Interview process" })}</h3>
                   <p className="mt-2 text-sm text-hint">{intel.interview_process}</p>
                 </div>
@@ -173,7 +173,7 @@ export default function CompanyIntelligencePage() {
 
 function Section({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="rounded-card border border-border bg-surface-2 p-5">
+    <div className="rounded-card border border-border bg-tint-orange p-5">
       <h3 className="text-sm font-semibold text-primary">{title}</h3>
       <ul className="mt-2 flex flex-col gap-1.5">
         {items.map((item, i) => (

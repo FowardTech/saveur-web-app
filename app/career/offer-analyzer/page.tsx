@@ -160,7 +160,7 @@ export default function OfferAnalyzerPage() {
           )}
 
           {result && fmr && (
-            <div className="rounded-card border border-border bg-surface-2 p-6">
+            <div className="rounded-card border border-border bg-tint-purple p-6">
               <p className="text-sm font-medium text-hint">{t("web:career.offerAnalyzer.fairMarketRange", { defaultValue: "Fair market range" })}</p>
               <p className="mt-1 text-3xl font-bold text-primary">
                 {fmr.low?.toLocaleString() ?? "—"} – {fmr.high?.toLocaleString() ?? "—"} {fmr.currency}

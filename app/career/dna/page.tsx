@@ -127,8 +127,13 @@ export default function CareerDnaPage() {
                   narrative paragraph above it. */}
               {profile.traits && Object.keys(profile.traits).length > 0 && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {Object.entries(profile.traits).map(([trait, value]) => (
-                    <div key={trait} className="rounded-card border border-border bg-surface-2 p-4 text-left">
+                  {Object.entries(profile.traits).map(([trait, value], i) => (
+                    <div
+                      key={trait}
+                      className={`rounded-card border border-border p-4 text-left ${
+                        ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
+                      }`}
+                    >
                       <p className="text-lg font-bold text-primary">{String(value)}</p>
                       <p className="mt-1 text-xs capitalize text-hint">{trait.replace(/_/g, " ")}</p>
                     </div>

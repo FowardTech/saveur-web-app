@@ -335,7 +335,7 @@ export default function DreamCompaniesPage() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface-2 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-tint-orange p-4">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(true)}
@@ -366,7 +366,7 @@ export default function DreamCompaniesPage() {
               )}
 
               {summary && (
-                <div className="flex items-center rounded-card border border-border bg-surface-2 p-4">
+                <div className="flex items-center rounded-card border border-border bg-tint-mint p-4">
                   <SummaryStat value={String(summary.tracked)} label={t("web:career.dreamCompanies.summaryTracked", { defaultValue: "Tracked" })} />
                   <div className="h-10 w-px bg-border" />
                   <SummaryStat

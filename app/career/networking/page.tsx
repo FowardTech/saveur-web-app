@@ -360,7 +360,7 @@ function NetworkingAssistantInner() {
                     events.map((ev, index) => (
                       <div
                         key={ev.id}
-                        className="animate-card-in flex items-start justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                        className={`animate-card-in flex items-start justify-between gap-4 rounded-card border border-border p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${tintCycle[index % tintCycle.length].bg}`}
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         <a href={ev.url} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-start gap-3">
@@ -368,7 +368,7 @@ function NetworkingAssistantInner() {
                             logoUrl={ev.logo_url ?? null}
                             companyName={ev.organizer || ev.title}
                             size={44}
-                            className={`shrink-0 ${tintCycle[index % tintCycle.length].bg}`}
+                            className="shrink-0 bg-surface-1"
                           />
                           <div className="flex-1">
                             <h3 className="font-medium text-primary">{ev.title}</h3>
@@ -401,7 +401,7 @@ function NetworkingAssistantInner() {
                     contacts.map((contact, index) => (
                       <div
                         key={contact.id}
-                        className="animate-card-in flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                        className={`animate-card-in flex flex-col gap-2 rounded-card border border-border p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${tintCycle[index % tintCycle.length].bg}`}
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         <div className="flex items-start justify-between gap-3">

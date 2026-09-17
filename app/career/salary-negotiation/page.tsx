@@ -174,7 +174,7 @@ function SalaryNegotiationPageInner() {
           {error && <p className="text-sm text-danger">{error}</p>}
 
           {!scenario && !proRequired && (
-            <div className="rounded-card border border-border bg-surface-2 p-6 text-center">
+            <div className="rounded-card border border-border bg-tint-orange p-6 text-center">
               <p className="text-sm text-hint">{t("web:career.salaryNegotiation.startPrompt", { defaultValue: "Start a scenario to get a realistic offer and practice your ask." })}</p>
               <Button onClick={handleStart} disabled={loading} className="mt-4">
                 {loading ? t("web:career.salaryNegotiation.generatingScenario", { defaultValue: "Generating scenario…" }) : t("web:career.salaryNegotiation.startPractice", { defaultValue: "Start negotiation practice" })}
