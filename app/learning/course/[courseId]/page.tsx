@@ -341,8 +341,8 @@ function CourseSessionInner() {
     return (
       <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
         <BackLink href={backHref} t={t} />
-        <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+        <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
             <EvaIcon name="lock-outline" size={20} />
           </span>
           <h1 className="font-semibold text-primary">
@@ -458,7 +458,7 @@ function CourseSessionInner() {
         </p>
 
         {syllabus ? (
-          <div className="mt-4 w-full divide-y divide-border rounded-card border border-border bg-tint-purple">
+          <div className="mt-4 w-full divide-y divide-border rounded-card border border-border bg-surface-2">
             {syllabus.map((title, i) => (
               <div key={i} className="flex items-center gap-3 p-4">
                 <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-semibold text-brand">
@@ -605,7 +605,7 @@ function CourseSessionInner() {
           ))}
 
           {currentModule.checkQuestion ? (
-            <div className="rounded-card border border-border bg-tint-mint p-4">
+            <div className="rounded-card border border-border bg-surface-2 p-4">
               <h3 className="font-semibold text-primary">
                 {t("web:learning.session.checkUnderstanding", { defaultValue: "Check your understanding" })}
               </h3>
@@ -638,13 +638,8 @@ function CourseSessionInner() {
                 {t("web:learning.session.recommendedVideos", { defaultValue: "Recommended Videos" })}
               </h3>
               <div className="flex gap-3 overflow-x-auto pb-1">
-                {currentVideos.map((video, i) => (
-                  <div
-                    key={video.videoId}
-                    className={`w-56 shrink-0 overflow-hidden rounded-card border border-border ${
-                      ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
-                    }`}
-                  >
+                {currentVideos.map((video) => (
+                  <div key={video.videoId} className="w-56 shrink-0 overflow-hidden rounded-card border border-border bg-surface-2">
                     <button type="button" onClick={() => setPlayerVideo(video)} className="relative block w-full">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={video.thumbnailUrl} alt="" className="h-32 w-full object-cover" />

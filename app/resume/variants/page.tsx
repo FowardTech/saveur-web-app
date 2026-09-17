@@ -140,8 +140,8 @@ export default function ResumeVariantsPage() {
           />
 
           {premiumRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:resume.variants.premiumRequiredTitle", { defaultValue: "Creating variants is a Premium feature" })}</h2>
@@ -185,13 +185,8 @@ export default function ResumeVariantsPage() {
 
           {variants && variants.length > 0 && (
             <div className="flex flex-col gap-3">
-              {variants.map((v, i) => (
-                <div
-                  key={v.id}
-                  className={`flex items-center justify-between rounded-card border border-border p-4 ${
-                    ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
-                  }`}
-                >
+              {variants.map((v) => (
+                <div key={v.id} className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4">
                   <div>
                     <h3 className="font-medium text-primary">{v.label}</h3>
                     <p className="text-sm text-hint">

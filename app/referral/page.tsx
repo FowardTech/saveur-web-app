@@ -113,23 +113,23 @@ export default function ReferralProgramPage() {
           {info && (
             <div className="flex flex-col gap-5">
               <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="rounded-card border border-border bg-tint-orange p-4">
+                <div className="rounded-card border border-border bg-surface-2 p-4">
                   <p className="text-xl font-bold text-primary">{info.referred_count}</p>
                   <p className="mt-1 text-xs text-hint">{t("web:referral.referred", { defaultValue: "Referred" })}</p>
                 </div>
-                <div className="rounded-card border border-border bg-tint-purple p-4">
+                <div className="rounded-card border border-border bg-surface-2 p-4">
                   <p className="text-xl font-bold text-primary">{info.pending_count}</p>
                   <p className="mt-1 text-xs text-hint">{t("web:referral.pending", { defaultValue: "Pending" })}</p>
                 </div>
-                <div className="rounded-card border border-border bg-tint-mint p-4">
+                <div className="rounded-card border border-border bg-surface-2 p-4">
                   <p className="text-xl font-bold text-primary">{info.rewarded_count}</p>
                   <p className="mt-1 text-xs text-hint">{t("web:referral.rewarded", { defaultValue: "Rewarded" })}</p>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-mint p-5">
+              <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-mint-text">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
                     <EvaIcon name="gift-outline" size={20} />
                   </span>
                   <div>

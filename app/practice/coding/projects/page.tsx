@@ -138,8 +138,8 @@ export default function CodingProjectsPage() {
           </div>
 
           {addonRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:practice.coding.addonRequiredTitle", { defaultValue: "Coding Practice is a paid add-on" })}</h2>
@@ -179,17 +179,12 @@ export default function CodingProjectsPage() {
           {projects && projects.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((p) => (
-                <div
-                  key={p.id}
-                  className={`flex flex-col gap-3 rounded-card border border-border p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                    p.projectType === "web" ? "bg-tint-purple" : "bg-tint-mint"
-                  }`}
-                >
+                <div key={p.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                   <Link href={`/practice/coding/projects/${p.id}`} className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <span
                         className={`rounded-pill px-2.5 py-1 text-xs font-medium ${
-                          p.projectType === "web" ? "bg-surface-1 text-tint-purple-text" : "bg-surface-1 text-tint-mint-text"
+                          p.projectType === "web" ? "bg-tint-purple text-tint-purple-text" : "bg-tint-mint text-tint-mint-text"
                         }`}
                       >
                         {p.projectType === "web"

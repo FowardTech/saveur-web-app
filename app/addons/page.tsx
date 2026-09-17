@@ -93,9 +93,9 @@ export default function AddOnsPage() {
           {addons && addons.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {addons.map((addon) => (
-                <div key={addon.code} className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-5">
+                <div key={addon.code} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
                   <div className="flex items-start justify-between gap-3">
-                    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+                    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                       <EvaIcon name="pricetags-outline" size={18} />
                     </span>
                     {addon.unlocked ? (

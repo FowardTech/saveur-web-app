@@ -261,8 +261,8 @@ export default function PracticalScenariosSetupPage() {
           />
 
           {addonRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:practice.scenarios.addonRequiredTitle", { defaultValue: "Practical Scenarios is a paid add-on" })}</h2>
@@ -476,9 +476,9 @@ export default function PracticalScenariosSetupPage() {
 
           {completed && (
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-mint p-6">
+              <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-mint-text">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
                     <EvaIcon name="checkmark-circle-2-outline" size={22} />
                   </span>
                   <div>
@@ -522,13 +522,13 @@ export default function PracticalScenariosSetupPage() {
               {sessionFeedback && (
                 <>
                   {sessionFeedback.overall != null && (
-                    <div className="flex flex-col items-center gap-1 rounded-card border border-border bg-tint-purple p-6">
+                    <div className="flex flex-col items-center gap-1 rounded-card border border-border bg-surface-2 p-6">
                       <span className="text-3xl font-bold text-primary">{sessionFeedback.overall}</span>
                       <span className="text-sm text-hint">{t("web:practice.scenarios.overallScore", { defaultValue: "Overall judgment score" })}</span>
                     </div>
                   )}
 
-                  <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-mint p-6">
+                  <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
                     <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                       {t("web:practice.scenarios.rubricScores", { defaultValue: "Skill scores" })}
                     </h2>
@@ -551,7 +551,7 @@ export default function PracticalScenariosSetupPage() {
                   </div>
 
                   {sessionFeedback.summary && (
-                    <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-orange p-6">
+                    <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:practice.scenarios.summary", { defaultValue: "Summary" })}
                       </h2>
@@ -562,7 +562,7 @@ export default function PracticalScenariosSetupPage() {
                   {(sessionFeedback.strengths.length > 0 || sessionFeedback.improvements.length > 0) && (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       {sessionFeedback.strengths.length > 0 && (
-                        <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-mint p-6">
+                        <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
                           <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                             {t("web:practice.scenarios.strengths", { defaultValue: "Strengths" })}
                           </h2>
@@ -577,7 +577,7 @@ export default function PracticalScenariosSetupPage() {
                         </div>
                       )}
                       {sessionFeedback.improvements.length > 0 && (
-                        <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-rose p-6">
+                        <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
                           <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                             {t("web:practice.scenarios.improvements", { defaultValue: "Areas to improve" })}
                           </h2>
@@ -595,7 +595,7 @@ export default function PracticalScenariosSetupPage() {
                   )}
 
                   {sessionFeedback.stepNotes.length > 0 && (
-                    <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-6">
+                    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:practice.scenarios.decisionByDecision", { defaultValue: "Decision by decision" })}
                       </h2>

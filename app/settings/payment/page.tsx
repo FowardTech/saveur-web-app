@@ -91,9 +91,9 @@ export default function PaymentSettingsPage() {
             subtitle={t("web:settings.payment.subtitle", { defaultValue: "Manage your subscription and billing details." })}
           />
 
-          <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-purple p-6">
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="credit-card-outline" size={20} />
               </span>
               <div>

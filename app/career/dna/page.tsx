@@ -81,8 +81,8 @@ export default function CareerDnaPage() {
           />
 
           {premiumRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:career.dna.premiumRequiredTitle", { defaultValue: "Career DNA is a Premium feature" })}</h2>
@@ -127,13 +127,8 @@ export default function CareerDnaPage() {
                   narrative paragraph above it. */}
               {profile.traits && Object.keys(profile.traits).length > 0 && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {Object.entries(profile.traits).map(([trait, value], i) => (
-                    <div
-                      key={trait}
-                      className={`rounded-card border border-border p-4 text-left ${
-                        ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
-                      }`}
-                    >
+                  {Object.entries(profile.traits).map(([trait, value]) => (
+                    <div key={trait} className="rounded-card border border-border bg-surface-2 p-4 text-left">
                       <p className="text-lg font-bold text-primary">{String(value)}</p>
                       <p className="mt-1 text-xs capitalize text-hint">{trait.replace(/_/g, " ")}</p>
                     </div>

@@ -19,10 +19,10 @@ import { downloadUrlAsFile } from "@/lib/downloadFile";
 // exported to PDF/DOCX, redownloadable anytime. Real backend contract —
 // GET/DELETE/PATCH /api/v1/resume/documents (Saveur-Backend/app/api/
 // resume.py). See lib/generatedDocumentsService.ts.
-const KIND_META: Record<GeneratedDocumentKind, { icon: EvaIconName; labelKey: string; labelDefault: string; cardBg: string; textTint: string }> = {
-  resume: { icon: "file-text-outline", labelKey: "web:documents.generated.kind.resume", labelDefault: "Resume/CV", cardBg: "bg-tint-orange", textTint: "text-tint-orange-text" },
-  cover_letter: { icon: "email-outline", labelKey: "web:documents.generated.kind.coverLetter", labelDefault: "Cover Letter", cardBg: "bg-tint-mint", textTint: "text-tint-mint-text" },
-  resume_variant: { icon: "layers-outline", labelKey: "web:documents.generated.kind.resumeVariant", labelDefault: "Resume Variant", cardBg: "bg-tint-purple", textTint: "text-tint-purple-text" },
+const KIND_META: Record<GeneratedDocumentKind, { icon: EvaIconName; labelKey: string; labelDefault: string }> = {
+  resume: { icon: "file-text-outline", labelKey: "web:documents.generated.kind.resume", labelDefault: "Resume/CV" },
+  cover_letter: { icon: "email-outline", labelKey: "web:documents.generated.kind.coverLetter", labelDefault: "Cover Letter" },
+  resume_variant: { icon: "layers-outline", labelKey: "web:documents.generated.kind.resumeVariant", labelDefault: "Resume Variant" },
 };
 
 function formatDate(iso: string | null): string {
@@ -160,8 +160,8 @@ export default function GeneratedDocumentsPage() {
               {documents.map((doc) => {
                 const meta = KIND_META[doc.kind] ?? KIND_META.resume;
                 return (
-                  <div key={doc.id} className={`flex items-center gap-3 rounded-card border border-border p-4 ${meta.cardBg}`}>
-                    <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-1 ${meta.textTint}`}>
+                  <div key={doc.id} className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4">
+                    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-3 text-hint">
                       <EvaIcon name={meta.icon} size={18} />
                     </span>
                     <div className="min-w-0 flex-1">

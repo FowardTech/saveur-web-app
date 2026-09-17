@@ -213,8 +213,8 @@ export default function JobAlertDetailsPage() {
           )}
 
           {proRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h1 className="font-semibold text-primary">{t("web:jobAlerts.details.proRequiredTitle", { defaultValue: "Job Details requires a paid plan" })}</h1>
@@ -236,9 +236,9 @@ export default function JobAlertDetailsPage() {
 
           {alert && (
             <>
-              <div className="flex flex-col gap-5 rounded-card border border-border bg-tint-mint p-6">
+              <div className="flex flex-col gap-5 rounded-card border border-border bg-surface-2 p-6">
                 <div className="flex items-start gap-3">
-                  <CompanyLogoAvatar logoUrl={logoUrl} companyName={alert.company} size={56} className="shrink-0 bg-surface-1" />
+                  <CompanyLogoAvatar logoUrl={logoUrl} companyName={alert.company} size={56} className="shrink-0 bg-tint-mint" />
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h1 className="text-lg font-bold text-primary">{alert.title}</h1>

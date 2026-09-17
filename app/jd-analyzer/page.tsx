@@ -177,8 +177,8 @@ export default function JDAnalyzerPage() {
           />
 
           {(!isPro || proRequired) && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:jdAnalyzer.proRequiredTitle", { defaultValue: "JD Analyzer is a Basic feature" })}</h2>
@@ -262,7 +262,7 @@ export default function JDAnalyzerPage() {
                     ))}
                   </div>
 
-                  <div className="mt-4 flex flex-col gap-2 rounded-card border border-border bg-tint-orange p-5">
+                  <div className="mt-4 flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-5">
                     <h3 className="font-semibold text-primary">{t("web:jdAnalyzer.buildResumeTitle", { defaultValue: "Want a resume tailored to this job?" })}</h3>
                     <p className="text-sm text-hint">{t("web:jdAnalyzer.buildResumeDescription", { defaultValue: "We'll draft a resume around this job's keywords and skills, ready to download." })}</p>
                     <Button type="button" onClick={() => setShowBuildResumeChoices(true)} className="w-fit">
@@ -270,7 +270,7 @@ export default function JDAnalyzerPage() {
                     </Button>
                   </div>
 
-                  <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-purple p-5">
+                  <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-5">
                     <h3 className="font-semibold text-primary">{t("web:jdAnalyzer.buildCoverLetterTitle", { defaultValue: "Want a cover letter for this job?" })}</h3>
                     <p className="text-sm text-hint">{t("web:jdAnalyzer.buildCoverLetterDescription", { defaultValue: "We'll draft a cover letter tailored to this job description, ready to download." })}</p>
                     <Button type="button" onClick={onGenerateCoverLetter} className="w-fit">

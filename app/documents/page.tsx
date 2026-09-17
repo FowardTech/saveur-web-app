@@ -122,9 +122,9 @@ export default function DocumentsPage() {
             })}
           />
 
-          <Link href="/documents/generated" className="flex items-center justify-between rounded-card border border-border bg-tint-purple p-4 hover:border-brand/40">
+          <Link href="/documents/generated" className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 hover:border-brand/40">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="layers-outline" size={16} />
               </span>
               <div>

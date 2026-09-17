@@ -687,7 +687,7 @@ export default function LiveInterviewSessionPage() {
 
           {session && (
             <>
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-tint-purple p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface-2 p-5">
                 <div>
                   <h1 className="text-lg font-bold text-primary">
                     {sessionTypeLabel(session.type)}

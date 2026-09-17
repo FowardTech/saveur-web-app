@@ -306,8 +306,8 @@ export default function DreamCompaniesPage() {
           </div>
 
           {(premiumRequired || !isPremium) && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">
@@ -335,7 +335,7 @@ export default function DreamCompaniesPage() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-tint-orange p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface-2 p-4">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(true)}
@@ -366,7 +366,7 @@ export default function DreamCompaniesPage() {
               )}
 
               {summary && (
-                <div className="flex items-center rounded-card border border-border bg-tint-mint p-4">
+                <div className="flex items-center rounded-card border border-border bg-surface-2 p-4">
                   <SummaryStat value={String(summary.tracked)} label={t("web:career.dreamCompanies.summaryTracked", { defaultValue: "Tracked" })} />
                   <div className="h-10 w-px bg-border" />
                   <SummaryStat

@@ -162,11 +162,11 @@ function SharedWithMeInner() {
                   <Link
                     key={share.id}
                     href={`/shared-with-me/${share.id}`}
-                    className={`flex items-center gap-3 rounded-card border bg-tint-purple p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                    className={`flex items-center gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
                       !share.read ? "border-accent-purple" : "border-border"
                     }`}
                   >
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                       <EvaIcon name={ICON_BY_TYPE[share.contentType] ?? "share-outline"} size={18} />
                     </span>
                     <div className="min-w-0 flex-1">
@@ -199,8 +199,8 @@ function SharedWithMeInner() {
               {requests &&
                 requests.length > 0 &&
                 requests.map((req) => (
-                  <div key={req.id} className="flex items-center gap-3 rounded-card border border-border bg-tint-orange p-4 shadow-sm">
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-1 text-tint-orange-text">
+                  <div key={req.id} className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm">
+                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                       <EvaIcon name="people-outline" size={18} />
                     </span>
                     <div className="min-w-0 flex-1">

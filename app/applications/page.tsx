@@ -89,40 +89,16 @@ function stageLabel(t: (k: string, o?: Record<string, unknown>) => string, stage
   return t(`web:applications.stages.${stage.toLowerCase()}`, { defaultValue: stage });
 }
 
-// BUG FIX (product report: "most cards are white ... I want more designs
-// and colors ... differentiate them uniquely and also based on how
-// important they are in the work flow"): this already mapped each stage
-// to a tint for the small pill below, but the application CARD itself
-// stayed flat bg-surface-2 regardless of stage -- so an Offer and a
-// still-just-Applied row looked identical except for four words of pill
-// text. stageCardBg carries that same mapping onto the whole card (an
-// Offer literally is more important than an Applied, so it should read
-// that way at a glance); stagePillClass inverts to a neutral bg-surface-1
-// pill with the tint's own text color so the pill still stands out once
-// its backdrop is no longer plain white.
-function stageCardBg(stage: string) {
+function stageColor(stage: string) {
   switch (stage) {
     case "Offer":
-      return "bg-tint-mint";
+      return "bg-tint-mint text-tint-mint-text";
     case "Rejected":
-      return "bg-tint-rose";
+      return "bg-tint-rose text-tint-rose-text";
     case "Interviewing":
-      return "bg-tint-purple";
+      return "bg-tint-purple text-tint-purple-text";
     default:
-      return "bg-tint-orange";
-  }
-}
-
-function stagePillClass(stage: string) {
-  switch (stage) {
-    case "Offer":
-      return "bg-surface-1 text-tint-mint-text";
-    case "Rejected":
-      return "bg-surface-1 text-tint-rose-text";
-    case "Interviewing":
-      return "bg-surface-1 text-tint-purple-text";
-    default:
-      return "bg-surface-1 text-tint-orange-text";
+      return "bg-tint-orange text-tint-orange-text";
   }
 }
 
@@ -533,8 +509,8 @@ function InterviewsPageInner() {
               )}
 
               {proRequired && (
-                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                     <EvaIcon name="lock-outline" size={20} />
                   </span>
                   <h2 className="font-semibold text-primary">{t("web:applications.proRequiredTitle", { defaultValue: "Application Tracker requires a paid plan" })}</h2>
@@ -578,19 +554,19 @@ function InterviewsPageInner() {
 
               {analytics && analytics.total > 0 && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <div className="rounded-card border border-border bg-tint-orange p-4 text-center">
+                  <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
                     <p className="text-xl font-bold text-primary">{analytics.total}</p>
                     <p className="mt-1 text-xs text-hint">{t("web:applications.totalTracked", { defaultValue: "Tracked" })}</p>
                   </div>
-                  <div className="rounded-card border border-border bg-tint-mint p-4 text-center">
+                  <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
                     <p className="text-xl font-bold text-primary">{analytics.response_rate ?? "—"}{analytics.response_rate !== null ? "%" : ""}</p>
                     <p className="mt-1 text-xs text-hint">{t("web:applications.responseRate", { defaultValue: "Response rate" })}</p>
                   </div>
-                  <div className="rounded-card border border-border bg-tint-purple p-4 text-center">
+                  <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
                     <p className="text-xl font-bold text-primary">{analytics.avg_days_to_interview ?? "—"}</p>
                     <p className="mt-1 text-xs text-hint">{t("web:applications.avgDaysToInterview", { defaultValue: "Avg. days to interview" })}</p>
                   </div>
-                  <div className="rounded-card border border-border bg-tint-rose p-4 text-center">
+                  <div className="rounded-card border border-border bg-surface-2 p-4 text-center">
                     <p className="text-xl font-bold text-primary">{analytics.stale_applications.length}</p>
                     <p className="mt-1 text-xs text-hint">{t("web:applications.staleApplications", { defaultValue: "Gone quiet" })}</p>
                   </div>
@@ -613,10 +589,10 @@ function InterviewsPageInner() {
                     <div key={section.label} className="flex flex-col gap-3">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">{section.label}</h2>
                       {section.items.map((app) => (
-                        <div key={app.id} className={`flex flex-col gap-3 rounded-card border border-border p-4 ${stageCardBg(app.stage)}`}>
+                        <div key={app.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4">
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="flex items-center gap-3">
-                              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-1 text-primary font-semibold">
+                              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text font-semibold">
                                 {app.company?.[0]?.toUpperCase() || "?"}
                               </span>
                               <div>
@@ -627,7 +603,7 @@ function InterviewsPageInner() {
                                 </p>
                               </div>
                             </div>
-                            <span className={`inline-flex items-center rounded-pill px-2.5 py-1 text-xs font-medium ${stagePillClass(app.stage)}`}>
+                            <span className={`inline-flex items-center rounded-pill px-2.5 py-1 text-xs font-medium ${stageColor(app.stage)}`}>
                               {stageLabel(t, app.stage)}
                             </span>
                           </div>
@@ -750,10 +726,10 @@ function SessionRow({ session, typeLabel }: { session: Session; typeLabel: (t: s
   return (
     <Link
       href={sessionHref(session)}
-      className="flex items-center justify-between gap-4 rounded-card border border-border bg-tint-purple p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+      className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 transition hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className="flex items-center gap-3">
-        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
           <EvaIcon name={session.has_video ? "mic-outline" : "clipboard-outline"} size={18} />
         </span>
         <div>
@@ -948,7 +924,7 @@ function ConnectorCard({
   const { t } = useTranslation();
   const isConnected = !!connectedAs;
   return (
-    <div className={`flex items-center gap-3 rounded-card border border-border p-4 ${isConnected ? "bg-tint-mint" : "bg-surface-2"}`}>
+    <div className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4">
       <CompanyLogoAvatar logoUrl={providerLogoUrl(logoKey)} companyName={label} size={36} />
       <div className="min-w-0 flex-1">
         <h3 className="font-medium text-primary">{label}</h3>

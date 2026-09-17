@@ -44,12 +44,7 @@ export default function MyRatingsPage() {
           ) : (
             <div className="flex flex-col gap-3">
               {ratings.map((r) => (
-                <div
-                  key={r.id}
-                  className={`flex flex-col gap-2 rounded-card border border-border p-4 ${
-                    r.score >= 4 ? "bg-tint-mint" : r.score === 3 ? "bg-tint-orange" : "bg-tint-rose"
-                  }`}
-                >
+                <div key={r.id} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-0.5">
                       {[1, 2, 3, 4, 5].map((n) => (

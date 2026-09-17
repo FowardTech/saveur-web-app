@@ -419,7 +419,7 @@ export default function ResumeBuilderPage() {
               what used to be an unlabeled stack of same-weight cards, so
               a first-time visitor can tell at a glance what order to do
               things in. */}
-          <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-orange p-6">
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <StepHeading
               step={1}
               title={t("web:resume.builder.importFromTitle", { defaultValue: "Import your resume" }).toString()}
@@ -466,7 +466,7 @@ export default function ResumeBuilderPage() {
               CTAs) so all three ways to produce a resume live under one
               clearly labeled step instead of being scattered as
               unlabeled buttons above the form. */}
-          <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-purple p-6">
+          <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
             <StepHeading
               step={2}
               title={t("web:resume.builder.generateSectionTitle", { defaultValue: "Generate an AI-tailored resume" }).toString()}
@@ -577,7 +577,7 @@ export default function ResumeBuilderPage() {
                 title={t("web:resume.builder.yourResume", { defaultValue: "Your resume" }).toString()}
                 subtitle={t("web:resume.builder.yourResumeSubtitle", { defaultValue: "Review what we have, check your ATS score, and fine-tune any section." }).toString()}
               />
-              <div className="flex items-center justify-between rounded-card border border-border bg-tint-mint p-5">
+              <div className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-5">
                 <div>
                   {resume.ats_score == null && !atsResult && <p className="text-sm text-hint">{t("web:resume.builder.noAtsScore", { defaultValue: "No ATS score yet" })}</p>}
                 </div>
@@ -604,7 +604,7 @@ export default function ResumeBuilderPage() {
               )}
 
               {atsResult && (
-                <div className="rounded-card border border-border bg-tint-mint p-5">
+                <div className="rounded-card border border-border bg-surface-2 p-5">
                   <h3 className="text-sm font-semibold text-primary">{t("web:resume.builder.atsTips", { defaultValue: "Suggestions to improve your score" })}</h3>
                   <ul className="mt-2 flex flex-col gap-1.5">
                     {(atsResult.suggestions || []).map((s, i) => (
@@ -897,7 +897,7 @@ export default function ResumeBuilderPage() {
                 step={4}
                 title={t("web:resume.builder.aiBulletRewrite", { defaultValue: "Improve a bullet with AI" }).toString()}
               />
-              <div ref={rewriteCardRef} className="flex flex-col gap-3 rounded-card border border-border bg-tint-rose p-5">
+              <div ref={rewriteCardRef} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
                 <div>
                   <p className="text-sm text-hint">
                     {activeBulletTarget

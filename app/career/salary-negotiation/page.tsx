@@ -162,8 +162,8 @@ function SalaryNegotiationPageInner() {
           />
 
           {proRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:career.salaryNegotiation.proRequiredTitle", { defaultValue: "Salary Negotiation requires a paid plan" })}</h2>
@@ -174,7 +174,7 @@ function SalaryNegotiationPageInner() {
           {error && <p className="text-sm text-danger">{error}</p>}
 
           {!scenario && !proRequired && (
-            <div className="rounded-card border border-border bg-tint-orange p-6 text-center">
+            <div className="rounded-card border border-border bg-surface-2 p-6 text-center">
               <p className="text-sm text-hint">{t("web:career.salaryNegotiation.startPrompt", { defaultValue: "Start a scenario to get a realistic offer and practice your ask." })}</p>
               <Button onClick={handleStart} disabled={loading} className="mt-4">
                 {loading ? t("web:career.salaryNegotiation.generatingScenario", { defaultValue: "Generating scenario…" }) : t("web:career.salaryNegotiation.startPractice", { defaultValue: "Start negotiation practice" })}

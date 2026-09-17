@@ -123,15 +123,9 @@ const GENERAL_NEXT_STEPS: { icon: EvaIconName; titleKey: string; titleDefault: s
 ];
 
 const stepBadge: Record<PlanStep["status"], string> = {
-  completed: "bg-surface-1 text-tint-mint-text",
+  completed: "bg-tint-mint text-tint-mint-text",
   current: "bg-brand/10 text-brand",
   locked: "bg-surface-3 text-hint",
-};
-
-const stepCardBg: Record<PlanStep["status"], string> = {
-  completed: "bg-tint-mint",
-  current: "bg-tint-orange",
-  locked: "bg-surface-2",
 };
 
 export default function WhatsNextPage() {
@@ -313,8 +307,8 @@ export default function WhatsNextPage() {
         <AppShell>
           <div className="mx-auto flex max-w-6xl flex-col gap-6">
             <PageHeader title={t("web:whatsNext.title", { defaultValue: "What's Next" })} />
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:whatsNext.premiumRequiredTitle", { defaultValue: "What's Next is a Premium feature" })}</h2>
@@ -367,8 +361,8 @@ export default function WhatsNextPage() {
               // No tracked offer yet — real general job-search content
               // instead of a form that presumes an offer already exists.
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                     <EvaIcon name="compass-outline" size={20} />
                   </span>
                   <h2 className="font-semibold text-primary">{t("web:whatsNext.general.title", { defaultValue: "No offer yet — here's what to focus on" })}</h2>
@@ -379,14 +373,8 @@ export default function WhatsNextPage() {
                   </p>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {GENERAL_NEXT_STEPS.map((step, i) => (
-                    <Link
-                      key={step.href}
-                      href={step.href}
-                      className={`flex flex-col gap-2 rounded-card border border-border p-4 transition hover:border-brand/40 ${
-                        ["bg-tint-orange", "bg-tint-mint", "bg-tint-purple", "bg-tint-rose"][i % 4]
-                      }`}
-                    >
+                  {GENERAL_NEXT_STEPS.map((step) => (
+                    <Link key={step.href} href={step.href} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 transition hover:border-brand/40">
                       <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand/10 text-brand">
                         <EvaIcon name={step.icon} size={16} />
                       </span>
@@ -401,8 +389,8 @@ export default function WhatsNextPage() {
                 </button>
               </div>
             ) : offers.length === 1 ? (
-              <div className="flex flex-col items-center gap-4 rounded-card border border-border bg-tint-purple p-8 text-center">
-                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
+              <div className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface-2 p-8 text-center">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                   <EvaIcon name="compass-outline" size={26} />
                 </span>
                 <p className="max-w-sm text-sm text-hint">
@@ -420,7 +408,7 @@ export default function WhatsNextPage() {
               // ever handled exactly one and otherwise left the form
               // blank with no explanation).
               <div className="flex flex-col gap-3">
-                <div className="flex flex-col items-start gap-1.5 rounded-card border border-border bg-tint-orange p-5">
+                <div className="flex flex-col items-start gap-1.5 rounded-card border border-border bg-surface-2 p-5">
                   <h2 className="font-semibold text-primary">{t("web:whatsNext.picker.title", { defaultValue: "You have {{count}} offers — which one first?", count: offers.length })}</h2>
                   <p className="text-sm text-hint">
                     {t("web:whatsNext.picker.subtitle", { defaultValue: "You can build a plan for one offer at a time — pick another later from \"Start over\"." })}
@@ -431,9 +419,7 @@ export default function WhatsNextPage() {
                     key={`${offer.company}-${offer.role}-${i}`}
                     type="button"
                     onClick={() => pickOffer(offer)}
-                    className={`flex items-center justify-between gap-3 rounded-card border border-border p-4 text-left transition hover:border-brand/40 ${
-                      ["bg-tint-mint", "bg-tint-purple", "bg-tint-rose", "bg-tint-orange"][i % 4]
-                    }`}
+                    className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:border-brand/40"
                   >
                     <div>
                       <p className="text-sm font-semibold text-primary">{offer.role}</p>
@@ -449,7 +435,7 @@ export default function WhatsNextPage() {
             )
           ) : (
             <>
-              <div className="flex items-start justify-between rounded-card border border-border bg-tint-purple p-5">
+              <div className="flex items-start justify-between rounded-card border border-border bg-surface-2 p-5">
                 <div>
                   <p className="text-xs text-hint">{t("web:whatsNext.offerLabel", { defaultValue: "Offer" })}</p>
                   <p className="mt-0.5 font-semibold text-primary">{plan.role}</p>
@@ -464,7 +450,7 @@ export default function WhatsNextPage() {
                 <h2 className="font-semibold text-primary">{t("web:whatsNext.negotiateTitle", { defaultValue: "Negotiate your offer" })}</h2>
                 <p className="text-sm text-hint">{t("web:whatsNext.negotiateDescription", { defaultValue: "Concrete talking points for this offer — say them in your own words." })}</p>
                 {plan.negotiation_points.map((point, i) => (
-                  <div key={i} className="rounded-card border border-border bg-tint-orange p-4">
+                  <div key={i} className="rounded-card border border-border bg-surface-2 p-4">
                     <p className="text-sm font-semibold text-primary">{point.title}</p>
                     <p className="mt-1 text-sm text-hint">{point.script}</p>
                   </div>
@@ -480,7 +466,7 @@ export default function WhatsNextPage() {
               <div className="flex flex-col gap-2">
                 <h2 className="font-semibold text-primary">{t("web:whatsNext.checklistTitle", { defaultValue: "Before you start" })}</h2>
                 <p className="text-sm text-hint">{t("web:whatsNext.checklistProgress", { defaultValue: "{{done}} of {{total}} done", done: plan.checklist_done_count, total: plan.checklist_total_count })}</p>
-                <div className="flex flex-col divide-y divide-border rounded-card border border-border bg-tint-mint">
+                <div className="flex flex-col divide-y divide-border rounded-card border border-border bg-surface-2">
                   {plan.checklist.map((item) => {
                     const done = item.status === "done";
                     return (
@@ -517,7 +503,7 @@ export default function WhatsNextPage() {
 
                 <div className="flex flex-col gap-3">
                   {plan.ninety_day_plan.map((step) => (
-                    <div key={step.order} className={`flex items-start gap-4 rounded-card border border-border p-4 ${stepCardBg[step.status]}`}>
+                    <div key={step.order} className="flex items-start gap-4 rounded-card border border-border bg-surface-2 p-4">
                       <span className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${stepBadge[step.status]}`}>
                         {step.status === "completed" ? <EvaIcon name="checkmark-outline" size={16} /> : step.status === "locked" ? <EvaIcon name="lock-outline" size={14} /> : step.order}
                       </span>
