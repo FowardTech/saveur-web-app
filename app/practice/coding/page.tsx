@@ -26,9 +26,23 @@ interface CodingProblem {
 }
 
 const difficultyTint: Record<string, string> = {
-  beginner: "bg-tint-mint text-tint-mint-text",
-  intermediate: "bg-tint-orange text-tint-orange-text",
-  advanced: "bg-tint-rose text-tint-rose-text",
+  beginner: "bg-surface-1 text-tint-mint-text",
+  intermediate: "bg-surface-1 text-tint-orange-text",
+  advanced: "bg-surface-1 text-tint-rose-text",
+};
+
+// BUG FIX (product report: "most cards are white ... differentiate them
+// uniquely and also based on how important they are in the work flow"):
+// difficultyTint above already colored the small pill, but the problem
+// CARD itself stayed flat bg-surface-2 for every difficulty -- carrying
+// that same mapping onto the card (difficultyCardBg) means a harder
+// problem visually reads as more advanced before you even read the pill.
+// difficultyTint's own bg was switched to bg-surface-1 (see above) since
+// a tint-colored pill would otherwise blend into a same-tint card.
+const difficultyCardBg: Record<string, string> = {
+  beginner: "bg-tint-mint",
+  intermediate: "bg-tint-orange",
+  advanced: "bg-tint-rose",
 };
 
 export default function CodingPracticePage() {
@@ -88,10 +102,10 @@ export default function CodingPracticePage() {
 
           <Link
             href="/practice/coding/projects"
-            className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 hover:border-brand/40"
+            className="flex items-center justify-between rounded-card border border-border bg-tint-purple p-4 hover:border-brand/40"
           >
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
                 <EvaIcon name="folder-outline" size={16} />
               </span>
               <div>
@@ -105,8 +119,8 @@ export default function CodingPracticePage() {
           </Link>
 
           {addonRequired && (
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:practice.coding.addonRequiredTitle", { defaultValue: "Coding Practice is a paid add-on" })}</h2>
@@ -138,7 +152,9 @@ export default function CodingPracticePage() {
                 <Link
                   key={p.slug}
                   href={`/practice/coding/${p.slug}`}
-                  className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className={`flex flex-col gap-3 rounded-card border border-border p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                    difficultyCardBg[p.difficulty] ?? "bg-surface-2"
+                  }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className={`rounded-pill px-2.5 py-1 text-xs font-medium ${difficultyTint[p.difficulty] ?? "bg-surface-3 text-hint"}`}>
@@ -151,7 +167,7 @@ export default function CodingPracticePage() {
                     <p className="mt-1 text-xs text-hint">{p.category}</p>
                   </div>
                   {p.status && (
-                    <span className="w-fit rounded-pill bg-tint-mint px-2.5 py-1 text-xs font-medium text-tint-mint-text">
+                    <span className="w-fit rounded-pill bg-surface-1 px-2.5 py-1 text-xs font-medium text-tint-mint-text">
                       {p.status}
                     </span>
                   )}

@@ -341,8 +341,8 @@ function CourseSessionInner() {
     return (
       <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
         <BackLink href={backHref} t={t} />
-        <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+        <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
             <EvaIcon name="lock-outline" size={20} />
           </span>
           <h1 className="font-semibold text-primary">

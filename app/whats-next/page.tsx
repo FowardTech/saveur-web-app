@@ -307,8 +307,8 @@ export default function WhatsNextPage() {
         <AppShell>
           <div className="mx-auto flex max-w-6xl flex-col gap-6">
             <PageHeader title={t("web:whatsNext.title", { defaultValue: "What's Next" })} />
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:whatsNext.premiumRequiredTitle", { defaultValue: "What's Next is a Premium feature" })}</h2>
@@ -361,8 +361,8 @@ export default function WhatsNextPage() {
               // No tracked offer yet — real general job-search content
               // instead of a form that presumes an offer already exists.
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-purple p-6">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-purple-text">
                     <EvaIcon name="compass-outline" size={20} />
                   </span>
                   <h2 className="font-semibold text-primary">{t("web:whatsNext.general.title", { defaultValue: "No offer yet — here's what to focus on" })}</h2>

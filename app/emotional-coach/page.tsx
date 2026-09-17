@@ -107,8 +107,8 @@ export default function EmotionalCoachPage() {
               title={t("web:emotionalCoach.title", { defaultValue: "Emotional Coach" })}
               subtitle={t("web:emotionalCoach.subtitle", { defaultValue: "A supportive check-in for how your job search is really going." })}
             />
-            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-rose text-tint-rose-text">
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-tint-rose p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-rose-text">
                 <EvaIcon name="heart-outline" size={20} />
               </span>
               <h2 className="font-semibold text-primary">{t("web:emotionalCoach.premiumRequiredTitle", { defaultValue: "Emotional Coach is a Premium feature" })}</h2>

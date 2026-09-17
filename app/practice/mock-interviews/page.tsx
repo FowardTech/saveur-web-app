@@ -347,7 +347,9 @@ function MockInterviewSetupInner() {
           {!session && isFreeTier && remainingFreeSessions !== null && !selectedTypeAddonOwned && (
             <Link
               href="/subscription"
-              className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3 transition hover:border-brand/50"
+              className={`flex items-center justify-between gap-3 rounded-card border border-border px-4 py-3 transition hover:border-brand/50 ${
+                remainingFreeSessions > 0 ? "bg-tint-orange" : "bg-tint-rose"
+              }`}
             >
               <div className="flex items-center gap-3">
                 <EvaIcon name="flash-outline" size={18} className="text-brand" />
@@ -471,7 +473,7 @@ function MockInterviewSetupInner() {
                 {hasNoLocalMatch && (
                   <div className="mt-1">
                     {aiSearchState === "confirming" && aiSearchResult ? (
-                      <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4">
+                      <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-4">
                         <div className="flex items-center gap-2.5">
                           <CompanyLogoAvatar logoUrl={aiSearchResult.logoUrl} companyName={aiSearchResult.name} size={28} />
                           <span className="font-semibold text-primary">{aiSearchResult.name}</span>
@@ -571,9 +573,9 @@ function MockInterviewSetupInner() {
               (app/practice/interview/[id]/page.tsx) on success instead of
               landing here at all. */}
           {session && (
-            <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-mint p-6">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-mint-text">
                   <EvaIcon name="checkmark-circle-2-outline" size={22} />
                 </span>
                 <div>
