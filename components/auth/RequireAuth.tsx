@@ -22,7 +22,7 @@ import { needsOnboarding } from "@/lib/types";
 export function RequireAuth({ children, label }: { children: React.ReactNode; label?: string }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const { firebaseUser, profile, loading } = useAuth();
+  const { firebaseUser, profile, loading, emailVerified } = useAuth();
 
   useEffect(() => {
     if (loading) return;
@@ -30,8 +30,18 @@ export function RequireAuth({ children, label }: { children: React.ReactNode; la
       router.replace("/login");
     } else if (needsOnboarding(profile)) {
       router.replace("/onboarding");
+    } else if (!emailVerified) {
+      // BUG FIX (product report: "Why is the user allowed to enter the web
+      // app dashboard when they have not verified their email? You need
+      // to fix that now") -- every RequireAuth-wrapped feature page now
+      // gates the same way /dashboard's own inline check does (see that
+      // page's identical effect) -- see app/verify-email/page.tsx's own
+      // header comment for the full "why". emailVerified is only ever
+      // false for a password-signup account (Google/LinkedIn always
+      // report verified), so this never touches a federated sign-in.
+      router.replace("/verify-email");
     }
-  }, [loading, firebaseUser, profile, router]);
+  }, [loading, firebaseUser, profile, emailVerified, router]);
 
   if (loading || !firebaseUser) {
     return (

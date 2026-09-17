@@ -44,7 +44,7 @@ function useGreeting() {
 export default function DashboardPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { firebaseUser, profile, loading } = useAuth();
+  const { firebaseUser, profile, loading, emailVerified } = useAuth();
   const greeting = useGreeting();
 
   useEffect(() => {
@@ -53,8 +53,17 @@ export default function DashboardPage() {
       router.replace("/login");
     } else if (needsOnboarding(profile)) {
       router.replace("/onboarding");
+    } else if (!emailVerified) {
+      // BUG FIX (product report: "Why is the user allowed to enter the web
+      // app dashboard when they have not verified their email? You need
+      // to fix that now") -- see app/verify-email/page.tsx and
+      // components/auth/RequireAuth.tsx (every OTHER protected page) for
+      // the matching gate. This page doesn't use RequireAuth itself (see
+      // that component's own header comment), so it needs the identical
+      // check inline.
+      router.replace("/verify-email");
     }
-  }, [loading, firebaseUser, profile, router]);
+  }, [loading, firebaseUser, profile, emailVerified, router]);
 
   const firstName = profile?.firstName || profile?.name?.split(" ")[0] || t("web:dashboard.defaultName", { defaultValue: "there" });
 
