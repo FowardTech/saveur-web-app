@@ -195,9 +195,9 @@ export default function ScheduleInterviewPage() {
           />
 
           {scheduled ? (
-            <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+            <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-mint p-6">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-1 text-tint-mint-text">
                   <EvaIcon name="checkmark-circle-2-outline" size={22} />
                 </span>
                 <div>
@@ -353,7 +353,7 @@ export default function ScheduleInterviewPage() {
                 {hasNoLocalMatch && (
                   <div className="mt-1">
                     {aiSearchState === "confirming" && aiSearchResult ? (
-                      <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4">
+                      <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-4">
                         <div className="flex items-center gap-2.5">
                           <CompanyLogoAvatar logoUrl={aiSearchResult.logoUrl} companyName={aiSearchResult.name} size={28} />
                           <span className="font-semibold text-primary">{aiSearchResult.name}</span>

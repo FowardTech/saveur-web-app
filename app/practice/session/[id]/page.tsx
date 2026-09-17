@@ -358,7 +358,7 @@ export default function PracticeSessionDetailPage() {
 
           {session && (
             <>
-              <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+              <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-6">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <h1 className="text-lg font-bold text-primary">
@@ -380,7 +380,7 @@ export default function PracticeSessionDetailPage() {
               </div>
 
               {session.mode === "video" && (
-                <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-mint p-6">
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                       {t("web:practice.session.videoReplay", { defaultValue: "Video replay" })}
@@ -501,7 +501,7 @@ export default function PracticeSessionDetailPage() {
               {feedback && feedback.status === "ready" && (
                 <>
                   {feedback.summary && (
-                    <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                    <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-orange p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:practice.session.summary", { defaultValue: "Summary" })}
                       </h2>
@@ -509,7 +509,7 @@ export default function PracticeSessionDetailPage() {
                     </div>
                   )}
 
-                  <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                  <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-mint p-6">
                     <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                       {t("web:practice.session.scores", { defaultValue: "Skill scores" })}
                     </h2>
@@ -529,7 +529,7 @@ export default function PracticeSessionDetailPage() {
                   </div>
 
                   {session.mode === "video" && feedback.camera && feedback.camera.confidence != null && (
-                    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                    <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-purple p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:practice.session.cameraAnalysis", { defaultValue: "Camera analysis" })}
                       </h2>
@@ -557,7 +557,7 @@ export default function PracticeSessionDetailPage() {
                   )}
 
                   {feedback.star_breakdown && feedback.star_breakdown.length > 0 && (
-                    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                    <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-orange p-6">
                       <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                         {t("web:practice.session.starBreakdown", { defaultValue: "STAR breakdown" })}
                       </h2>
@@ -576,7 +576,7 @@ export default function PracticeSessionDetailPage() {
                   {(feedback.strengths?.length > 0 || feedback.improvements?.length > 0) && (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       {feedback.strengths?.length > 0 && (
-                        <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                        <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-mint p-6">
                           <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                             {t("web:practice.session.strengths", { defaultValue: "Strengths" })}
                           </h2>
@@ -591,7 +591,7 @@ export default function PracticeSessionDetailPage() {
                         </div>
                       )}
                       {feedback.improvements?.length > 0 && (
-                        <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-6">
+                        <div className="flex flex-col gap-2 rounded-card border border-border bg-tint-rose p-6">
                           <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                             {t("web:practice.session.improvements", { defaultValue: "Areas to improve" })}
                           </h2>

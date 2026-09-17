@@ -319,7 +319,7 @@ export default function CodingProblemDetailPage() {
               </div>
 
               {testCases.length > 0 && (
-                <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                <div className="flex flex-col gap-3 rounded-card border border-border bg-tint-mint p-6">
                   <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                     {t("web:practice.coding.detail.examples", { defaultValue: "Examples" })}
                   </h2>
@@ -341,7 +341,7 @@ export default function CodingProblemDetailPage() {
               {/* Real interactive editor — replaces the old "coming to web
                   in a future update" placeholder. */}
               {starterLanguages.length > 0 && (
-                <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+                <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-purple p-6">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                       {t("web:practice.coding.detail.yourCode", { defaultValue: "Your Code" })}
@@ -468,7 +468,7 @@ export default function CodingProblemDetailPage() {
 
               {/* AI Code Review */}
               {starterLanguages.length > 0 && (
-                <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6">
+                <div className="flex flex-col gap-4 rounded-card border border-border bg-tint-orange p-6">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
                       {t("web:practice.coding.detail.aiCodeReview", { defaultValue: "AI Code Review" })}

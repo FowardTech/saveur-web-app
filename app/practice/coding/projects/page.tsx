@@ -179,12 +179,17 @@ export default function CodingProjectsPage() {
           {projects && projects.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((p) => (
-                <div key={p.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <div
+                  key={p.id}
+                  className={`flex flex-col gap-3 rounded-card border border-border p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                    p.projectType === "web" ? "bg-tint-purple" : "bg-tint-mint"
+                  }`}
+                >
                   <Link href={`/practice/coding/projects/${p.id}`} className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <span
                         className={`rounded-pill px-2.5 py-1 text-xs font-medium ${
-                          p.projectType === "web" ? "bg-tint-purple text-tint-purple-text" : "bg-tint-mint text-tint-mint-text"
+                          p.projectType === "web" ? "bg-surface-1 text-tint-purple-text" : "bg-surface-1 text-tint-mint-text"
                         }`}
                       >
                         {p.projectType === "web"
