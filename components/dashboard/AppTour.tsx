@@ -61,6 +61,54 @@ const STEPS: TourStep[] = [
     bodyKey: "web:tour.welcomeBody",
     bodyDefault: "Your career coach, job search, and interview prep — all in one app. Let's take a quick look around your dashboard.",
   },
+  // BUG FIX (product report: "The tour guide only pointed out few things
+  // in the web dashboard it did not even point out the features in the
+  // sidebar and the navbar"): the tour used to only cover four sections
+  // inside the dashboard's own main content area and said nothing at all
+  // about the persistent shell around it -- the sidebar (every tool in
+  // the app lives behind one of its links) and the navbar (search,
+  // notifications, account menu) are just as much "features" as anything
+  // on the dashboard page itself, and a new user has no way to discover
+  // them from this tour alone. These four new steps point at the real
+  // `data-tour` anchors added to components/shell/Sidebar.tsx and
+  // Topbar.tsx. The sidebar is hidden below the `lg` breakpoint (a
+  // slide-over drawer instead) and the search bar hides below `sm` --
+  // both anchors then measure as zero-size, which measureStep() already
+  // treats as "not found" and auto-skips, so narrow-viewport visitors
+  // simply don't see those two specific steps rather than the tour
+  // breaking or spotlighting nothing.
+  {
+    selector: '[data-tour="sidebar-nav"]',
+    icon: "menu-2-outline",
+    titleKey: "web:tour.sidebarTitle",
+    titleDefault: "Every tool, one click away",
+    bodyKey: "web:tour.sidebarBody",
+    bodyDefault: "Mock interviews, coding practice, resume tools, career roadmap, job tracker, and more — your whole toolkit lives here in the sidebar.",
+  },
+  {
+    selector: '[data-tour="navbar-search"]',
+    icon: "search-outline",
+    titleKey: "web:tour.searchTitle",
+    titleDefault: "Search anything",
+    bodyKey: "web:tour.searchBody",
+    bodyDefault: "Jump straight to any page or tool in Saveur without hunting through the sidebar.",
+  },
+  {
+    selector: '[data-tour="navbar-notifications"]',
+    icon: "bell-outline",
+    titleKey: "web:tour.notificationsTitle",
+    titleDefault: "Stay in the loop",
+    bodyKey: "web:tour.notificationsBody",
+    bodyDefault: "Job alerts, coaching nudges, and account updates all land here.",
+  },
+  {
+    selector: '[data-tour="navbar-profile"]',
+    icon: "person-outline",
+    titleKey: "web:tour.profileTitle",
+    titleDefault: "Your account",
+    bodyKey: "web:tour.profileBody",
+    bodyDefault: "Manage your profile, subscription, and settings, or sign out, from here.",
+  },
   {
     // BUG FIX (task #43 redundancy audit): this used to be two consecutive
     // steps -- this one saying "keeps you pointed at... jumping into a

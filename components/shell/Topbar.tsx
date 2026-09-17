@@ -33,8 +33,15 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
         )}
       </div>
 
+      {/* data-tour anchors for AppTour.tsx (product report: "The tour guide
+          ... did not even point out the features in the sidebar and the
+          navbar") -- SiteSearch is hidden below the `sm` breakpoint, same
+          as here, so its tour step auto-skips on narrow viewports the same
+          way AppTour.tsx already skips any step whose target has zero
+          size; NotificationBell/UserMenu are always visible when signed
+          in, so those two steps are reliable on every viewport. */}
       {!loading && isSignedIn && (
-        <div className="hidden flex-1 justify-center sm:flex">
+        <div data-tour="navbar-search" className="hidden flex-1 justify-center sm:flex">
           <SiteSearch />
         </div>
       )}
@@ -55,8 +62,12 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
         {!loading && isSignedIn && (
           <>
             <ThemeToggle />
-            <NotificationBell />
-            <UserMenu />
+            <span data-tour="navbar-notifications">
+              <NotificationBell />
+            </span>
+            <span data-tour="navbar-profile">
+              <UserMenu />
+            </span>
           </>
         )}
       </div>

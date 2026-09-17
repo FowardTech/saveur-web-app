@@ -305,7 +305,14 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </span>
       </div>
 
-      <nav className="flex-1 overflow-y-auto scrollbar-hide px-3" onClick={onNavigate}>
+      {/* data-tour anchor for AppTour.tsx's "sidebar-nav" step (product
+          report: "The tour guide only pointed out few things in the web
+          dashboard it did not even point out the features in the sidebar
+          and the navbar") -- every real nav item lives inside this <nav>,
+          so a single spotlight around the whole thing (rather than one
+          step per link) covers "the sidebar" as a feature area without
+          needing a step per nav item. */}
+      <nav data-tour="sidebar-nav" className="flex-1 overflow-y-auto scrollbar-hide px-3" onClick={onNavigate}>
         <div className="flex flex-col gap-0.5">
           {primaryNav.map((item, i) =>
             isNavGroup(item) ? (
