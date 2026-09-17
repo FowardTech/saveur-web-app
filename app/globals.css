@@ -27,7 +27,14 @@
      distinct from this via border-border + shadow-sm, same as most
      white-on-white SaaS UIs -- not by making the page itself off-white. */
   --page: #ffffff;
-  --surface-1: #f6faf8;
+  /* Product report: "Why are you using this color for me in the app:
+     #f6faf8. Thats not gray." -- #f6faf8 had a faint mint/green tint
+     (R246 G250 B248) instead of a true neutral gray. Same red channel
+     (246) so the lightness/step relative to --surface-2 (white) and
+     --surface-3 (#f0f0f0) below is unchanged -- only the tint is gone
+     (R=G=B now). Mirrors the identical fix to color-basic-200 in the
+     mobile app's constants/theme/appTheme.json. */
+  --surface-1: #f6f6f6;
   --surface-2: #ffffff;
   --surface-3: #f0f0f0;
   --surface-4: #e0e0e0;
