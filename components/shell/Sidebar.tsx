@@ -84,12 +84,22 @@ function NavLink({
     <Link
       href={href}
       // BUG FIX (product report: "I want the font weight for the sidebar
-      // elements to be bolder"): inactive rows had no font-weight class at
-      // all (the browser default, 400) with only the active row bumped to
-      // font-medium -- bumping both a step keeps that same active/inactive
-      // contrast while making every row read heavier.
+      // elements to be bolder", then follow-up "I thought I asked you to
+      // make the font weight of the web app sidebar bolder" after the
+      // first pass had no visible effect): inactive rows had no
+      // font-weight class at all (the browser default, 400). The first
+      // fix bumped active rows to font-semibold (600) -- but this app's
+      // self-hosted Plus Jakarta Sans (app/layout.tsx's localFont() call)
+      // only registers 400/500/700 .woff2 files, mirroring mobile's three
+      // named cuts (Regular/Medium/Bold); 600 was never one of them, so
+      // requesting font-semibold asked the browser to fake-match a weight
+      // that isn't actually loaded, which renders unreliably (often
+      // indistinguishable from 500) instead of visibly bolder. font-bold
+      // (700) IS one of the three registered weights, so it's the
+      // reliable choice for an active row that needs to read as
+      // meaningfully heavier than font-medium (500) on inactive ones.
       className={`flex items-center gap-3 rounded-pill px-3 py-2 text-sm transition ${
-        active ? "bg-brand/10 text-brand font-semibold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
+        active ? "bg-brand/10 text-brand font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
       }`}
     >
       <NavIconBadge icon={icon} index={gradientIndex} />
@@ -119,9 +129,9 @@ function NavGroupItem({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        // See NavLink's own comment on this same font-weight bump.
+        // See NavLink's own comment on this same font-weight fix.
         className={`flex w-full items-center gap-3 rounded-pill px-3 py-2 text-sm transition ${
-          hasActiveChild ? "text-brand font-semibold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
+          hasActiveChild ? "text-brand font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
         }`}
       >
         <NavIconBadge icon={item.icon} index={gradientIndex} />
