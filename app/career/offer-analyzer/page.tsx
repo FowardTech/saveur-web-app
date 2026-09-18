@@ -77,6 +77,14 @@ export default function OfferAnalyzerPage() {
         offered_salary: Number(offeredSalary),
         benefits: benefits.trim(),
       });
+      const range = data.fair_market_range;
+      if (range == null || range.low == null || range.high == null) {
+        // Backend now fails with a real error status instead of this shape
+        // (see the hasRange comment below), but guard here too in case an
+        // older cached response or a future regression slips one through.
+        setError(t("web:career.offerAnalyzer.analyzeFailedDefault", { defaultValue: "Couldn't analyze this offer right now. Please try again." }));
+        return;
+      }
       setResult(data);
     } catch (err) {
       const apiErr = err as ApiError;
@@ -92,6 +100,13 @@ export default function OfferAnalyzerPage() {
 
   const assessment = result?.offer_assessment || "at_market";
   const fmr = result?.fair_market_range;
+  // BUG FIX (product report: "Why is the amount blank its just showing
+  // dashes instead of the market range"): the backend now fails loudly
+  // (502) instead of returning a 200 with fair_market_range.low/high set
+  // to null, but this guard stays as defense-in-depth -- a result whose
+  // range doesn't actually have numbers in it isn't a successful result,
+  // so it shouldn't render the "—" placeholder card as if it were one.
+  const hasRange = fmr != null && fmr.low != null && fmr.high != null;
 
   return (
     <RequireAuth>
@@ -159,11 +174,11 @@ export default function OfferAnalyzerPage() {
             </form>
           )}
 
-          {result && fmr && (
+          {result && hasRange && fmr && (
             <div className="rounded-card border border-border bg-surface-2 p-6">
               <p className="text-sm font-medium text-hint">{t("web:career.offerAnalyzer.fairMarketRange", { defaultValue: "Fair market range" })}</p>
               <p className="mt-1 text-3xl font-bold text-primary">
-                {fmr.low?.toLocaleString() ?? "—"} – {fmr.high?.toLocaleString() ?? "—"} {fmr.currency}
+                {fmr.low!.toLocaleString()} – {fmr.high!.toLocaleString()} {fmr.currency}
               </p>
 
               <span className={`mt-3 inline-flex items-center rounded-pill px-3 py-1 text-xs font-semibold ${ASSESSMENT_STYLE[assessment]}`}>
