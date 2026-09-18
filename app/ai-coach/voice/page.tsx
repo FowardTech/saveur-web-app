@@ -409,13 +409,33 @@ function VoiceCoachPageInner() {
   // intro rather than risk repeating it); false = genuinely first-ever
   // visit, still to be greeted.
   const hasRealCoachHistoryRef = useRef<boolean | null>(null);
+  // BUG FIX (product report: "This user is in free plan when he navigated
+  // to the AI coach he had access to this. This is not right. This
+  // feature is in a paid plan"): GET /api/v1/coach/messages is @require_pro
+  // on the backend, so a free-plan user's very first request here already
+  // comes back 402/403 -- but this catch used to swallow that silently
+  // (just falling back to hasRealCoachHistoryRef.current = true) instead
+  // of ever reading the error status. The page went on to render the full
+  // interactive orb screen and even speak the (purely local, no-backend)
+  // greeting out loud regardless -- the real @require_pro gate only ever
+  // fired reactively, later, once the user actually spoke and sendTurn()
+  // posted to /advice. A free-plan user could sit on this screen, tap the
+  // orb, and hear the coach greet them before ever seeing "this requires
+  // a paid plan." Checking the status here means that gate now fires the
+  // moment the screen loads, same as the proRequired check already does
+  // for a mid-conversation 402/403.
   useEffect(() => {
     apiClient
       .get<{ messages: unknown[] }>("/api/v1/coach/messages")
       .then((data) => {
         hasRealCoachHistoryRef.current = data.messages.length > 0;
       })
-      .catch(() => {
+      .catch((err) => {
+        const apiErr = err as ApiError;
+        if (apiErr.status === 402 || apiErr.status === 403) {
+          setProRequired(true);
+          return;
+        }
         hasRealCoachHistoryRef.current = true;
       });
   }, []);
