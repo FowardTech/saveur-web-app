@@ -83,8 +83,13 @@ function NavLink({
   return (
     <Link
       href={href}
+      // BUG FIX (product report: "I want the font weight for the sidebar
+      // elements to be bolder"): inactive rows had no font-weight class at
+      // all (the browser default, 400) with only the active row bumped to
+      // font-medium -- bumping both a step keeps that same active/inactive
+      // contrast while making every row read heavier.
       className={`flex items-center gap-3 rounded-pill px-3 py-2 text-sm transition ${
-        active ? "bg-brand/10 text-brand font-medium" : "text-hint hover:bg-surface-3 hover:text-primary"
+        active ? "bg-brand/10 text-brand font-semibold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
       }`}
     >
       <NavIconBadge icon={icon} index={gradientIndex} />
@@ -114,8 +119,9 @@ function NavGroupItem({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
+        // See NavLink's own comment on this same font-weight bump.
         className={`flex w-full items-center gap-3 rounded-pill px-3 py-2 text-sm transition ${
-          hasActiveChild ? "text-brand font-medium" : "text-hint hover:bg-surface-3 hover:text-primary"
+          hasActiveChild ? "text-brand font-semibold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
         }`}
       >
         <NavIconBadge icon={item.icon} index={gradientIndex} />
