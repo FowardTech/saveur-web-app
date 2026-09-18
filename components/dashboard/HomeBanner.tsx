@@ -73,14 +73,19 @@ export function HomeBanner() {
   // want uploading of image. Just like the way the homebanner for the
   // mobile has homebanner for all the 12 languages") — same base-image +
   // per-language-override upload as that mobile placement, see
-  // DashboardHeroConfig's own comment in lib/appConfigService.ts. A dark
-  // scrim keeps the title/subtitle/button legible over an arbitrary photo
-  // regardless of theme, and the decorative blur circles + illustration
-  // (which assume the built-in gradient) step aside so they don't clash
-  // with someone else's image.
+  // DashboardHeroConfig's own comment in lib/appConfigService.ts. The
+  // decorative blur circles + illustration (which assume the built-in
+  // gradient) step aside so they don't clash with someone else's image.
+  //
+  // BUG FIX (product report: "I want you to remove the dark overlay of
+  // this card so that the image behind can be seen more clearly"): this
+  // used to composite a dark scrim gradient over the image for
+  // title/subtitle/button legibility. Removed per that request — text
+  // legibility over an arbitrary photo is now handled with a text-shadow
+  // on the white text below instead of dimming the whole image.
   const sectionStyle = heroImageUrl
     ? {
-        backgroundImage: `linear-gradient(to bottom right, rgba(0,0,0,0.45), rgba(0,0,0,0.2)), url("${heroImageUrl}")`,
+        backgroundImage: `url("${heroImageUrl}")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }
@@ -107,10 +112,16 @@ export function HomeBanner() {
 
         <div className="relative flex items-center justify-between gap-4">
           <div className="flex max-w-lg flex-col items-start gap-3">
-            <h2 className={`text-2xl font-bold leading-tight ${heroImageUrl ? "text-white" : "text-primary"}`}>
+            <h2
+              className={`text-2xl font-bold leading-tight ${heroImageUrl ? "text-white" : "text-primary"}`}
+              style={heroImageUrl ? { textShadow: "0 1px 3px rgba(0,0,0,0.55)" } : undefined}
+            >
               {t("web:dashboard.homeBannerTitle", { defaultValue: "Keep building momentum." })}
             </h2>
-            <p className={`text-sm sm:text-base ${heroImageUrl ? "text-white/85" : "text-hint"}`}>
+            <p
+              className={`text-sm sm:text-base ${heroImageUrl ? "text-white/90" : "text-hint"}`}
+              style={heroImageUrl ? { textShadow: "0 1px 3px rgba(0,0,0,0.55)" } : undefined}
+            >
               {t("web:dashboard.homeBannerSubtitle", {
                 defaultValue:
                   "Try a mock interview today — matching you with an AI interviewer and instant feedback usually takes less than 10 minutes.",
