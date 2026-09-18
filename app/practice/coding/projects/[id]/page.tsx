@@ -369,49 +369,26 @@ export default function CodingProjectEditorPage() {
   // Product request: "when a user have created a project. There should be
   // a button in the created folder or project saying 'Analyze with your
   // coach' and then the AI coach can analyze the whole project together
-  // with the users." Reuses app/ai-coach/page.tsx's existing `?prompt=`
-  // deep-link (already read via useSearchParams() there and auto-sent as
-  // a normal /api/v1/coach/advice question — the same mechanism
-  // app/practice/session/[id]/page.tsx's "Discuss with your coach" link
-  // uses) rather than a new backend endpoint. Capped at MAX_CODE_CHARS so
-  // a large project can't blow up the coach prompt — every other
-  // ?prompt= call site sends a short, fixed-template sentence; this is
-  // the first one built from arbitrary user content, so it's the one
-  // place that needs an explicit size guard.
+  // with the users."
+  //
+  // BUG FIX (product report: "For the Analyzing of the coding project by
+  // the AI, instead of auto pasting the code in the project to the AI
+  // chat it should just auto upload the project file or folder or the
+  // project hyperlink. auto pasting the full code in the chat will be
+  // very long and consume a whole chat interface"): this used to build
+  // the whole project's code (capped at 6000 chars, but still a wall of
+  // raw code) into the message text itself, via a sessionStorage bridge
+  // just to work around the URL-length limit that much text would hit.
+  // Now sends just this project's real id/name — short enough for a
+  // plain query string, no sessionStorage bridge needed at all —
+  // app/ai-coach/page.tsx reads it and asks the backend to attach the
+  // project server-side (see Saveur-Backend/app/api/coach.py's
+  // `coding_project_id` handling) instead of ever putting the code in the
+  // visible chat message.
   function onAnalyzeWithCoach() {
-    const MAX_CODE_CHARS = 6000;
-    let remaining = MAX_CODE_CHARS;
-    const parts: string[] = [];
-    let truncated = false;
-    for (const [path, content] of Object.entries(files)) {
-      if (remaining <= 0) {
-        truncated = true;
-        break;
-      }
-      const body = content.length > remaining ? content.slice(0, remaining) : content;
-      if (content.length > remaining) truncated = true;
-      parts.push(`--- ${path} ---\n${body}`);
-      remaining -= body.length;
-    }
-    const codeBlock = parts.join("\n\n") + (truncated ? "\n\n[...project truncated for length...]" : "");
-    const message = t("web:practice.codingProjects.analyzePrompt", {
-      defaultValue:
-        'I\'d like your feedback on my coding project "{{name}}". Here is the code:\n\n{{code}}\n\nCan you review it and suggest improvements?',
-      name: projectName || "Untitled",
-      code: codeBlock,
-    }).toString();
-    // Hand the (potentially large) message to /ai-coach via sessionStorage
-    // rather than a URL query string — see that page's own comment on the
-    // ?promptSource=session branch for why. Falls back to the plain
-    // ?prompt= URL, with a much smaller cap, only if sessionStorage itself
-    // is unavailable (e.g. a strict private-browsing mode).
-    try {
-      sessionStorage.setItem("coach_pending_prompt", message);
-      router.push("/ai-coach?promptSource=session");
-    } catch {
-      const safe = message.length > 1500 ? `${message.slice(0, 1500)}\n\n[...truncated...]` : message;
-      router.push(`/ai-coach?prompt=${encodeURIComponent(safe)}`);
-    }
+    router.push(
+      `/ai-coach?codingProjectId=${encodeURIComponent(projectId ?? "")}&codingProjectName=${encodeURIComponent(projectName || "Untitled")}`
+    );
   }
 
   // ---- Render -------------------------------------------------------

@@ -253,31 +253,30 @@ function AiCoachPageInner() {
   useEffect(() => {
     if (!loaded || hasSentInitialPromptRef.current) return;
     // Feature addition (product request: "Analyze with your coach" button
-    // on Coding Projects, app/practice/coding/projects/[id]/page.tsx): that
-    // one caller's message can be far larger than any other initialPrompt
-    // call site here ever sends (a whole project's code, not a short fixed
-    // sentence), and stuffing that much text into a URL query string risks
-    // silently exceeding a reverse proxy's max URL/header length -- a
-    // failure mode none of the existing short ?prompt= callers below could
-    // ever hit. That caller hands the message off via sessionStorage
-    // instead and only leaves a small marker in the URL. Checked FIRST as a
-    // fully separate branch, and returns before reaching the plain ?prompt=
-    // check below, so this addition can never change that flow's existing
-    // behavior for any other caller.
-    if (searchParams?.get("promptSource") === "session") {
-      let stored: string | null = null;
-      try {
-        stored = sessionStorage.getItem("coach_pending_prompt");
-        sessionStorage.removeItem("coach_pending_prompt");
-      } catch {
-        stored = null;
-      }
-      if (stored) {
-        hasSentInitialPromptRef.current = true;
-        router.replace("/ai-coach");
-        void sendQuestion(stored);
-        return;
-      }
+    // on Coding Projects, app/practice/coding/projects/[id]/page.tsx).
+    //
+    // BUG FIX (product report: "instead of auto pasting the code in the
+    // project to the AI chat it should just auto upload the project file
+    // or folder ... auto pasting the full code in the chat will be very
+    // long and consume a whole chat interface"): this used to receive the
+    // WHOLE project's code via a sessionStorage bridge (too large for a
+    // URL) and send it as the visible chat message text. Now that caller
+    // sends just this project's real id/name -- short enough for a plain
+    // query string, no sessionStorage bridge needed -- and the short,
+    // human-readable message sent as `question` here never contains the
+    // code at all; the backend attaches the actual project server-side via
+    // `coding_project_id` (see Saveur-Backend/app/api/coach.py) instead.
+    const codingProjectId = searchParams?.get("codingProjectId");
+    if (codingProjectId) {
+      const codingProjectName = searchParams?.get("codingProjectName") || "Untitled";
+      const message = t("web:aiCoach.analyzeProjectPrompt", {
+        defaultValue: 'Can you review my coding project "{{name}}"? I\'ve attached it below.',
+        name: codingProjectName,
+      }).toString();
+      hasSentInitialPromptRef.current = true;
+      router.replace("/ai-coach");
+      void sendQuestion(message, undefined, undefined, codingProjectId);
+      return;
     }
     const prompt = searchParams?.get("prompt");
     if (!prompt) return;
@@ -327,7 +326,7 @@ function AiCoachPageInner() {
     runSuggestedAction(action, router).catch(() => {});
   }
 
-  async function sendQuestion(question: string, mode?: "voice", imageUrl?: string) {
+  async function sendQuestion(question: string, mode?: "voice", imageUrl?: string, codingProjectId?: string) {
     if ((!question && !imageUrl) || sending) return;
     setError(null);
 
@@ -340,6 +339,10 @@ function AiCoachPageInner() {
       const body: Record<string, unknown> = { question, history, persist_to_history: true, language: i18n.language || "en" };
       if (mode) body.mode = mode;
       if (imageUrl) body.image_url = imageUrl;
+      // See the codingProjectId initial-prompt branch above -- the backend
+      // fetches this project's own files server-side rather than the
+      // client ever sending them.
+      if (codingProjectId) body.coding_project_id = codingProjectId;
       // BUG FIX (product report: "The AI career coach navigating to screens
       // is not working on web"): `suggested_action` was already coming back
       // from this exact endpoint the whole time — this page just never read
