@@ -250,23 +250,24 @@ export default function DreamCompaniesPage() {
     }
   }
 
-  async function onDrillQuestion(c: DreamCompany, question: string) {
+  // BUG FIX (product report: "If i click on any of the Likely Interview
+  // Questions so that it just goes to the AI chat, it just navigate to
+  // the chat but it does not auto past the question in the chat"): this
+  // used to copy the message to the clipboard and navigate to a blank
+  // /ai-coach, requiring the user to manually paste it themselves. That
+  // page already has a real `?prompt=` deep-link (used by "Discuss this
+  // feedback"/"Discuss this interview" elsewhere -- see its own comment)
+  // which auto-sends the message the moment the thread loads. This
+  // message is always short (one question), so the plain query-string
+  // form is safe here -- no need for the sessionStorage bridge the much
+  // larger Coding Projects "Analyze with your coach" message uses.
+  function onDrillQuestion(c: DreamCompany, question: string) {
     const message = t("web:career.dreamCompanies.drillQuestionPrompt", {
       defaultValue: 'Let\'s practice this interview question for {{company}}: "{{question}}" Ask me the question, and give me feedback on my answer.',
       company: c.company,
       question,
     });
-    try {
-      await navigator.clipboard.writeText(message);
-      showToast(
-        t("web:career.dreamCompanies.drillQuestionCopied", {
-          defaultValue: "Copied — paste it into your AI Coach chat to start practicing.",
-        })
-      );
-    } catch {
-      // Clipboard unavailable — still navigate, just without the copy.
-    }
-    router.push("/ai-coach");
+    router.push(`/ai-coach?prompt=${encodeURIComponent(message)}`);
   }
 
   const summary =
