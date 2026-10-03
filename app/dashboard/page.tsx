@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
-import { ActionCard } from "@/components/ui/ActionCard";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { EmailVerificationBanner } from "@/components/dashboard/EmailVerificationBanner";
@@ -12,7 +11,8 @@ import { WelcomeModal } from "@/components/dashboard/WelcomeModal";
 import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
-import { quickActions, tintCycle } from "@/lib/navigation";
+import { quickActions } from "@/lib/navigation";
+import { FeatureTile } from "@/components/ui/FeatureTile";
 import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard";
 import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCard";
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
@@ -239,13 +239,13 @@ export default function DashboardPage() {
           <h2 className="text-lg font-bold text-primary">{t("web:dashboard.quickActionsTitle", { defaultValue: "Quick actions" })}</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {quickActions.map((action, i) => (
-              <ActionCard
+              <FeatureTile
                 key={action.href}
                 href={action.href}
-                icon={action.icon}
+                art={action.art ?? ""}
+                backdrop={action.artBg ?? "#2F6BFF"}
                 title={action.labelKey ? t(`common:nav.${action.labelKey}`, { defaultValue: action.label }) : action.label}
                 description={action.descriptionKey ? t(action.descriptionKey, { defaultValue: action.description }) : action.description}
-                tint={tintCycle[i % tintCycle.length]}
                 animationDelayMs={i * 50}
               />
             ))}

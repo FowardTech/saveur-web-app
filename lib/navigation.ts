@@ -10,6 +10,9 @@ export interface NavLeaf {
   icon: EvaIconName;
   description?: string;
   descriptionKey?: string;
+  /** 3D illustration + solid backdrop color for FeatureTile cards. */
+  art?: string;
+  artBg?: string;
   /** Key into the `/api/v1/more/badges` response (see lib/moreBadges.ts) —
    * when set, Sidebar renders a small unread-count pill at the end of this
    * row, mirroring mobile MainDrawer.tsx's per-row `badge` treatment. */
@@ -206,6 +209,8 @@ export const quickActions: NavLeaf[] = [
     icon: "mic-outline",
     description: "Practice live with an AI interviewer",
     descriptionKey: "web:dashboard.quickActions.mockInterview",
+    art: "/illustrations/3d/mic.png",
+    artBg: "#2F6BFF",
   },
   {
     label: "Coding Practice",
@@ -214,6 +219,8 @@ export const quickActions: NavLeaf[] = [
     icon: "code-outline",
     description: "Sharpen your technical skills",
     descriptionKey: "web:dashboard.quickActions.codingPractice",
+    art: "/illustrations/3d/laptop.png",
+    artBg: "#7C5CFF",
   },
   {
     label: "Practical Scenarios",
@@ -222,6 +229,8 @@ export const quickActions: NavLeaf[] = [
     icon: "clipboard-outline",
     description: "Work through real on-the-job situations",
     descriptionKey: "web:dashboard.quickActions.practicalScenarios",
+    art: "/illustrations/3d/clipboard.png",
+    artBg: "#FF8A3D",
   },
   {
     label: "Resume Builder",
@@ -230,6 +239,8 @@ export const quickActions: NavLeaf[] = [
     icon: "edit-2-outline",
     description: "Build an ATS-friendly resume",
     descriptionKey: "web:dashboard.quickActions.resumeBuilder",
+    art: "/illustrations/3d/resume.png",
+    artBg: "#FF5FA2",
   },
   {
     label: "Career Roadmap",
@@ -238,6 +249,8 @@ export const quickActions: NavLeaf[] = [
     icon: "compass-outline",
     description: "See your personalized path forward",
     descriptionKey: "web:dashboard.quickActions.careerRoadmap",
+    art: "/illustrations/3d/compass.png",
+    artBg: "#19B87A",
   },
   {
     label: "Learning Courses",
@@ -246,6 +259,8 @@ export const quickActions: NavLeaf[] = [
     icon: "book-open-outline",
     description: "Level up with guided courses",
     descriptionKey: "web:dashboard.quickActions.learningCourses",
+    art: "/illustrations/3d/books.png",
+    artBg: "#F5B000",
   },
   {
     label: "Job Tracker",
@@ -254,6 +269,8 @@ export const quickActions: NavLeaf[] = [
     icon: "grid-outline",
     description: "Track every job from match to offer",
     descriptionKey: "web:dashboard.quickActions.jobTracker",
+    art: "/illustrations/3d/target.png",
+    artBg: "#EF5350",
   },
   {
     label: "AI Coach",
@@ -262,6 +279,8 @@ export const quickActions: NavLeaf[] = [
     icon: "message-circle-outline",
     description: "Chat through your career questions",
     descriptionKey: "web:dashboard.quickActions.aiCoach",
+    art: "/illustrations/3d/chat.png",
+    artBg: "#00A6D6",
   },
 ];
 
