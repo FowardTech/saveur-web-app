@@ -804,7 +804,7 @@ export default function LiveInterviewSessionPage() {
                                 ? t("web:aiCoach.stopSpeaking", { defaultValue: "Stop speaking" })
                                 : t("web:practice.interview.startInterview", { defaultValue: "Start interview" })
                             }
-                            className="relative flex h-32 w-32 items-center justify-center rounded-full shadow-xl transition"
+                            className="relative flex h-32 w-32 items-center justify-center rounded-full shadow-sm transition"
                             style={{ background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)" }}
                           >
                             <EvaIcon
@@ -982,7 +982,7 @@ export default function LiveInterviewSessionPage() {
                                   ? t("web:aiCoach.stopSpeaking", { defaultValue: "Stop speaking" })
                                   : t("web:practice.interview.startInterview", { defaultValue: "Start interview" })
                               }
-                              className="relative flex h-16 w-16 items-center justify-center rounded-full shadow-xl ring-2 ring-white/25 transition"
+                              className="relative flex h-16 w-16 items-center justify-center rounded-full shadow-sm ring-2 ring-white/25 transition"
                               style={{ background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)" }}
                             >
                               <EvaIcon

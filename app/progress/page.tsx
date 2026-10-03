@@ -392,7 +392,7 @@ function ProgressPageInner() {
               {/* 3 stat tiles */}
               <div className="grid grid-cols-3 gap-3">
                 <div
-                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-mint p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-mint p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
                   style={{ animationDelay: "0ms" }}
                 >
                   <CircularProgress progress={Math.min(100, (completed.length / 10) * 100)} size={56} strokeWidth={5} progressClassName="text-tint-mint-text" trackClassName="text-white/60">
@@ -401,7 +401,7 @@ function ProgressPageInner() {
                   <span className="mt-2 text-center text-xs font-bold text-tint-mint-text">{t("web:progress.sessionsCompleted", { defaultValue: "Sessions completed" })}</span>
                 </div>
                 <div
-                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-orange p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-orange p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
                   style={{ animationDelay: "50ms" }}
                 >
                   <CircularProgress progress={Math.min(100, (streakDays / 7) * 100)} size={56} strokeWidth={5} progressClassName="text-tint-orange-text" trackClassName="text-white/60">
@@ -410,7 +410,7 @@ function ProgressPageInner() {
                   <span className="mt-2 text-center text-xs font-bold text-tint-orange-text">{t("web:progress.dayStreak", { defaultValue: "Day streak" })}</span>
                 </div>
                 <div
-                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-purple p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  className="animate-card-in flex flex-col items-center rounded-card border border-border bg-tint-purple p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
                   style={{ animationDelay: "100ms" }}
                 >
                   <CircularProgress progress={avgScore ?? 0} size={56} strokeWidth={5} progressClassName="text-tint-purple-text" trackClassName="text-white/60">
@@ -454,7 +454,7 @@ function ProgressPageInner() {
                     {leaderboard.slice(0, 3).map((entry, index) => (
                       <div
                         key={entry.id}
-                        className={`animate-card-in flex items-center gap-3 rounded-card border border-border p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${entry.isCurrentUser ? "bg-surface-1" : "bg-surface-2"}`}
+                        className={`animate-card-in flex items-center gap-3 rounded-card border border-border p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${entry.isCurrentUser ? "bg-surface-1" : "bg-surface-2"}`}
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-3 text-xs font-bold text-hint">{entry.rank}</span>

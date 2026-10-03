@@ -261,7 +261,7 @@ export default function PracticalScenariosSetupPage() {
             subtitle={t("web:practice.scenarios.subtitle", { defaultValue: "Hands-on, multi-step judgment scenarios for non-engineering roles." })}
           />
 
-          <Link href="/practice/scenarios/projects" className="flex w-fit items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-primary hover:shadow-md">
+          <Link href="/practice/scenarios/projects" className="flex w-fit items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-primary hover:shadow-sm">
             <EvaIcon name="folder-outline" size={16} />
             {t("web:practice.scenarios.projects.link", { defaultValue: "Industry projects" })}
           </Link>

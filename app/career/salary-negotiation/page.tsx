@@ -266,7 +266,7 @@ function SalaryNegotiationPageInner() {
 
           {scenario && currentOffer && (
             <div className="flex flex-col gap-4">
-              <div className="rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent p-5">
+              <div className="rounded-card border border-border bg-surface-1 p-5">
                 <h2 className="font-semibold text-primary">
                   {scenario.role} at {scenario.company}
                 </h2>

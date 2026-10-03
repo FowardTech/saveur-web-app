@@ -699,7 +699,7 @@ function VoiceOrb({ phase, onTap }: { phase: Phase; onTap: () => void }) {
 
       {/* Core orb */}
       <span
-        className="relative rounded-full shadow-xl"
+        className="relative rounded-full shadow-sm"
         style={{
           width: ORB_SIZE,
           height: ORB_SIZE,

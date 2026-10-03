@@ -179,7 +179,7 @@ export default function CodingProjectsPage() {
           {projects && projects.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((p) => (
-                <div key={p.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <div key={p.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-sm">
                   <Link href={`/practice/coding/projects/${p.id}`} className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <span

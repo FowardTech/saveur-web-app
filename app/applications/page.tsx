@@ -726,7 +726,7 @@ function SessionRow({ session, typeLabel }: { session: Session; typeLabel: (t: s
   return (
     <Link
       href={sessionHref(session)}
-      className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+      className="flex items-center justify-between gap-4 rounded-card border border-border bg-surface-2 p-4 transition hover:-translate-y-0.5 hover:shadow-sm"
     >
       <div className="flex items-center gap-3">
         <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">

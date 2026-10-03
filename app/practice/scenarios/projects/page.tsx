@@ -141,7 +141,7 @@ export default function PracticalProjectsPage() {
                       key={p.id}
                       type="button"
                       onClick={() => open(p.id)}
-                      className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 text-left hover:shadow-md"
+                      className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 text-left hover:shadow-sm"
                     >
                       <span className="text-sm font-medium text-primary">{p.name}</span>
                       <span className="text-xs capitalize text-hint">{p.industry}</span>

@@ -239,7 +239,7 @@ export default function CareerRoadmapPage() {
                 {roadmap.steps.map((step, index) => (
                   <div
                     key={step.order}
-                    className="animate-card-in flex items-start gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                    className="animate-card-in flex items-start gap-4 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <span className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${statusStyles[step.status] ?? "bg-surface-3 text-hint"}`}>

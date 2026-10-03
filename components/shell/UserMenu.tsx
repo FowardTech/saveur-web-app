@@ -38,7 +38,7 @@ export function UserMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-20 mt-2 w-48 rounded-card border border-border bg-surface-2 p-1.5 shadow-lg">
+        <div className="absolute right-0 z-20 mt-2 w-48 rounded-card border border-border bg-surface-2 p-1.5 shadow-sm">
           <Link
             href="/settings"
             onClick={() => setOpen(false)}

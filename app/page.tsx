@@ -114,7 +114,7 @@ export default function LandingPage() {
         </section>
 
         {/* Bottom CTA */}
-        <section className="flex flex-col items-center gap-4 rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-6 py-10 text-center">
+        <section className="flex flex-col items-center gap-4 rounded-card border border-border bg-surface-1 px-6 py-10 text-center">
           <h2 className="text-2xl font-bold text-primary">{t("web:landing.bottomCtaTitle", { defaultValue: "Ready to start practicing?" })}</h2>
           <p className="max-w-md text-sm text-hint">
             {t("web:landing.bottomCtaSubtitle", { defaultValue: "Create a free account and run your first AI mock interview in minutes." })}

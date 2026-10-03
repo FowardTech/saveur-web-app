@@ -102,7 +102,7 @@ export function UpcomingSessionCard() {
         href={prefillHref}
         onClick={onCardClick}
         aria-disabled={!isSessionReady}
-        className="relative flex items-center gap-3 rounded-card bg-solid p-4 text-solid-fg shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+        className="relative flex items-center gap-3 rounded-card bg-solid p-4 text-solid-fg shadow-sm transition hover:-translate-y-0.5 hover:shadow-sm"
       >
         <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20">
           <EvaIcon name="calendar-outline" size={18} />

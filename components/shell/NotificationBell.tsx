@@ -141,7 +141,7 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-20 mt-2 max-h-96 w-80 overflow-y-auto rounded-card border border-border bg-surface-2 shadow-lg">
+        <div className="absolute right-0 z-20 mt-2 max-h-96 w-80 overflow-y-auto rounded-card border border-border bg-surface-2 shadow-sm">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <h3 className="text-sm font-semibold text-primary">
               {t("web:notifications.title", { defaultValue: "Notifications" })}

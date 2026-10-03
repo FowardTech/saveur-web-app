@@ -301,8 +301,8 @@ export default function LearningPage() {
               gradient-card + right-side-art treatment, book illustration
               (ArtLearningCourses, see LearningArt.tsx) instead of a
               generic icon. */}
-          <div className="shadow-lg">
-            <section className="relative flex items-center justify-between gap-4 overflow-hidden rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-6 py-8 sm:px-8 sm:py-10">
+          <div className="shadow-sm">
+            <section className="relative flex items-center justify-between gap-4 overflow-hidden rounded-card border border-border bg-surface-1 px-6 py-8 sm:px-8 sm:py-10">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-surface-3 blur-3xl"
@@ -676,7 +676,7 @@ export default function LearningPage() {
               return (
                 <div
                   key={course.id}
-                  className="animate-card-in flex flex-col rounded-card border border-border bg-surface-2 p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  className="animate-card-in flex flex-col rounded-card border border-border bg-surface-2 p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-center justify-between gap-3">

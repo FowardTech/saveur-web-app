@@ -224,7 +224,7 @@ function SharedWithMeInner() {
                   <Link
                     key={share.id}
                     href={`/shared-with-me/${share.id}`}
-                    className={`flex items-center gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                    className={`flex items-center gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-sm ${
                       !share.read ? "border-primary" : "border-border"
                     }`}
                   >

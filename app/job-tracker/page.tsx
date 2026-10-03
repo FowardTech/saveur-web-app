@@ -159,7 +159,7 @@ function AlertKanbanCard({
       }}
       onDragEnd={onDragEnd}
       className={`cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
-        isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-md"
+        isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-sm"
       }`}
     >
       <Link href={`/job-alerts/${alert.id}`} className="flex items-start gap-3">
@@ -233,7 +233,7 @@ function ApplicationKanbanCard({
       }}
       onDragEnd={onDragEnd}
       className={`group cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
-        isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-md"
+        isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-sm"
       }`}
     >
       <div className="flex items-start gap-3">

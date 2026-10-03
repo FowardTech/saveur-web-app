@@ -202,7 +202,7 @@ function LeaderboardPageInner() {
                   return (
                     <div
                       key={rank}
-                      className="animate-card-in relative flex flex-1 flex-col items-center rounded-card bg-surface-2 px-2 pb-4 pt-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                      className="animate-card-in relative flex flex-1 flex-col items-center rounded-card bg-surface-2 px-2 pb-4 pt-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
                       style={{ minHeight: rank === 1 ? 210 : 180, animationDelay: `${i * 60}ms` }}
                     >
                       <span className={`absolute left-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white ${style.badgeBg}`}>{rank}</span>

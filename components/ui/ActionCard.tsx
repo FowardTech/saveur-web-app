@@ -22,7 +22,7 @@ export function ActionCard({ href, icon, title, description, tint, animationDela
   return (
     <Link
       href={href}
-      className={`group flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${
+      className={`group flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${
         animationDelayMs != null ? "animate-card-in" : ""
       }`}
       style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}

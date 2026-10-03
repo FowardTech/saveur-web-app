@@ -81,7 +81,7 @@ export function CoachingReportCard() {
   // same flat white tiles as the quick-actions grid directly above it.
   if (report.empty) {
     return (
-      <div className="flex flex-col items-start gap-3 rounded-card border-2 border-dashed border-primary/30 bg-gradient-to-br from-surface-3 via-surface-1 to-transparent p-6">
+      <div className="flex flex-col items-start gap-3 rounded-card border border-dashed border-border bg-surface-1 p-6">
         <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
           <EvaIcon name="bar-chart-2-outline" size={20} />
         </span>
@@ -106,7 +106,7 @@ export function CoachingReportCard() {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-card border-2 border-primary/30 bg-gradient-to-br from-surface-3 via-surface-1 to-transparent p-5">
+    <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-1 p-5">
       <div className="flex items-center gap-3">
         <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-solid text-solid-fg">
           <EvaIcon name="bar-chart-2-outline" size={18} />

@@ -432,7 +432,7 @@ export default function DreamCompaniesPage() {
         </div>
 
         {toast && (
-          <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-pill bg-surface-4 px-4 py-2.5 text-sm text-primary shadow-lg">
+          <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-pill bg-surface-4 px-4 py-2.5 text-sm text-primary shadow-sm">
             {toast}
           </div>
         )}

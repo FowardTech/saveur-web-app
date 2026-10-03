@@ -268,7 +268,7 @@ export default function SecuritySettingsPage() {
               }`}
             >
               <span
-                className={`pointer-events-none absolute left-0.5 h-6 w-6 rounded-full bg-white shadow-md ring-1 ring-black/5 transition-transform duration-200 ease-in-out ${
+                className={`pointer-events-none absolute left-0.5 h-6 w-6 rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-transform duration-200 ease-in-out ${
                   profile?.notificationsEnabled ? "translate-x-5" : "translate-x-0"
                 }`}
               />

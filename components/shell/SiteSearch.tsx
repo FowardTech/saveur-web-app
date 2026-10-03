@@ -139,7 +139,7 @@ export function SiteSearch() {
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute left-0 right-0 z-20 mt-2 max-h-96 overflow-y-auto rounded-card border border-border bg-surface-2 shadow-lg">
+        <div className="absolute left-0 right-0 z-20 mt-2 max-h-96 overflow-y-auto rounded-card border border-border bg-surface-2 shadow-sm">
           <ul>
             {results.map((r, i) => (
               <li key={r.href}>
@@ -161,7 +161,7 @@ export function SiteSearch() {
       )}
 
       {open && query.trim() !== "" && results.length === 0 && (
-        <div className="absolute left-0 right-0 z-20 mt-2 rounded-card border border-border bg-surface-2 p-4 text-center text-sm text-hint shadow-lg">
+        <div className="absolute left-0 right-0 z-20 mt-2 rounded-card border border-border bg-surface-2 p-4 text-center text-sm text-hint shadow-sm">
           {t("web:shell.searchNoResults", { defaultValue: "No matching pages found." })}
         </div>
       )}

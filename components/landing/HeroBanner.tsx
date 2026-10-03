@@ -14,7 +14,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 export function HeroBanner() {
   const { t } = useTranslation();
   return (
-    <section className="relative overflow-hidden rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-6 py-12 sm:px-10 sm:py-16">
+    <section className="relative overflow-hidden rounded-card border border-border bg-surface-1 px-6 py-12 sm:px-10 sm:py-16">
       {/* Decorative soft blurred color blobs */}
       <div
         aria-hidden="true"
@@ -28,7 +28,7 @@ export function HeroBanner() {
       {/* Decorative translucent icon badges, arranged behind/beside the copy */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute right-8 top-8 hidden h-16 w-16 rotate-6 items-center justify-center rounded-2xl bg-surface-2/60 text-primary shadow-sm backdrop-blur-sm sm:flex"
+        className="pointer-events-none absolute right-8 top-8 hidden h-16 w-16 rotate-6 items-center justify-center rounded-card bg-surface-2/60 text-primary shadow-sm backdrop-blur-sm sm:flex"
       >
         <EvaIcon name="briefcase-outline" size={28} />
       </span>
@@ -40,7 +40,7 @@ export function HeroBanner() {
       </span>
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute right-6 bottom-6 hidden h-14 w-14 rotate-12 items-center justify-center rounded-2xl bg-surface-2/60 text-tint-mint-text shadow-sm backdrop-blur-sm lg:flex"
+        className="pointer-events-none absolute right-6 bottom-6 hidden h-14 w-14 rotate-12 items-center justify-center rounded-card bg-surface-2/60 text-tint-mint-text shadow-sm backdrop-blur-sm lg:flex"
       >
         <EvaIcon name="trending-up-outline" size={24} />
       </span>

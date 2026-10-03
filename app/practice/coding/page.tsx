@@ -195,7 +195,7 @@ export default function CodingPracticePage() {
                 <Link
                   key={p.slug}
                   href={`/practice/coding/${p.slug}`}
-                  className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-sm"
                 >
                   <div className="flex items-center justify-between">
                     <span className={`rounded-pill px-2.5 py-1 text-xs font-medium ${difficultyTint[p.difficulty] ?? "bg-surface-3 text-hint"}`}>

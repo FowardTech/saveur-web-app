@@ -113,7 +113,7 @@ export default function CareerDnaPage() {
 
           {profile && profile.has_profile && (
             <div className="flex flex-col gap-4">
-              <div className="rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent p-6">
+              <div className="rounded-card border border-border bg-surface-1 p-6">
                 <p className="text-sm leading-relaxed text-primary">{profile.narrative}</p>
                 <p className="mt-3 text-xs text-hint">
                   {t("web:career.dna.versionLine", { defaultValue: "Version {{version}} · built from {{count}} signal(s)", version: profile.version, count: profile.signal_count })}

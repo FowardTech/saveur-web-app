@@ -46,7 +46,7 @@ export function ContinueWatchingCard() {
       <button
         type="button"
         onClick={() => setPlaying(true)}
-        className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md"
+        className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm"
       >
         {/* Product report: "for the continue learning ... for video the
             user was watching, the video poster should appear so that the

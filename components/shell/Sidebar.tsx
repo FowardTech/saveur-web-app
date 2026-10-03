@@ -204,7 +204,7 @@ function LanguageMenu() {
       </button>
 
       {open && (
-        <div className="absolute bottom-full left-0 z-20 mb-2 max-h-72 w-56 overflow-y-auto rounded-card border border-border bg-surface-2 p-1.5 shadow-lg">
+        <div className="absolute bottom-full left-0 z-20 mb-2 max-h-72 w-56 overflow-y-auto rounded-card border border-border bg-surface-2 p-1.5 shadow-sm">
           {SUPPORTED_LANGUAGES.map((lang) => (
             <button
               key={lang.code}

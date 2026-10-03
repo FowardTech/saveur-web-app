@@ -526,7 +526,7 @@ function AiCoachPageInner() {
               )}
               {showTopicsMenu && (
                 <div
-                  className="absolute right-0 top-full z-20 mt-2 w-72 rounded-card border border-border bg-surface-2 p-3 shadow-xl"
+                  className="absolute right-0 top-full z-20 mt-2 w-72 rounded-card border border-border bg-surface-2 p-3 shadow-sm"
                   onMouseLeave={() => setShowTopicsMenu(false)}
                 >
                   <p className="mb-2 text-xs font-medium text-hint">

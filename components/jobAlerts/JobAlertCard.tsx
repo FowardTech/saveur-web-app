@@ -57,7 +57,7 @@ export function JobAlertCard({ alert: a, logoUrl, togglingPin, onTogglePin, onMa
 
   return (
     <div
-      className={`flex flex-col gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md animate-card-in sm:flex-row sm:items-center sm:justify-between ${
+      className={`flex flex-col gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm animate-card-in sm:flex-row sm:items-center sm:justify-between ${
         !a.read ? "border-primary" : "border-border"
       }`}
       style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}

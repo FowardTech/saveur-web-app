@@ -44,7 +44,7 @@ const DEFAULT_BACKGROUND_CSS =
  * rounded-card class, so its box-shadow was cast as a sharp-cornered
  * rectangle while the inner section it wraps is rounded -- the shadow's
  * square corners stuck out past the card's rounded ones, reading as a
- * second white card peeking out from behind. Every other shadow-lg
+ * second white card peeking out from behind. Every other shadow-sm
  * wrapper in this codebase (SiteSearch, NotificationBell, Sidebar,
  * UserMenu dropdowns) already pairs it with rounded-card on the same
  * element; this one was just missing it. */
@@ -92,7 +92,7 @@ export function HomeBanner() {
     : { background: backgroundCss };
 
   return (
-    <div className="rounded-card shadow-lg">
+    <div className="rounded-card shadow-sm">
       <section
         className="relative overflow-hidden rounded-card border border-border px-6 py-8 sm:px-8 sm:py-10"
         style={sectionStyle}

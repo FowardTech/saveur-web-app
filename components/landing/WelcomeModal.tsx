@@ -72,7 +72,7 @@ export function WelcomeModal() {
             dashboard, not SVG shapes") -- this teaser and that modal are
             documented as sharing the same visual design, and both had the
             same fake "app screenshot" mockup here. */}
-        <div className="flex items-center justify-center bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-5 py-8">
+        <div className="flex items-center justify-center bg-surface-1 px-5 py-8">
           <ArtWelcomeWave size={150} />
         </div>
 

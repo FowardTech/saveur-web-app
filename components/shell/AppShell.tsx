@@ -37,7 +37,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 border-r border-border shadow-xl">
+          <div className="absolute inset-y-0 left-0 border-r border-border shadow-sm">
             <div className="flex justify-end px-3 pt-3">
               <button
                 type="button"

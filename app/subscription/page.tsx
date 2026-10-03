@@ -197,7 +197,7 @@ export default function SubscriptionPage() {
               <div
                 key={plan.id}
                 className={`flex flex-col gap-4 rounded-card border p-6 ${
-                  plan.recommended ? "border-primary shadow-md" : "border-border"
+                  plan.recommended ? "border-primary shadow-sm" : "border-border"
                 } bg-surface-2`}
               >
                 {plan.recommended && (
