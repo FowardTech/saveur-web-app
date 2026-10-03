@@ -607,7 +607,7 @@ export default function CodingProjectEditorPage() {
                 </div>
                 {isWeb && previewOpen && (
                   <div className="min-h-0 w-1/2 shrink-0 border-l border-border bg-white">
-                    <iframe title="Project preview" srcDoc={previewHtml} sandbox="allow-scripts allow-forms allow-modals allow-popups" className="h-full w-full border-0" />
+                    <iframe title={t("web:practice.codingProjects.preview", { defaultValue: "Project preview" })} srcDoc={previewHtml} sandbox="allow-scripts allow-forms allow-modals allow-popups" className="h-full w-full border-0" />
                   </div>
                 )}
               </div>

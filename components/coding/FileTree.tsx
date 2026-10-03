@@ -98,6 +98,7 @@ function TreeRow({
   onRename: (node: TreeNode) => void;
   onDelete: (node: TreeNode) => void;
 }) {
+  const { t } = useTranslation();
   const isFolder = node.type === "folder";
   const isOpen = isFolder && expanded.has(node.path);
   const isActive = !isFolder && activePath === node.path;
@@ -126,18 +127,18 @@ function TreeRow({
         <div className="hidden shrink-0 items-center gap-0.5 group-hover:flex">
           {isFolder && (
             <>
-              <button type="button" onClick={() => onNewFile(node.path)} title="New file" className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:bg-surface-4">
+              <button type="button" onClick={() => onNewFile(node.path)} title={t("web:practice.codingProjects.newFile", { defaultValue: "New file" })} className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:bg-surface-4">
                 <EvaIcon name="file-add-outline" size={12} />
               </button>
-              <button type="button" onClick={() => onNewFolder(node.path)} title="New folder" className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:bg-surface-4">
+              <button type="button" onClick={() => onNewFolder(node.path)} title={t("web:practice.codingProjects.newFolder", { defaultValue: "New folder" })} className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:bg-surface-4">
                 <EvaIcon name="folder-add-outline" size={12} />
               </button>
             </>
           )}
-          <button type="button" onClick={() => onRename(node)} title="Rename" className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:bg-surface-4">
+          <button type="button" onClick={() => onRename(node)} title={t("web:practice.codingProjects.rename", { defaultValue: "Rename" })} className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:bg-surface-4">
             <EvaIcon name="edit-2-outline" size={12} />
           </button>
-          <button type="button" onClick={() => onDelete(node)} title="Delete" className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:text-danger hover:bg-surface-4">
+          <button type="button" onClick={() => onDelete(node)} title={t("web:practice.codingProjects.delete", { defaultValue: "Delete" })} className="inline-flex h-5 w-5 items-center justify-center rounded text-hint hover:text-danger hover:bg-surface-4">
             <EvaIcon name="trash-2-outline" size={12} />
           </button>
         </div>
