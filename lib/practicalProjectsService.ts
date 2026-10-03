@@ -4,6 +4,29 @@ import apiClient from "./apiClient";
 // Practical Scenario projects (Saveur-Backend app/api/practical.py,
 // "Practical Scenario PROJECTS" section) — industry-specific written
 // deliverables stored as CodingProject rows with project_type="practical".
+export interface StageFeedback {
+  score: number;
+  passed: boolean;
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  follow_up: string;
+}
+export interface ProjectStage {
+  n: number;
+  title: string;
+  task: string;
+  template: string;
+  twist: string;
+  status: "locked" | "active" | "done";
+  attempts: number;
+  feedback: StageFeedback | null;
+}
+export interface ProjectState {
+  persona: {name: string; title: string};
+  stages: ProjectStage[];
+  final: null | {overall_score: number; verdict: string; top_strengths: string[]; growth_areas: string[]};
+}
 export interface PracticalProjectSummary {
   id: number;
   name: string;
@@ -11,6 +34,7 @@ export interface PracticalProjectSummary {
   updatedAt?: string;
 }
 export interface PracticalProjectDetail extends PracticalProjectSummary {
+  state?: ProjectState | null;
   files: { path: string; content: string }[];
 }
 
@@ -20,9 +44,10 @@ interface Wire {
   language_hint?: string | null;
   updated_at?: string;
   files?: { path: string; content: string }[];
+  state?: ProjectState | null;
 }
 const sum = (w: Wire): PracticalProjectSummary => ({ id: w.id, name: w.name, industry: w.language_hint ?? "", updatedAt: w.updated_at });
-const detail = (w: Wire): PracticalProjectDetail => ({ ...sum(w), files: w.files ?? [] });
+const detail = (w: Wire): PracticalProjectDetail => ({ ...sum(w), files: w.files ?? [], state: w.state ?? null });
 
 export async function listPracticalProjects(): Promise<PracticalProjectSummary[]> {
   return (await apiClient.get<Wire[]>("/api/v1/practical/projects")).map(sum);
@@ -38,4 +63,11 @@ export async function savePracticalProject(id: number | string, files: { path: s
 }
 export async function deletePracticalProject(id: number | string): Promise<void> {
   await apiClient.delete(`/api/v1/practical/projects/${id}`);
+}
+
+export async function submitProjectStage(id: number | string, n: number, content: string): Promise<PracticalProjectDetail> {
+  return detail(await apiClient.post<Wire>(`/api/v1/practical/projects/${id}/stages/${n}/submit`, { content }));
+}
+export async function finishPracticalProject(id: number | string): Promise<PracticalProjectDetail> {
+  return detail(await apiClient.post<Wire>(`/api/v1/practical/projects/${id}/finish`, {}));
 }

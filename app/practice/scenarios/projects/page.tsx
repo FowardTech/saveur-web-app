@@ -8,6 +8,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Pill } from "@/components/ui/Pill";
 import { Button } from "@/components/ui/Button";
+import { SimpleMarkdown } from "@/components/ui/SimpleMarkdown";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -29,10 +30,11 @@ export default function PracticalProjectsPage() {
   const [role, setRole] = useState("");
   const [projects, setProjects] = useState<PracticalProjectSummary[] | null>(null);
   const [active, setActive] = useState<PracticalProjectDetail | null>(null);
-  const [solution, setSolution] = useState("");
+  const [drafts, setDrafts] = useState<Record<number, string>>({});
+  const [openStage, setOpenStage] = useState<number | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [finishing, setFinishing] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addonRequired, setAddonRequired] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -56,8 +58,6 @@ export default function PracticalProjectsPage() {
     try {
       const p = await service.getPracticalProject(id);
       setActive(p);
-      setSolution(p.files.find((f) => f.path === "SOLUTION.md")?.content ?? "");
-      setDirty(false);
     } catch (e) {
       setError((e as ApiError).message);
     }
@@ -70,8 +70,6 @@ export default function PracticalProjectsPage() {
     try {
       const p = await service.createPracticalProject(industry, role.trim() || undefined);
       setActive(p);
-      setSolution(p.files.find((f) => f.path === "SOLUTION.md")?.content ?? "");
-      setDirty(false);
       load();
     } catch (e) {
       if ((e as ApiError).status === 402) setAddonRequired(true);
@@ -81,16 +79,35 @@ export default function PracticalProjectsPage() {
     }
   }
 
-  async function save() {
-    if (!active || saving) return;
-    setSaving(true);
+  function beginStage(n: number) {
+    if (!active) return;
+    setDrafts((d) => ({ ...d, [n]: d[n] ?? active.files.find((f) => f.path === `STAGE_${n}.md`)?.content ?? "" }));
+    setOpenStage(n);
+  }
+
+  async function submitStage(n: number) {
+    if (!active || submitting) return;
+    setSubmitting(true);
+    setError(null);
     try {
-      await service.savePracticalProject(active.id, [{ path: "SOLUTION.md", content: solution }]);
-      setDirty(false);
+      setActive(await service.submitProjectStage(active.id, n, drafts[n] ?? ""));
+      setOpenStage(null);
     } catch (e) {
       setError((e as ApiError).message);
     } finally {
-      setSaving(false);
+      setSubmitting(false);
+    }
+  }
+
+  async function finish() {
+    if (!active || finishing) return;
+    setFinishing(true);
+    try {
+      setActive(await service.finishPracticalProject(active.id));
+    } catch (e) {
+      setError((e as ApiError).message);
+    } finally {
+      setFinishing(false);
     }
   }
 
@@ -159,19 +176,15 @@ export default function PracticalProjectsPage() {
                   ← {t("common:actions.back", { defaultValue: "Back" })}
                 </button>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" onClick={save} disabled={saving || !dirty}>
-                    {saving ? t("web:practice.codingProjects.saving", { defaultValue: "Saving…" }) : dirty ? t("web:practice.codingProjects.saveUnsaved", { defaultValue: "Save*" }) : t("web:practice.codingProjects.saved", { defaultValue: "Saved" })}
-                  </Button>
-                  <Button size="sm" variant="outline" disabled={dirty} onClick={() => setShareOpen(true)}>
+                  <Button size="sm" variant="outline" onClick={() => setShareOpen(true)}>
                     <EvaIcon name="share-outline" size={14} /> {t("web:practice.codingProjects.share", { defaultValue: "Share" })}
                   </Button>
-                  <Button size="sm" variant="outline" disabled={dirty} onClick={() => projectActions.exportProjectZip("practical", active.id).catch((e) => setError((e as ApiError).message))}>
+                  <Button size="sm" variant="outline" onClick={() => projectActions.exportProjectZip("practical", active.id).catch((e) => setError((e as ApiError).message))}>
                     <EvaIcon name="download-outline" size={14} /> {t("web:practice.codingProjects.export", { defaultValue: "Export" })}
                   </Button>
                   <Button
                     size="sm"
                     variant="secondary"
-                    disabled={dirty}
                     onClick={() => router.push(`/ai-coach?codingProjectId=${active.id}&codingProjectName=${encodeURIComponent(active.name)}`)}
                   >
                     <EvaIcon name="message-circle-outline" size={14} /> {t("web:practice.codingProjects.analyzeWithCoach", { defaultValue: "Analyze with your coach" })}
@@ -179,16 +192,80 @@ export default function PracticalProjectsPage() {
                 </div>
               </div>
               <h2 className="text-lg font-bold text-primary">{active.name}</h2>
-              <pre className="whitespace-pre-wrap rounded-card border border-border bg-surface-2 p-4 text-sm text-primary">{brief}</pre>
-              <textarea
-                value={solution}
-                onChange={(e) => {
-                  setSolution(e.target.value);
-                  setDirty(true);
-                }}
-                rows={16}
-                className="w-full rounded-card border border-border bg-surface-2 p-4 font-mono text-sm text-primary focus:border-primary focus:outline-none"
-              />
+              {active.state && (
+                <p className="text-xs text-hint">
+                  {t("web:practice.scenarios.projects.reportingTo", { defaultValue: "You report to {{name}}, {{title}}", name: active.state.persona.name, title: active.state.persona.title })}
+                </p>
+              )}
+              <div className="rounded-card border border-border bg-surface-2 p-4"><SimpleMarkdown text={brief} /></div>
+              {active.state?.stages.map((st) => {
+                const locked = st.status === "locked";
+                const done = st.status === "done";
+                const fb = st.feedback;
+                return (
+                  <div key={st.n} className={`flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 ${locked ? "opacity-50" : ""}`}>
+                    <div className="flex items-center gap-3">
+                      <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${done ? "bg-solid text-solid-fg" : "bg-surface-3 text-primary"}`}>{done ? "✓" : st.n}</span>
+                      <h3 className="flex-1 text-sm font-bold text-primary">{st.title}</h3>
+                      {fb && <span className="text-sm font-bold text-primary">{fb.score}/100</span>}
+                    </div>
+                    {locked ? (
+                      <p className="text-xs text-hint">{t("web:practice.scenarios.projects.locked", { defaultValue: "Complete the previous stage to unlock" })}</p>
+                    ) : (
+                      <>
+                        <p className="text-sm text-primary">{st.task}</p>
+                        {st.twist && (
+                          <div className="rounded-lg bg-surface-3 p-3 text-sm text-primary">
+                            <strong>{t("web:practice.scenarios.projects.twist", { defaultValue: "Update from your manager" })}:</strong> {st.twist}
+                          </div>
+                        )}
+                        {fb && (
+                          <div className="flex flex-col gap-1 rounded-lg bg-surface-3 p-3 text-sm text-primary">
+                            <strong>{fb.passed ? t("web:practice.scenarios.projects.approved", { defaultValue: "Approved" }) : t("web:practice.scenarios.projects.needsRevision", { defaultValue: "Needs revision" })}</strong>
+                            <p>{fb.summary}</p>
+                            {fb.strengths.map((x, i) => <p key={`s${i}`}>+ {x}</p>)}
+                            {fb.improvements.map((x, i) => <p key={`i${i}`}>→ {x}</p>)}
+                            {fb.follow_up && <p className="font-semibold">“{fb.follow_up}”</p>}
+                          </div>
+                        )}
+                        {openStage === st.n ? (
+                          <>
+                            <textarea
+                              value={drafts[st.n] ?? ""}
+                              onChange={(e) => setDrafts((d) => ({ ...d, [st.n]: e.target.value }))}
+                              rows={14}
+                              className="w-full rounded-card border border-border bg-surface-2 p-4 font-mono text-sm text-primary focus:border-primary focus:outline-none"
+                            />
+                            <div className="flex gap-2">
+                              <Button onClick={() => submitStage(st.n)} disabled={submitting || (drafts[st.n] ?? "").trim().length < 40}>
+                                {submitting ? t("web:practice.scenarios.projects.reviewing", { defaultValue: "Your manager is reviewing…" }) : t("web:practice.scenarios.projects.submitTo", { defaultValue: "Submit to {{name}}", name: active.state?.persona.name ?? "manager" })}
+                              </Button>
+                              <Button variant="outline" onClick={() => setOpenStage(null)}>{t("common:actions.cancel", { defaultValue: "Cancel" })}</Button>
+                            </div>
+                          </>
+                        ) : (
+                          <div><Button size="sm" onClick={() => beginStage(st.n)}>
+                            {done ? t("web:practice.scenarios.projects.revise", { defaultValue: "Revise my work" }) : fb ? t("web:practice.scenarios.projects.resubmit", { defaultValue: "Revise and resubmit" }) : t("web:practice.scenarios.projects.startStage", { defaultValue: "Start this stage" })}
+                          </Button></div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+              {active.state && active.state.stages.every((x) => x.status === "done") && (
+                active.state.final ? (
+                  <div className="flex flex-col gap-1 rounded-card border border-border bg-surface-2 p-4 text-sm text-primary">
+                    <h3 className="font-bold">{t("web:practice.scenarios.projects.finalReview", { defaultValue: "Final review" })} · {active.state.final.overall_score}/100</h3>
+                    <p>{active.state.final.verdict}</p>
+                    {active.state.final.top_strengths.map((x, i) => <p key={`fs${i}`}>+ {x}</p>)}
+                    {active.state.final.growth_areas.map((x, i) => <p key={`fg${i}`}>→ {x}</p>)}
+                    <p className="mt-2 text-xs text-hint">{t("web:practice.scenarios.projects.portfolioReady", { defaultValue: "Your portfolio write-up is saved. Use Export or Share above." })}</p>
+                  </div>
+                ) : (
+                  <div><Button onClick={finish} disabled={finishing}>{finishing ? t("web:practice.scenarios.projects.finishing", { defaultValue: "Preparing your review…" }) : t("web:practice.scenarios.projects.finish", { defaultValue: "Finish and get final review" })}</Button></div>
+                )
+              )}
               <ShareToUserModal
                 open={shareOpen}
                 onClose={() => setShareOpen(false)}
