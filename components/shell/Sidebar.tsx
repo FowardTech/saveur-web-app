@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { Icon3D } from "@/components/ui/Icon3D";
+import { icon3dFromEva } from "@/lib/icon3d";
 import { primaryNav, secondaryNav, isNavGroup, type NavItem } from "@/lib/navigation";
 import { SUPPORTED_LANGUAGES, LOCALE_STORAGE_KEY, getLanguageNativeLabel } from "@/i18n/config";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -27,6 +29,8 @@ import { onForegroundMessage } from "@/lib/messaging";
  * closely enough to read as the same visual language while staying at the
  * smaller scale a sidebar row needs. */
 function NavIconBadge({ icon, active }: { icon: Parameters<typeof EvaIcon>[0]["name"]; index?: number; active?: boolean }) {
+  const art = icon3dFromEva(icon);
+  if (art) return <Icon3D name={art} size={30} className={active ? "" : "opacity-90"} />;
   return (
     <span className="flex h-6 w-6 shrink-0 items-center justify-center">
       <EvaIcon name={icon} size={22} className={active ? "text-primary" : "text-hint"} />
