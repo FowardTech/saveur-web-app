@@ -9,6 +9,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
+import { ProjectViewer } from "@/components/coding/ProjectViewer";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
 import { guessCompanyLogoUrl } from "@/lib/companyData";
 import * as sharesService from "@/lib/sharesService";
@@ -183,7 +184,12 @@ export default function SharedContentDetailPage() {
                 </div>
               )}
 
-              {share.contentType === "job" ? (
+              {share.contentType === "project" ? (
+                <ProjectViewer
+                  name={String((share.content as { name?: string }).name ?? "")}
+                  files={((share.content as { files?: { path: string; content: string }[] }).files ?? [])}
+                />
+              ) : share.contentType === "job" ? (
                 <div className="flex flex-col gap-5 rounded-card border border-border bg-surface-2 p-6">
                   <div className="flex items-start gap-3">
                     <CompanyLogoAvatar

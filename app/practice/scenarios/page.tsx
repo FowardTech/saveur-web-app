@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -259,6 +260,11 @@ export default function PracticalScenariosSetupPage() {
             title={t("web:practice.scenarios.title", { defaultValue: "Practical Scenarios" })}
             subtitle={t("web:practice.scenarios.subtitle", { defaultValue: "Hands-on, multi-step judgment scenarios for non-engineering roles." })}
           />
+
+          <Link href="/practice/scenarios/projects" className="flex w-fit items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-brand hover:shadow-md">
+            <EvaIcon name="folder-outline" size={16} />
+            {t("web:practice.scenarios.projects.link", { defaultValue: "Industry projects" })}
+          </Link>
 
           {addonRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">

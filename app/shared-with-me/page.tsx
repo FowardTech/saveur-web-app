@@ -33,6 +33,7 @@ const ICON_BY_TYPE: Record<string, EvaIconName> = {
   feedback: "checkmark-circle-2-outline",
   video: "video-outline",
   job: "briefcase-outline",
+  project: "code-outline",
 };
 
 function relativeTime(ms: number): string {
@@ -48,6 +49,9 @@ function relativeTime(ms: number): string {
 }
 
 function previewLine(share: ReceivedShareProps, t: (key: string, opts?: Record<string, unknown>) => string): string {
+  if (share.contentType === "project") {
+    return share.preview.title || "";
+  }
   if (share.contentType === "job") {
     return [share.preview.title, share.preview.company].filter(Boolean).join(" · ") || "";
   }
@@ -75,6 +79,43 @@ function SharedWithMeInner() {
   const [requests, setRequests] = useState<PendingConnectionRequest[] | null>(null);
   const [requestsError, setRequestsError] = useState<string | null>(null);
   const [respondingId, setRespondingId] = useState<string | null>(null);
+
+  // "Send request" -- product report: Shared With Me needs a way to ask
+  // another Saveur user to connect, not only to answer incoming requests.
+  const [reqUsername, setReqUsername] = useState("");
+  const [sendingReq, setSendingReq] = useState(false);
+  const [reqBanner, setReqBanner] = useState<{ ok: boolean; text: string } | null>(null);
+  async function onSendRequest() {
+    const name = reqUsername.trim().replace(/^@/, "");
+    if (!name || sendingReq) return;
+    setSendingReq(true);
+    setReqBanner(null);
+    try {
+      const r = await sharesService.sendConnectionRequest(name);
+      setReqBanner({
+        ok: true,
+        text: r.autoAccepted
+          ? t("web:sharedWithMe.requestAutoAccepted", { defaultValue: "You and @{{username}} are now connected.", username: name })
+          : t("web:sharedWithMe.requestSent", { defaultValue: "Request sent to @{{username}}.", username: name }),
+      });
+      setReqUsername("");
+    } catch (e) {
+      const code = (e as ApiError).error;
+      const text =
+        code === "recipient_not_found"
+          ? t("web:jobAlerts.details.shareUserNotFound", { defaultValue: "No Saveur user found with that username." })
+          : code === "already_connected"
+          ? t("web:jobAlerts.details.shareAlreadyConnected", { defaultValue: "You're already connected with this user." })
+          : code === "request_already_sent"
+          ? t("web:jobAlerts.details.shareRequestAlreadySent", { defaultValue: "You've already sent a request to this user." })
+          : code === "cannot_share_with_self"
+          ? t("web:jobAlerts.details.shareCannotShareSelf", { defaultValue: "You can't share with yourself." })
+          : t("common:somethingWentWrong", { defaultValue: "Something went wrong. Please try again." });
+      setReqBanner({ ok: false, text });
+    } finally {
+      setSendingReq(false);
+    }
+  }
 
   const load = useCallback(async () => {
     try {
@@ -128,6 +169,27 @@ function SharedWithMeInner() {
             title={t("web:sharedWithMe.title", { defaultValue: "Shared with Me" })}
             subtitle={t("web:sharedWithMe.subtitle", { defaultValue: "Feedback, replays, and jobs other Saveur users have shared with you." })}
           />
+
+          <div className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4">
+            <p className="text-sm font-semibold text-primary">
+              {t("web:sharedWithMe.connectTitle", { defaultValue: "Connect with another Saveur user" })}
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                value={reqUsername}
+                onChange={(e) => setReqUsername(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && onSendRequest()}
+                autoCapitalize="none"
+                autoCorrect="off"
+                placeholder={t("web:jobAlerts.details.shareUsernamePlaceholder", { defaultValue: "their username" })}
+                className="flex-1 rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+              <Button onClick={onSendRequest} disabled={!reqUsername.trim() || sendingReq}>
+                {t("web:sharedWithMe.sendRequest", { defaultValue: "Send request" })}
+              </Button>
+            </div>
+            {reqBanner && <p className={`text-sm font-medium ${reqBanner.ok ? "text-success-text" : "text-danger"}`}>{reqBanner.text}</p>}
+          </div>
 
           <div className="flex flex-wrap gap-2">
             <Pill selected={tab === "received"} onClick={() => setTab("received")}>

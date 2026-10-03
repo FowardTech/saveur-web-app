@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { FileTree } from "@/components/coding/FileTree";
 import { RunPanel } from "@/components/coding/RunPanel";
+import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
+import * as projectActions from "@/lib/projectActionsService";
 import type { ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 import * as projectsService from "@/lib/codingProjectsService";
@@ -82,6 +84,9 @@ export default function CodingProjectEditorPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
 
   const [projectName, setProjectName] = useState("");
+  const [shareOpen, setShareOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // ---- Load ----------------------------------------------------------
   useEffect(() => {
@@ -391,6 +396,21 @@ export default function CodingProjectEditorPage() {
     );
   }
 
+  // Export the SAVED project as a .zip (server-side), shared with
+  // Practical Scenario projects via lib/projectActionsService.ts.
+  async function onExport() {
+    if (!projectId || exporting) return;
+    setExporting(true);
+    setExportError(null);
+    try {
+      await projectActions.exportProjectZip("coding", projectId);
+    } catch (e) {
+      setExportError((e as ApiError).message || t("web:practice.codingProjects.exportFailed", { defaultValue: "Couldn't export this project right now." }));
+    } finally {
+      setExporting(false);
+    }
+  }
+
   // ---- Render -------------------------------------------------------
   if (project === null) {
     return (
@@ -501,6 +521,14 @@ export default function CodingProjectEditorPage() {
                 <EvaIcon name="save-outline" size={14} />
                 {saving ? t("web:practice.codingProjects.saving", { defaultValue: "Saving…" }) : isDirty ? t("web:practice.codingProjects.saveUnsaved", { defaultValue: "Save*" }) : t("web:practice.codingProjects.saved", { defaultValue: "Saved" })}
               </Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => setShareOpen(true)} disabled={isDirty} title={isDirty ? t("web:practice.codingProjects.saveFirst", { defaultValue: "Save your changes first" }) : undefined}>
+                <EvaIcon name="share-outline" size={14} />
+                {t("web:practice.codingProjects.share", { defaultValue: "Share" })}
+              </Button>
+              <Button type="button" variant="outline" size="sm" onClick={onExport} disabled={exporting || isDirty} title={isDirty ? t("web:practice.codingProjects.saveFirst", { defaultValue: "Save your changes first" }) : undefined}>
+                <EvaIcon name="download-outline" size={14} />
+                {exporting ? t("web:practice.codingProjects.exporting", { defaultValue: "Exporting…" }) : t("web:practice.codingProjects.export", { defaultValue: "Export" })}
+              </Button>
               <Button type="button" variant="secondary" size="sm" onClick={onAnalyzeWithCoach} disabled={Object.keys(files).length === 0}>
                 <EvaIcon name="message-circle-outline" size={14} />
                 {t("web:practice.codingProjects.analyzeWithCoach", { defaultValue: "Analyze with your coach" })}
@@ -509,6 +537,7 @@ export default function CodingProjectEditorPage() {
           </div>
 
           {saveError && <p className="text-sm text-danger">{saveError}</p>}
+          {exportError && <p className="text-sm text-danger">{exportError}</p>}
           {!saveError && lastSavedAt && !isDirty && (
             <p className="text-xs text-hint">{t("web:practice.codingProjects.lastSaved", { defaultValue: "Saved just now" })}</p>
           )}
@@ -604,6 +633,15 @@ export default function CodingProjectEditorPage() {
             </div>
           )}
         </div>
+        {projectId && (
+          <ShareToUserModal
+            open={shareOpen}
+            onClose={() => setShareOpen(false)}
+            contentType="project"
+            contentId={projectId}
+            getPublicLink={() => projectActions.getProjectPublicUrl("coding", projectId)}
+          />
+        )}
       </AppShell>
     </RequireAuth>
   );

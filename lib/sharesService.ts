@@ -10,7 +10,7 @@ import apiClient from "./apiClient";
 // API. Only the "job" content type is wired up on web today (Job Details is
 // the one screen that needs it here); the type stays broader since the
 // backend contract already supports feedback/video too.
-export type SharedContentType = "feedback" | "video" | "job";
+export type SharedContentType = "feedback" | "video" | "job" | "project";
 
 export interface RecipientLookupResult {
   exists: boolean;
@@ -243,4 +243,29 @@ export async function getSharedWithMeBadgeCount(): Promise<number> {
     console.warn("[sharesService] getSharedWithMeBadgeCount failed", err);
     return 0;
   }
+}
+
+/** GET /api/v1/shares/connections — usernames of accepted connections, for
+ * the share picker (select one / select all instead of typing usernames). */
+export async function listConnections(): Promise<string[]> {
+  try {
+    const data = await apiClient.get<{ username: string }[]>("/api/v1/shares/connections");
+    return (data ?? []).map((c) => c.username);
+  } catch {
+    return [];
+  }
+}
+
+export interface PublicProject {
+  name: string;
+  project_type: string;
+  language_hint?: string | null;
+  updated_at?: string | null;
+  files: { path: string; content: string; size_bytes: number }[];
+}
+
+/** GET /api/v1/shares/public/project/{token} — unauthenticated read-only
+ * view of a project shared through an external link. */
+export async function getPublicProject(token: string): Promise<PublicProject> {
+  return apiClient.get<PublicProject>(`/api/v1/shares/public/project/${encodeURIComponent(token)}`, { auth: false });
 }
