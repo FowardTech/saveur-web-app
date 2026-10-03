@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import { DocumentPickerModal } from "@/components/documents/DocumentPickerModal";
-import { useAuth } from "@/app/providers/AuthProvider";
+import Link from "next/link";
 import * as jdService from "@/lib/jdService";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { downloadUrlAsFile } from "@/lib/downloadFile";
@@ -40,7 +40,6 @@ type InputMode = "text" | "url";
 export default function JDAnalyzerPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { isPro } = useAuth();
 
   const [inputMode, setInputMode] = useState<InputMode>("text");
   const [jd, setJd] = useState("");
@@ -50,6 +49,7 @@ export default function JDAnalyzerPage() {
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proRequired, setProRequired] = useState(false);
+  const [limitMessage, setLimitMessage] = useState<string | null>(null);
 
   const [showBuildResumeChoices, setShowBuildResumeChoices] = useState(false);
   const [showTailorChoices, setShowTailorChoices] = useState(false);
@@ -80,7 +80,7 @@ export default function JDAnalyzerPage() {
       } catch (err) {
         setIsFetchingUrl(false);
         const apiErr = err as ApiError;
-        if (apiErr.status === 402 || apiErr.status === 403) setProRequired(true);
+        if (apiErr.status === 402 || apiErr.status === 403) { setProRequired(true); setLimitMessage(apiErr.message ?? null); }
         else setError(apiErr.message || t("web:jdAnalyzer.urlFetchFailedDefault", { defaultValue: "Couldn't read that job posting." }));
         return;
       }
@@ -102,7 +102,7 @@ export default function JDAnalyzerPage() {
       });
     } catch (err) {
       const apiErr = err as ApiError;
-      if (apiErr.status === 402 || apiErr.status === 403) setProRequired(true);
+      if (apiErr.status === 402 || apiErr.status === 403) { setProRequired(true); setLimitMessage(apiErr.message ?? null); }
       else setError(apiErr.message || t("web:jdAnalyzer.analysisFailedDefault", { defaultValue: "Analysis failed. Please try again." }));
     } finally {
       setIsAnalyzing(false);
@@ -176,17 +176,18 @@ export default function JDAnalyzerPage() {
             subtitle={t("web:jdAnalyzer.subtitle", { defaultValue: "Paste a job description and see how your resume stacks up, with a matching resume generated for you." })}
           />
 
-          {(!isPro || proRequired) && (
+          {proRequired && (
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                 <EvaIcon name="lock-outline" size={20} />
               </span>
-              <h2 className="font-semibold text-primary">{t("web:jdAnalyzer.proRequiredTitle", { defaultValue: "JD Analyzer is a Basic feature" })}</h2>
-              <p className="text-sm text-hint">{t("web:jdAnalyzer.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above to analyze job descriptions against your resume." })}</p>
+              <h2 className="font-semibold text-primary">{t("web:jdAnalyzer.proRequiredTitle", { defaultValue: "You've used your free JD analyses this month" })}</h2>
+              <p className="text-sm text-hint">{t("web:jdAnalyzer.proRequiredSubtitle", { defaultValue: "Upgrade to Saveur Basic or above for unlimited JD analysis." })}</p>
+              <Link href="/subscription" className="text-sm font-medium text-brand hover:underline">{t("web:resume.coverLetter.upgrade", { defaultValue: "Upgrade" })}</Link>
             </div>
           )}
 
-          {isPro && (
+          {(
             <>
               <div className="flex gap-2">
                 <button
