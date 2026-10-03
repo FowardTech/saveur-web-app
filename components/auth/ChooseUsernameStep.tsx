@@ -141,7 +141,7 @@ export function ChooseUsernameStep({ onDone }: { onDone: () => void }) {
           type="button"
           onClick={() => setMode("suggested")}
           className={`flex-1 rounded-pill px-4 py-2 text-sm font-medium transition ${
-            mode === "suggested" ? "bg-brand text-white" : "text-hint hover:text-primary"
+            mode === "suggested" ? "bg-solid text-solid-fg" : "text-hint hover:text-primary"
           }`}
         >
           {t("web:auth.usernameModeSuggested", { defaultValue: "Use suggested" })}
@@ -150,7 +150,7 @@ export function ChooseUsernameStep({ onDone }: { onDone: () => void }) {
           type="button"
           onClick={() => setMode("custom")}
           className={`flex-1 rounded-pill px-4 py-2 text-sm font-medium transition ${
-            mode === "custom" ? "bg-brand text-white" : "text-hint hover:text-primary"
+            mode === "custom" ? "bg-solid text-solid-fg" : "text-hint hover:text-primary"
           }`}
         >
           {t("web:auth.usernameModeCustom", { defaultValue: "Type my own" })}
@@ -177,7 +177,7 @@ export function ChooseUsernameStep({ onDone }: { onDone: () => void }) {
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 pr-9 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 pr-9 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             />
             {checkState === "checking" && (
               <EvaIcon name="loader-outline" size={16} className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-hint" />

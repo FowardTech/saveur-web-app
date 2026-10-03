@@ -27,7 +27,7 @@ export function ProjectViewer({ name, files }: { name: string; files: ViewerFile
                 key={f.path}
                 type="button"
                 onClick={() => setActive(f.path)}
-                className={`truncate rounded px-2 py-1 text-left text-sm ${f.path === current?.path ? "bg-brand/10 font-semibold text-brand" : "text-primary hover:bg-surface-3"}`}
+                className={`truncate rounded px-2 py-1 text-left text-sm ${f.path === current?.path ? "bg-surface-3 font-semibold text-primary" : "text-primary hover:bg-surface-3"}`}
               >
                 {f.path}
               </button>

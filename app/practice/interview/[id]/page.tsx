@@ -746,7 +746,7 @@ export default function LiveInterviewSessionPage() {
                         <div key={i} className={`flex ${m.role === "candidate" ? "justify-end" : "justify-start"}`}>
                           <div
                             className={`max-w-[85%] whitespace-pre-wrap rounded-card px-3.5 py-2.5 text-sm ${
-                              m.role === "candidate" ? "bg-brand text-white" : "border border-border bg-surface-1 text-primary"
+                              m.role === "candidate" ? "bg-solid text-solid-fg" : "border border-border bg-surface-1 text-primary"
                             }`}
                           >
                             {m.text}
@@ -764,7 +764,7 @@ export default function LiveInterviewSessionPage() {
                         onChange={(e) => setAnswerText(e.target.value)}
                         disabled={submittingAnswer}
                         placeholder={t("web:practice.interview.answerPlaceholder", { defaultValue: "Type your answer…" }).toString()}
-                        className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:opacity-60"
+                        className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-60"
                       />
                       {answerError && <p className="text-sm text-danger">{answerError}</p>}
                       <div className="flex items-center justify-between gap-3">

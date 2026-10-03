@@ -72,7 +72,7 @@ export function WelcomeModal() {
             dashboard, not SVG shapes") -- this teaser and that modal are
             documented as sharing the same visual design, and both had the
             same fake "app screenshot" mockup here. */}
-        <div className="flex items-center justify-center bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-5 py-8">
+        <div className="flex items-center justify-center bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-5 py-8">
           <ArtWelcomeWave size={150} />
         </div>
 
@@ -91,7 +91,7 @@ export function WelcomeModal() {
             {bulletGroups.map((group) => (
               <div key={group.title}>
                 <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
-                  <EvaIcon name={group.icon} size={16} className="text-brand" />
+                  <EvaIcon name={group.icon} size={16} className="text-primary" />
                   {group.title}
                 </div>
                 <ul className="flex flex-col gap-1.5 pl-1">

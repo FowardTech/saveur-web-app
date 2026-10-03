@@ -51,7 +51,7 @@ type Stage =
 function ProgressBar({ current, total }: { current: number; total: number }) {
   return (
     <div className="h-1.5 w-full overflow-hidden rounded-pill bg-surface-3">
-      <div className="h-full rounded-pill bg-brand transition-all" style={{ width: `${((current + 1) / total) * 100}%` }} />
+      <div className="h-full rounded-pill bg-solid transition-all" style={{ width: `${((current + 1) / total) * 100}%` }} />
     </div>
   );
 }
@@ -61,7 +61,7 @@ function OptionRow({ text, onClick }: { text: string; onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-between gap-3 rounded-card border border-border bg-surface-1 px-4 py-3.5 text-left text-sm font-medium text-primary transition hover:border-brand/50 hover:bg-surface-3"
+      className="flex w-full items-center justify-between gap-3 rounded-card border border-border bg-surface-1 px-4 py-3.5 text-left text-sm font-medium text-primary transition hover:border-primary/30 hover:bg-surface-3"
     >
       <span>{text}</span>
       <EvaIcon name="chevron-right-outline" size={16} />
@@ -218,7 +218,7 @@ function CareerAssessmentPageInner() {
   } else if (stage === "personality_loading" || stage === "skills_loading") {
     body = (
       <div className="flex justify-center py-16">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   } else if (stage === "personality") {
@@ -236,7 +236,7 @@ function CareerAssessmentPageInner() {
         <h2 className="mt-2 mb-5 text-lg font-bold text-primary">{question?.text}</h2>
         {isSubmittingPersonality ? (
           <div className="flex justify-center py-8">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
         ) : (
           <div className="flex flex-col gap-2.5">

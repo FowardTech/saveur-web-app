@@ -43,8 +43,8 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
       onClick={onClick}
       className={`rounded-pill border px-4 py-2 text-sm font-medium transition ${
         selected
-          ? "border-brand bg-brand/10 text-brand"
-          : "border-border bg-surface-1 text-hint hover:border-brand/50 hover:text-primary"
+          ? "border-primary bg-surface-3 text-primary"
+          : "border-border bg-surface-1 text-hint hover:border-primary/30 hover:text-primary"
       }`}
     >
       {children}
@@ -216,7 +216,7 @@ export default function OnboardingPage() {
           {/* progress */}
           <div className="mb-6 flex items-center gap-2">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-              <div key={i} className={`h-1.5 flex-1 rounded-pill ${i <= step ? "bg-brand" : "bg-surface-3"}`} />
+              <div key={i} className={`h-1.5 flex-1 rounded-pill ${i <= step ? "bg-solid" : "bg-surface-3"}`} />
             ))}
           </div>
 
@@ -279,7 +279,7 @@ export default function OnboardingPage() {
                     }
                   }}
                   placeholder={t("web:onboarding.step2.placeholder", { defaultValue: "Type a role and press Enter" })}
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:opacity-60"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-60"
                 />
                 <Button type="button" variant="secondary" onClick={addRole}>
                   {t("common:actions.add", { defaultValue: "Add" })}
@@ -289,7 +289,7 @@ export default function OnboardingPage() {
                 {roles.map((role) => (
                   <span
                     key={role}
-                    className="flex items-center gap-1.5 rounded-pill bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand"
+                    className="flex items-center gap-1.5 rounded-pill bg-surface-3 px-3 py-1.5 text-sm font-medium text-primary"
                   >
                     {role}
                     <button
@@ -331,7 +331,7 @@ export default function OnboardingPage() {
                 value={countryQuery}
                 onChange={(e) => setCountryQuery(e.target.value)}
                 placeholder={t("web:onboarding.step3.searchPlaceholder", { defaultValue: "Search countries" })}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
 
               {countries.length > 0 && (
@@ -365,7 +365,7 @@ export default function OnboardingPage() {
                       type="button"
                       onClick={() => toggleCountry(country)}
                       className={`flex items-center justify-between gap-2 border-b border-border px-3.5 py-2.5 text-left text-sm last:border-b-0 ${
-                        selected ? "bg-brand/5 text-brand font-medium" : "text-primary hover:bg-surface-3"
+                        selected ? "bg-surface-1 text-primary font-medium" : "text-primary hover:bg-surface-3"
                       }`}
                     >
                       <span className="flex items-center gap-2">
@@ -373,7 +373,7 @@ export default function OnboardingPage() {
                         {countryLabel(country)}
                       </span>
                       {selected ? (
-                        <EvaIcon name="checkmark-circle-2-outline" size={18} className="text-brand" />
+                        <EvaIcon name="checkmark-circle-2-outline" size={18} className="text-primary" />
                       ) : (
                         <span className="h-[18px] w-[18px] rounded-full border border-border" />
                       )}

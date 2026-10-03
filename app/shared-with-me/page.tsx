@@ -182,7 +182,7 @@ function SharedWithMeInner() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 placeholder={t("web:jobAlerts.details.shareUsernamePlaceholder", { defaultValue: "their username" })}
-                className="flex-1 rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="flex-1 rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
               <Button onClick={onSendRequest} disabled={!reqUsername.trim() || sendingReq}>
                 {t("web:sharedWithMe.sendRequest", { defaultValue: "Send request" })}
@@ -225,7 +225,7 @@ function SharedWithMeInner() {
                     key={share.id}
                     href={`/shared-with-me/${share.id}`}
                     className={`flex items-center gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                      !share.read ? "border-accent-purple" : "border-border"
+                      !share.read ? "border-primary" : "border-border"
                     }`}
                   >
                     <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
@@ -238,7 +238,7 @@ function SharedWithMeInner() {
                       <p className="truncate text-sm text-hint">{previewLine(share, t)}</p>
                       <p className="mt-1 text-xs text-hint">{relativeTime(share.createdAt)}</p>
                     </div>
-                    {!share.read && <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-accent-purple" />}
+                    {!share.read && <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-solid" />}
                   </Link>
                 ))}
             </div>

@@ -493,7 +493,7 @@ export default function CodingProjectEditorPage() {
                 {t("web:practice.codingProjects.backToProjects", { defaultValue: "Back to My Projects" })}
               </Link>
               <span className="text-hint">/</span>
-              <button type="button" onClick={onRenameProject} className="flex min-w-0 items-center gap-1.5 truncate text-sm font-semibold text-primary hover:text-brand" title={t("common:rename", { defaultValue: "Rename" }).toString()}>
+              <button type="button" onClick={onRenameProject} className="flex min-w-0 items-center gap-1.5 truncate text-sm font-semibold text-primary hover:text-primary" title={t("common:rename", { defaultValue: "Rename" }).toString()}>
                 <span className="truncate">{projectName}</span>
                 <EvaIcon name="edit-2-outline" size={13} className="shrink-0 text-hint" />
               </button>
@@ -570,7 +570,7 @@ export default function CodingProjectEditorPage() {
                     className={`flex shrink-0 cursor-pointer items-center gap-1.5 rounded-t px-3 py-1.5 text-xs ${activeTab === path ? "bg-surface-1 font-medium text-primary" : "text-hint hover:bg-surface-3"}`}
                   >
                     <span className="max-w-[10rem] truncate">{path.split("/").pop()}</span>
-                    {dirtyPaths.has(path) && <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />}
+                    {dirtyPaths.has(path) && <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-solid" aria-hidden="true" />}
                     <button
                       type="button"
                       onClick={(e) => {

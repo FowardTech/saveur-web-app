@@ -134,7 +134,7 @@ export function SiteSearch() {
           onKeyDown={onKeyDown}
           placeholder={t("web:shell.searchPlaceholder", { defaultValue: "Search anything or any page…" })}
           aria-label={t("web:shell.searchPlaceholder", { defaultValue: "Search anything or any page…" })}
-          className="w-full rounded-full border border-border bg-surface-1 py-2 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+          className="w-full rounded-pill border border-border bg-surface-1 py-2 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
         />
       </div>
 

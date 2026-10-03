@@ -42,14 +42,10 @@ function gradientFor(index: number): [string, string] {
  * icon on top, matching mobile's ButtonOptional icon-badge shape/size
  * closely enough to read as the same visual language while staying at the
  * smaller scale a sidebar row needs. */
-function NavIconBadge({ icon, index }: { icon: Parameters<typeof EvaIcon>[0]["name"]; index: number }) {
-  const [from, to] = gradientFor(index);
+function NavIconBadge({ icon, active }: { icon: Parameters<typeof EvaIcon>[0]["name"]; index?: number; active?: boolean }) {
   return (
-    <span
-      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-      style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
-    >
-      <EvaIcon name={icon} size={14} className="text-white" />
+    <span className="flex h-5 w-5 shrink-0 items-center justify-center">
+      <EvaIcon name={icon} size={18} className={active ? "text-primary" : "text-hint"} />
     </span>
   );
 }
@@ -59,7 +55,7 @@ function NavIconBadge({ icon, index }: { icon: Parameters<typeof EvaIcon>[0]["na
  * '9+' : item.badge` convention. */
 function NavBadge({ count }: { count: number }) {
   return (
-    <span className="ml-auto flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-pill bg-brand px-1.5 text-[11px] font-semibold text-white">
+    <span className="ml-auto flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-pill bg-solid px-1.5 text-[11px] font-semibold text-solid-fg">
       {count > 9 ? "9+" : count}
     </span>
   );
@@ -98,11 +94,11 @@ function NavLink({
       // (700) IS one of the three registered weights, so it's the
       // reliable choice for an active row that needs to read as
       // meaningfully heavier than font-medium (500) on inactive ones.
-      className={`flex items-center gap-3 rounded-pill px-3 py-2 text-sm transition ${
-        active ? "bg-brand/10 text-brand font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
+      className={`flex items-center gap-2.5 rounded-pill px-2.5 py-1.5 text-[13px] transition ${
+        active ? "bg-surface-3 text-primary font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
       }`}
     >
-      <NavIconBadge icon={icon} index={gradientIndex} />
+      <NavIconBadge icon={icon} active={active} />
       <span className="truncate">{label}</span>
       {!!badge && <NavBadge count={badge} />}
     </Link>
@@ -131,10 +127,10 @@ function NavGroupItem({
         onClick={() => setOpen((o) => !o)}
         // See NavLink's own comment on this same font-weight fix.
         className={`flex w-full items-center gap-3 rounded-pill px-3 py-2 text-sm transition ${
-          hasActiveChild ? "text-brand font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
+          hasActiveChild ? "text-primary font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
         }`}
       >
-        <NavIconBadge icon={item.icon} index={gradientIndex} />
+        <NavIconBadge icon={item.icon} active={hasActiveChild} />
         <span className="flex-1 truncate text-left">
           {item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label}
         </span>
@@ -215,7 +211,7 @@ function LanguageMenu() {
               type="button"
               onClick={() => selectLanguage(lang.code)}
               className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition hover:bg-surface-3 ${
-                lang.code === i18n.language ? "text-brand font-medium" : "text-primary"
+                lang.code === i18n.language ? "text-primary font-medium" : "text-primary"
               }`}
             >
               <span>{lang.nativeLabel}</span>
@@ -337,11 +333,11 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     // existing border-r border-border wrap around <Sidebar /> in
     // AppShell.tsx already gives it a visible edge against the (also now
     // white) main content, so this doesn't need its own border/shadow.
-    <div className="flex h-full w-64 flex-col bg-page">
-      <div className="flex items-center gap-2 px-5 py-5">
+    <div className="flex h-full w-60 flex-col bg-page">
+      <div className="flex items-center gap-2 px-4 py-4">
         <Image src="/logo-badge.png" alt="" width={28} height={28} priority className="rounded-[22%]" />
         <span className="font-brand text-xl tracking-tight text-primary">
-          Saveur<span className="text-brand">.</span>
+          Saveur<span className="text-primary">.</span>
         </span>
       </div>
 

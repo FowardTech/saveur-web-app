@@ -521,7 +521,7 @@ export default function PracticeSessionDetailPage() {
                             <span className="font-medium text-primary">{feedback.scores[key]}%</span>
                           </div>
                           <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
-                            <div className="h-full rounded-full bg-brand" style={{ width: `${Math.max(0, Math.min(100, feedback.scores[key]))}%` }} />
+                            <div className="h-full rounded-full bg-solid" style={{ width: `${Math.max(0, Math.min(100, feedback.scores[key]))}%` }} />
                           </div>
                         </div>
                       ))}
@@ -547,7 +547,7 @@ export default function PracticeSessionDetailPage() {
                                 <span className="font-medium text-primary">{Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%</span>
                               </div>
                               <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
-                                <div className="h-full rounded-full bg-brand" style={{ width: `${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%` }} />
+                                <div className="h-full rounded-full bg-solid" style={{ width: `${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%` }} />
                               </div>
                             </div>
                           )
@@ -626,7 +626,7 @@ export default function PracticeSessionDetailPage() {
                         <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                           <div
                             className={`max-w-[85%] rounded-card px-3.5 py-2.5 text-sm ${
-                              m.role === "user" ? "bg-brand text-white" : "bg-surface-1 text-primary"
+                              m.role === "user" ? "bg-solid text-solid-fg" : "bg-surface-1 text-primary"
                             }`}
                           >
                             {m.text}

@@ -19,7 +19,9 @@
   --success: #00d65b;
   --danger: #fa4169;
   --warning: #fe9870;
-  --accent-purple: #8b5cf6;
+  --accent-purple: #71717a;
+  --solid: #18181b;
+  --solid-fg: #ffffff;
 
   /* light mode */
   /* Product report: "I want the app background in the web app to be
@@ -34,50 +36,52 @@
      --surface-3 (#f0f0f0) below is unchanged -- only the tint is gone
      (R=G=B now). Mirrors the identical fix to color-basic-200 in the
      mobile app's constants/theme/appTheme.json. */
-  --surface-1: #f6f6f6;
+  --surface-1: #fafafa;
   --surface-2: #ffffff;
-  --surface-3: #f0f0f0;
-  --surface-4: #e0e0e0;
-  --border: #e7e7f0;
-  --text-primary: #272755;
-  --text-hint: #5c5c78;
+  --surface-3: #f4f4f5;
+  --surface-4: #e4e4e7;
+  --border: #e4e4e7;
+  --text-primary: #18181b;
+  --text-hint: #71717a;
   --text-link: #0063f8;
   --success-text: #047857;
 
-  --tint-orange: #fff1e7;
-  --tint-orange-text: #f2994a;
-  --tint-mint: #e1f9ef;
-  --tint-mint-text: #047857;
-  --tint-rose: #ffeaf1;
-  --tint-rose-text: #f2679c;
-  --tint-purple: #f3eeff;
-  --tint-purple-text: #7c3aed;
+  --tint-orange: #f4f4f5;
+  --tint-orange-text: #3f3f46;
+  --tint-mint: #f4f4f5;
+  --tint-mint-text: #3f3f46;
+  --tint-rose: #f4f4f5;
+  --tint-rose-text: #3f3f46;
+  --tint-purple: #f4f4f5;
+  --tint-purple-text: #3f3f46;
 }
 
 .dark {
-  --page: #12121f;
-  --surface-1: #1b1b2e;
+  --page: #09090b;
+  --surface-1: #111113;
   /* Product report: dark-mode cards had a lighter slab background; they
      should look like the empty "Your Coaching Report" card, which is just
      the page colour with a faint brand wash and a border. --surface-2 is the
      card fill, so it now sits ~at page level (page #12121f + 5% brand). */
-  --surface-2: #151526;
-  --surface-3: #3a3a57;
-  --surface-4: #3a3a57;
-  --border: #3a3a57;
-  --text-primary: #f5f5fa;
-  --text-hint: #9393aa;
+  --surface-2: #0c0c0e;
+  --surface-3: #1c1c1f;
+  --surface-4: #27272a;
+  --border: #27272a;
+  --text-primary: #fafafa;
+  --text-hint: #a1a1aa;
   --text-link: #8fb4ff;
   --success-text: #6ee7b7;
 
-  --tint-orange: #3a2a1c;
-  --tint-orange-text: #ffb870;
-  --tint-mint: #123625;
-  --tint-mint-text: #6ee7b7;
-  --tint-rose: #3a1f2a;
-  --tint-rose-text: #ff9dc0;
-  --tint-purple: #2a2140;
-  --tint-purple-text: #c4b5fd;
+  --tint-orange: #1c1c1f;
+  --tint-orange-text: #d4d4d8;
+  --tint-mint: #1c1c1f;
+  --tint-mint-text: #d4d4d8;
+  --tint-rose: #1c1c1f;
+  --tint-rose-text: #d4d4d8;
+  --tint-purple: #1c1c1f;
+  --tint-purple-text: #d4d4d8;
+  --solid: #fafafa;
+  --solid-fg: #09090b;
 }
 
 @theme inline {
@@ -99,6 +103,8 @@
   --color-hint: var(--text-hint);
   --color-link: var(--text-link);
 
+  --color-solid: var(--solid);
+  --color-solid-fg: var(--solid-fg);
   --color-brand: var(--brand);
   --color-brand-600: var(--brand-600);
   --color-brand-700: var(--brand-700);
@@ -118,8 +124,8 @@
   --color-tint-purple: var(--tint-purple);
   --color-tint-purple-text: var(--tint-purple-text);
 
-  --radius-card: 12px;
-  --radius-pill: 999px;
+  --radius-card: 10px;
+  --radius-pill: 8px;
 }
 
 @layer base {

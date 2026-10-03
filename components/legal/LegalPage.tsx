@@ -51,7 +51,7 @@ export function LegalPage({ slug, titleDefault }: { slug: LegalSlug; titleDefaul
     <div className="flex min-h-screen flex-col bg-page">
       <header className="px-6 py-5">
         <Link href="/" className="text-lg font-bold tracking-tight text-primary">
-          Saveur<span className="text-brand">.</span>
+          Saveur<span className="text-primary">.</span>
         </Link>
       </header>
       <div className="mx-auto w-full max-w-2xl flex-1 px-6 pb-20">

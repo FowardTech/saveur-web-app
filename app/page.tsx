@@ -56,7 +56,7 @@ export default function LandingPage() {
               key={pill.label}
               className="flex items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2 text-sm text-primary shadow-sm"
             >
-              <EvaIcon name={pill.icon} size={16} className="text-brand" />
+              <EvaIcon name={pill.icon} size={16} className="text-primary" />
               {pill.label}
             </div>
           ))}
@@ -100,7 +100,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {howItWorks.map((item) => (
               <div key={item.step} className="rounded-card border border-border bg-surface-2 p-5 shadow-sm">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand/10 text-brand">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-3 text-primary">
                   <EvaIcon name={item.icon} size={18} />
                 </span>
                 <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-hint">
@@ -114,7 +114,7 @@ export default function LandingPage() {
         </section>
 
         {/* Bottom CTA */}
-        <section className="flex flex-col items-center gap-4 rounded-card border border-border bg-gradient-to-br from-brand/10 via-accent-purple/5 to-transparent px-6 py-10 text-center">
+        <section className="flex flex-col items-center gap-4 rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-6 py-10 text-center">
           <h2 className="text-2xl font-bold text-primary">{t("web:landing.bottomCtaTitle", { defaultValue: "Ready to start practicing?" })}</h2>
           <p className="max-w-md text-sm text-hint">
             {t("web:landing.bottomCtaSubtitle", { defaultValue: "Create a free account and run your first AI mock interview in minutes." })}

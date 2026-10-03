@@ -227,7 +227,7 @@ function GoalsPageInner() {
                         })}
                       </p>
                       <div className="mt-2 h-1.5 overflow-hidden rounded-pill bg-surface-3">
-                        <div className="h-full rounded-pill bg-brand" style={{ width: `${practicePct}%` }} />
+                        <div className="h-full rounded-pill bg-solid" style={{ width: `${practicePct}%` }} />
                       </div>
                     </div>
                     <button
@@ -251,7 +251,7 @@ function GoalsPageInner() {
                         })}
                       </p>
                       <div className="mt-2 h-1.5 overflow-hidden rounded-pill bg-surface-3">
-                        <div className="h-full rounded-pill bg-brand" style={{ width: `${applicationsPct}%` }} />
+                        <div className="h-full rounded-pill bg-solid" style={{ width: `${applicationsPct}%` }} />
                       </div>
                     </div>
                     <button
@@ -274,10 +274,10 @@ function GoalsPageInner() {
                           min={1}
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
-                          className="w-16 rounded-md border border-border bg-surface-2 px-2 py-1 text-sm text-primary focus:border-brand focus:outline-none"
+                          className="w-16 rounded-md border border-border bg-surface-2 px-2 py-1 text-sm text-primary focus:border-primary focus:outline-none"
                         />
                       </label>
-                      <button type="submit" disabled={isSavingTarget} className="rounded-pill bg-brand px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60">
+                      <button type="submit" disabled={isSavingTarget} className="rounded-pill bg-solid px-3 py-1.5 text-xs font-semibold text-solid-fg disabled:opacity-60">
                         {t("common:actions.save", { defaultValue: "Save" })}
                       </button>
                       <button type="button" onClick={() => setEditingKey(null)} className="text-xs font-medium text-hint hover:text-primary">

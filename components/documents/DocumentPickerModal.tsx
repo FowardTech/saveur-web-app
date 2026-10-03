@@ -65,7 +65,7 @@ export function DocumentPickerModal({
                 key={doc.id}
                 type="button"
                 onClick={() => onSelect(doc)}
-                className="flex items-center gap-3 rounded-lg border border-border bg-surface-1 p-3 text-left hover:border-brand/50"
+                className="flex items-center gap-3 rounded-lg border border-border bg-surface-1 p-3 text-left hover:border-primary/30"
               >
                 <EvaIcon name="file-text-outline" size={18} className="shrink-0 text-hint" />
                 <div className="min-w-0 flex-1">

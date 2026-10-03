@@ -91,10 +91,10 @@ export function NewProjectModal({ open, onClose, onCreate, creating, error }: Ne
                 type="button"
                 onClick={() => setProjectType("web")}
                 className={`flex flex-col items-start gap-1 rounded-lg border p-3 text-left transition ${
-                  projectType === "web" ? "border-brand bg-brand/5" : "border-border hover:bg-surface-3"
+                  projectType === "web" ? "border-primary bg-surface-1" : "border-border hover:bg-surface-3"
                 }`}
               >
-                <EvaIcon name="monitor-outline" size={18} className={projectType === "web" ? "text-brand" : "text-hint"} />
+                <EvaIcon name="monitor-outline" size={18} className={projectType === "web" ? "text-primary" : "text-hint"} />
                 <span className="text-sm font-medium text-primary">{t("web:practice.codingProjects.typeWeb", { defaultValue: "Web Project" })}</span>
                 <span className="text-xs text-hint">{t("web:practice.codingProjects.typeWebHint", { defaultValue: "HTML/CSS/JS" })}</span>
               </button>
@@ -102,10 +102,10 @@ export function NewProjectModal({ open, onClose, onCreate, creating, error }: Ne
                 type="button"
                 onClick={() => setProjectType("script")}
                 className={`flex flex-col items-start gap-1 rounded-lg border p-3 text-left transition ${
-                  projectType === "script" ? "border-brand bg-brand/5" : "border-border hover:bg-surface-3"
+                  projectType === "script" ? "border-primary bg-surface-1" : "border-border hover:bg-surface-3"
                 }`}
               >
-                <EvaIcon name="code-outline" size={18} className={projectType === "script" ? "text-brand" : "text-hint"} />
+                <EvaIcon name="code-outline" size={18} className={projectType === "script" ? "text-primary" : "text-hint"} />
                 <span className="text-sm font-medium text-primary">{t("web:practice.codingProjects.typeScript", { defaultValue: "Script" })}</span>
                 <span className="text-xs text-hint">{t("web:practice.codingProjects.typeScriptHint", { defaultValue: "Run code" })}</span>
               </button>

@@ -187,14 +187,14 @@ export default function ReferralProgramPage() {
                     value={redeemCode}
                     onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
                     placeholder={t("web:referral.codePlaceholder", { defaultValue: "Enter referral code" })}
-                    className="flex-1 rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    className="flex-1 rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                   />
                   <Button type="submit" variant="outline" size="md" disabled={!redeemCode.trim() || redeeming}>
                     {redeeming ? "…" : t("web:referral.apply", { defaultValue: "Apply" })}
                   </Button>
                 </div>
                 {redeemMessage && (
-                  <p className={`text-sm ${redeemMessage.ok ? "text-brand" : "text-danger"}`}>{redeemMessage.text}</p>
+                  <p className={`text-sm ${redeemMessage.ok ? "text-primary" : "text-danger"}`}>{redeemMessage.text}</p>
                 )}
               </form>
             </div>

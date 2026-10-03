@@ -121,7 +121,7 @@ function TreeRow({
           )}
           <EvaIcon name={isFolder ? "folder-outline" : "file-text-outline"} size={14} className="shrink-0 text-hint" />
           <span className="truncate">{node.name}</span>
-          {isDirty && <span className="ml-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />}
+          {isDirty && <span className="ml-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-solid" aria-hidden="true" />}
         </button>
         <div className="hidden shrink-0 items-center gap-0.5 group-hover:flex">
           {isFolder && (

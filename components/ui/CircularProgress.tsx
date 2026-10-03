@@ -11,7 +11,7 @@ interface CircularProgressProps {
  * components/CircularProgress.tsx (used by CareerRoadmap.tsx's stats header
  * and elsewhere). Web has no native equivalent, so this is a from-scratch
  * port rather than a wrapper. */
-export function CircularProgress({ progress, size = 84, strokeWidth = 8, trackClassName = "text-surface-3", progressClassName = "text-brand", children }: CircularProgressProps) {
+export function CircularProgress({ progress, size = 84, strokeWidth = 8, trackClassName = "text-surface-3", progressClassName = "text-primary", children }: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const clamped = Math.max(0, Math.min(100, progress));

@@ -200,7 +200,7 @@ export default function OfferAnalyzerPage() {
 
               {result.negotiation_tip && (
                 <div className="mt-4 flex items-start gap-2 rounded-card bg-surface-1 p-3">
-                  <EvaIcon name="bulb-outline" size={16} className="mt-0.5 text-brand" />
+                  <EvaIcon name="bulb-outline" size={16} className="mt-0.5 text-primary" />
                   <p className="text-sm text-primary">{result.negotiation_tip}</p>
                 </div>
               )}

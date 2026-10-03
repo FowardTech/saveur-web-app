@@ -223,7 +223,7 @@ export default function ProfileSettingsPage() {
           />
 
           {studentDiscountActive && (
-            <span className="inline-flex w-fit items-center gap-1.5 rounded-pill border border-brand/30 bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand">
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-pill border border-primary/30 bg-surface-3 px-3 py-1.5 text-sm font-medium text-primary">
               <EvaIcon name="award-outline" size={14} />
               {t("web:settings.profile.studentBadge", { defaultValue: "Verified Student" })}
             </span>
@@ -273,7 +273,7 @@ export default function ProfileSettingsPage() {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder={t("web:settings.profile.bioPlaceholder", { defaultValue: "A short intro — your background, what you're working toward, anything you'd want a coach to know." })}
                 rows={3}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
             </label>
             <label className="flex flex-col gap-1.5">
@@ -283,7 +283,7 @@ export default function ProfileSettingsPage() {
                 onChange={(e) => setHobbies(e.target.value)}
                 placeholder={t("web:settings.profile.hobbiesPlaceholder", { defaultValue: "Hobbies, interests, anything outside of work." })}
                 rows={2}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
             </label>
             {error && <p className="text-sm text-danger">{error}</p>}
@@ -320,7 +320,7 @@ export default function ProfileSettingsPage() {
                     }
                   }}
                   placeholder={t("auth:desired_roles_placeholder", { defaultValue: "Type a job title and add it" })}
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
                 <Button type="button" variant="secondary" onClick={addRole}>
                   {t("common:actions.add", { defaultValue: "Add" })}
@@ -351,7 +351,7 @@ export default function ProfileSettingsPage() {
                 value={countryQuery}
                 onChange={(e) => setCountryQuery(e.target.value)}
                 placeholder={t("web:onboarding.step3.searchPlaceholder", { defaultValue: "Search countries" })}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
               {countries.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -381,7 +381,7 @@ export default function ProfileSettingsPage() {
                       type="button"
                       onClick={() => toggleCountry(country)}
                       className={`flex items-center justify-between gap-2 border-b border-border px-3.5 py-2.5 text-left text-sm last:border-b-0 ${
-                        selected ? "bg-brand/5 text-brand font-medium" : "text-primary hover:bg-surface-3"
+                        selected ? "bg-surface-1 text-primary font-medium" : "text-primary hover:bg-surface-3"
                       }`}
                     >
                       <span className="flex items-center gap-2">
@@ -389,7 +389,7 @@ export default function ProfileSettingsPage() {
                         {countryLabel(country)}
                       </span>
                       {selected ? (
-                        <EvaIcon name="checkmark-circle-2-outline" size={18} className="text-brand" />
+                        <EvaIcon name="checkmark-circle-2-outline" size={18} className="text-primary" />
                       ) : (
                         <span className="h-[18px] w-[18px] rounded-full border border-border" />
                       )}

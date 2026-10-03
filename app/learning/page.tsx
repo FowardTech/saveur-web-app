@@ -302,10 +302,10 @@ export default function LearningPage() {
               (ArtLearningCourses, see LearningArt.tsx) instead of a
               generic icon. */}
           <div className="shadow-lg">
-            <section className="relative flex items-center justify-between gap-4 overflow-hidden rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-6 py-8 sm:px-8 sm:py-10">
+            <section className="relative flex items-center justify-between gap-4 overflow-hidden rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-6 py-8 sm:px-8 sm:py-10">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
+                className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-surface-3 blur-3xl"
               />
               <div className="relative flex max-w-lg flex-col items-start gap-2">
                 {/* h1, not h2 -- this hero replaces what used to be the
@@ -416,7 +416,7 @@ export default function LearningPage() {
                         <div key={w.week} className="flex items-center gap-4 rounded-card border border-border bg-surface-1 p-4">
                           <span
                             className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                              w.completed ? "bg-tint-mint text-tint-mint-text" : w.unlocked ? "bg-brand/10 text-brand" : "bg-surface-3 text-hint"
+                              w.completed ? "bg-tint-mint text-tint-mint-text" : w.unlocked ? "bg-surface-3 text-primary" : "bg-surface-3 text-hint"
                             }`}
                           >
                             {w.completed ? <EvaIcon name="checkmark-outline" size={16} /> : w.week}
@@ -453,7 +453,7 @@ export default function LearningPage() {
                 </>
               ) : isAutoGenerating ? (
                 <div className="flex flex-col items-center gap-3 py-6 text-center">
-                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                   <p className="text-sm text-hint">
                     {t("web:learning.autoBuilding", { defaultValue: "Building your curriculum from your goal — {{goal}}…", goal })}
                   </p>
@@ -507,7 +507,7 @@ export default function LearningPage() {
                           above but never rendered. */}
                       <span className="flex items-center gap-2">
                         <span className="text-sm font-medium text-primary capitalize">{slugTopic}</span>
-                        <span className="rounded-pill bg-brand/10 px-2 py-0.5 text-[11px] font-medium text-brand">
+                        <span className="rounded-pill bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-primary">
                           {t(LEVEL_LABEL_KEYS[level], { defaultValue: LEVEL_DEFAULTS[level] })}
                         </span>
                       </span>
@@ -517,7 +517,7 @@ export default function LearningPage() {
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
                       <div
-                        className={`h-1.5 rounded-full transition-all ${isDone ? "bg-success" : "bg-brand"}`}
+                        className={`h-1.5 rounded-full transition-all ${isDone ? "bg-success" : "bg-solid"}`}
                         style={{ width: `${progressPct}%` }}
                       />
                     </div>
@@ -609,7 +609,7 @@ export default function LearningPage() {
                     <div key={level} className="flex items-center gap-4 rounded-card border border-border bg-surface-1 p-4">
                       <span
                         className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                          isTierComplete ? "bg-tint-mint text-tint-mint-text" : unlocked ? "bg-brand/10 text-brand" : "bg-surface-3 text-hint"
+                          isTierComplete ? "bg-tint-mint text-tint-mint-text" : unlocked ? "bg-surface-3 text-primary" : "bg-surface-3 text-hint"
                         }`}
                       >
                         <EvaIcon name={isTierComplete ? "checkmark-outline" : unlocked ? "book-open-outline" : "lock-outline"} size={15} />
@@ -693,7 +693,7 @@ export default function LearningPage() {
 
                   <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
                     <div
-                      className={`h-1.5 rounded-full transition-all ${isCourseComplete ? "bg-success" : "bg-brand"}`}
+                      className={`h-1.5 rounded-full transition-all ${isCourseComplete ? "bg-success" : "bg-solid"}`}
                       style={{ width: `${progressPct}%` }}
                     />
                   </div>

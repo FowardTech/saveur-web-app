@@ -333,7 +333,7 @@ export default function CodingProblemDetailPage() {
             </Link>
             {timed && secondsLeft !== null && (
               <div className="flex items-center gap-2">
-                <span className={`rounded-pill px-3 py-1 text-sm font-semibold tabular-nums ${secondsLeft <= 60 ? "bg-tint-rose text-tint-rose-text" : "bg-brand/10 text-brand"}`}>
+                <span className={`rounded-pill px-3 py-1 text-sm font-semibold tabular-nums ${secondsLeft <= 60 ? "bg-tint-rose text-tint-rose-text" : "bg-surface-3 text-primary"}`}>
                   {String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:{String(secondsLeft % 60).padStart(2, "0")}
                 </span>
                 <Button type="button" size="sm" variant="outline" onClick={onNextProblem} disabled={finishing}>
@@ -351,7 +351,7 @@ export default function CodingProblemDetailPage() {
                 className="inline-flex items-center gap-1.5 rounded-pill border border-border px-3 py-1.5 text-xs font-medium text-hint hover:bg-surface-3"
                 title={t(bookmarked ? "web:practice.coding.detail.bookmarked" : "web:practice.coding.detail.bookmark", { defaultValue: bookmarked ? "Bookmarked" : "Bookmark" }).toString()}
               >
-                <EvaIcon name="star-outline" size={14} className={bookmarked ? "text-brand" : undefined} />
+                <EvaIcon name="star-outline" size={14} className={bookmarked ? "text-primary" : undefined} />
                 {t(bookmarked ? "web:practice.coding.detail.bookmarked" : "web:practice.coding.detail.bookmark", { defaultValue: bookmarked ? "Bookmarked" : "Bookmark" })}
               </button>
             )}
@@ -441,7 +441,7 @@ export default function CodingProblemDetailPage() {
                               type="button"
                               onClick={() => onSelectLanguage(lang)}
                               className={`rounded-pill px-3 py-1 text-xs font-medium transition ${
-                                lang === language ? "bg-brand text-white" : "bg-surface-3 text-hint hover:bg-surface-4"
+                                lang === language ? "bg-solid text-solid-fg" : "bg-surface-3 text-hint hover:bg-surface-4"
                               }`}
                             >
                               {languageLabel(lang)}
@@ -589,7 +589,7 @@ export default function CodingProblemDetailPage() {
                         <ul className="flex flex-col gap-2">
                           {reviewResult.feedback.map((item, i) => (
                             <li key={i} className="flex items-start gap-2 text-sm text-primary">
-                              <EvaIcon name="checkmark-circle-outline" size={14} className="mt-0.5 shrink-0 text-brand" />
+                              <EvaIcon name="checkmark-circle-outline" size={14} className="mt-0.5 shrink-0 text-primary" />
                               <span>{item}</span>
                             </li>
                           ))}

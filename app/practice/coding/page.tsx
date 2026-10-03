@@ -145,7 +145,7 @@ export default function CodingPracticePage() {
 
           <Link
             href="/practice/coding/projects"
-            className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 hover:border-brand/40"
+            className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 hover:border-primary/30"
           >
             <div className="flex items-center gap-3">
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
@@ -201,7 +201,7 @@ export default function CodingPracticePage() {
                     <span className={`rounded-pill px-2.5 py-1 text-xs font-medium ${difficultyTint[p.difficulty] ?? "bg-surface-3 text-hint"}`}>
                       {difficultyLabel(p.difficulty)}
                     </span>
-                    {p.bookmarked && <EvaIcon name="star-outline" size={16} className="text-brand" />}
+                    {p.bookmarked && <EvaIcon name="star-outline" size={16} className="text-primary" />}
                   </div>
                   <div>
                     <h3 className="font-medium text-primary">{p.title}</h3>

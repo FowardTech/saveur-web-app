@@ -54,7 +54,7 @@ export function RatingModal({ open, onSubmit, onDismiss }: Props) {
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6" role="dialog" aria-modal="true">
       <div className="flex w-full max-w-sm flex-col items-center rounded-card bg-surface-2 p-6 shadow-2xl">
-        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand">
+        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-solid">
           <EvaIcon name="flash-outline" size={28} className="text-white" />
         </span>
         <h2 className="mt-4 text-center text-lg font-bold text-primary">
@@ -72,7 +72,7 @@ export function RatingModal({ open, onSubmit, onDismiss }: Props) {
               disabled={submitting}
               onClick={() => onPressStar(n)}
               aria-label={t("web:rating.starLabel", { defaultValue: "{{n}} star", n }).toString()}
-              className="p-1 text-brand transition disabled:opacity-50"
+              className="p-1 text-primary transition disabled:opacity-50"
             >
               <EvaIcon name="star-outline" size={32} />
             </button>

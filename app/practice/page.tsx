@@ -60,7 +60,7 @@ export default function PracticeHubPage() {
               the dashboard's own Upcoming Session card instead. */}
           <Link
             href="/practice/schedule"
-            className="flex items-center gap-3 rounded-card border border-brand/40 bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="flex items-center gap-3 rounded-card border border-primary/30 bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
             <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
               <EvaIcon name="calendar-outline" size={20} />
@@ -97,7 +97,7 @@ export default function PracticeHubPage() {
                 <Link
                   key={it.wire}
                   href={`/practice/mock-interviews?type=${interviewTypeSlug(it.label)}`}
-                  className="flex flex-col items-center gap-2 rounded-card border border-border bg-surface-2 p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md"
+                  className="flex flex-col items-center gap-2 rounded-card border border-border bg-surface-2 p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
                 >
                   <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-3 text-hint">
                     <EvaIcon name={it.icon} size={18} />

@@ -126,7 +126,7 @@ export default function PracticalProjectsPage() {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder={t("web:practice.scenarios.rolePlaceholder", { defaultValue: "e.g. Registered Nurse, Account Executive" })}
-                  className="rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none"
+                  className="rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none"
                 />
                 <Button onClick={create} disabled={creating}>
                   {creating ? t("web:practice.scenarios.projects.generating", { defaultValue: "Generating project…" }) : t("web:practice.scenarios.projects.generate", { defaultValue: "Generate a project" })}
@@ -187,7 +187,7 @@ export default function PracticalProjectsPage() {
                   setDirty(true);
                 }}
                 rows={16}
-                className="w-full rounded-card border border-border bg-surface-2 p-4 font-mono text-sm text-primary focus:border-brand focus:outline-none"
+                className="w-full rounded-card border border-border bg-surface-2 p-4 font-mono text-sm text-primary focus:border-primary focus:outline-none"
               />
               <ShareToUserModal
                 open={shareOpen}

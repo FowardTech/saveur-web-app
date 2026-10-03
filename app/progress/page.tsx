@@ -291,7 +291,7 @@ function ProgressPageInner() {
                 <div className="flex flex-col rounded-card border border-border bg-[rgba(126,168,226,0.1)] p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
-                      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand text-white">
+                      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-solid text-solid-fg">
                         <EvaIcon name="flash-outline" size={18} />
                       </span>
                       <div>
@@ -299,13 +299,13 @@ function ProgressPageInner() {
                         <p className="mt-0.5 text-xs text-hint">{fallbackTypeLabel(challenge.challengeType)}</p>
                       </div>
                     </div>
-                    <span className="inline-flex shrink-0 items-center gap-1 rounded-pill bg-brand/10 px-2.5 py-1 text-xs font-bold text-brand">
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-pill bg-surface-3 px-2.5 py-1 text-xs font-bold text-primary">
                       <EvaIcon name="flash-outline" size={13} />
                       {challenge.completed ? challenge.xpAwarded : t("web:progress.dailyChallenge.xpSuffix", { defaultValue: "XP" })}
                     </span>
                   </div>
                   <div className="mt-3 h-1.5 overflow-hidden rounded-pill bg-black/[0.08]">
-                    <div className="h-full rounded-pill bg-brand" style={{ width: challenge.completed ? "100%" : "4%" }} />
+                    <div className="h-full rounded-pill bg-solid" style={{ width: challenge.completed ? "100%" : "4%" }} />
                   </div>
                   <p className="mt-4 text-sm text-primary">{challenge.promptText}</p>
                   {challenge.completed ? (
@@ -323,7 +323,7 @@ function ProgressPageInner() {
                         onChange={(e) => setResponse(e.target.value)}
                         placeholder={t("web:progress.dailyChallenge.responsePlaceholder", { defaultValue: "Type your response…" })}
                         rows={3}
-                        className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                        className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                       />
                       <div className="flex items-center gap-4">
                         <Button size="sm" onClick={onSubmitChallenge} disabled={!response.trim() || submitting}>
@@ -428,7 +428,7 @@ function ProgressPageInner() {
                     <div key={i} className="flex flex-1 flex-col items-center gap-2">
                       <div className="flex h-24 w-full items-end justify-center">
                         <div
-                          className={`w-5 rounded-pill ${i === todayWeekIndex ? "bg-brand" : "bg-surface-4"}`}
+                          className={`w-5 rounded-pill ${i === todayWeekIndex ? "bg-solid" : "bg-surface-4"}`}
                           style={{ height: `${Math.max(6, (count / maxWeekly) * 100)}%` }}
                         />
                       </div>
@@ -454,7 +454,7 @@ function ProgressPageInner() {
                     {leaderboard.slice(0, 3).map((entry, index) => (
                       <div
                         key={entry.id}
-                        className={`animate-card-in flex items-center gap-3 rounded-card border border-border p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${entry.isCurrentUser ? "bg-brand/5" : "bg-surface-2"}`}
+                        className={`animate-card-in flex items-center gap-3 rounded-card border border-border p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${entry.isCurrentUser ? "bg-surface-1" : "bg-surface-2"}`}
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-3 text-xs font-bold text-hint">{entry.rank}</span>

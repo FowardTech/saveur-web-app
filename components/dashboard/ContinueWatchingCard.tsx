@@ -62,7 +62,7 @@ export function ContinueWatchingCard() {
             </span>
           </span>
         ) : (
-          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-3 text-primary">
             <EvaIcon name="play-circle-outline" size={18} />
           </span>
         )}

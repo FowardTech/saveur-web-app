@@ -286,7 +286,7 @@ export function StudentVerificationStep({ onDone }: { onDone?: () => void }) {
                 setUniversityQuery(e.target.value);
                 setSelectedUniversity(null);
               }}
-              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             />
             {isSearching && <EvaIcon name="loader-outline" size={16} className="animate-spin text-hint" />}
             {!selectedUniversity && universityResults.length > 0 && (
@@ -339,8 +339,8 @@ export function StudentVerificationStep({ onDone }: { onDone?: () => void }) {
                   onClick={() => setYearOfStudy(opt.value)}
                   className={`rounded-pill border px-3.5 py-2 text-sm font-medium transition ${
                     yearOfStudy === opt.value
-                      ? "border-brand bg-brand/10 text-brand"
-                      : "border-border bg-surface-1 text-hint hover:border-brand/50 hover:text-primary"
+                      ? "border-primary bg-surface-3 text-primary"
+                      : "border-border bg-surface-1 text-hint hover:border-primary/30 hover:text-primary"
                   }`}
                 >
                   {yearLabel(opt.value, t)}

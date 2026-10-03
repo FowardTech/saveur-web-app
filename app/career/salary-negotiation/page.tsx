@@ -266,7 +266,7 @@ function SalaryNegotiationPageInner() {
 
           {scenario && currentOffer && (
             <div className="flex flex-col gap-4">
-              <div className="rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent p-5">
+              <div className="rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent p-5">
                 <h2 className="font-semibold text-primary">
                   {scenario.role} at {scenario.company}
                 </h2>
@@ -279,7 +279,7 @@ function SalaryNegotiationPageInner() {
 
               {rounds.map((r, i) => (
                 <div key={i} className="flex flex-col gap-2">
-                  <div className="ml-auto max-w-[85%] rounded-card bg-brand px-4 py-2.5 text-sm text-white">{r.ask}</div>
+                  <div className="ml-auto max-w-[85%] rounded-card bg-solid px-4 py-2.5 text-sm text-solid-fg">{r.ask}</div>
                   <div className="mr-auto max-w-[85%] rounded-card border border-border bg-surface-2 px-4 py-2.5 text-sm text-primary">
                     {r.recruiter_response}
                   </div>
@@ -287,7 +287,7 @@ function SalaryNegotiationPageInner() {
               ))}
 
               {isFinal ? (
-                <div className="rounded-card border border-brand bg-surface-2 p-5">
+                <div className="rounded-card border border-primary bg-surface-2 p-5">
                   <h3 className="text-lg font-bold text-primary">
                     {t("web:career.salaryNegotiation.summaryTitle", { defaultValue: "Negotiation Summary" })}
                   </h3>
@@ -321,7 +321,7 @@ function SalaryNegotiationPageInner() {
                           <ul className="mt-1.5 flex flex-col gap-1.5">
                             {critique.improvements.map((item, i) => (
                               <li key={i} className="flex items-start gap-2 text-sm text-primary">
-                                <EvaIcon name="arrow-forward-outline" size={16} className="mt-0.5 shrink-0 text-brand" />
+                                <EvaIcon name="arrow-forward-outline" size={16} className="mt-0.5 shrink-0 text-primary" />
                                 <span>{item}</span>
                               </li>
                             ))}

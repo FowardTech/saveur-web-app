@@ -113,7 +113,7 @@ function renderSectionValue(value: unknown): string {
 function StepHeading({ step, title, subtitle }: { step: number; title: string; subtitle?: string }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">{step}</span>
+      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-solid text-xs font-bold text-solid-fg">{step}</span>
       <div>
         <h2 className="font-semibold text-primary">{title}</h2>
         {subtitle && <p className="mt-0.5 text-sm text-hint">{subtitle}</p>}
@@ -399,11 +399,11 @@ export default function ResumeBuilderPage() {
           />
 
           <div className="flex flex-wrap gap-2">
-            <Link href="/documents" className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-primary hover:border-brand/40">
+            <Link href="/documents" className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-primary hover:border-primary/30">
               <EvaIcon name="layers-outline" size={14} />
               {t("web:resume.builder.myDocumentsLink", { defaultValue: "My Documents" })}
             </Link>
-            <Link href="/documents/generated" className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-primary hover:border-brand/40">
+            <Link href="/documents/generated" className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-primary hover:border-primary/30">
               <EvaIcon name="download-outline" size={14} />
               {t("web:resume.builder.generatedDocumentsLink", { defaultValue: "Generated Documents" })}
             </Link>
@@ -431,7 +431,7 @@ export default function ResumeBuilderPage() {
                 const busy = importingKey === opt.key;
                 return (
                   <div key={opt.key} className="flex flex-col items-center gap-2 rounded-lg border border-border bg-surface-1 p-4 text-center">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-solid text-solid-fg">
                       <EvaIcon name={opt.icon} size={16} />
                     </span>
                     <p className="text-sm font-semibold text-primary">{t(opt.labelKey, { defaultValue: opt.labelDefault })}</p>
@@ -481,7 +481,7 @@ export default function ResumeBuilderPage() {
             {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
               <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-1 px-4 py-3">
                 <div className="flex items-center gap-3">
-                  <EvaIcon name="flash-outline" size={18} className="text-brand" />
+                  <EvaIcon name="flash-outline" size={18} className="text-primary" />
                   {(() => {
                     const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
                     return (
@@ -518,7 +518,7 @@ export default function ResumeBuilderPage() {
                 placeholder={t("web:resume.builder.jdPlaceholder", { defaultValue: "Paste a job posting to tailor your resume to it" })}
                 value={jdText}
                 onChange={(e) => setJdText(e.target.value)}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
             </label>
             {limitReached && (
@@ -585,7 +585,7 @@ export default function ResumeBuilderPage() {
                     gradient ring) — this used to render the score as a
                     plain "ATS score: N/100" text line. */}
                 {(atsResult?.score ?? resume.ats_score) != null && (
-                  <CircularProgress progress={atsResult?.score ?? resume.ats_score ?? 0} size={64} strokeWidth={6} progressClassName="text-brand">
+                  <CircularProgress progress={atsResult?.score ?? resume.ats_score ?? 0} size={64} strokeWidth={6} progressClassName="text-primary">
                     <span className="text-sm font-bold text-primary">{atsResult?.score ?? resume.ats_score}</span>
                   </CircularProgress>
                 )}
@@ -639,7 +639,7 @@ export default function ResumeBuilderPage() {
                     // below (contact/experience/education/etc.).
                     if (key === "extracted_text") {
                       return (
-                        <div key={key} className="flex flex-col items-start gap-2 rounded-card border border-brand/30 bg-surface-2 p-4">
+                        <div key={key} className="flex flex-col items-start gap-2 rounded-card border border-primary/30 bg-surface-2 p-4">
                           <div className="flex items-center gap-2">
                             <EvaIcon name="checkmark-circle-2-outline" size={16} className="text-success-text" />
                             <p className="text-sm font-medium text-primary">{t("web:resume.builder.extractedTextUploaded", { defaultValue: "Resume uploaded" })}</p>
@@ -701,7 +701,7 @@ export default function ResumeBuilderPage() {
                                             <button
                                               type="button"
                                               onClick={() => startBulletRewrite(key, entryIndex, bulletIndex, bulletStr, entryLabel)}
-                                              className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-border px-2 py-0.5 text-xs font-medium text-brand hover:border-brand/40"
+                                              className="inline-flex shrink-0 items-center gap-1 rounded-pill border border-border px-2 py-0.5 text-xs font-medium text-primary hover:border-primary/30"
                                             >
                                               <EvaIcon name="edit-2-outline" size={12} />
                                               {t("web:resume.builder.rewriteBulletCta", { defaultValue: "Rewrite with AI" })}
@@ -920,7 +920,7 @@ export default function ResumeBuilderPage() {
                     if (activeBulletTarget) setActiveBulletTarget(null);
                   }}
                   placeholder={t("web:resume.builder.bulletPlaceholder", { defaultValue: "e.g. Responsible for managing the onboarding process for new hires" })}
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
                 <Button onClick={handleRewriteBullet} disabled={rewriting || !bulletText.trim()} className="w-fit">
                   {rewriting ? t("web:resume.builder.rewriting", { defaultValue: "Rewriting…" }) : t("web:resume.builder.rewriteWithAi", { defaultValue: "Rewrite with AI" })}
@@ -939,7 +939,7 @@ export default function ResumeBuilderPage() {
                       <p className="text-xs font-semibold uppercase tracking-wide text-hint">{t("web:resume.builder.before", { defaultValue: "Before" })}</p>
                       <p className="mt-1.5 text-sm text-primary">{bulletText.trim()}</p>
                     </div>
-                    <div className="rounded-lg border border-brand bg-surface-1 p-4">
+                    <div className="rounded-lg border border-primary bg-surface-1 p-4">
                       <p className="text-xs font-semibold uppercase tracking-wide text-success-text">{t("web:resume.builder.after", { defaultValue: "After" })}</p>
                       <p className="mt-1.5 text-sm font-medium text-primary">{rewriteResult.rewritten}</p>
                       {rewriteResult.explanation && <p className="mt-2 text-xs text-hint">{rewriteResult.explanation}</p>}

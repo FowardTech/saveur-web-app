@@ -147,7 +147,7 @@ export default function EmotionalCoachPage() {
                   type="button"
                   onClick={() => setMood(m.id)}
                   className={`flex items-center gap-1.5 rounded-pill border px-3.5 py-2 text-sm font-medium transition ${
-                    mood === m.id ? "border-brand bg-brand/10 text-brand" : "border-border bg-surface-1 text-primary hover:bg-surface-3"
+                    mood === m.id ? "border-primary bg-surface-3 text-primary" : "border-border bg-surface-1 text-primary hover:bg-surface-3"
                   }`}
                 >
                   <span className="text-base">{m.emoji}</span>
@@ -161,7 +161,7 @@ export default function EmotionalCoachPage() {
               onChange={(e) => setNote(e.target.value)}
               rows={3}
               placeholder={t("web:emotionalCoach.notePlaceholder", { defaultValue: "What's on your mind? (optional)" })}
-              className="w-full resize-none rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="w-full resize-none rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             />
 
             {error && <p className="text-sm text-danger">{error}</p>}

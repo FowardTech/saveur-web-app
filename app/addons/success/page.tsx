@@ -74,7 +74,7 @@ function AddOnsSuccessInner() {
 function AddOnsSuccessFallback() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-20 text-center">
-      <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-brand border-t-transparent" />
+      <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-primary border-t-transparent" />
     </div>
   );
 }

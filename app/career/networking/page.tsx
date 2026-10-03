@@ -331,7 +331,7 @@ function NetworkingAssistantInner() {
                 <Pill selected={tab === "events"} onClick={() => setTab("events")}>
                   {t("web:career.networking.tabs.events", { defaultValue: "Career Events" })}
                   {unreadEventsCount > 0 && (
-                    <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-purple px-1 text-[11px] font-semibold text-white">
+                    <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-solid px-1 text-[11px] font-semibold text-white">
                       {unreadEventsCount > 9 ? "9+" : unreadEventsCount}
                     </span>
                   )}
@@ -373,7 +373,7 @@ function NetworkingAssistantInner() {
                           <div className="flex-1">
                             <h3 className="font-medium text-primary">{ev.title}</h3>
                             <p className="text-sm text-hint">{[ev.organizer, ev.location].filter(Boolean).join(" · ")}</p>
-                            {formatEventDate(ev.event_date) && <p className="mt-1 text-xs font-medium text-brand">{formatEventDate(ev.event_date)}</p>}
+                            {formatEventDate(ev.event_date) && <p className="mt-1 text-xs font-medium text-primary">{formatEventDate(ev.event_date)}</p>}
                           </div>
                         </a>
                         <button
@@ -381,9 +381,9 @@ function NetworkingAssistantInner() {
                           onClick={() => handleToggleSaveEvent(ev)}
                           disabled={savingEventId === ev.id}
                           aria-label={t("web:career.events.markInterested", { defaultValue: "Mark interested" })}
-                          className="shrink-0 text-hint transition hover:text-brand disabled:opacity-50"
+                          className="shrink-0 text-hint transition hover:text-primary disabled:opacity-50"
                         >
-                          <EvaIcon name="star-outline" size={18} className={ev.saved ? "text-brand" : undefined} />
+                          <EvaIcon name="star-outline" size={18} className={ev.saved ? "text-primary" : undefined} />
                         </button>
                       </div>
                     ))}
@@ -454,7 +454,7 @@ function NetworkingAssistantInner() {
                                 value={messageContext}
                                 onChange={(e) => setMessageContext(e.target.value)}
                                 rows={3}
-                                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                               />
                             </label>
                             <div className="flex flex-wrap gap-2">
@@ -520,7 +520,7 @@ function NetworkingAssistantInner() {
                   value={form.note}
                   onChange={(e) => setForm((p) => ({ ...p, note: e.target.value }))}
                   rows={3}
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
               </label>
               <div className="flex items-center gap-3">

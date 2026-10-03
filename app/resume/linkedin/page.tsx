@@ -153,7 +153,7 @@ export default function LinkedInOptimizerPage() {
           />
 
           {prefilledFromResume && !premiumRequired && (
-            <p className="text-sm font-medium text-brand">
+            <p className="text-sm font-medium text-primary">
               {t("web:resume.linkedin.prefilledNotice", {
                 defaultValue: "Filled in from your uploaded resume/LinkedIn profile — edit anything below before optimizing.",
               })}
@@ -208,7 +208,7 @@ export default function LinkedInOptimizerPage() {
                   placeholder={t("web:resume.linkedin.currentAboutPlaceholder", { defaultValue: "Paste your current About section" })}
                   value={about}
                   onChange={(e) => setAbout(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
               </label>
               <label className="flex flex-col gap-1.5">
@@ -218,7 +218,7 @@ export default function LinkedInOptimizerPage() {
                   placeholder={t("web:resume.linkedin.bulletsPlaceholder", { defaultValue: "Led a team of 5 engineers...\nShipped a redesign that grew signups 20%..." })}
                   value={bulletsText}
                   onChange={(e) => setBulletsText(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
               </label>
               {error && <p className="text-sm text-danger">{error}</p>}

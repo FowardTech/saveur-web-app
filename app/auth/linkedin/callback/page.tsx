@@ -74,7 +74,7 @@ function LinkedInCallbackInner() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
-      <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-brand border-t-transparent" />
+      <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-primary border-t-transparent" />
       <p className="text-sm text-hint">{t("web:linkedinCallback.finishingSignIn", { defaultValue: "Finishing LinkedIn sign-in…" })}</p>
     </div>
   );
@@ -84,7 +84,7 @@ function LinkedInCallbackFallback() {
   const { t } = useTranslation();
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
-      <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-brand border-t-transparent" />
+      <span className="inline-flex h-9 w-9 animate-spin items-center justify-center rounded-full border-2 border-primary border-t-transparent" />
       <p className="text-sm text-hint">{t("web:linkedinCallback.finishingSignIn", { defaultValue: "Finishing LinkedIn sign-in…" })}</p>
     </div>
   );

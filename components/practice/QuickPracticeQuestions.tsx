@@ -83,7 +83,7 @@ export function QuickPracticeQuestions({ interviewType, role }: { interviewType:
               key={q.id}
               type="button"
               onClick={() => setActive(q)}
-              className="flex flex-col items-start gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:border-brand/50"
+              className="flex flex-col items-start gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:border-primary/30"
             >
               <span className="inline-flex items-center gap-1.5 rounded-pill bg-tint-purple px-2.5 py-1 text-xs font-semibold text-tint-purple-text">
                 <EvaIcon name="clock-outline" size={12} />
@@ -160,7 +160,7 @@ function AnswerQuestionModal({
               onChange={(e) => setAnswer(e.target.value)}
               rows={6}
               placeholder={t("web:practice.mockInterviews.answerPlaceholder", { defaultValue: "Type your answer…" })}
-              className="w-full resize-none rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="w-full resize-none rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             />
             {error && <p className="text-sm text-danger">{error}</p>}
             <Button type="button" disabled={!answer.trim() || submitting} onClick={handleGetFeedback} className="w-full">

@@ -58,7 +58,7 @@ export function JobAlertCard({ alert: a, logoUrl, togglingPin, onTogglePin, onMa
   return (
     <div
       className={`flex flex-col gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md animate-card-in sm:flex-row sm:items-center sm:justify-between ${
-        !a.read ? "border-accent-purple" : "border-border"
+        !a.read ? "border-primary" : "border-border"
       }`}
       style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}
     >
@@ -66,7 +66,7 @@ export function JobAlertCard({ alert: a, logoUrl, togglingPin, onTogglePin, onMa
         <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={a.company} size={44} className="shrink-0 bg-tint-mint" />
         <div>
           {!a.read && (
-            <span className="mb-1 inline-block rounded-pill bg-accent-purple/15 px-2 py-0.5 text-xs font-semibold text-accent-purple">
+            <span className="mb-1 inline-block rounded-pill bg-solid px-2 py-0.5 text-xs font-semibold text-primary">
               {t("web:jobAlerts.newBadge", { defaultValue: "New" })}
             </span>
           )}
@@ -92,7 +92,7 @@ export function JobAlertCard({ alert: a, logoUrl, togglingPin, onTogglePin, onMa
           disabled={togglingPin}
           aria-label={t("web:jobAlerts.saveJobAria", { defaultValue: "Save this job" })}
           className={`inline-flex items-center gap-1.5 rounded-pill border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${
-            a.pinned ? "border-brand bg-brand/10 text-brand" : "border-border text-hint hover:border-brand/50 hover:text-primary"
+            a.pinned ? "border-primary bg-surface-3 text-primary" : "border-border text-hint hover:border-primary/30 hover:text-primary"
           }`}
         >
           <EvaIcon name="star-outline" size={14} />

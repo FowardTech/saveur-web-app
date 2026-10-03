@@ -177,7 +177,7 @@ function AlertKanbanCard({
           type="button"
           onClick={() => onTogglePin(alert)}
           className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-pill border px-3 py-1.5 text-sm font-semibold transition ${
-            alert.pinned ? "border-brand bg-brand/10 text-brand" : "border-border text-hint hover:border-brand/50 hover:text-primary"
+            alert.pinned ? "border-primary bg-surface-3 text-primary" : "border-border text-hint hover:border-primary/30 hover:text-primary"
           }`}
         >
           <EvaIcon name="star-outline" size={14} />
@@ -522,7 +522,7 @@ export default function JobTrackerPage() {
                       onDragLeave={() => setDragOverColumn((prev) => (prev === col.key ? null : prev))}
                       onDrop={(e) => handleDrop(col.key, e)}
                       className={`flex min-h-[120px] flex-1 flex-col gap-2.5 rounded-b-card border border-t-0 border-border p-2.5 transition ${
-                        isOver ? "bg-brand/5 ring-2 ring-inset ring-brand/30" : "bg-surface-1"
+                        isOver ? "bg-surface-1 ring-2 ring-inset ring-primary/10" : "bg-surface-1"
                       }`}
                     >
                       {cards.length === 0 && (

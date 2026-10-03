@@ -82,7 +82,7 @@ export default function SettingsPage() {
             onClick={onReplayTour}
             className="flex w-fit items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2.5 text-sm font-medium text-primary transition hover:bg-surface-3"
           >
-            <EvaIcon name="compass-outline" size={16} className="text-brand" />
+            <EvaIcon name="compass-outline" size={16} className="text-primary" />
             {t("web:settings.hub.showAppTour", { defaultValue: "Show app tour" })}
           </button>
         </div>

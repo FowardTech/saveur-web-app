@@ -542,10 +542,10 @@ function InterviewsPageInner() {
                       onChange={(e) => setEmailText(e.target.value)}
                       rows={6}
                       placeholder={t("web:applications.emailTextPlaceholder", { defaultValue: "Paste a confirmation, interview invite, rejection, or offer email…" })}
-                      className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                      className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                     />
                   </label>
-                  {emailResult && <p className="text-sm text-brand">{emailResult}</p>}
+                  {emailResult && <p className="text-sm text-primary">{emailResult}</p>}
                   <Button type="submit" disabled={parsingEmail || !emailText.trim()} className="w-fit">
                     {parsingEmail ? t("web:applications.parsing", { defaultValue: "Reading…" }) : t("web:applications.parseEmail", { defaultValue: "Parse email" })}
                   </Button>
@@ -660,7 +660,7 @@ function InterviewsPageInner() {
                   value={historyQuery}
                   onChange={(e) => setHistoryQuery(e.target.value)}
                   placeholder={t("web:practice.history.searchPlaceholder", { defaultValue: "Search by type, mode, or company…" })}
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
               )}
 

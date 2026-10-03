@@ -135,9 +135,9 @@ export default function CareerDiaryPage() {
           <button
             type="button"
             onClick={() => setShowComposer(true)}
-            className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 text-left hover:border-brand/40"
+            className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 text-left hover:border-primary/30"
           >
-            <EvaIcon name="plus-outline" size={18} className="text-brand" />
+            <EvaIcon name="plus-outline" size={18} className="text-primary" />
             <span className="flex-1 text-sm font-semibold text-primary">{t("web:careerDiary.addEntry", { defaultValue: "Add Entry" })}</span>
             <EvaIcon name="arrow-forward-outline" size={14} className="text-hint" />
           </button>
@@ -161,7 +161,7 @@ export default function CareerDiaryPage() {
                 <div key={entry.id} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      {entry.category && <span className="rounded-pill bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">{CATEGORY_KEYS.includes(entry.category) ? categoryLabel(entry.category) : entry.category}</span>}
+                      {entry.category && <span className="rounded-pill bg-surface-3 px-2.5 py-1 text-xs font-semibold text-primary">{CATEGORY_KEYS.includes(entry.category) ? categoryLabel(entry.category) : entry.category}</span>}
                       {entry.role && <span className="rounded-pill bg-surface-3 px-2.5 py-1 text-xs font-semibold text-primary">{entry.role}</span>}
                     </div>
                     <button type="button" onClick={() => onDelete(entry)} className="p-1 text-hint hover:text-danger" aria-label={t("common:delete", { defaultValue: "Delete" })}>
@@ -189,7 +189,7 @@ export default function CareerDiaryPage() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder={t("web:careerDiary.composerPlaceholder", { defaultValue: "What did you do, learn, or achieve today?" }).toString()}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
               <div className="mt-3 flex gap-2">
                 {CATEGORY_KEYS.map((key) => (
@@ -197,7 +197,7 @@ export default function CareerDiaryPage() {
                     key={key}
                     type="button"
                     onClick={() => setCategory(category === key ? undefined : key)}
-                    className={`rounded-pill px-3.5 py-1.5 text-sm font-medium ${category === key ? "bg-brand text-white" : "bg-surface-3 text-hint"}`}
+                    className={`rounded-pill px-3.5 py-1.5 text-sm font-medium ${category === key ? "bg-solid text-solid-fg" : "bg-surface-3 text-hint"}`}
                   >
                     {categoryLabel(key)}
                   </button>

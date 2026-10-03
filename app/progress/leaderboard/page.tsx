@@ -39,7 +39,7 @@ const PERIODS: { key: LeaderboardPeriod; labelKey: string; defaultValue: string 
 const PODIUM_ORDER: Array<1 | 2 | 3> = [2, 1, 3];
 const PODIUM_STYLE: Record<1 | 2 | 3, { border: string; badgeBg: string }> = {
   1: { border: "border-tint-mint-text", badgeBg: "bg-tint-mint-text" },
-  2: { border: "border-brand", badgeBg: "bg-brand" },
+  2: { border: "border-primary", badgeBg: "bg-solid" },
   3: { border: "border-tint-orange-text", badgeBg: "bg-tint-orange-text" },
 };
 
@@ -142,7 +142,7 @@ function LeaderboardPageInner() {
                     {t("web:progress.leaderboardPage.yourStatsLine", { defaultValue: "{{xp}} XP · {{days}}-day streak", xp: streak.xp, days: streak.streakDays })}
                   </p>
                 </div>
-                <span className="inline-flex shrink-0 items-center gap-1 rounded-pill bg-brand/10 px-3 py-1.5 text-sm font-bold text-brand">
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-pill bg-surface-3 px-3 py-1.5 text-sm font-bold text-primary">
                   <EvaIcon name="star-outline" size={14} />
                   {currentUserRank ? `#${currentUserRank}` : t("web:progress.leaderboardPage.unranked", { defaultValue: "Unranked" })}
                 </span>
@@ -170,7 +170,7 @@ function LeaderboardPageInner() {
                 key={p.key}
                 type="button"
                 onClick={() => setPeriod(p.key)}
-                className={`flex-1 rounded-pill py-2 text-sm font-bold transition ${period === p.key ? "bg-brand text-white" : "text-hint hover:text-primary"}`}
+                className={`flex-1 rounded-pill py-2 text-sm font-bold transition ${period === p.key ? "bg-solid text-solid-fg" : "text-hint hover:text-primary"}`}
               >
                 {t(p.labelKey, { defaultValue: p.defaultValue })}
               </button>
@@ -206,7 +206,7 @@ function LeaderboardPageInner() {
                       style={{ minHeight: rank === 1 ? 210 : 180, animationDelay: `${i * 60}ms` }}
                     >
                       <span className={`absolute left-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white ${style.badgeBg}`}>{rank}</span>
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-brand/10 text-base font-bold text-brand shadow-sm">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-surface-3 text-base font-bold text-primary shadow-sm">
                         {entry.name?.[0]?.toUpperCase() ?? "?"}
                       </span>
                       <span className="mt-2.5 max-w-full truncate text-center text-sm font-bold text-primary">
@@ -230,7 +230,7 @@ function LeaderboardPageInner() {
                     {rest.map((entry, index) => (
                       <div
                         key={entry.id}
-                        className={`animate-card-in flex items-center gap-3 p-3 ${entry.isCurrentUser ? "bg-brand/5" : ""}`}
+                        className={`animate-card-in flex items-center gap-3 p-3 ${entry.isCurrentUser ? "bg-surface-1" : ""}`}
                         style={{ animationDelay: `${index * 40}ms` }}
                       >
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-3 text-xs font-bold text-hint">{entry.rank}</span>

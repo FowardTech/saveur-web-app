@@ -261,7 +261,7 @@ export default function PracticalScenariosSetupPage() {
             subtitle={t("web:practice.scenarios.subtitle", { defaultValue: "Hands-on, multi-step judgment scenarios for non-engineering roles." })}
           />
 
-          <Link href="/practice/scenarios/projects" className="flex w-fit items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-brand hover:shadow-md">
+          <Link href="/practice/scenarios/projects" className="flex w-fit items-center gap-2 rounded-pill border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-primary hover:shadow-md">
             <EvaIcon name="folder-outline" size={16} />
             {t("web:practice.scenarios.projects.link", { defaultValue: "Industry projects" })}
           </Link>
@@ -336,7 +336,7 @@ export default function PracticalScenariosSetupPage() {
                           key={c.id}
                           type="button"
                           onClick={() => onChoose(c.id)}
-                          className="flex items-start gap-3 rounded-lg border border-border px-3.5 py-2.5 text-left text-sm text-primary transition hover:border-brand/50 hover:bg-surface-1"
+                          className="flex items-start gap-3 rounded-lg border border-border px-3.5 py-2.5 text-left text-sm text-primary transition hover:border-primary/30 hover:bg-surface-1"
                         >
                           <span className="font-semibold uppercase text-hint">{c.id}.</span>
                           <span>{c.text}</span>
@@ -444,7 +444,7 @@ export default function PracticalScenariosSetupPage() {
                           onChange={(e) => setTaskResponse(e.target.value)}
                           disabled={submittingTask}
                           placeholder={t("web:practice.scenarios.taskResponsePlaceholder", { defaultValue: "Write your response here…" }).toString()}
-                          className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:opacity-60"
+                          className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-60"
                         />
                       </label>
 
@@ -462,7 +462,7 @@ export default function PracticalScenariosSetupPage() {
                             <EvaIcon name="alert-circle-outline" size={16} />
                           </span>
                           <p className="text-sm text-danger">{taskError}</p>
-                          <button type="button" className="text-sm font-semibold text-brand" onClick={onSubmitTask}>
+                          <button type="button" className="text-sm font-semibold text-primary" onClick={onSubmitTask}>
                             {t("common:try_again", { defaultValue: "Try again" })}
                           </button>
                         </div>
@@ -508,7 +508,7 @@ export default function PracticalScenariosSetupPage() {
                     <p className="text-sm text-danger">{feedbackLoadError}</p>
                     <button
                       type="button"
-                      className="text-sm font-semibold text-brand"
+                      className="text-sm font-semibold text-primary"
                       onClick={() => {
                         setFeedbackLoadError(null);
                         feedbackPollAttemptsRef.current = 0;
@@ -548,7 +548,7 @@ export default function PracticalScenariosSetupPage() {
                               <span className="font-medium text-primary">{val ?? "—"}%</span>
                             </div>
                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
-                              <div className="h-full rounded-full bg-brand" style={{ width: `${Math.max(0, Math.min(100, val ?? 0))}%` }} />
+                              <div className="h-full rounded-full bg-solid" style={{ width: `${Math.max(0, Math.min(100, val ?? 0))}%` }} />
                             </div>
                           </div>
                         );

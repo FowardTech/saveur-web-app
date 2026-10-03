@@ -48,7 +48,7 @@ interface Roadmap {
 
 const statusStyles: Record<string, string> = {
   completed: "bg-tint-mint text-tint-mint-text",
-  current: "bg-brand/10 text-brand",
+  current: "bg-surface-3 text-primary",
   locked: "bg-surface-3 text-hint",
 };
 

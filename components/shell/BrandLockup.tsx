@@ -18,7 +18,7 @@ export function BrandLockup({
     <div className="flex items-center gap-2">
       <Image src="/logo-badge.png" alt="" width={size} height={size} priority className="rounded-[22%]" />
       <span className={`font-brand tracking-tight text-primary ${textClassName}`}>
-        Saveur<span className="text-brand">.</span>
+        Saveur<span className="text-primary">.</span>
       </span>
     </div>
   );

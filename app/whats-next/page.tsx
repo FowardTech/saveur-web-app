@@ -124,7 +124,7 @@ const GENERAL_NEXT_STEPS: { icon: EvaIconName; titleKey: string; titleDefault: s
 
 const stepBadge: Record<PlanStep["status"], string> = {
   completed: "bg-tint-mint text-tint-mint-text",
-  current: "bg-brand/10 text-brand",
+  current: "bg-surface-3 text-primary",
   locked: "bg-surface-3 text-hint",
 };
 
@@ -333,7 +333,7 @@ export default function WhatsNextPage() {
           {error && <p className="text-sm text-danger">{error}</p>}
 
           {pendingCheckIn && (
-            <div className="flex flex-col gap-3 rounded-card border border-brand bg-brand/5 p-5">
+            <div className="flex flex-col gap-3 rounded-card border border-primary bg-surface-1 p-5">
               <h2 className="font-semibold text-primary">{t("web:whatsNext.checkinTitle", { defaultValue: "How's the new role going?" })}</h2>
               <p className="text-sm text-hint">{t("web:whatsNext.checkinSubtitle", { defaultValue: "Week {{week}} at {{company}} — tell us how it's going.", week: pendingCheckIn.week_number, company: plan?.company ?? "" })}</p>
               <textarea
@@ -341,7 +341,7 @@ export default function WhatsNextPage() {
                 value={checkInText}
                 onChange={(e) => setCheckInText(e.target.value)}
                 placeholder={t("web:whatsNext.checkinPlaceholder", { defaultValue: "e.g. Settling in well, still learning the codebase, my manager has been great…" }).toString()}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
               <div className="flex gap-2">
                 <Button type="button" size="sm" onClick={onSubmitCheckIn} disabled={!checkInText.trim() || submittingCheckIn}>
@@ -374,13 +374,13 @@ export default function WhatsNextPage() {
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {GENERAL_NEXT_STEPS.map((step) => (
-                    <Link key={step.href} href={step.href} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 transition hover:border-brand/40">
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand/10 text-brand">
+                    <Link key={step.href} href={step.href} className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 transition hover:border-primary/30">
+                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-3 text-primary">
                         <EvaIcon name={step.icon} size={16} />
                       </span>
                       <p className="text-sm font-semibold text-primary">{t(step.titleKey, { defaultValue: step.titleDefault })}</p>
                       <p className="text-xs text-hint">{t(step.bodyKey, { defaultValue: step.bodyDefault })}</p>
-                      <span className="mt-1 text-xs font-medium text-brand">{t(step.ctaKey, { defaultValue: step.ctaDefault })} →</span>
+                      <span className="mt-1 text-xs font-medium text-primary">{t(step.ctaKey, { defaultValue: step.ctaDefault })} →</span>
                     </Link>
                   ))}
                 </div>
@@ -419,13 +419,13 @@ export default function WhatsNextPage() {
                     key={`${offer.company}-${offer.role}-${i}`}
                     type="button"
                     onClick={() => pickOffer(offer)}
-                    className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:border-brand/40"
+                    className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:border-primary/30"
                   >
                     <div>
                       <p className="text-sm font-semibold text-primary">{offer.role}</p>
                       <p className="text-sm text-hint">{offer.company}</p>
                     </div>
-                    <EvaIcon name="arrow-forward-outline" size={16} className="shrink-0 text-brand" />
+                    <EvaIcon name="arrow-forward-outline" size={16} className="shrink-0 text-primary" />
                   </button>
                 ))}
                 <button type="button" onClick={() => setShowForm(true)} className="w-fit text-sm font-medium text-brand hover:underline">
@@ -536,7 +536,7 @@ export default function WhatsNextPage() {
                 </button>
               </div>
               {autoDetected && (
-                <p className="mb-4 text-sm text-brand">{t("web:whatsNext.autodetectedNotice", { defaultValue: "Filled in from your Offer-stage application — edit anything below before building your plan." })}</p>
+                <p className="mb-4 text-sm text-primary">{t("web:whatsNext.autodetectedNotice", { defaultValue: "Filled in from your Offer-stage application — edit anything below before building your plan." })}</p>
               )}
               <div className="flex flex-col gap-3">
                 <TextField label={t("web:whatsNext.companyLabel", { defaultValue: "Company" })} value={company} onChange={(e) => setCompany(e.target.value)} placeholder="e.g. Acme Inc." />

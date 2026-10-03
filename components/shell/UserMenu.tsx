@@ -30,7 +30,7 @@ export function UserMenu() {
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 rounded-pill py-1 pl-1 pr-3 transition hover:bg-surface-3"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-medium text-white">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-solid text-sm font-medium text-solid-fg">
           {initial}
         </span>
         <span className="hidden text-sm font-medium text-primary sm:inline">{firstName}</span>

@@ -16,7 +16,7 @@ export function AuthLayout({
     <div className="flex min-h-screen flex-col bg-page">
       <header className="px-6 py-5">
         <Link href="/" className="text-lg font-bold tracking-tight text-primary">
-          Saveur<span className="text-brand">.</span>
+          Saveur<span className="text-primary">.</span>
         </Link>
       </header>
       <div className="flex flex-1 items-center justify-center px-4 pb-16">

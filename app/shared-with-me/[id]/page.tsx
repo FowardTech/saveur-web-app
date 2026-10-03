@@ -269,7 +269,7 @@ export default function SharedContentDetailPage() {
                               <span className="font-medium text-primary">{content.scores?.[key] ?? 0}%</span>
                             </div>
                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
-                              <div className="h-full rounded-full bg-brand" style={{ width: `${Math.max(0, Math.min(100, content.scores?.[key] ?? 0))}%` }} />
+                              <div className="h-full rounded-full bg-solid" style={{ width: `${Math.max(0, Math.min(100, content.scores?.[key] ?? 0))}%` }} />
                             </div>
                           </div>
                         ))}

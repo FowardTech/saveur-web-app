@@ -347,10 +347,10 @@ function MockInterviewSetupInner() {
           {!session && isFreeTier && remainingFreeSessions !== null && !selectedTypeAddonOwned && (
             <Link
               href="/subscription"
-              className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3 transition hover:border-brand/50"
+              className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3 transition hover:border-primary/30"
             >
               <div className="flex items-center gap-3">
-                <EvaIcon name="flash-outline" size={18} className="text-brand" />
+                <EvaIcon name="flash-outline" size={18} className="text-primary" />
                 <p className={`text-sm ${remainingFreeSessions > 0 ? "text-primary" : "text-danger"}`}>
                   {remainingFreeSessions > 0
                     ? t("web:practice.mockInterviews.freeSessionsRemaining", {
@@ -420,7 +420,7 @@ function MockInterviewSetupInner() {
                   placeholder={t("web:practice.mockInterviews.targetRolePlaceholder", { defaultValue: "e.g. Software Engineer" })}
                   required
                   aria-required="true"
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
               </section>
 
@@ -444,7 +444,7 @@ function MockInterviewSetupInner() {
                     value={companySearch}
                     onChange={(e) => setCompanySearch(e.target.value)}
                     placeholder={t("web:practice.mockInterviews.searchCompany", { defaultValue: "Search companies…" })}
-                    className="w-full rounded-lg border border-border bg-surface-1 py-2.5 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    className="w-full rounded-lg border border-border bg-surface-1 py-2.5 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                   />
                 </div>
                 <div className="flex flex-wrap gap-2">

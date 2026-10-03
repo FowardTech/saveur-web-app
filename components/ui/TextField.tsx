@@ -15,7 +15,7 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(func
       <input
         ref={ref}
         id={fieldId}
-        className={`w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 ${className}`}
+        className={`w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 ${className}`}
         {...props}
       />
     </label>

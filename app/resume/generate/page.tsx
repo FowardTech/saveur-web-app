@@ -109,7 +109,7 @@ function AddInline({ placeholder, onAdd }: { placeholder: string; onAdd: (value:
           }
         }}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+        className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
       />
       <Button type="button" size="sm" variant="secondary" onClick={commit}>
         <EvaIcon name="plus-outline" size={14} />
@@ -131,7 +131,7 @@ function StringListEditor({ items, onChange, placeholder }: { items: string[]; o
               copy[i] = e.target.value;
               onChange(copy);
             }}
-            className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+            className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
           />
           <button type="button" onClick={() => onChange(items.filter((_, ri) => ri !== i))} className="p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>
             <EvaIcon name="trash-2-outline" size={14} />
@@ -170,7 +170,7 @@ function fieldInput(value: string | undefined, onChange: (v: string) => void, pl
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+      className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
     />
   );
 }
@@ -301,7 +301,7 @@ function GenerateResumeInner() {
       {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
         <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
           <div className="flex items-center gap-3">
-            <EvaIcon name="flash-outline" size={18} className="text-brand" />
+            <EvaIcon name="flash-outline" size={18} className="text-primary" />
             {(() => {
               const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
               return (
@@ -375,7 +375,7 @@ function GenerateResumeInner() {
             rows={4}
             value={content.summary}
             onChange={(e) => update("summary", e.target.value)}
-            className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+            className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
           />
 
           <SectionHeading>{t("web:resume.generate.coreSkills", { defaultValue: "Core Skills" })}</SectionHeading>
@@ -511,7 +511,7 @@ function GenerateResumeInner() {
               <p className="text-xs text-hint">{t("web:resume.generate.considerAddingHint", { defaultValue: "Click a skill to add it to Core Skills" })}</p>
               <div className="flex flex-wrap gap-2">
                 {content.suggestedKeywords.map((skill, i) => (
-                  <button key={i} type="button" onClick={() => addSuggestedSkill(skill)} className="inline-flex items-center gap-1 rounded-pill border border-dashed border-border bg-surface-1 px-3 py-1.5 text-sm font-medium text-primary hover:border-brand">
+                  <button key={i} type="button" onClick={() => addSuggestedSkill(skill)} className="inline-flex items-center gap-1 rounded-pill border border-dashed border-border bg-surface-1 px-3 py-1.5 text-sm font-medium text-primary hover:border-primary">
                     <EvaIcon name="plus-outline" size={12} />
                     {skill}
                   </button>
@@ -533,9 +533,9 @@ function GenerateResumeInner() {
                 key={opt.key}
                 type="button"
                 onClick={() => setStyle(opt.key)}
-                className={`rounded-card border-2 p-3 text-left transition ${style === opt.key ? "border-brand bg-brand/5" : "border-border bg-surface-1 hover:border-brand/40"}`}
+                className={`rounded-card border-2 p-3 text-left transition ${style === opt.key ? "border-primary bg-surface-1" : "border-border bg-surface-1 hover:border-primary/30"}`}
               >
-                <p className={`text-sm font-semibold ${style === opt.key ? "text-brand" : "text-primary"}`}>{t(opt.labelKey, { defaultValue: opt.labelDefault })}</p>
+                <p className={`text-sm font-semibold ${style === opt.key ? "text-primary" : "text-primary"}`}>{t(opt.labelKey, { defaultValue: opt.labelDefault })}</p>
                 <p className="mt-1 text-xs text-hint">{t(opt.descKey, { defaultValue: opt.descDefault })}</p>
               </button>
             ))}

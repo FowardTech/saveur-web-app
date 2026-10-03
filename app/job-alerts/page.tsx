@@ -254,7 +254,7 @@ function JobAlertsPageInner() {
                 value={rolesText}
                 onChange={(e) => setRolesText(e.target.value)}
                 placeholder={t("web:jobAlerts.targetRolesPlaceholder", { defaultValue: "e.g. Backend Engineer, Product Manager" })}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
             </label>
             <Button type="submit" size="md" disabled={savingPrefs}>
@@ -269,7 +269,7 @@ function JobAlertsPageInner() {
                   type="button"
                   onClick={() => setViewMode("recommended")}
                   className={`rounded-pill px-4 py-1.5 text-sm font-semibold transition ${
-                    viewMode === "recommended" ? "bg-brand text-white" : "text-hint hover:text-primary"
+                    viewMode === "recommended" ? "bg-solid text-solid-fg" : "text-hint hover:text-primary"
                   }`}
                 >
                   {t("web:jobAlerts.recommendedTab", { defaultValue: "Recommended" })}
@@ -278,7 +278,7 @@ function JobAlertsPageInner() {
                   type="button"
                   onClick={() => setViewMode("search")}
                   className={`rounded-pill px-4 py-1.5 text-sm font-semibold transition ${
-                    viewMode === "search" ? "bg-brand text-white" : "text-hint hover:text-primary"
+                    viewMode === "search" ? "bg-solid text-solid-fg" : "text-hint hover:text-primary"
                   }`}
                 >
                   {t("web:jobAlerts.searchTab", { defaultValue: "Search" })}
@@ -292,7 +292,7 @@ function JobAlertsPageInner() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t("web:jobAlerts.searchPlaceholder", { defaultValue: "Search title, company, or location" }).toString()}
-                    className="w-full rounded-pill border border-border bg-surface-1 py-2 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    className="w-full rounded-pill border border-border bg-surface-1 py-2 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                   />
                 </div>
               )}

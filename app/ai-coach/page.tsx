@@ -540,7 +540,7 @@ function AiCoachPageInner() {
                         onClick={() => onTapTopic(topic.title)}
                         className="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-left text-xs font-medium text-primary transition hover:bg-surface-3"
                       >
-                        <EvaIcon name="mic-outline" size={13} className="mt-0.5 shrink-0 text-brand" />
+                        <EvaIcon name="mic-outline" size={13} className="mt-0.5 shrink-0 text-primary" />
                         {topic.title}
                       </button>
                     ))}
@@ -619,7 +619,7 @@ function AiCoachPageInner() {
                           <div
                             className={`max-w-[85%] whitespace-pre-wrap rounded-card px-4 py-2.5 text-sm ${
                               m.role === "user"
-                                ? "bg-brand text-white"
+                                ? "bg-solid text-solid-fg"
                                 : m.flagged
                                   // Product request: "I want the AI career coach
                                   // ... to always detect inappropriate words and
@@ -678,7 +678,7 @@ function AiCoachPageInner() {
                         onClick={() => onTapTopic(topic.title)}
                         className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-1 px-3 py-1.5 text-left text-xs font-medium text-primary transition hover:bg-surface-3"
                       >
-                        <EvaIcon name="mic-outline" size={13} className="shrink-0 text-brand" />
+                        <EvaIcon name="mic-outline" size={13} className="shrink-0 text-primary" />
                         {topic.title}
                       </button>
                     ))}
@@ -717,7 +717,7 @@ function AiCoachPageInner() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={t("web:aiCoach.inputPlaceholder", { defaultValue: "Ask your AI coach…" })}
-                  className="w-full rounded-pill border border-border bg-surface-1 px-4 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-pill border border-border bg-surface-1 px-4 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
                 <button
                   type="button"

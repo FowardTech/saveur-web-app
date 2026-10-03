@@ -224,7 +224,7 @@ export default function GeneratedDocumentsPage() {
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
                     rows={12}
-                    className="w-full resize-y rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    className="w-full resize-y rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                   />
                 </div>
                 <div className="flex flex-col gap-2">

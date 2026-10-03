@@ -403,7 +403,7 @@ function CourseSessionInner() {
             <p className="mt-1.5 text-sm text-primary">{earnedCertificate.code}</p>
           </div>
         ) : nextLevel ? (
-          <p className="text-sm font-semibold text-brand">
+          <p className="text-sm font-semibold text-primary">
             {t("web:learning.session.nextLevelUnlocked", {
               defaultValue: "{{level}} unlocked!",
               level: t(`web:learning.levels.${nextLevel}`, { defaultValue: LEVEL_LABEL_DEFAULTS[nextLevel] }),
@@ -445,7 +445,7 @@ function CourseSessionInner() {
         <div className="w-full">
           <BackLink href={backHref} t={t} />
         </div>
-        <span className="mt-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-brand/10 text-brand">
+        <span className="mt-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-surface-3 text-primary">
           <EvaIcon name="book-open-outline" size={32} />
         </span>
         <h1 className="text-xl font-bold text-primary">{topic}</h1>
@@ -461,7 +461,7 @@ function CourseSessionInner() {
           <div className="mt-4 w-full divide-y divide-border rounded-card border border-border bg-surface-2">
             {syllabus.map((title, i) => (
               <div key={i} className="flex items-center gap-3 p-4">
-                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-semibold text-brand">
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-3 text-sm font-semibold text-primary">
                   {i + 1}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -515,7 +515,7 @@ function CourseSessionInner() {
             type="button"
             onClick={() => onToggleMode("text")}
             className={`rounded-pill px-3.5 py-1.5 text-xs font-bold transition ${
-              mode === "text" ? "bg-brand text-white" : "bg-surface-2 text-primary"
+              mode === "text" ? "bg-solid text-solid-fg" : "bg-surface-2 text-primary"
             }`}
           >
             {t("web:learning.session.modeText", { defaultValue: "Text" })}
@@ -524,7 +524,7 @@ function CourseSessionInner() {
             type="button"
             onClick={() => onToggleMode("voice")}
             className={`rounded-pill px-3.5 py-1.5 text-xs font-bold transition ${
-              mode === "voice" ? "bg-brand text-white" : "bg-surface-2 text-primary"
+              mode === "voice" ? "bg-solid text-solid-fg" : "bg-surface-2 text-primary"
             }`}
           >
             {t("web:learning.session.modeVoice", { defaultValue: "Voice" })}
@@ -534,7 +534,7 @@ function CourseSessionInner() {
 
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
         <div
-          className="h-1.5 rounded-full bg-brand transition-all"
+          className="h-1.5 rounded-full bg-solid transition-all"
           style={{ width: `${Math.round(((moduleIndex + 1) / totalModules) * 100)}%` }}
         />
       </div>
@@ -566,7 +566,7 @@ function CourseSessionInner() {
           <p className="text-sm text-danger">{loadError}</p>
           <button
             type="button"
-            className="text-sm font-semibold text-brand"
+            className="text-sm font-semibold text-primary"
             onClick={() => syllabus && loadModule(moduleIndex, syllabus)}
           >
             {t("common:try_again", { defaultValue: "Try again" })}
@@ -615,7 +615,7 @@ function CourseSessionInner() {
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder={t("web:learning.session.answerPlaceholder", { defaultValue: "Type your answer…" }) as string}
                 rows={3}
-                className="mt-3 w-full rounded-lg border border-border bg-surface-1 p-3 text-sm text-primary outline-none focus:border-brand"
+                className="mt-3 w-full rounded-lg border border-border bg-surface-1 p-3 text-sm text-primary outline-none focus:border-primary"
               />
               <Button
                 size="sm"

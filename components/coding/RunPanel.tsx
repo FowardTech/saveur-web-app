@@ -68,7 +68,7 @@ export function RunPanel({ languages, language, onLanguageChange, stdin, onStdin
             value={stdin}
             onChange={(e) => onStdinChange(e.target.value)}
             rows={2}
-            className="w-full rounded-lg border border-border bg-surface-1 px-3 py-2 font-mono text-xs text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+            className="w-full rounded-lg border border-border bg-surface-1 px-3 py-2 font-mono text-xs text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             placeholder={t("web:practice.codingProjects.stdinPlaceholder", { defaultValue: "Input piped to the program, if any" }).toString()}
           />
         </label>

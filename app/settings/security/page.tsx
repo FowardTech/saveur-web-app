@@ -263,8 +263,8 @@ export default function SecuritySettingsPage() {
               aria-checked={!!profile?.notificationsEnabled}
               disabled={!profile || savingNotifications}
               onClick={handleToggleNotifications}
-              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer appearance-none items-center rounded-pill border-0 p-0 outline-none transition-colors duration-200 ease-in-out focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                profile?.notificationsEnabled ? "bg-brand" : "bg-surface-4"
+              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer appearance-none items-center rounded-pill border-0 p-0 outline-none transition-colors duration-200 ease-in-out focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                profile?.notificationsEnabled ? "bg-solid" : "bg-surface-4"
               }`}
             >
               <span
@@ -308,7 +308,7 @@ export default function SecuritySettingsPage() {
             )}
 
             {isPushConfigured && pushEnabledJustNow && (
-              <p className="text-sm text-brand">{t("web:settings.security.pushEnabled", { defaultValue: "Push notifications enabled for this browser." })}</p>
+              <p className="text-sm text-primary">{t("web:settings.security.pushEnabled", { defaultValue: "Push notifications enabled for this browser." })}</p>
             )}
 
             {isPushConfigured && browserPermission === "denied" && (

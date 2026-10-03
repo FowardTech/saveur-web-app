@@ -126,7 +126,7 @@ function CoverLetterPageInner() {
           {!isPro && subscriptionStatus?.resumeToolActionsLimit != null && (
             <div className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
               <div className="flex items-center gap-3">
-                <EvaIcon name="flash-outline" size={18} className="text-brand" />
+                <EvaIcon name="flash-outline" size={18} className="text-primary" />
                 {(() => {
                   const remaining = Math.max(0, subscriptionStatus.resumeToolActionsLimit! - subscriptionStatus.resumeToolActionsUsed);
                   return (
@@ -190,7 +190,7 @@ function CoverLetterPageInner() {
                 placeholder={t("web:resume.coverLetter.jdPlaceholder", { defaultValue: "Paste a job posting — company/role can be left blank if it's here" })}
                 value={jdText}
                 onChange={(e) => setJdText(e.target.value)}
-                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
               />
             </label>
             {error && <p className="text-sm text-danger">{error}</p>}

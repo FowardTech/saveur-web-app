@@ -101,11 +101,11 @@ export function HomeBanner() {
           <>
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
+              className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-surface-3 blur-3xl"
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-accent-purple/20 blur-3xl"
+              className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-solid blur-3xl"
             />
           </>
         )}

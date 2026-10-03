@@ -131,7 +131,7 @@ export default function SubscriptionPage() {
         {isPaidSubscriber && (
           <div className="flex items-center justify-between rounded-card border border-border bg-surface-2 px-5 py-4">
             <div className="flex items-center gap-3">
-              <EvaIcon name="credit-card-outline" size={18} className="text-brand" />
+              <EvaIcon name="credit-card-outline" size={18} className="text-primary" />
               <p className="text-sm text-primary">
                 {t("web:subscription.currentPlanLine", { defaultValue: "You're currently on the {{plan}} plan.", plan: currentPlanName ?? t("web:subscription.paidPlanFallback", { defaultValue: "paid" }) })}
               </p>
@@ -158,7 +158,7 @@ export default function SubscriptionPage() {
                   if (e.key === "Enter") void handleApplyCoupon();
                 }}
                 placeholder={t("web:subscription.couponPlaceholder", { defaultValue: "Enter code" })}
-                className="flex-1 rounded-lg border border-border bg-surface-1 px-3 py-2 text-sm uppercase text-primary outline-none focus:border-brand"
+                className="flex-1 rounded-lg border border-border bg-surface-1 px-3 py-2 text-sm uppercase text-primary outline-none focus:border-primary"
               />
               {appliedCode ? (
                 <Button variant="outline" size="sm" onClick={handleClearCoupon}>
@@ -197,11 +197,11 @@ export default function SubscriptionPage() {
               <div
                 key={plan.id}
                 className={`flex flex-col gap-4 rounded-card border p-6 ${
-                  plan.recommended ? "border-brand shadow-md" : "border-border"
+                  plan.recommended ? "border-primary shadow-md" : "border-border"
                 } bg-surface-2`}
               >
                 {plan.recommended && (
-                  <span className="w-fit rounded-pill bg-brand px-3 py-1 text-xs font-semibold text-white">
+                  <span className="w-fit rounded-pill bg-solid px-3 py-1 text-xs font-semibold text-solid-fg">
                     {t("web:subscription.mostPopular", { defaultValue: "Most popular" })}
                   </span>
                 )}

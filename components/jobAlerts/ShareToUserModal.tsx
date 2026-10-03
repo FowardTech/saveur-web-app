@@ -224,7 +224,7 @@ export function ShareToUserModal({ open, onClose, contentType, contentId, getPub
             <div className="flex max-h-36 flex-col gap-1 overflow-y-auto rounded-lg border border-border bg-surface-1 p-2">
               {connections.map((name) => (
                 <label key={name} className="flex cursor-pointer items-center gap-2 rounded px-1 py-1 text-sm text-primary hover:bg-surface-3">
-                  <input type="checkbox" checked={selected.includes(name)} onChange={() => toggle(name)} className="h-4 w-4 accent-brand" />
+                  <input type="checkbox" checked={selected.includes(name)} onChange={() => toggle(name)} className="h-4 w-4 accent-primary" />
                   @{name}
                 </label>
               ))}
@@ -236,7 +236,7 @@ export function ShareToUserModal({ open, onClose, contentType, contentId, getPub
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={t("web:jobAlerts.details.shareMessagePlaceholder", { defaultValue: "Add a note (optional)" })}
                   rows={2}
-                  className="mt-2 w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none"
+                  className="mt-2 w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none"
                 />
                 <Button type="button" onClick={onSendSelected} disabled={isSending} className="mt-2 w-full justify-center">
                   {t("web:share.sendToSelected", { defaultValue: "Send to {{count}} selected", count: selected.length })}
@@ -256,7 +256,7 @@ export function ShareToUserModal({ open, onClose, contentType, contentId, getPub
               autoCapitalize="none"
               autoCorrect="off"
               placeholder={t("web:jobAlerts.details.shareUsernamePlaceholder", { defaultValue: "their username" })}
-              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 pr-9 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 pr-9 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             />
             <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
               {lookupState === "checking" && <span className="block h-4 w-4 animate-spin rounded-full border-2 border-hint border-t-transparent" />}
@@ -284,7 +284,7 @@ export function ShareToUserModal({ open, onClose, contentType, contentId, getPub
               onChange={(e) => setMessage(e.target.value)}
               placeholder={t("web:jobAlerts.details.shareMessagePlaceholder", { defaultValue: "Add a note (optional)" })}
               rows={3}
-              className="mb-3 w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="mb-3 w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             />
             <Button type="button" onClick={onSend} disabled={!canSend} className="w-full justify-center">
               {isSending ? `${t("web:jobAlerts.details.shareSend", { defaultValue: "Send" })}…` : t("web:jobAlerts.details.shareSend", { defaultValue: "Send" })}

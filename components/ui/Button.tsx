@@ -18,7 +18,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const base =
-  "inline-flex items-center justify-center rounded-pill font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center rounded-pill font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
 
 interface CommonProps {
   variant?: Variant;

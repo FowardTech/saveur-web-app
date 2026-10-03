@@ -38,7 +38,7 @@ export function Checkbox({
       id={id}
       onClick={() => onChange(!checked)}
       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition ${
-        checked ? "border-brand bg-brand text-white" : "border-border bg-surface-2"
+        checked ? "border-primary bg-solid text-solid-fg" : "border-border bg-surface-2"
       } ${className}`}
     >
       {checked && (

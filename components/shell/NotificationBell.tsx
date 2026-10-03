@@ -134,7 +134,7 @@ export function NotificationBell() {
       >
         <EvaIcon name="bell-outline" size={18} />
         {unreadCount > 0 && (
-          <span className="absolute right-1 top-1 flex h-4 min-w-[16px] items-center justify-center rounded-pill bg-brand px-1 text-[10px] font-semibold text-white">
+          <span className="absolute right-1 top-1 flex h-4 min-w-[16px] items-center justify-center rounded-pill bg-solid px-1 text-[10px] font-semibold text-solid-fg">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -149,7 +149,7 @@ export function NotificationBell() {
             <Link
               href="/settings/security"
               onClick={() => setOpen(false)}
-              className="text-xs text-hint transition hover:text-brand"
+              className="text-xs text-hint transition hover:text-primary"
             >
               {t("web:notifications.manage", { defaultValue: "Manage" })}
             </Link>
@@ -175,12 +175,12 @@ export function NotificationBell() {
                     type="button"
                     onClick={() => handleSelect(n)}
                     className={`flex w-full flex-col gap-0.5 border-b border-border px-4 py-3 text-left transition last:border-b-0 hover:bg-surface-3 ${
-                      n.read ? "" : "bg-brand/5"
+                      n.read ? "" : "bg-surface-1"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <span className={`text-sm ${n.read ? "text-primary" : "font-semibold text-primary"}`}>{n.title}</span>
-                      {!n.read && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-brand" />}
+                      {!n.read && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-solid" />}
                     </div>
                     <p className="line-clamp-2 text-xs text-hint">{n.message}</p>
                     <span className="mt-0.5 text-[11px] text-hint">{relativeTime(n.created_at)}</span>

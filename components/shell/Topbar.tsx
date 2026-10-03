@@ -19,7 +19,7 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
   const isSignedIn = !!firebaseUser;
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-surface-2/80 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-surface-2/80 px-4 backdrop-blur sm:px-6">
       <div className="flex items-center gap-3">
         {showMenuButton && (
           <button

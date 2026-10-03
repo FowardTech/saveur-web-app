@@ -85,7 +85,7 @@ export function AdPopupModal({ enabled }: { enabled: boolean }) {
             <button
               type="button"
               onClick={openCta}
-              className="w-full rounded-pill bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+              className="w-full rounded-pill bg-solid px-4 py-2.5 text-sm font-semibold text-solid-fg hover:opacity-90"
             >
               {ad.ctaLabel || t("web:common.learnMore", { defaultValue: "Learn more" })}
             </button>

@@ -314,7 +314,7 @@ export function AppTour() {
       <div className="absolute inset-0" onClick={(e) => e.stopPropagation()}>
         {rect ? (
           <div
-            className="absolute rounded-xl ring-2 ring-brand transition-all duration-200 ease-out"
+            className="absolute rounded-xl ring-2 ring-primary transition-all duration-200 ease-out"
             style={{
               top: rect.top - SPOTLIGHT_PADDING,
               left: rect.left - SPOTLIGHT_PADDING,
@@ -342,7 +342,7 @@ export function AppTour() {
         }
       >
         <div className="flex items-start justify-between gap-2">
-          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-3 text-primary">
             <EvaIcon name={step.icon} size={18} />
           </span>
           <button type="button" onClick={close} className="p-1 text-xs font-medium text-hint hover:text-primary">
@@ -355,7 +355,7 @@ export function AppTour() {
 
         <div className="mt-4 flex items-center justify-center gap-1.5">
           {STEPS.map((_, i) => (
-            <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === stepIndex ? "bg-brand" : "bg-surface-4"}`} />
+            <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === stepIndex ? "bg-solid" : "bg-surface-4"}`} />
           ))}
         </div>
 
@@ -371,7 +371,7 @@ export function AppTour() {
           <button
             type="button"
             onClick={() => (isLast ? close() : setStepIndex((i) => i + 1))}
-            className="rounded-pill bg-brand px-4 py-1.5 text-sm font-bold text-white"
+            className="rounded-pill bg-solid px-4 py-1.5 text-sm font-bold text-solid-fg"
           >
             {isLast ? t("web:tour.getStarted", { defaultValue: "Get started" }) : t("web:tour.next", { defaultValue: "Next" })}
           </button>

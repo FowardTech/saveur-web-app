@@ -193,7 +193,7 @@ export function GettingStartedChecklist() {
               <EvaIcon
                 name={item.done ? "checkmark-circle-2-outline" : "arrow-circle-right-outline"}
                 size={16}
-                className={item.done ? "shrink-0 text-success" : "shrink-0 text-brand"}
+                className={item.done ? "shrink-0 text-success" : "shrink-0 text-primary"}
               />
               {item.label}
             </Link>

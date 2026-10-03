@@ -302,7 +302,7 @@ export default function ScheduleInterviewPage() {
                   placeholder={t("web:practice.mockInterviews.targetRolePlaceholder", { defaultValue: "e.g. Software Engineer" })}
                   required
                   aria-required="true"
-                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
               </section>
 
@@ -326,7 +326,7 @@ export default function ScheduleInterviewPage() {
                     value={companySearch}
                     onChange={(e) => setCompanySearch(e.target.value)}
                     placeholder={t("web:practice.mockInterviews.searchCompany", { defaultValue: "Search companies…" })}
-                    className="w-full rounded-lg border border-border bg-surface-1 py-2.5 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    className="w-full rounded-lg border border-border bg-surface-1 py-2.5 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                   />
                 </div>
                 <div className="flex flex-wrap gap-2">

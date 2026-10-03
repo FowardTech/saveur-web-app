@@ -48,7 +48,7 @@ export default function MyRatingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-0.5">
                       {[1, 2, 3, 4, 5].map((n) => (
-                        <EvaIcon key={n} name="star-outline" size={16} className={n <= r.score ? "text-brand" : "text-hint/40"} />
+                        <EvaIcon key={n} name="star-outline" size={16} className={n <= r.score ? "text-primary" : "text-hint/40"} />
                       ))}
                     </div>
                     <p className="text-xs text-hint">{r.createdAt ? new Date(r.createdAt).toLocaleDateString() : ""}</p>

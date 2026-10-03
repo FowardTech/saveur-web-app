@@ -193,14 +193,14 @@ export default function JDAnalyzerPage() {
                 <button
                   type="button"
                   onClick={() => switchMode("text")}
-                  className={`rounded-pill px-4 py-1.5 text-sm font-medium ${inputMode === "text" ? "bg-brand text-white" : "bg-surface-3 text-hint"}`}
+                  className={`rounded-pill px-4 py-1.5 text-sm font-medium ${inputMode === "text" ? "bg-solid text-solid-fg" : "bg-surface-3 text-hint"}`}
                 >
                   {t("web:jdAnalyzer.pasteText", { defaultValue: "Paste text" })}
                 </button>
                 <button
                   type="button"
                   onClick={() => switchMode("url")}
-                  className={`rounded-pill px-4 py-1.5 text-sm font-medium ${inputMode === "url" ? "bg-brand text-white" : "bg-surface-3 text-hint"}`}
+                  className={`rounded-pill px-4 py-1.5 text-sm font-medium ${inputMode === "url" ? "bg-solid text-solid-fg" : "bg-surface-3 text-hint"}`}
                 >
                   {t("web:jdAnalyzer.pasteUrl", { defaultValue: "Paste URL" })}
                 </button>
@@ -213,7 +213,7 @@ export default function JDAnalyzerPage() {
                     rows={10}
                     value={jd}
                     onChange={(e) => setJd(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                   />
                 </div>
               ) : (
@@ -224,7 +224,7 @@ export default function JDAnalyzerPage() {
                     onChange={(e) => setJdUrl(e.target.value)}
                     disabled={isFetchingUrl}
                     placeholder={t("web:jdAnalyzer.urlPlaceholder", { defaultValue: "e.g. https://jobs.lever.co/company/role" }).toString()}
-                    className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                   />
                   <p className="text-xs text-hint">{t("web:jdAnalyzer.urlHint", { defaultValue: "We'll fetch the posting and pull out the job description for you." })}</p>
                 </div>

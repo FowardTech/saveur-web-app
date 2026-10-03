@@ -93,7 +93,7 @@ export function AnnouncementBanner() {
 
   return (
     <div className="flex items-start gap-3 rounded-card border border-border bg-surface-2 px-4 py-3">
-      <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+      <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-3 text-primary">
         <EvaIcon name="info-outline" size={16} />
       </span>
       <div className="min-w-0 flex-1">

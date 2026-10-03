@@ -14,27 +14,27 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 export function HeroBanner() {
   const { t } = useTranslation();
   return (
-    <section className="relative overflow-hidden rounded-card border border-border bg-gradient-to-br from-brand/15 via-accent-purple/10 to-transparent px-6 py-12 sm:px-10 sm:py-16">
+    <section className="relative overflow-hidden rounded-card border border-border bg-gradient-to-br from-surface-3 via-surface-1 to-transparent px-6 py-12 sm:px-10 sm:py-16">
       {/* Decorative soft blurred color blobs */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand/20 blur-3xl"
+        className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-surface-3 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-accent-purple/20 blur-3xl"
+        className="pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-solid blur-3xl"
       />
 
       {/* Decorative translucent icon badges, arranged behind/beside the copy */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute right-8 top-8 hidden h-16 w-16 rotate-6 items-center justify-center rounded-2xl bg-surface-2/60 text-brand shadow-sm backdrop-blur-sm sm:flex"
+        className="pointer-events-none absolute right-8 top-8 hidden h-16 w-16 rotate-6 items-center justify-center rounded-2xl bg-surface-2/60 text-primary shadow-sm backdrop-blur-sm sm:flex"
       >
         <EvaIcon name="briefcase-outline" size={28} />
       </span>
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute right-28 top-32 hidden h-12 w-12 -rotate-12 items-center justify-center rounded-full bg-surface-2/60 text-accent-purple shadow-sm backdrop-blur-sm md:flex"
+        className="pointer-events-none absolute right-28 top-32 hidden h-12 w-12 -rotate-12 items-center justify-center rounded-full bg-surface-2/60 text-primary shadow-sm backdrop-blur-sm md:flex"
       >
         <EvaIcon name="mic-outline" size={20} />
       </span>

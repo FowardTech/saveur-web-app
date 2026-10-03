@@ -28,7 +28,7 @@ export default function GlobalErrorBoundary({
     <div className="flex min-h-screen flex-col bg-page">
       <header className="px-6 py-5">
         <Link href="/" className="text-lg font-bold tracking-tight text-primary">
-          Saveur<span className="text-brand">.</span>
+          Saveur<span className="text-primary">.</span>
         </Link>
       </header>
       <div className="flex flex-1 items-center justify-center px-4 pb-16">
@@ -36,7 +36,7 @@ export default function GlobalErrorBoundary({
           <div className="mb-1 flex items-center gap-2">
             <Image src="/logo-badge.png" alt="" width={32} height={32} priority className="rounded-[22%]" />
             <span className="font-brand text-2xl tracking-tight text-primary">
-              Saveur<span className="text-brand">.</span>
+              Saveur<span className="text-primary">.</span>
             </span>
           </div>
           <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-danger/10 text-danger">

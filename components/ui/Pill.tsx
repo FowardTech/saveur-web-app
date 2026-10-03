@@ -35,8 +35,8 @@ export function Pill({ selected, onClick, children, locked, icon, leading, class
       disabled={disabled}
       className={`relative inline-flex items-center gap-1.5 rounded-pill border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
         selected
-          ? "border-brand bg-brand text-white"
-          : "border-border bg-surface-1 text-hint hover:border-brand/50 hover:text-primary"
+          ? "border-primary bg-solid text-solid-fg"
+          : "border-border bg-surface-1 text-hint hover:border-primary/30 hover:text-primary"
       } ${className}`}
     >
       {locked && (
@@ -77,7 +77,7 @@ export function PillCard({
       type="button"
       onClick={onClick}
       className={`relative flex flex-col items-center gap-2 rounded-card border-2 px-3 py-4 text-center transition ${
-        selected ? "border-brand bg-brand/5" : "border-border bg-surface-1 hover:border-brand/40"
+        selected ? "border-primary bg-surface-1" : "border-border bg-surface-1 hover:border-primary/30"
       } ${className}`}
     >
       {locked && (
@@ -85,10 +85,10 @@ export function PillCard({
           <EvaIcon name="lock-outline" size={11} />
         </span>
       )}
-      <span className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${selected ? "bg-brand text-white" : "bg-surface-3 text-hint"}`}>
+      <span className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${selected ? "bg-solid text-solid-fg" : "bg-surface-3 text-hint"}`}>
         <EvaIcon name={icon} size={18} />
       </span>
-      <span className={`text-sm font-semibold ${selected ? "text-brand" : "text-primary"}`}>{title}</span>
+      <span className={`text-sm font-semibold ${selected ? "text-primary" : "text-primary"}`}>{title}</span>
       {description && <span className="text-xs leading-snug text-hint">{description}</span>}
     </button>
   );

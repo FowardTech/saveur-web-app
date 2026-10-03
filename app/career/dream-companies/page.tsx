@@ -342,7 +342,7 @@ export default function DreamCompaniesPage() {
                   onClick={() => setShowAddModal(true)}
                   className="flex flex-1 items-center gap-3 text-left"
                 >
-                  <EvaIcon name="plus-outline" size={20} className="text-brand" />
+                  <EvaIcon name="plus-outline" size={20} className="text-primary" />
                   <span className="font-semibold text-primary">{t("web:career.dreamCompanies.add", { defaultValue: "Add to Dashboard" })}</span>
                   <EvaIcon name="arrow-forward-outline" size={16} className="ml-auto text-hint" />
                 </button>
@@ -383,7 +383,7 @@ export default function DreamCompaniesPage() {
               )}
 
               {compareMode && (
-                <div className="flex items-center justify-between gap-3 rounded-card border border-dashed border-brand/50 bg-brand/5 p-3 text-sm">
+                <div className="flex items-center justify-between gap-3 rounded-card border border-dashed border-primary/30 bg-surface-1 p-3 text-sm">
                   <span className="text-primary">
                     {t("web:career.dreamCompanies.compareModeHint", {
                       defaultValue: "Select up to {{max}} companies to compare — {{count}} selected.",
@@ -542,7 +542,7 @@ function CompanyCard({
 }: CompanyCardProps) {
   const tier = readinessTier(c.readinessScore);
   const tierClasses =
-    tier === "success" ? "bg-success/15 text-success-text" : tier === "link" ? "bg-brand/10 text-brand" : "bg-surface-3 text-hint";
+    tier === "success" ? "bg-success/15 text-success-text" : tier === "link" ? "bg-surface-3 text-primary" : "bg-surface-3 text-hint";
   const logoUrl = c.logoUrl ?? guessCompanyLogoUrl(c.company);
   const notesChanged = notesValue !== c.notes;
 
@@ -570,21 +570,21 @@ function CompanyCard({
   ];
 
   return (
-    <div className={`flex flex-col gap-3 rounded-card border bg-surface-2 p-4 ${c.isTopChoice ? "border-accent-purple" : "border-border"}`}>
+    <div className={`flex flex-col gap-3 rounded-card border bg-surface-2 p-4 ${c.isTopChoice ? "border-primary" : "border-border"}`}>
       <div className="flex items-start justify-between gap-3">
         <button type="button" onClick={onToggleExpand} className="flex flex-1 items-center gap-3 text-left">
           {compareMode && (
             <EvaIcon
               name={selected ? "checkmark-circle-2-outline" : "checkmark-circle-outline"}
               size={20}
-              className={selected ? "text-brand" : "text-hint"}
+              className={selected ? "text-primary" : "text-hint"}
             />
           )}
           <CompanyLogoAvatar logoUrl={logoUrl} companyName={c.company} size={40} className="shrink-0 bg-tint-purple" />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <h3 className="truncate font-semibold text-primary">{c.company}</h3>
-              {c.isTopChoice && <EvaIcon name="star-outline" size={14} className="shrink-0 text-accent-purple" />}
+              {c.isTopChoice && <EvaIcon name="star-outline" size={14} className="shrink-0 text-primary" />}
             </div>
             {c.targetRole && <p className="text-sm text-hint">{c.targetRole}</p>}
           </div>
@@ -596,9 +596,9 @@ function CompanyCard({
               onClick={onTogglePriority}
               disabled={togglingPriority}
               aria-label={t("web:career.dreamCompanies.markTopChoice", { defaultValue: "Mark top choice" })}
-              className="p-1 text-hint transition hover:text-accent-purple disabled:opacity-50"
+              className="p-1 text-hint transition hover:text-primary disabled:opacity-50"
             >
-              <EvaIcon name="star-outline" size={18} className={c.isTopChoice ? "text-accent-purple" : undefined} />
+              <EvaIcon name="star-outline" size={18} className={c.isTopChoice ? "text-primary" : undefined} />
             </button>
             <button
               type="button"
@@ -618,13 +618,13 @@ function CompanyCard({
       <div className="flex flex-wrap items-center gap-1.5">
         <Badge className={tierClasses}>{t("web:career.dreamCompanies.readyPercent", { defaultValue: "{{score}}% ready", score: c.readinessScore })}</Badge>
         {c.researchPending && (
-          <Badge className="bg-brand/10 text-brand">
+          <Badge className="bg-surface-3 text-primary">
             <EvaIcon name="clock-outline" size={12} className="animate-spin" />
             {t("web:career.dreamCompanies.researching", { defaultValue: "Researching…" })}
           </Badge>
         )}
         {c.hasNewJobAlert && (
-          <Badge className="bg-accent-purple/15 text-accent-purple">
+          <Badge className="bg-solid text-primary">
             {t("web:career.dreamCompanies.newJobMatch", { defaultValue: "New job match!" })}
           </Badge>
         )}
@@ -636,7 +636,7 @@ function CompanyCard({
           </Link>
         )}
         {c.prepProgress.sessionsPracticed > 0 && (
-          <Badge className="bg-brand/10 text-brand">
+          <Badge className="bg-surface-3 text-primary">
             {t("web:career.dreamCompanies.sessionsPracticed", { defaultValue: "{{count}} sessions practiced", count: c.prepProgress.sessionsPracticed })}
           </Badge>
         )}
@@ -649,7 +649,7 @@ function CompanyCard({
         <div className="flex flex-wrap gap-2">
           <Link
             href={prepLink("/practice/mock-interviews", c.company, c.targetRole)}
-            className="inline-flex items-center gap-1.5 rounded-pill bg-brand/10 px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand/20"
+            className="inline-flex items-center gap-1.5 rounded-pill bg-surface-3 px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-surface-3"
           >
             <EvaIcon name="mic-outline" size={14} />
             {t("web:career.dreamCompanies.practiceCta", { defaultValue: "Practice interview" })}
@@ -688,7 +688,7 @@ function CompanyCard({
             <div className="flex flex-col gap-1.5">
               {checklist.map((item, i) =>
                 item.href && !item.done ? (
-                  <Link key={i} href={item.href} className="flex items-center gap-2 text-sm text-primary hover:text-brand">
+                  <Link key={i} href={item.href} className="flex items-center gap-2 text-sm text-primary hover:text-primary">
                     <EvaIcon name="checkmark-circle-outline" size={16} className="text-hint" />
                     {item.label}
                   </Link>
@@ -698,7 +698,7 @@ function CompanyCard({
                     type="button"
                     disabled={item.done}
                     onClick={item.onClick}
-                    className={`flex items-center gap-2 text-left text-sm ${item.done ? "text-hint line-through" : "text-primary hover:text-brand"}`}
+                    className={`flex items-center gap-2 text-left text-sm ${item.done ? "text-hint line-through" : "text-primary hover:text-primary"}`}
                   >
                     <EvaIcon name="checkmark-circle-2-outline" size={16} className={item.done ? "text-success-text" : "text-hint"} />
                     {item.label}
@@ -732,12 +732,12 @@ function CompanyCard({
                         key={i}
                         type="button"
                         onClick={() => onDrillQuestion(q)}
-                        className="flex items-start justify-between gap-2 rounded-lg border border-border bg-surface-1 px-3 py-2 text-left text-sm text-primary transition hover:border-brand/50"
+                        className="flex items-start justify-between gap-2 rounded-lg border border-border bg-surface-1 px-3 py-2 text-left text-sm text-primary transition hover:border-primary/30"
                       >
                         <span>
                           {i + 1}. {q}
                         </span>
-                        <EvaIcon name="mic-outline" size={14} className="mt-0.5 shrink-0 text-brand" />
+                        <EvaIcon name="mic-outline" size={14} className="mt-0.5 shrink-0 text-primary" />
                       </button>
                     ))}
                   </div>
@@ -775,7 +775,7 @@ function CompanyCard({
               onChange={(e) => onNotesChange(e.target.value)}
               rows={3}
               placeholder={t("web:career.dreamCompanies.notesPlaceholder", { defaultValue: "Add a personal note about this company…" })}
-              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
             />
             {notesChanged && (
               <Button size="sm" className="w-fit" disabled={savingNotes} onClick={onSaveNotes}>

@@ -100,7 +100,7 @@ export default function SavedVideosPage() {
                   key={video.videoId}
                   type="button"
                   onClick={() => setPlayerVideo(video)}
-                  className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-3 text-left transition hover:border-brand/40"
+                  className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-3 text-left transition hover:border-primary/30"
                 >
                   <div className="relative h-[60px] w-[90px] shrink-0 overflow-hidden rounded-lg bg-surface-3">
                     {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, not a local/optimizable asset */}
