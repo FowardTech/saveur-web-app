@@ -194,46 +194,6 @@ export default function DashboardPage() {
           <p className="mt-1 text-sm text-hint">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
 
-        {/* Non-blocking "verify your email" nudge for a password-signup
-            account that hasn't clicked its emailed link yet — mirrors
-            mobile's Home screen placement (see EmailVerificationBanner's
-            own header comment). Renders nothing once verified/signed out. */}
-        <EmailVerificationBanner />
-
-        {/* Admin-authored announcement strip (policy changes, etc.) — above
-            the decorative HomeBanner hero card per product ask. */}
-        <AnnouncementBanner />
-
-        {/* Home banner */}
-        <div data-tour="dashboard-home-banner">
-          <HomeBanner />
-        </div>
-
-        {/* Daily tip — product report: "you did not implement... daily
-            tips just the way it is in the mobile app". Self-contained,
-            renders nothing if the user has no active goals yet. */}
-        <DailyTipBanner />
-
-        {/* "Getting Started" checklist — product report: "When a user logs
-            in for the first time, the app should suggest important steps
-            to the user things like Upload a resume, Tell us about
-            yourself, ... Update your profile etc." Self-contained, renders
-            nothing only once the user dismisses it -- reaching 100% no
-            longer auto-hides it, see that component's own header comment. */}
-        <GettingStartedChecklist />
-
-        {/* Upcoming Session — self-contained, renders nothing when there's
-            nothing scheduled (see app/practice/schedule/page.tsx for the
-            scheduling entry point, reached from the Practice hub). */}
-        <UpcomingSessionCard />
-
-        {/* Continue Watching — product report: "Continue video is not
-            implemented in the web version." Self-contained, renders
-            nothing when there's no in-progress video (see
-            components/learning/InAppVideoPlayer.tsx for the real position
-            tracking that feeds this). */}
-        <ContinueWatchingCard />
-
         {/* Quick actions */}
         <div data-tour="dashboard-quick-actions" className="flex flex-col gap-4">
           <h2 className="text-lg font-bold text-primary">{t("web:dashboard.quickActionsTitle", { defaultValue: "Quick actions" })}</h2>
@@ -251,6 +211,47 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
+
+        {/* Non-blocking "verify your email" nudge for a password-signup
+            account that hasn't clicked its emailed link yet — mirrors
+            mobile's Home screen placement (see EmailVerificationBanner's
+            own header comment). Renders nothing once verified/signed out. */}
+        <EmailVerificationBanner />
+
+        {/* Admin-authored announcement strip (policy changes, etc.) — above
+            the decorative HomeBanner hero card per product ask. */}
+        <AnnouncementBanner />
+
+        {/* Daily tip — product report: "you did not implement... daily
+            tips just the way it is in the mobile app". Self-contained,
+            renders nothing if the user has no active goals yet. */}
+        <DailyTipBanner />
+
+        {/* "Getting Started" checklist — product report: "When a user logs
+            in for the first time, the app should suggest important steps
+            to the user things like Upload a resume, Tell us about
+            yourself, ... Update your profile etc." Self-contained, renders
+            nothing only once the user dismisses it -- reaching 100% no
+            longer auto-hides it, see that component's own header comment. */}
+        <GettingStartedChecklist />
+
+        {/* Home banner */}
+        <div data-tour="dashboard-home-banner">
+          <HomeBanner />
+        </div>
+
+
+        {/* Upcoming Session — self-contained, renders nothing when there's
+            nothing scheduled (see app/practice/schedule/page.tsx for the
+            scheduling entry point, reached from the Practice hub). */}
+        <UpcomingSessionCard />
+
+        {/* Continue Watching — product report: "Continue video is not
+            implemented in the web version." Self-contained, renders
+            nothing when there's no in-progress video (see
+            components/learning/InAppVideoPlayer.tsx for the real position
+            tracking that feeds this). */}
+        <ContinueWatchingCard />
 
         {/* Coaching report — product report: "the web app dashboard look
             so empty" [Yoodli's own dashboard report card]. Self-contained,
