@@ -71,14 +71,26 @@ import { actionTitle, runSuggestedAction, type SuggestedActionId } from "@/lib/s
 // choppier (bursty updates rather than a smooth stream), so this uses a
 // slightly longer 1300ms to avoid cutting a turn off mid-word — same idea,
 // adjusted for a slower signal.
-const SILENCE_MS = 1800;
-const SHORT_TURN_SILENCE_MS = 3000;
+const SILENCE_MS = 2600;
+const SHORT_TURN_SILENCE_MS = 4000;
+const INCOMPLETE_EXTRA_MS = 2200;
+// A sentence ending in one of these (or a comma) is almost certainly unfinished.
+const TRAILING_FILLERS = new Set([
+  "and", "but", "so", "because", "or", "then", "that", "which", "with", "to", "of", "for", "in", "on", "at",
+  "the", "a", "an", "my", "is", "are", "was", "i", "if", "when", "like", "um", "uh", "umm", "er", "well",
+]);
 // Short utterances are likely mid-thought: wait longer before ending the turn.
 function silenceFor(text: string): number {
-  const words = text.trim().split(/\s+/).filter(Boolean).length;
-  if (words <= 3) return SHORT_TURN_SILENCE_MS;
-  if (words >= 8) return SILENCE_MS;
-  return Math.round(SHORT_TURN_SILENCE_MS - ((words - 3) / 5) * (SHORT_TURN_SILENCE_MS - SILENCE_MS));
+  const trimmed = text.trim();
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+  const words = parts.length;
+  let ms: number;
+  if (words <= 3) ms = SHORT_TURN_SILENCE_MS;
+  else if (words >= 8) ms = SILENCE_MS;
+  else ms = Math.round(SHORT_TURN_SILENCE_MS - ((words - 3) / 5) * (SHORT_TURN_SILENCE_MS - SILENCE_MS));
+  const last = (parts[parts.length - 1] || "").toLowerCase().replace(/[.!?,;:]+$/, "");
+  if (/[,;:]$/.test(trimmed) || TRAILING_FILLERS.has(last)) ms += INCOMPLETE_EXTRA_MS;
+  return ms;
 }
 
 type Phase = "idle" | "listening" | "thinking" | "speaking";
