@@ -38,6 +38,28 @@ interface Round {
   recruiter_response: string;
 }
 
+// Mirrors mobile's NegotiationCritique (services/salaryNegotiationService.ts)
+// -- POST /api/v1/coach/negotiation/complete
+//   body: {initial_offer, final_offer, log:[{round, approach_title, ask, recruiter_response}], language}
+//   -> {summary, strengths[], improvements[], total_increase_pct}
+interface Critique {
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  totalIncreasePct: number;
+}
+
+function toWireOffer(o: Offer, scenario: Scenario | null) {
+  return {
+    company: scenario?.company,
+    title: scenario?.role,
+    base_salary: o.base,
+    bonus: o.bonus ?? 0,
+    equity: o.equity ?? 0,
+    currency: o.currency,
+  };
+}
+
 function formatOffer(offer: Offer, t: TFunction) {
   const parts = [t("web:career.salaryNegotiation.offerBase", { defaultValue: "Base {{currency}} {{amount}}", currency: offer.currency, amount: offer.base.toLocaleString() })];
   if (offer.bonus) parts.push(t("web:career.salaryNegotiation.offerBonus", { defaultValue: "Bonus {{currency}} {{amount}}", currency: offer.currency, amount: offer.bonus.toLocaleString() }));
@@ -46,7 +68,7 @@ function formatOffer(offer: Offer, t: TFunction) {
 }
 
 function SalaryNegotiationPageInner() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const searchParams = useSearchParams();
   // Deep-link overrides from the Dream Company Dashboard's "Practice
   // negotiation" quick action (app/career/dream-companies/page.tsx,
@@ -65,6 +87,61 @@ function SalaryNegotiationPageInner() {
   const [rounds, setRounds] = useState<Round[]>([]);
   const [sending, setSending] = useState(false);
   const [isFinal, setIsFinal] = useState(false);
+  const [critique, setCritique] = useState<Critique | null>(null);
+  const [finalizing, setFinalizing] = useState(false);
+
+  // Product report: "In the salary negotiation for the web app the web app
+  // does not give a final conclusion just like the one in the mobile app."
+  // Mobile calls POST /negotiation/complete once the last round lands and
+  // renders a Negotiation Summary (summary / what worked / try next time);
+  // web only ever showed a plain "final round reached" notice. Falls back
+  // to the same local percentage-change sentence mobile uses if the AI
+  // call fails, so a transient error never leaves the user with no wrap-up.
+  async function finalize(initial: Offer, final: Offer, log: Round[]) {
+    setFinalizing(true);
+    const totalIncreasePct =
+      initial.base > 0 ? Math.round(((final.base - initial.base) / initial.base) * 100) : 0;
+    try {
+      const data = await apiClient.post<{
+        summary?: string;
+        strengths?: string[];
+        improvements?: string[];
+        total_increase_pct?: number;
+      }>("/api/v1/coach/negotiation/complete", {
+        initial_offer: toWireOffer(initial, scenario),
+        final_offer: toWireOffer(final, scenario),
+        log: log.map((r, i) => ({ round: i + 1, approach_title: "", ask: r.ask, recruiter_response: r.recruiter_response })),
+        language: i18n.language || "en",
+      });
+      if (!data.summary) throw new Error("empty_critique");
+      setCritique({
+        summary: data.summary,
+        strengths: data.strengths ?? [],
+        improvements: data.improvements ?? [],
+        totalIncreasePct: data.total_increase_pct ?? totalIncreasePct,
+      });
+    } catch {
+      setCritique({
+        summary:
+          totalIncreasePct > 0
+            ? t("web:career.salaryNegotiation.fallbackSummaryUp", {
+                defaultValue: "You negotiated your base salary up by {{pct}}% — from {{from}} to {{to}}.",
+                pct: totalIncreasePct,
+                from: initial.base.toLocaleString(),
+                to: final.base.toLocaleString(),
+              })
+            : t("web:career.salaryNegotiation.fallbackSummaryFlat", {
+                defaultValue: "Your base salary stayed at {{to}}, but you may have picked up extra bonus/equity value along the way.",
+                to: final.base.toLocaleString(),
+              }),
+        strengths: [],
+        improvements: [],
+        totalIncreasePct,
+      });
+    } finally {
+      setFinalizing(false);
+    }
+  }
 
   async function handleStart() {
     setLoading(true);
@@ -80,6 +157,7 @@ function SalaryNegotiationPageInner() {
       setCurrentOffer(data.offer);
       setRounds([]);
       setIsFinal(false);
+      setCritique(null);
     } catch (err) {
       const apiErr = err as ApiError;
       if (apiErr.status === 402 || apiErr.status === 403) {
@@ -141,10 +219,14 @@ function SalaryNegotiationPageInner() {
             currency: wireOffer.currency ?? currentOffer.currency,
           }
         : currentOffer;
-      setRounds((prev) => [...prev, { ask: ask.trim(), recruiter_response: recruiterResponse }]);
+      const newRound: Round = { ask: ask.trim(), recruiter_response: recruiterResponse };
+      setRounds((prev) => [...prev, newRound]);
       setCurrentOffer(updatedOffer);
       setIsFinal(Boolean(data.is_final_round));
       setAsk("");
+      if (data.is_final_round && scenario) {
+        void finalize(scenario.offer, updatedOffer, [...rounds, newRound]);
+      }
     } catch (err) {
       setError((err as ApiError).message || t("web:career.salaryNegotiation.sendFailedDefault", { defaultValue: "Couldn't send that ask right now." }));
     } finally {
@@ -205,8 +287,49 @@ function SalaryNegotiationPageInner() {
               ))}
 
               {isFinal ? (
-                <div className="rounded-card border border-dashed border-border p-4 text-center text-sm text-hint">
-                  {t("web:career.salaryNegotiation.finalRoundNotice", { defaultValue: "This negotiation has reached its final round. Start a new scenario to practice again." })}
+                <div className="rounded-card border border-brand bg-surface-2 p-5">
+                  <h3 className="text-lg font-bold text-primary">
+                    {t("web:career.salaryNegotiation.summaryTitle", { defaultValue: "Negotiation Summary" })}
+                  </h3>
+                  {finalizing || !critique ? (
+                    <p className="mt-2 text-sm text-hint">
+                      {t("web:career.salaryNegotiation.summaryLoading", { defaultValue: "Wrapping up your negotiation…" })}
+                    </p>
+                  ) : (
+                    <>
+                      <p className="mt-2 text-sm text-primary">{critique.summary}</p>
+                      {critique.strengths.length > 0 && (
+                        <div className="mt-4">
+                          <p className="text-sm font-semibold text-primary">
+                            {t("web:career.salaryNegotiation.summaryStrengths", { defaultValue: "What worked" })}
+                          </p>
+                          <ul className="mt-1.5 flex flex-col gap-1.5">
+                            {critique.strengths.map((item, i) => (
+                              <li key={i} className="flex items-start gap-2 text-sm text-primary">
+                                <EvaIcon name="checkmark-circle-2-outline" size={16} className="mt-0.5 shrink-0 text-success-text" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {critique.improvements.length > 0 && (
+                        <div className="mt-4">
+                          <p className="text-sm font-semibold text-primary">
+                            {t("web:career.salaryNegotiation.summaryImprovements", { defaultValue: "Try next time" })}
+                          </p>
+                          <ul className="mt-1.5 flex flex-col gap-1.5">
+                            {critique.improvements.map((item, i) => (
+                              <li key={i} className="flex items-start gap-2 text-sm text-primary">
+                                <EvaIcon name="arrow-forward-outline" size={16} className="mt-0.5 shrink-0 text-brand" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               ) : (
                 <form onSubmit={handleSend} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 sm:flex-row sm:items-end">
