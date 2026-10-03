@@ -78,7 +78,7 @@ export const primaryNav: NavItem[] = [
       // this one row since Events is this page's default landing tab.
       { label: "Networking Assistant", labelKey: "networkingAssistant", href: "/career/networking", icon: "people-outline", badgeKey: "careerEvents" },
       { label: "Dream Companies", labelKey: "dreamCompanies", href: "/career/dream-companies", icon: "star-outline" },
-      { label: "Company Intelligence", labelKey: "companyIntelligence", href: "/career/company-intelligence", icon: "search-outline" },
+      { label: "Company Intelligence", labelKey: "companyIntelligence", href: "/career/company-intelligence", icon: "briefcase-outline" },
       { label: "Salary Negotiation", labelKey: "salaryNegotiation", href: "/career/salary-negotiation", icon: "bar-chart-2-outline" },
       // Product request: "See the Salary analyser too" [resume.io's
       // /app/offer-analyzer-result] -- a one-shot numeric market-rate
@@ -89,12 +89,12 @@ export const primaryNav: NavItem[] = [
       { label: "Offer Analyzer", labelKey: "offerAnalyzer", href: "/career/offer-analyzer", icon: "pie-chart-outline" },
       // Post-hire retention loop: pay tracking over time, market check,
       // promotion/raise plan, quarterly check-in (app/career/growth/page.tsx).
-      { label: "Career Growth", labelKey: "careerGrowth", href: "/career/growth", icon: "trending-up-outline" },
+      { label: "Career Growth", labelKey: "careerGrowth", href: "/career/growth", icon: "award-outline" },
       // Mobile: src/more/CareerDiary.tsx — a plain journal (did/learned/
       // achieved) tied to a role/career/job. Nested here rather than
       // top-level since it's a lower-frequency personal-record tool, same
       // tier as the other Career Tools group members.
-      { label: "Career Diary", labelKey: "careerDiary", href: "/career-diary", icon: "edit-2-outline" },
+      { label: "Career Diary", labelKey: "careerDiary", href: "/career-diary", icon: "book-outline" },
       // Mobile: src/more/WhatsNext.tsx — Premium post-offer guided journey
       // (negotiation + pre-start checklist + 90-day plan). Reached from the
       // Application Tracker's Offer stage (app/applications/page.tsx) too,
@@ -122,7 +122,7 @@ export const primaryNav: NavItem[] = [
       // letters/variants) — grouped here since both are almost entirely
       // resume-adjacent document management. app/documents/page.tsx itself
       // links onward to /documents/generated.
-      { label: "My Documents", labelKey: "myDocuments", href: "/documents", icon: "layers-outline" },
+      { label: "My Documents", labelKey: "myDocuments", href: "/documents", icon: "folder-outline" },
     ],
   },
   { label: "Learning Courses", labelKey: "learningCourses", href: "/learning", icon: "book-open-outline" },
