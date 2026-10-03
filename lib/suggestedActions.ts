@@ -55,6 +55,7 @@ export type SuggestedActionId =
   | "student_verification"
   | "salary_negotiation"
   | "offer_analyzer"
+  | "career_growth"
   | "system_design_whiteboard"
   | "learning_courses"
   | "career_diary"
@@ -105,6 +106,7 @@ export const ACTION_META: Partial<Record<SuggestedActionId, ActionMeta>> = {
   company_intelligence: { title: "Company Intelligence", icon: "briefcase-outline" },
   salary_negotiation: { title: "Salary Negotiation practice", icon: "trending-up-outline" },
   offer_analyzer: { title: "the Offer Analyzer", icon: "pie-chart-outline" },
+  career_growth: { title: "Career Growth", icon: "trending-up-outline" },
   system_design_whiteboard: { title: "System Design Practice", icon: "grid-outline" },
   learning_courses: { title: "Learning Courses", icon: "book-open-outline" },
   career_diary: { title: "your Career Diary", icon: "edit-2-outline" },
@@ -149,6 +151,7 @@ const SCREEN_MAP: Partial<Record<SuggestedActionId, string>> = {
   company_intelligence: "/career/company-intelligence",
   salary_negotiation: "/career/salary-negotiation",
   offer_analyzer: "/career/offer-analyzer",
+  career_growth: "/career/growth",
   learning_courses: "/learning",
   career_diary: "/career-diary",
   career_roadmap: "/career/roadmap",

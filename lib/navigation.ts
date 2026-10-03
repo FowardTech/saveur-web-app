@@ -87,6 +87,9 @@ export const primaryNav: NavItem[] = [
       // app/career/offer-analyzer/page.tsx's own header comment for the
       // full "complementary, not redundant" reasoning.
       { label: "Offer Analyzer", labelKey: "offerAnalyzer", href: "/career/offer-analyzer", icon: "pie-chart-outline" },
+      // Post-hire retention loop: pay tracking over time, market check,
+      // promotion/raise plan, quarterly check-in (app/career/growth/page.tsx).
+      { label: "Career Growth", labelKey: "careerGrowth", href: "/career/growth", icon: "trending-up-outline" },
       // Mobile: src/more/CareerDiary.tsx — a plain journal (did/learned/
       // achieved) tied to a role/career/job. Nested here rather than
       // top-level since it's a lower-frequency personal-record tool, same
