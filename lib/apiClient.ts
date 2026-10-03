@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { firebaseAuth } from "./firebase";
 
 export const API_BASE_URL =
@@ -31,6 +32,7 @@ async function request<T>(
       ...rest,
       headers: {
         "Content-Type": "application/json",
+        "X-App-Language": i18n.language || "en",
         ...authHeaders,
         ...headers,
       },
