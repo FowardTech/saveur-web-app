@@ -48,9 +48,24 @@ export function ContinueWatchingCard() {
         onClick={() => setPlaying(true)}
         className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md"
       >
-        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
-          <EvaIcon name="play-circle-outline" size={18} />
-        </span>
+        {/* Product report: "for the continue learning ... for video the
+            user was watching, the video poster should appear so that the
+            user can know which video they were watching." thumbnailUrl was
+            already on CourseVideo (see lib/learningService.ts) but never
+            rendered -- every video showed the same generic play badge. */}
+        {video.thumbnailUrl ? (
+          <span className="relative h-12 w-20 shrink-0 overflow-hidden rounded-lg bg-surface-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={video.thumbnailUrl} alt="" className="h-full w-full object-cover" />
+            <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
+              <EvaIcon name="play-circle-outline" size={20} />
+            </span>
+          </span>
+        ) : (
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <EvaIcon name="play-circle-outline" size={18} />
+          </span>
+        )}
         <div className="min-w-0 flex-1">
           <p className="truncate font-medium text-primary">
             {t("web:dashboard.continueWatchingTitle", { defaultValue: "Continue watching" })}: {video.title}
