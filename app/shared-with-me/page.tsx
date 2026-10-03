@@ -60,7 +60,7 @@ function previewLine(share: ReceivedShareProps, t: (key: string, opts?: Record<s
   return [role, score].filter(Boolean).join(" · ");
 }
 
-type Tab = "received" | "requests";
+type Tab = "received" | "requests" | "connections";
 
 function SharedWithMeInner() {
   const { t } = useTranslation();
@@ -68,10 +68,19 @@ function SharedWithMeInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams?.get("tab");
-  const tab: Tab = tabParam === "requests" ? "requests" : "received";
+  const tab: Tab = tabParam === "requests" ? "requests" : tabParam === "connections" ? "connections" : "received";
   function setTab(next: Tab) {
-    router.replace(`/shared-with-me${next === "requests" ? "?tab=requests" : ""}`);
+    router.replace(`/shared-with-me${next === "received" ? "" : `?tab=${next}`}`);
+    if (next === "connections") loadConnections();
   }
+
+  const [connections, setConnections] = useState<string[] | null>(null);
+  const loadConnections = useCallback(() => {
+    sharesService.listConnections().then(setConnections);
+  }, []);
+  useEffect(() => {
+    loadConnections();
+  }, [loadConnections]);
 
   const [shares, setShares] = useState<ReceivedShareProps[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -200,9 +209,33 @@ function SharedWithMeInner() {
                 ? t("web:sharedWithMe.tabs.requestsCount", { defaultValue: "Pending Requests ({{count}})", count: requestsCount })
                 : t("web:sharedWithMe.tabs.requests", { defaultValue: "Pending Requests" })}
             </Pill>
+            <Pill selected={tab === "connections"} onClick={() => setTab("connections")}>
+              {t("web:sharedWithMe.tabs.connections", { defaultValue: "Connections" })}
+            </Pill>
           </div>
 
-          {tab === "received" ? (
+          {tab === "connections" ? (
+            <div className="flex flex-col gap-3">
+              {connections === null && <SkeletonRows count={3} />}
+              {connections && connections.length === 0 && (
+                <EmptyState
+                  illustration="inbox"
+                  title={t("web:sharedWithMe.connectionsEmptyTitle", { defaultValue: "No connections yet" })}
+                  description={t("web:sharedWithMe.connectionsEmptyBody", {
+                    defaultValue: "Send a request above. Once someone accepts, they appear here and you can share with them.",
+                  })}
+                />
+              )}
+              {connections?.map((u) => (
+                <div key={u} className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm">
+                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+                    <EvaIcon name="people-outline" size={18} />
+                  </span>
+                  <p className="truncate text-sm font-semibold text-primary">@{u}</p>
+                </div>
+              ))}
+            </div>
+          ) : tab === "received" ? (
             <div className="flex flex-col gap-3">
               {loadError && <p className="text-sm text-danger">{loadError}</p>}
 
