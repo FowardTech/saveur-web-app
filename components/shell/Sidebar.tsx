@@ -44,8 +44,8 @@ function gradientFor(index: number): [string, string] {
  * smaller scale a sidebar row needs. */
 function NavIconBadge({ icon, active }: { icon: Parameters<typeof EvaIcon>[0]["name"]; index?: number; active?: boolean }) {
   return (
-    <span className="flex h-5 w-5 shrink-0 items-center justify-center">
-      <EvaIcon name={icon} size={18} className={active ? "text-primary" : "text-hint"} />
+    <span className="flex h-6 w-6 shrink-0 items-center justify-center">
+      <EvaIcon name={icon} size={22} className={active ? "text-primary" : "text-hint"} />
     </span>
   );
 }
@@ -94,7 +94,7 @@ function NavLink({
       // (700) IS one of the three registered weights, so it's the
       // reliable choice for an active row that needs to read as
       // meaningfully heavier than font-medium (500) on inactive ones.
-      className={`flex items-center gap-2.5 rounded-pill px-2.5 py-1.5 text-[13px] transition ${
+      className={`flex items-center gap-3 rounded-pill px-3 py-2 text-[15px] transition ${
         active ? "bg-surface-3 text-primary font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
       }`}
     >
@@ -196,9 +196,9 @@ function LanguageMenu() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         disabled={saving}
-        className="flex w-full items-center gap-3 rounded-pill px-3 py-2 text-sm text-hint transition hover:bg-surface-3 hover:text-primary disabled:opacity-60"
+        className="flex w-full items-center gap-3 rounded-pill px-3 py-2 text-[15px] text-hint transition hover:bg-surface-3 hover:text-primary disabled:opacity-60"
       >
-        <EvaIcon name="globe-2-outline" size={18} />
+        <EvaIcon name="globe-2-outline" size={22} />
         <span className="flex-1 text-left">{t("common:nav.language", { defaultValue: "Language" })}</span>
         <span className="text-xs text-hint">{getLanguageNativeLabel(i18n.language)}</span>
       </button>
@@ -333,7 +333,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     // existing border-r border-border wrap around <Sidebar /> in
     // AppShell.tsx already gives it a visible edge against the (also now
     // white) main content, so this doesn't need its own border/shadow.
-    <div className="flex h-full w-60 flex-col bg-page">
+    <div className="flex h-full w-64 flex-col bg-page">
       <div className="flex items-center gap-2 px-4 py-4">
         <Image src="/logo-badge.png" alt="" width={28} height={28} priority className="rounded-[22%]" />
         <span className="font-brand text-xl tracking-tight text-primary">
