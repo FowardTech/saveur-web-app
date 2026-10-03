@@ -9,6 +9,8 @@ interface ActionCardProps {
   title: string;
   description?: string;
   tint?: { bg: string; text: string };
+  /** Force the line icon even when a 3D version exists. */
+  lineIcon?: boolean;
   /** Optional stagger delay (ms) for the shared .animate-card-in entrance
    * (globals.css) — opt-in so existing callers (e.g. the landing page's
    * feature showcase) that don't pass it render exactly as before. */
@@ -18,7 +20,7 @@ interface ActionCardProps {
 /** Matches the mobile app's ActionCard: rounded-12 card, soft tinted icon
  * badge, subtle shadow. Used for both the dashboard quick-actions grid and
  * the landing page's feature showcase. */
-export function ActionCard({ href, icon, title, description, tint, animationDelayMs }: ActionCardProps) {
+export function ActionCard({ href, icon, title, description, tint, animationDelayMs, lineIcon }: ActionCardProps) {
   const badgeBg = tint?.bg ?? "bg-tint-mint";
   const badgeText = tint?.text ?? "text-tint-mint-text";
   return (
@@ -29,7 +31,7 @@ export function ActionCard({ href, icon, title, description, tint, animationDela
       }`}
       style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}
     >
-      {icon3dFromEva(icon) ? (
+      {!lineIcon && icon3dFromEva(icon) ? (
         <Icon3D name={icon3dFromEva(icon)!} size={44} />
       ) : (
         <span className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${badgeBg} ${badgeText}`}>

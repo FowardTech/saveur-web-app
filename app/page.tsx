@@ -8,8 +8,8 @@ import { HeroBanner } from "@/components/landing/HeroBanner";
 import { CookieBar } from "@/components/landing/CookieBar";
 import { WelcomeModal } from "@/components/landing/WelcomeModal";
 import { EvaIcon } from "@/components/icons/EvaIcon";
-import { quickActions } from "@/lib/navigation";
-import { FeatureTile } from "@/components/ui/FeatureTile";
+import { quickActions, tintCycle } from "@/lib/navigation";
+import { ActionCard } from "@/components/ui/ActionCard";
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -82,14 +82,14 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {quickActions.map((action, i) => (
-              <FeatureTile
+              <ActionCard
                 key={action.href}
                 href={action.href}
-                art={action.art ?? ""}
-                backdrop={action.artBg ?? "#2F6BFF"}
+                icon={action.icon}
+                lineIcon
                 title={action.labelKey ? t(`common:nav.${action.labelKey}`, { defaultValue: action.label }) : action.label}
                 description={action.descriptionKey ? t(action.descriptionKey, { defaultValue: action.description }) : action.description}
-                animationDelayMs={i * 50}
+                tint={tintCycle[i % tintCycle.length]}
               />
             ))}
           </div>
