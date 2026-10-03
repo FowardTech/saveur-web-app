@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 
 interface FeatureTileProps {
   href: string;
-  /** Path to a 3D illustration (transparent PNG). */
-  art: string;
+  /** White line icon shown large at the top of the tile. */
+  icon: EvaIconName;
   /** Plain solid backdrop color. */
   backdrop: string;
   title: string;
@@ -11,10 +12,10 @@ interface FeatureTileProps {
   animationDelayMs?: number;
 }
 
-/** App Store "Today"-style tile: solid color backdrop, large 3D illustration,
+/** App Store "Today"-style tile: solid color backdrop, white line icon,
  * dark scrim fading in at the bottom, big bold title + description. Mirrors
  * the mobile Home FeatureCard. */
-export function FeatureTile({ href, art, backdrop, title, description, animationDelayMs }: FeatureTileProps) {
+export function FeatureTile({ href, icon, backdrop, title, description, animationDelayMs }: FeatureTileProps) {
   return (
     <Link
       href={href}
@@ -23,12 +24,9 @@ export function FeatureTile({ href, art, backdrop, title, description, animation
       }`}
       style={{ backgroundColor: backdrop, ...(animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : {}) }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={art}
-        alt=""
-        className="pointer-events-none absolute left-1/2 top-5 h-[170px] w-[170px] -translate-x-1/2 object-contain transition duration-300 group-hover:scale-105"
-      />
+      <span className="pointer-events-none absolute left-5 top-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-white transition duration-300 group-hover:scale-105">
+        <EvaIcon name={icon} size={30} />
+      </span>
       <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-35% to-black/60" />
       <span className="relative flex flex-col gap-1.5 p-5 pt-[200px]">
         <span className="text-2xl font-extrabold leading-tight tracking-tight text-white">{title}</span>

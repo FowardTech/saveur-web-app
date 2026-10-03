@@ -85,7 +85,7 @@ export default function LandingPage() {
               <FeatureTile
                 key={action.href}
                 href={action.href}
-                art={action.art ?? ""}
+                icon={action.icon}
                 backdrop={action.artBg ?? "#2F6BFF"}
                 title={action.labelKey ? t(`common:nav.${action.labelKey}`, { defaultValue: action.label }) : action.label}
                 description={action.descriptionKey ? t(action.descriptionKey, { defaultValue: action.description }) : action.description}
