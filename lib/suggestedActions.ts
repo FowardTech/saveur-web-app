@@ -54,6 +54,7 @@ export type SuggestedActionId =
   | "company_intelligence"
   | "student_verification"
   | "salary_negotiation"
+  | "offer_analyzer"
   | "system_design_whiteboard"
   | "learning_courses"
   | "career_diary"
@@ -103,6 +104,7 @@ export const ACTION_META: Partial<Record<SuggestedActionId, ActionMeta>> = {
   emotional_coach: { title: "the Emotional Coach", icon: "heart-outline" },
   company_intelligence: { title: "Company Intelligence", icon: "briefcase-outline" },
   salary_negotiation: { title: "Salary Negotiation practice", icon: "trending-up-outline" },
+  offer_analyzer: { title: "the Offer Analyzer", icon: "pie-chart-outline" },
   system_design_whiteboard: { title: "System Design Practice", icon: "grid-outline" },
   learning_courses: { title: "Learning Courses", icon: "book-open-outline" },
   career_diary: { title: "your Career Diary", icon: "edit-2-outline" },
@@ -146,6 +148,7 @@ const SCREEN_MAP: Partial<Record<SuggestedActionId, string>> = {
   emotional_coach: "/emotional-coach",
   company_intelligence: "/career/company-intelligence",
   salary_negotiation: "/career/salary-negotiation",
+  offer_analyzer: "/career/offer-analyzer",
   learning_courses: "/learning",
   career_diary: "/career-diary",
   career_roadmap: "/career/roadmap",
