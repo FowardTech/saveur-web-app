@@ -96,7 +96,7 @@ export function CoachingReportCard() {
         </div>
         <Link
           href="/practice/mock-interviews"
-          className="inline-flex items-center gap-1.5 rounded-pill bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600"
+          className="inline-flex items-center gap-1.5 rounded-pill bg-solid px-4 py-2 text-sm font-semibold text-solid-fg transition hover:opacity-90"
         >
           <EvaIcon name="mic-outline" size={14} />
           {t("web:coachingReport.emptyCta", { defaultValue: "Practice a mock interview" })}

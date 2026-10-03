@@ -151,7 +151,7 @@ export function DailyCheckInModal({ open, mode, onSubmit, onDismiss }: Props) {
           type="button"
           disabled={!text.trim() || submitting}
           onClick={onPressSubmit}
-          className="mt-5 w-full rounded-pill bg-brand py-3 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-50"
+          className="mt-5 w-full rounded-pill bg-solid py-3 text-sm font-bold text-solid-fg transition hover:opacity-90 disabled:opacity-50"
         >
           {submitting ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("common:submit", { defaultValue: "Submit" })}
         </button>

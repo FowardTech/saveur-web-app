@@ -225,7 +225,7 @@ export default function CareerGrowthPage() {
                   <p className="text-sm text-hint">{t("web:growth.marketBody", { defaultValue: "Compare your current pay with the market range for your role." })}</p>
                   <Link
                     href={`/career/salary-benchmark?kind=current&title=${encodeURIComponent(records[records.length - 1]?.role ?? "")}&salary=${summary.current_base ?? ""}&currency=${encodeURIComponent(summary.currency ?? "")}`}
-                    className="w-fit rounded-pill bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600"
+                    className="w-fit rounded-pill bg-solid px-4 py-2.5 text-sm font-semibold text-solid-fg hover:opacity-90"
                   >
                     {t("web:growth.check", { defaultValue: "Check against the market" })}
                   </Link>

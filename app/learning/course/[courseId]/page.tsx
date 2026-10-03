@@ -430,7 +430,7 @@ function CourseSessionInner() {
         ) : (
           <Link
             href={backHref}
-            className="mt-2 inline-flex w-full items-center justify-center rounded-pill bg-brand px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600"
+            className="mt-2 inline-flex w-full items-center justify-center rounded-pill bg-solid px-4 py-2.5 text-sm font-medium text-solid-fg hover:opacity-90"
           >
             {earnedCertificate
               ? t("web:learning.session.exploreAnotherTopic", { defaultValue: "Explore Another Topic" })

@@ -109,7 +109,7 @@ export function WelcomeModal() {
           <button
             type="button"
             onClick={dismiss}
-            className="mt-6 w-full rounded-pill bg-brand px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-600"
+            className="mt-6 w-full rounded-pill bg-solid px-4 py-2.5 text-sm font-medium text-solid-fg transition hover:opacity-90"
           >
             {t("web:welcomeModal.cta", { defaultValue: "Let's get started" })}
           </button>

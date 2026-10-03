@@ -50,7 +50,7 @@ export default function GlobalErrorBoundary({
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center justify-center rounded-pill bg-brand px-5 py-2.5 text-sm font-medium text-white transition hover:bg-brand-600"
+              className="inline-flex items-center justify-center rounded-pill bg-solid px-5 py-2.5 text-sm font-medium text-solid-fg transition hover:opacity-90"
             >
               {t("web:error.tryAgain", { defaultValue: "Try again" })}
             </button>

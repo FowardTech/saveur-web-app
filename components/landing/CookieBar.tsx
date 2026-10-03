@@ -39,7 +39,7 @@ export function CookieBar() {
           <button
             type="button"
             onClick={accept}
-            className="rounded-pill bg-brand px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-600"
+            className="rounded-pill bg-solid px-4 py-2 text-sm font-medium text-solid-fg transition hover:opacity-90"
           >
             {t("web:cookieBar.accept", { defaultValue: "Accept" })}
           </button>

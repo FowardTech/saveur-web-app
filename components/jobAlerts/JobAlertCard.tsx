@@ -105,7 +105,7 @@ export function JobAlertCard({ alert: a, logoUrl, togglingPin, onTogglePin, onMa
           <button
             type="button"
             onClick={apply.openApply}
-            className="inline-flex items-center gap-1.5 rounded-pill bg-brand px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-600"
+            className="inline-flex items-center gap-1.5 rounded-pill bg-solid px-3.5 py-1.5 text-xs font-semibold text-solid-fg transition hover:opacity-90"
           >
             {t("web:jobAlerts.applyButton", { defaultValue: "Apply" })}
             <EvaIcon name="external-link-outline" size={13} />

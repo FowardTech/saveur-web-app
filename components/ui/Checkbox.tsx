@@ -2,7 +2,7 @@ import React from "react";
 
 /**
  * Plain checkbox matching this design system's Tailwind CSS-variable
- * convention (border-border / bg-brand / text tokens — see Button.tsx,
+ * convention (border-border / bg-solid / text tokens — see Button.tsx,
  * TextField.tsx for the same pattern). No checkbox component existed
  * anywhere in this app before this — added for the Terms of Service /
  * Privacy Policy acceptance gate on login/register (product report:

@@ -28,7 +28,7 @@ export default function LiveSupportPage() {
         </p>
         <a
           href={`mailto:${SUPPORT_EMAIL}`}
-          className="rounded-pill bg-brand px-5 py-2.5 text-sm font-medium text-white transition hover:bg-brand-600"
+          className="rounded-pill bg-solid px-5 py-2.5 text-sm font-medium text-solid-fg transition hover:opacity-90"
         >
           {t("web:support.emailCta", { defaultValue: "Email {{email}}", email: SUPPORT_EMAIL })}
         </a>

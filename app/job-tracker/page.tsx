@@ -197,7 +197,7 @@ function AlertKanbanCard({
           // view no matter which screen the user started from.
           <Link
             href={`/job-alerts/${alert.id}`}
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-pill bg-brand px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-600"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-pill bg-solid px-3 py-1.5 text-sm font-semibold text-solid-fg transition hover:opacity-90"
           >
             {t("web:jobTracker.apply", { defaultValue: "Apply" })}
             <EvaIcon name="arrow-forward-outline" size={13} />
