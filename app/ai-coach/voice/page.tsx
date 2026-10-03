@@ -686,7 +686,7 @@ function VoiceOrb({ phase, onTap }: { phase: Phase; onTap: () => void }) {
         style={{
           width: ORB_SIZE * 1.5,
           height: ORB_SIZE * 1.5,
-          background: "radial-gradient(circle, rgba(0,99,248,0.35) 0%, rgba(0,99,248,0.04) 70%)",
+          background: "radial-gradient(circle, rgba(124,92,255,0.35) 0%, rgba(124,92,255,0.04) 70%)",
           animation: "voiceOrbHalo 3.6s ease-in-out infinite",
         }}
       />
@@ -700,7 +700,7 @@ function VoiceOrb({ phase, onTap }: { phase: Phase; onTap: () => void }) {
             style={{
               width: ORB_SIZE,
               height: ORB_SIZE,
-              borderColor: "rgba(0,99,248,0.55)",
+              borderColor: "rgba(124,92,255,0.55)",
               animation: "voiceOrbRipple 1.5s ease-out infinite",
             }}
           />
@@ -710,7 +710,7 @@ function VoiceOrb({ phase, onTap }: { phase: Phase; onTap: () => void }) {
             style={{
               width: ORB_SIZE,
               height: ORB_SIZE,
-              borderColor: "rgba(251,146,60,0.55)",
+              borderColor: "rgba(165,146,255,0.55)",
               animation: "voiceOrbRipple 1.5s ease-out infinite 0.75s",
             }}
           />
@@ -723,7 +723,7 @@ function VoiceOrb({ phase, onTap }: { phase: Phase; onTap: () => void }) {
         style={{
           width: ORB_SIZE,
           height: ORB_SIZE,
-          background: "linear-gradient(135deg, #18181b 0%, #52525b 55%, #a1a1aa 100%)",
+          background: "linear-gradient(135deg, #7C5CFF 0%, #8E73FF 55%, #A592FF 100%)",
           animation: `${speaking ? "voiceOrbBreatheFast" : "voiceOrbBreathe"} ${speaking ? "1.1s" : thinking ? "1.4s" : "1.8s"} ease-in-out infinite`,
         }}
       >
