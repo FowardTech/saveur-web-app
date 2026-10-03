@@ -144,8 +144,12 @@ export const apiClient = {
     request<T>(path, { method: "PUT", body: JSON.stringify(data ?? {}), auth: opts?.auth }),
   patch: <T>(path: string, data?: unknown, opts?: { auth?: boolean }) =>
     request<T>(path, { method: "PATCH", body: JSON.stringify(data ?? {}), auth: opts?.auth }),
-  delete: <T>(path: string, opts?: { auth?: boolean }) =>
-    request<T>(path, { method: "DELETE", auth: opts?.auth }),
+  delete: <T>(path: string, opts?: { auth?: boolean; data?: unknown }) =>
+    request<T>(path, {
+      method: "DELETE",
+      auth: opts?.auth,
+      ...(opts?.data !== undefined ? { body: JSON.stringify(opts.data) } : {}),
+    }),
   upload,
   downloadBlob,
 };

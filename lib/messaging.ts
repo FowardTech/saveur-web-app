@@ -1,7 +1,7 @@
 "use client";
 
 import { firebaseApp, isFirebaseConfigured } from "./firebase";
-import { registerDeviceToken } from "./notifications";
+import { registerDeviceToken, unregisterDeviceToken } from "./notifications";
 
 // Real web push, via Firebase Cloud Messaging's Web Push (firebase/messaging
 // JS SDK) — the web equivalent of mobile's @react-native-firebase/messaging
@@ -129,11 +129,63 @@ export async function enableWebPush(): Promise<EnablePushResult> {
     });
     if (!token) return { ok: false, reason: "error", detail: "getToken() returned no token" };
     await registerDeviceToken(token, "web");
+    try {
+      window.localStorage.setItem(PUSH_TOKEN_STORAGE_KEY, token);
+    } catch {
+      // localStorage unavailable -- Disable falls back to getToken() below.
+    }
     return { ok: true };
   } catch (err) {
     console.warn("[messaging] enableWebPush failed", err);
     const detail = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
     return { ok: false, reason: "error", detail };
+  }
+}
+
+// Remembers that THIS browser registered a push token, so Settings can show
+// Disable (instead of Enable) after a reload -- Notification.permission
+// alone says "granted" but not whether a token was ever registered/removed.
+const PUSH_TOKEN_STORAGE_KEY = "saveur_web_push_token";
+
+export function isWebPushRegisteredHere(): boolean {
+  try {
+    return !!window.localStorage.getItem(PUSH_TOKEN_STORAGE_KEY);
+  } catch {
+    return false;
+  }
+}
+
+/** Product report: "Browser push notifications only has enable button.
+ * Disable button too should be there." Deletes this browser's FCM token
+ * (so Firebase stops delivering to it) and removes the stored row backend-
+ * side via DELETE /api/v1/notifications/device-token. Browser permission
+ * itself can't be revoked from JS -- that stays in the browser's site
+ * settings -- but with no token registered nothing is delivered. */
+export async function disableWebPush(): Promise<{ ok: boolean; detail?: string }> {
+  try {
+    let token: string | null = null;
+    try {
+      token = window.localStorage.getItem(PUSH_TOKEN_STORAGE_KEY);
+    } catch {
+      token = null;
+    }
+    const { getMessaging, getToken, deleteToken } = await import("firebase/messaging");
+    const messaging = getMessaging(firebaseApp);
+    if (!token && VAPID_KEY) {
+      const registration = await registerServiceWorker();
+      token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
+    }
+    if (token) await unregisterDeviceToken(token);
+    await deleteToken(messaging);
+    try {
+      window.localStorage.removeItem(PUSH_TOKEN_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+    return { ok: true };
+  } catch (err) {
+    console.warn("[messaging] disableWebPush failed", err);
+    return { ok: false, detail: err instanceof Error ? `${err.name}: ${err.message}` : String(err) };
   }
 }
 

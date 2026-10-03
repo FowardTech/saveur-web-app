@@ -36,6 +36,10 @@ export async function registerDeviceToken(token: string, platform: string = "web
   await apiClient.post("/api/v1/notifications/device-token", { token, platform });
 }
 
+export async function unregisterDeviceToken(token: string): Promise<void> {
+  await apiClient.delete("/api/v1/notifications/device-token", { data: { token } });
+}
+
 /** Where tapping a notification of this `type` should navigate, if anywhere.
  * Mirrors the destinations mobile's push-tap routing
  * (services/pushNotificationService.ts's handleDataTap +

@@ -11,7 +11,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonText } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { enableWebPush, currentNotificationPermission, isPushConfigured } from "@/lib/messaging";
+import { enableWebPush, disableWebPush, isWebPushRegisteredHere, currentNotificationPermission, isPushConfigured } from "@/lib/messaging";
 
 // Real backend contract — Saveur-Backend/app/api/two_factor.py
 //   GET  /api/v1/auth/2fa/status  -> {enabled}
@@ -33,10 +33,13 @@ export default function SecuritySettingsPage() {
   const [enablingPush, setEnablingPush] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
   const [pushEnabledJustNow, setPushEnabledJustNow] = useState(false);
+  const [pushRegistered, setPushRegistered] = useState(false);
+  const [disablingPush, setDisablingPush] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setBrowserPermission(currentNotificationPermission());
+    setPushRegistered(isWebPushRegisteredHere());
   }, []);
 
   async function load() {
@@ -130,6 +133,23 @@ export default function SecuritySettingsPage() {
   // yet), or vice versa; this card and its own state track the browser side
   // specifically. See lib/messaging.ts for the full flow and why
   // `isPushConfigured` can be false (missing VAPID key).
+  async function handleDisablePush() {
+    setDisablingPush(true);
+    setPushError(null);
+    try {
+      const result = await disableWebPush();
+      if (result.ok) {
+        setPushRegistered(false);
+        setPushEnabledJustNow(false);
+      } else {
+        const base = t("web:settings.security.pushDisableFailedDefault", { defaultValue: "Couldn't disable push notifications right now." });
+        setPushError(result.detail ? `${base} (${result.detail})` : base);
+      }
+    } finally {
+      setDisablingPush(false);
+    }
+  }
+
   async function handleEnablePush() {
     setEnablingPush(true);
     setPushError(null);
@@ -139,6 +159,7 @@ export default function SecuritySettingsPage() {
       setBrowserPermission(currentNotificationPermission());
       if (result.ok) {
         setPushEnabledJustNow(true);
+        setPushRegistered(true);
       } else if (result.reason === "permission-denied") {
         setPushError(t("web:settings.security.pushPermissionDenied", { defaultValue: "Notifications are blocked for this site — enable them in your browser's site settings." }));
       } else if (result.reason === "unsupported") {
@@ -280,7 +301,7 @@ export default function SecuritySettingsPage() {
               </p>
             )}
 
-            {isPushConfigured && browserPermission === "granted" && !pushEnabledJustNow && (
+            {isPushConfigured && browserPermission === "granted" && !pushEnabledJustNow && !pushRegistered && (
               <p className="text-sm text-hint">
                 {t("web:settings.security.pushAlreadyGranted", { defaultValue: "Browser notifications are allowed for this site." })}
               </p>
@@ -298,7 +319,15 @@ export default function SecuritySettingsPage() {
 
             {pushError && browserPermission !== "denied" && <p className="text-sm text-danger">{pushError}</p>}
 
-            {isPushConfigured && browserPermission !== "denied" && (
+            {isPushConfigured && pushRegistered && (
+              <Button variant="outline" size="sm" onClick={handleDisablePush} disabled={disablingPush} className="w-fit">
+                {disablingPush
+                  ? t("web:settings.security.disablingPush", { defaultValue: "Disabling…" })
+                  : t("web:settings.security.disablePush", { defaultValue: "Disable browser push" })}
+              </Button>
+            )}
+
+            {isPushConfigured && !pushRegistered && browserPermission !== "denied" && (
               <Button
                 variant="outline"
                 size="sm"
