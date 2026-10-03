@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
-import { Icon3D } from "@/components/ui/Icon3D";
-import { icon3dFromEva } from "@/lib/icon3d";
 
 interface ActionCardProps {
   href: string;
@@ -29,13 +27,9 @@ export function ActionCard({ href, icon, title, description, tint, animationDela
       }`}
       style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}
     >
-      {icon3dFromEva(icon) ? (
-        <Icon3D name={icon3dFromEva(icon)!} size={44} />
-      ) : (
-        <span className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${badgeBg} ${badgeText}`}>
-          <EvaIcon name={icon} size={20} />
-        </span>
-      )}
+      <span className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${badgeBg} ${badgeText}`}>
+        <EvaIcon name={icon} size={20} />
+      </span>
       <span className="flex flex-col gap-1">
         <span className="font-medium text-primary">{title}</span>
         {description && <span className="text-sm text-hint">{description}</span>}
