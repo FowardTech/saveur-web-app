@@ -57,7 +57,11 @@
 .dark {
   --page: #12121f;
   --surface-1: #1b1b2e;
-  --surface-2: #2a2a42;
+  /* Product report: dark-mode cards had a lighter slab background; they
+     should look like the empty "Your Coaching Report" card, which is just
+     the page colour with a faint brand wash and a border. --surface-2 is the
+     card fill, so it now sits ~at page level (page #12121f + 5% brand). */
+  --surface-2: #151526;
   --surface-3: #3a3a57;
   --surface-4: #3a3a57;
   --border: #3a3a57;
