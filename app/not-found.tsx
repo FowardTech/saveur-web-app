@@ -3,6 +3,7 @@
 import { AppShell } from "@/components/shell/AppShell";
 import { LinkButton } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 /** Custom 404 — Next.js renders this in place of its bare default error
@@ -11,6 +12,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
  * same page chrome for a signed-out one) rather than dropping to an
  * unstyled page. */
 export default function NotFound() {
+  const { t } = useTranslation();
   const { firebaseUser, loading } = useAuth();
   const homeHref = !loading && firebaseUser ? "/dashboard" : "/";
 
@@ -20,11 +22,11 @@ export default function NotFound() {
         <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
           <EvaIcon name="question-mark-circle-outline" size={28} />
         </span>
-        <h1 className="text-2xl font-bold text-primary">Page not found</h1>
+        <h1 className="text-2xl font-bold text-primary">{t("web:notFound.title", { defaultValue: "Page not found" })}</h1>
         <p className="text-sm text-hint">
-          The page you&rsquo;re looking for doesn&rsquo;t exist or may have moved. Let&rsquo;s get you back on track.
+          {t("web:notFound.body", { defaultValue: "The page you’re looking for doesn’t exist or may have moved. Let’s get you back on track." })}
         </p>
-        <LinkButton href={homeHref}>{firebaseUser ? "Go to dashboard" : "Go home"}</LinkButton>
+        <LinkButton href={homeHref}>{firebaseUser ? t("web:notFound.goDashboard", { defaultValue: "Go to dashboard" }) : t("web:error.goHome", { defaultValue: "Go home" })}</LinkButton>
       </div>
     </AppShell>
   );
