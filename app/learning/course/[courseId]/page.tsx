@@ -1,5 +1,7 @@
 "use client";
 
+import i18n from "i18next";
+
 import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -701,7 +703,7 @@ export default function CourseSessionPage() {
   return (
     <RequireAuth>
       <AppShell>
-        <Suspense fallback={<div className="mx-auto max-w-6xl py-10 text-sm text-hint">Loading…</div>}>
+        <Suspense fallback={<div className="mx-auto max-w-6xl py-10 text-sm text-hint">{i18n.t("common:loading", { defaultValue: "Loading…" })}</div>}>
           <CourseSessionInner />
         </Suspense>
       </AppShell>
