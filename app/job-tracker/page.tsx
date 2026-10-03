@@ -444,6 +444,9 @@ export default function JobTrackerPage() {
               })}
             />
             <div className="flex items-center gap-2">
+              <Link href="/job-tracker/compare" className="text-sm font-medium text-hint hover:text-primary hover:underline">
+                {t("web:jobTracker.compareOffers", { defaultValue: "Compare offers" })}
+              </Link>
               <Link href="/applications" className="text-sm font-medium text-hint hover:text-primary hover:underline">
                 {t("web:jobTracker.advancedTools", { defaultValue: "Advanced tools →" })}
               </Link>
