@@ -126,7 +126,7 @@ function NavGroupItem({
         type="button"
         onClick={() => setOpen((o) => !o)}
         // See NavLink's own comment on this same font-weight fix.
-        className={`flex w-full items-center gap-3 rounded-pill px-3 py-2 text-sm transition ${
+        className={`flex w-full items-center gap-3 rounded-pill px-3 py-2 text-[15px] transition ${
           hasActiveChild ? "text-primary font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
         }`}
       >
