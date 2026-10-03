@@ -39,7 +39,7 @@ async function request<T>(
     });
   } catch {
     const err: ApiError = {
-      message: "No internet connection. Please check your connection and try again.",
+      message: i18n.t("web:errorsGeneric.offline", { defaultValue: "No internet connection. Please check your connection and try again." }),
       code: "ERR_NETWORK",
     };
     throw err;
@@ -79,7 +79,7 @@ async function upload<T>(path: string, formData: FormData): Promise<T> {
     res = await fetch(url, { method: "POST", headers: { ...authHeaders }, body: formData });
   } catch {
     const err: ApiError = {
-      message: "No internet connection. Please check your connection and try again.",
+      message: i18n.t("web:errorsGeneric.offline", { defaultValue: "No internet connection. Please check your connection and try again." }),
       code: "ERR_NETWORK",
     };
     throw err;

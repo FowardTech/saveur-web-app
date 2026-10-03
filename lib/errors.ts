@@ -1,3 +1,5 @@
+import i18n from "i18next";
+
 /**
  * Extracts a displayable message from a caught error, regardless of shape.
  *
@@ -49,7 +51,7 @@ export function getErrorMessage(err: unknown, fallback: string): string {
   if (err && typeof err === "object") {
     if ("code" in err && isFirebaseAuthErrorCode((err as { code?: unknown }).code)) {
       const code = (err as { code: string }).code;
-      return FIREBASE_AUTH_ERROR_MESSAGES[code] || "Something went wrong. Please check your details and try again.";
+      return i18n.t(`web:errorsFirebase.${code.replace("/", "_")}`, { defaultValue: FIREBASE_AUTH_ERROR_MESSAGES[code] || i18n.t("web:errorsGeneric.checkDetails", { defaultValue: "Something went wrong. Please check your details and try again." }) });
     }
     if ("message" in err && typeof (err as { message?: unknown }).message === "string" && (err as { message: string }).message) {
       return (err as { message: string }).message;

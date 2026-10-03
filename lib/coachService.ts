@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import apiClient from "./apiClient";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py's
@@ -33,15 +34,15 @@ function buildFallbackTopics(context?: SuggestedTopicsContext): SuggestedTopic[]
   const goal = context?.goals?.[0];
   const topics: SuggestedTopic[] = [];
   if (role) {
-    topics.push({ id: "role_prep", title: `What should I focus on to prepare for a ${role} interview?` });
+    topics.push({ id: "role_prep", title: i18n.t("web:aiCoach.topicRolePrep", { defaultValue: "What should I focus on to prepare for a {{role}} interview?", role }) });
   }
   if (goal) {
-    topics.push({ id: "goal_next_step", title: `What's my next step toward "${goal}"?` });
+    topics.push({ id: "goal_next_step", title: i18n.t("web:aiCoach.topicGoalNextStep", { defaultValue: "What's my next step toward \"{{goal}}\"?", goal }) });
   }
   topics.push(
-    { id: "resume_review", title: "Can you review my resume and suggest improvements?" },
-    { id: "salary_negotiation", title: "How should I approach negotiating my salary?" },
-    { id: "interview_nerves", title: "How do I stay calm and confident during interviews?" }
+    { id: "resume_review", title: i18n.t("web:aiCoach.topicResumeReview", { defaultValue: "Can you review my resume and suggest improvements?" }) },
+    { id: "salary_negotiation", title: i18n.t("web:aiCoach.topicSalaryNegotiation", { defaultValue: "How should I approach negotiating my salary?" }) },
+    { id: "interview_nerves", title: i18n.t("web:aiCoach.topicInterviewNerves", { defaultValue: "How do I stay calm and confident during interviews?" }) }
   );
   return topics.slice(0, 3);
 }

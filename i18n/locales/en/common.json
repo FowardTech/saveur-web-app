@@ -27,7 +27,14 @@
     "submit": "Submit",
     "tryAgain": "Try again",
     "viewAll": "View all",
-    "yes": "Yes"
+    "yes": "Yes",
+    "remove": "Remove",
+    "accept": "Accept",
+    "decline": "Decline",
+    "generating": "Generating…",
+    "dismiss": "Dismiss",
+    "view": "View",
+    "refresh": "Refresh"
   },
   "auth": {
     "alreadyHaveAccount": "Already have an account? ",
@@ -89,5 +96,15 @@
     "salaryNegotiation": "Salary Negotiation",
     "settings": "Settings",
     "subscription": "Subscription"
-  }
+  },
+  "yes": "Yes",
+  "no": "No",
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "try_again": "Try again",
+  "loading": "Loading…",
+  "save": "Save",
+  "rename": "Rename",
+  "submit": "Submit"
 }

@@ -138,12 +138,7 @@ export default function OnboardingPage() {
       if (prev.includes(country)) return prev.filter((c) => c !== country);
       if (prev.length >= MAX_COUNTRIES) {
         setCapMessage(
-          t("web:onboarding.step3.maxReached", {
-            defaultValue: isPremium
-              ? "You can pick up to {{max}} countries at once. Remove one to add another."
-              : "You can pick up to {{max}} countries at once on your current plan. Upgrade to Premium to target up to 10.",
-            max: MAX_COUNTRIES,
-          }),
+          t(isPremium ? "web:onboarding.step3.maxReachedPremium" : "web:onboarding.step3.maxReachedFree", { max: MAX_COUNTRIES }),
         );
         return prev;
       }
@@ -157,12 +152,7 @@ export default function OnboardingPage() {
     if (!value) return;
     if (roles.length >= MAX_ROLES && !roles.includes(value)) {
       setCapMessage(
-        t("web:onboarding.step2.maxReached", {
-          defaultValue: isPremium
-            ? "You can target up to {{max}} roles at once. Remove one to add another."
-            : "You can target up to {{max}} roles at once on your current plan. Upgrade to Premium to target up to 10.",
-          max: MAX_ROLES,
-        }),
+        t(isPremium ? "web:onboarding.step2.maxReachedPremium" : "web:onboarding.step2.maxReachedFree", { max: MAX_ROLES }),
       );
       return;
     }

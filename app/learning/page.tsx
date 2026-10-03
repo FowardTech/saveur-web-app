@@ -682,14 +682,14 @@ export default function LearningPage() {
                   <div className="flex items-center justify-between gap-3">
                     <span className={`inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-semibold ${style.chip}`}>
                       <EvaIcon name={style.icon} size={13} />
-                      {course.category}
+                      {t(`web:learning.catalog.categories.${course.category.toLowerCase().replace(/ /g, "_")}`, { defaultValue: course.category })}
                     </span>
                     <span className="text-xs text-hint">
                       {t("web:learning.catalog.durationMin", { defaultValue: "{{min}} min", min: course.durationMin })}
                     </span>
                   </div>
-                  <h3 className="mt-3 font-semibold text-primary">{course.title}</h3>
-                  <p className="mt-1 flex-1 text-sm text-hint">{course.description}</p>
+                  <h3 className="mt-3 font-semibold text-primary">{t(`web:learning.catalog.courses.${course.id}.title`, { defaultValue: course.title })}</h3>
+                  <p className="mt-1 flex-1 text-sm text-hint">{t(`web:learning.catalog.courses.${course.id}.description`, { defaultValue: course.description })}</p>
 
                   <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
                     <div
