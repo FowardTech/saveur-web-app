@@ -278,6 +278,30 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     };
   }, [firebaseUser, loading]);
 
+  // Product report: job alerts "are not auto fetching unless I navigate".
+  // The nav badge (Job Alerts unread count) was only fetched on mount and on
+  // a live foreground push -- a user who never gets/permits push, or whose
+  // tab sat open, never saw new matches counted. Re-poll every 60s while the
+  // tab is visible and when it regains focus.
+  useEffect(() => {
+    if (loading || !firebaseUser) return;
+    let cancelled = false;
+    const refresh = () => {
+      if (document.visibilityState === "hidden") return;
+      fetchBadges((result) => {
+        if (!cancelled) setBadges(result);
+      });
+    };
+    const timer = window.setInterval(refresh, 60000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firebaseUser, loading]);
+
   // Live-updates the badges (including Shared with Me) when a foreground
   // push arrives, mirroring NotificationBell.tsx's identical
   // onForegroundMessage wiring (see that component for the full writeup) —

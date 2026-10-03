@@ -15,6 +15,7 @@ import { guessCompanyLogoUrl } from "@/lib/companyData";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { JobAlertCard } from "@/components/jobAlerts/JobAlertCard";
+import { onForegroundMessage } from "@/lib/messaging";
 
 // Real backend contract — Saveur-Backend/app/api/job_alerts.py
 //   GET  /api/v1/job-alerts -> {data: JobAlert[], next_cursor: string | null}
@@ -108,6 +109,40 @@ function JobAlertsPageInner() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
+
+  // Product report: "the Job alerts are not auto fetching unless i navigate
+  // to the job alert screen or refresh." The backend already discovers
+  // matches on a schedule (app/scheduler.py job_alert_refresh) and sends a
+  // push, but this page only ever fetched once on mount. Silently re-pulls
+  // (no spinner, no mark-read side effect on pages the user isn't looking
+  // at) on a live foreground push, when the tab regains focus, and on a 60s
+  // tick while the page is open.
+  useEffect(() => {
+    if (authLoading || proRequired) return;
+    let cancelled = false;
+    const silentRefresh = () => {
+      if (document.visibilityState === "hidden") return;
+      apiClient
+        .get<{ data: JobAlert[] }>("/api/v1/job-alerts")
+        .then((data) => {
+          if (!cancelled) setAlerts(data.data);
+        })
+        .catch(() => {});
+    };
+    const timer = window.setInterval(silentRefresh, 60000);
+    document.addEventListener("visibilitychange", silentRefresh);
+    let unsubscribe: (() => void) | undefined;
+    onForegroundMessage(silentRefresh).then((unsub) => {
+      if (cancelled) unsub();
+      else unsubscribe = unsub;
+    });
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", silentRefresh);
+      unsubscribe?.();
+    };
+  }, [authLoading, proRequired]);
 
   async function handleRefresh() {
     setRefreshing(true);
