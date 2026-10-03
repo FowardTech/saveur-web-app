@@ -703,7 +703,7 @@ function VoiceOrb({ phase, onTap }: { phase: Phase; onTap: () => void }) {
         style={{
           width: ORB_SIZE,
           height: ORB_SIZE,
-          background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)",
+          background: "linear-gradient(135deg, #18181b 0%, #52525b 55%, #a1a1aa 100%)",
           animation: `${speaking ? "voiceOrbBreatheFast" : "voiceOrbBreathe"} ${speaking ? "1.1s" : thinking ? "1.4s" : "1.8s"} ease-in-out infinite`,
         }}
       >

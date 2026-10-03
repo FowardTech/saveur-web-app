@@ -20,22 +20,6 @@ import { onForegroundMessage } from "@/lib/messaging";
 // same way (gradientFor(i)) rather than per-item hardcoded colors, so a nav
 // item's color is stable by its position in the list but the whole set
 // doesn't need hand-picking a color per feature.
-const ICON_GRADIENTS: [string, string][] = [
-  ["#2d76dbff", "#3B9DFF"], // blue
-  ["#dc5d2bff", "#FB923C"], // orange
-  ["#28b35bff", "#4ADE80"], // green
-  ["#8449e2ff", "#A78BFA"], // purple
-  ["#d6355dff", "#FB7185"], // red/pink
-  ["#1ca3c8ff", "#22D3EE"], // teal/cyan
-  ["#dd8039ff", "#FBBF24"], // amber
-  ["#5950d9ff", "#818CF8"], // indigo
-  ["#5d636eff", "#9CA3AF"], // slate/gray
-  ["#ba693aff", "#D97706"], // brown
-];
-function gradientFor(index: number): [string, string] {
-  return ICON_GRADIENTS[index % ICON_GRADIENTS.length];
-}
-
 /** The gradient badge behind each nav item's icon glyph — a small rounded
  * square filled with a CSS linear-gradient (Tailwind has no utility for an
  * arbitrary two-stop gradient pair, hence the inline style) with a white

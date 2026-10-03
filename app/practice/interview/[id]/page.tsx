@@ -732,7 +732,7 @@ export default function LiveInterviewSessionPage() {
                 // Product request: "I want ... the AI interviewer to always
                 // detect inappropriate words and caution the user during
                 // interview session when they respond inappropriately".
-                <div className="flex items-center gap-2 rounded-card border border-amber-400 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900">
+                <div className="flex items-center gap-2 rounded-card border border-border bg-surface-3 px-4 py-3 text-sm font-medium text-amber-900">
                   <EvaIcon name="alert-triangle-outline" size={16} />
                   {moderationCaution}
                 </div>
@@ -805,7 +805,7 @@ export default function LiveInterviewSessionPage() {
                                 : t("web:practice.interview.startInterview", { defaultValue: "Start interview" })
                             }
                             className="relative flex h-32 w-32 items-center justify-center rounded-full shadow-sm transition"
-                            style={{ background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)" }}
+                            style={{ background: "linear-gradient(135deg, #18181b 0%, #52525b 55%, #a1a1aa 100%)" }}
                           >
                             <EvaIcon
                               name={voicePhase === "listening" ? "mic-outline" : voicePhase === "speaking" ? "close-circle-outline" : "play-circle-outline"}
@@ -983,7 +983,7 @@ export default function LiveInterviewSessionPage() {
                                   : t("web:practice.interview.startInterview", { defaultValue: "Start interview" })
                               }
                               className="relative flex h-16 w-16 items-center justify-center rounded-full shadow-sm ring-2 ring-white/25 transition"
-                              style={{ background: "linear-gradient(135deg, #0063F8 0%, #7EA8E2 55%, #FB923C 100%)" }}
+                              style={{ background: "linear-gradient(135deg, #18181b 0%, #52525b 55%, #a1a1aa 100%)" }}
                             >
                               <EvaIcon
                                 name={voicePhase === "listening" ? "mic-outline" : voicePhase === "speaking" ? "close-circle-outline" : "play-circle-outline"}

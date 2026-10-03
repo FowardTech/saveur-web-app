@@ -174,8 +174,8 @@ function GoalsPageInner() {
               {/* Career */}
               <section className="flex flex-col gap-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-[9px]" style={{ backgroundColor: "#0063f8" }}>
-                    <EvaIcon name="briefcase-outline" size={16} className="text-white" />
+                  <span className="inline-flex h-7 w-7 items-center justify-center">
+                    <EvaIcon name="briefcase-outline" size={20} className="text-primary" />
                   </span>
                   <h2 className="text-base font-bold text-primary">{t("web:goals.sectionCareer", { defaultValue: "Career" })}</h2>
                 </div>

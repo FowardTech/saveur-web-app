@@ -625,7 +625,7 @@ function AiCoachPageInner() {
                                   // ... to always detect inappropriate words and
                                   // caution the user" -- distinct amber caution
                                   // style instead of the normal coach bubble.
-                                  ? "border border-amber-400 bg-amber-50 text-amber-900"
+                                  ? "border border-border bg-surface-3 text-primary"
                                   : "border border-border bg-surface-1 text-primary"
                             }`}
                           >
