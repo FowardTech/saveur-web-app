@@ -167,16 +167,49 @@ export async function createCheckoutSession(params: {
    * same hosted Checkout Session redirect this app already uses for
    * subscriptions. */
   addonCode?: string;
+  /** Admin-managed discount code (Admin dashboard > Coupons). Validated
+   * server-side again at checkout (plan tier + country + redemption cap) and
+   * applied as the Stripe Checkout Session's discount. */
+  couponCode?: string;
   successUrl: string;
   cancelUrl: string;
 }): Promise<string> {
   const data = await apiClient.post<{ url: string }>("/api/v1/billing/checkout", {
     plan_code: params.planCode,
     addon_code: params.addonCode,
+    coupon_code: params.couponCode,
     success_url: params.successUrl,
     cancel_url: params.cancelUrl,
   });
   return data.url;
+}
+
+export interface CouponPreview {
+  valid: boolean;
+  code?: string;
+  percentOff?: number | null;
+  amountOff?: number | null;
+  currency?: string;
+  message?: string;
+}
+
+/** POST /api/v1/billing/coupons/validate -- live "X% off" preview without
+ * touching Stripe. Never throws on an invalid code: returns {valid:false,
+ * message} so the UI can show the reason inline. */
+export async function validateCoupon(code: string, planCode: string): Promise<CouponPreview> {
+  try {
+    const data = await apiClient.post<{
+      valid: boolean;
+      code: string;
+      percent_off: number | null;
+      amount_off: number | null;
+      currency: string;
+    }>("/api/v1/billing/coupons/validate", { code, plan_code: planCode });
+    return { valid: true, code: data.code, percentOff: data.percent_off, amountOff: data.amount_off, currency: data.currency };
+  } catch (err) {
+    const e = err as { message?: string };
+    return { valid: false, message: e?.message || "This code isn't valid for this plan." };
+  }
 }
 
 export async function createPortalSession(returnUrl: string): Promise<string> {

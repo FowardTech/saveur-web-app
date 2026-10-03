@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { getPlans, createCheckoutSession, createPortalSession } from "@/lib/billingService";
+import { getPlans, createCheckoutSession, createPortalSession, validateCoupon, type CouponPreview } from "@/lib/billingService";
 import { formatPrice, type BillingPlan } from "@/lib/types";
 import { getErrorMessage } from "@/lib/errors";
 
@@ -21,6 +21,39 @@ export default function SubscriptionPage() {
   const [plansError, setPlansError] = useState<string | null>(null);
   const [busyCode, setBusyCode] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  // Product report: "The discount coupon created in the admin dashboard
+  // should be applied in the checkout ... I am not seeing a discount part in
+  // the stripe checkout." Admin coupons are our own Coupon rows (plan tier +
+  // country eligibility), NOT Stripe promotion codes, so Stripe's hosted
+  // "Add promotion code" box can't recognise them. The code is entered here
+  // instead, previewed per plan via POST /billing/coupons/validate, and
+  // passed to /billing/checkout as coupon_code, which attaches it as the
+  // Checkout Session's discount.
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCode, setAppliedCode] = useState<string | null>(null);
+  const [couponResults, setCouponResults] = useState<Record<string, CouponPreview>>({});
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+
+  async function handleApplyCoupon() {
+    const code = couponInput.trim();
+    if (!code) return;
+    setApplyingCoupon(true);
+    try {
+      const entries = await Promise.all(
+        plans.filter((p) => p.code).map(async (p) => [p.code as string, await validateCoupon(code, p.code as string)] as const)
+      );
+      setCouponResults(Object.fromEntries(entries));
+      setAppliedCode(code);
+    } finally {
+      setApplyingCoupon(false);
+    }
+  }
+
+  function handleClearCoupon() {
+    setCouponInput("");
+    setAppliedCode(null);
+    setCouponResults({});
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -51,6 +84,7 @@ export default function SubscriptionPage() {
       const origin = window.location.origin;
       const url = await createCheckoutSession({
         planCode: plan.code,
+        couponCode: appliedCode && couponResults[plan.code]?.valid ? appliedCode : undefined,
         successUrl: `${origin}/subscription/success`,
         cancelUrl: `${origin}/subscription`,
       });
@@ -110,6 +144,43 @@ export default function SubscriptionPage() {
           </div>
         )}
 
+        {!loadingPlans && !plansError && plans.length > 0 && (
+          <div className="mx-auto flex w-full max-w-md flex-col gap-2">
+            <label className="text-sm font-medium text-primary" htmlFor="coupon-code">
+              {t("web:subscription.couponLabel", { defaultValue: "Have a discount code?" })}
+            </label>
+            <div className="flex gap-2">
+              <input
+                id="coupon-code"
+                value={couponInput}
+                onChange={(e) => setCouponInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") void handleApplyCoupon();
+                }}
+                placeholder={t("web:subscription.couponPlaceholder", { defaultValue: "Enter code" })}
+                className="flex-1 rounded-lg border border-border bg-surface-1 px-3 py-2 text-sm uppercase text-primary outline-none focus:border-brand"
+              />
+              {appliedCode ? (
+                <Button variant="outline" size="sm" onClick={handleClearCoupon}>
+                  {t("web:subscription.couponRemove", { defaultValue: "Remove" })}
+                </Button>
+              ) : (
+                <Button size="sm" onClick={handleApplyCoupon} disabled={applyingCoupon || !couponInput.trim()}>
+                  {applyingCoupon
+                    ? t("web:subscription.couponApplying", { defaultValue: "Checking…" })
+                    : t("web:subscription.couponApply", { defaultValue: "Apply" })}
+                </Button>
+              )}
+            </div>
+            {appliedCode && !Object.values(couponResults).some((r) => r.valid) && (
+              <p className="text-sm text-danger">
+                {Object.values(couponResults)[0]?.message ||
+                  t("web:subscription.couponInvalid", { defaultValue: "That code isn't valid." })}
+              </p>
+            )}
+          </div>
+        )}
+
         {loadingPlans && (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[0, 1, 2].map((i) => (
@@ -146,6 +217,24 @@ export default function SubscriptionPage() {
                       </span>
                     )}
                   </p>
+                {plan.code && appliedCode && couponResults[plan.code]?.valid && (
+                  <p className="mt-1 text-sm font-semibold text-success-text">
+                    {couponResults[plan.code].percentOff
+                      ? t("web:subscription.couponPercentApplied", {
+                          defaultValue: "{{code}} applied: {{pct}}% off",
+                          code: couponResults[plan.code].code,
+                          pct: couponResults[plan.code].percentOff,
+                        })
+                      : t("web:subscription.couponAmountApplied", {
+                          defaultValue: "{{code}} applied: {{amount}} off",
+                          code: couponResults[plan.code].code,
+                          amount: formatPrice(couponResults[plan.code].amountOff ?? 0, couponResults[plan.code].currency ?? plan.currency),
+                        })}
+                  </p>
+                )}
+                {plan.code && appliedCode && couponResults[plan.code] && !couponResults[plan.code].valid && (
+                  <p className="mt-1 text-xs text-hint">{couponResults[plan.code].message}</p>
+                )}
                 </div>
                 <ul className="flex flex-1 flex-col gap-2">
                   {plan.features.map((feature) => (
