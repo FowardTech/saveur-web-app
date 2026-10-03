@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -11,7 +12,7 @@ import { Pill } from "@/components/ui/Pill";
 import { useAuth } from "@/app/providers/AuthProvider";
 import type { ApiError } from "@/lib/apiClient";
 import * as growth from "@/lib/growthService";
-import type { MarketCheck, PayRecord, PaySummary, PromotionPlan } from "@/lib/growthService";
+import type { PayRecord, PaySummary, PromotionPlan } from "@/lib/growthService";
 
 // Career Growth — the post-hire loop. Pay tracking over time (free), market
 // check + promotion/raise plan (paid), and a quarterly check-in prompt.
@@ -38,12 +39,6 @@ export default function CareerGrowthPage() {
   const [company, setCompany] = useState("");
   const [kind, setKind] = useState("start");
   const [saving, setSaving] = useState(false);
-
-  // market check
-  const [location, setLocation] = useState("");
-  const [years, setYears] = useState("");
-  const [market, setMarket] = useState<MarketCheck | null>(null);
-  const [checking, setChecking] = useState(false);
 
   // promotion plan
   const [plan, setPlan] = useState<PromotionPlan | null>(null);
@@ -107,19 +102,6 @@ export default function CareerGrowthPage() {
   async function onDelete(id: number) {
     await growth.deletePay(id).catch(() => undefined);
     load();
-  }
-
-  async function onMarket() {
-    if (checking || !location.trim()) return;
-    setChecking(true);
-    setError(null);
-    try {
-      setMarket(await growth.marketCheck(location.trim(), years ? Number(years) : undefined));
-    } catch (e) {
-      err(e);
-    } finally {
-      setChecking(false);
-    }
   }
 
   async function onPlan() {
@@ -240,25 +222,13 @@ export default function CareerGrowthPage() {
               {records.length > 0 && (
                 <div className={card}>
                   <h2 className="font-semibold text-primary">{t("web:growth.marketTitle", { defaultValue: "Am I paid fairly?" })}</h2>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <TextField label={t("web:growth.location", { defaultValue: "Location" })} value={location} onChange={(e) => setLocation(e.target.value)} />
-                    <TextField label={t("web:growth.years", { defaultValue: "Years of experience" })} type="number" value={years} onChange={(e) => setYears(e.target.value)} />
-                  </div>
-                  <Button onClick={onMarket} disabled={checking || !location.trim()} className="w-fit">
-                    {checking ? t("web:growth.checking", { defaultValue: "Checking…" }) : t("web:growth.check", { defaultValue: "Check against the market" })}
-                  </Button>
-                  {market && (
-                    <div className="flex flex-col gap-1 text-sm text-primary">
-                      <p className="font-semibold">
-                        {t(`web:growth.position.${market.position ?? "at_market"}`, { defaultValue: (market.position ?? "at_market").replace(/_/g, " ") })}
-                        {market.gap_pct != null && ` (${market.gap_pct > 0 ? "+" : ""}${market.gap_pct}%)`}
-                      </p>
-                      <p>{fmt(market.market_range?.low, market.market_range?.currency)} – {fmt(market.market_range?.high, market.market_range?.currency)} · {t("web:growth.mid", { defaultValue: "mid" })} {fmt(market.market_range?.mid, market.market_range?.currency)}</p>
-                      {market.rationale && <p className="text-hint">{market.rationale}</p>}
-                      {market.suggested_ask != null && <p>{t("web:growth.suggestedAsk", { defaultValue: "Suggested ask" })}: {fmt(market.suggested_ask, market.market_range?.currency)}</p>}
-                      {market.next_step && <p className="text-hint">{market.next_step}</p>}
-                    </div>
-                  )}
+                  <p className="text-sm text-hint">{t("web:growth.marketBody", { defaultValue: "Compare your current pay with the market range for your role." })}</p>
+                  <Link
+                    href={`/career/salary-benchmark?kind=current&title=${encodeURIComponent(records[records.length - 1]?.role ?? "")}&salary=${summary.current_base ?? ""}&currency=${encodeURIComponent(summary.currency ?? "")}`}
+                    className="w-fit rounded-pill bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600"
+                  >
+                    {t("web:growth.check", { defaultValue: "Check against the market" })}
+                  </Link>
                 </div>
               )}
             </>

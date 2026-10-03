@@ -12,6 +12,12 @@ export interface SalaryBenchmark {
   factors: { name: string; effect: "raises" | "lowers"; detail: string }[];
   negotiation_tip: string;
   caveat: string;
+  // present when `your_salary` was sent (paid plans)
+  your_salary?: number;
+  kind?: "offer" | "current";
+  position?: "below_market" | "at_market" | "above_market";
+  gap_pct?: number | null;
+  suggested_ask?: number | null;
 }
 
 export const getSalaryBenchmark = (body: {
@@ -20,4 +26,6 @@ export const getSalaryBenchmark = (body: {
   years_experience?: number;
   currency?: string;
   industry?: string;
+  your_salary?: number;
+  kind?: "offer" | "current";
 }) => apiClient.post<SalaryBenchmark>("/api/v1/salary/benchmark", { ...body, language: i18n.language || "en" });

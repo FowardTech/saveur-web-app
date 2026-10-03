@@ -105,7 +105,7 @@ export default function CompareOffersPage() {
                         <p className="text-lg font-bold text-primary">{fmtDate(o.offer_deadline)}</p>
                       </div>
                     </div>
-                    <Link href="/career/offer-analyzer" className="text-sm font-medium text-link hover:underline">
+                    <Link href={`/career/salary-benchmark?kind=offer&title=${encodeURIComponent(o.role)}&location=${encodeURIComponent(o.location ?? "")}&salary=${o.offer_amount ?? ""}&currency=${encodeURIComponent(o.offer_currency ?? "")}`} className="text-sm font-medium text-link hover:underline">
                       {t("web:compareOffers.analyze", { defaultValue: "Analyze this offer" })}
                     </Link>
                   </div>
