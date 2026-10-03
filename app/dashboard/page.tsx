@@ -19,6 +19,7 @@ import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedCh
 import { AppTour } from "@/components/dashboard/AppTour";
 import { CoachingReportCard } from "@/components/dashboard/CoachingReportCard";
 import { DailyTipBanner } from "@/components/dashboard/DailyTipBanner";
+import { AdPopupModal } from "@/components/dashboard/AdPopupModal";
 import { RatingModal } from "@/components/dashboard/RatingModal";
 import { DailyCheckInModal, type DailyCheckInMode } from "@/components/dashboard/DailyCheckInModal";
 import * as appRatingService from "@/lib/appRatingService";
@@ -268,6 +269,7 @@ export default function DashboardPage() {
           modal (both are full-screen, centered dialogs) -- if a rating
           becomes due while a check-in prompt is already showing, it'll
           simply be shown the next time the dashboard mounts instead. */}
+      <AdPopupModal enabled={!showRatingPrompt && checkinModal === null} />
       <RatingModal open={showRatingPrompt && checkinModal === null} onSubmit={onSubmitRating} onDismiss={onDismissRating} />
       <DailyCheckInModal
         open={checkinModal !== null}
