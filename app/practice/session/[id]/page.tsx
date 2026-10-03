@@ -610,6 +610,28 @@ export default function PracticeSessionDetailPage() {
                 </>
               )}
 
+              {replay?.voiceMetrics && (
+                <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+                  <h2 className="text-sm font-semibold uppercase tracking-wide text-hint">
+                    {t("web:practice.session.voiceMetrics", { defaultValue: "Delivery" })}
+                  </h2>
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div>
+                      <p className="text-xl font-bold text-primary">{replay.voiceMetrics.wordsPerMinute ?? "—"}</p>
+                      <p className="text-xs text-hint">{t("web:practice.session.wpm", { defaultValue: "Words / min" })}</p>
+                    </div>
+                    <div>
+                      <p className="text-xl font-bold text-primary">{replay.voiceMetrics.fillerCount ?? "—"}</p>
+                      <p className="text-xs text-hint">{t("web:practice.session.fillers", { defaultValue: "Filler words" })}</p>
+                    </div>
+                    <div>
+                      <p className="text-xl font-bold text-primary">{replay.voiceMetrics.longPauses ?? "—"}</p>
+                      <p className="text-xs text-hint">{t("web:practice.session.longPauses", { defaultValue: "Long pauses" })}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {session.messages && session.messages.length > 0 && (
                 <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
                   <button
@@ -622,7 +644,23 @@ export default function PracticeSessionDetailPage() {
                   </button>
                   {showTranscript && (
                     <div className="flex flex-col gap-3">
-                      {session.messages.map((m, i) => (
+                      {replay && replay.transcript.length > 0 && replay.transcript.some((e) => e.tMs > 0)
+                        ? replay.transcript.map((e, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              disabled={!hasVideo}
+                              onClick={() => jumpToAnnotation(e.tMs)}
+                              className={`flex ${e.role === "user" ? "justify-end" : "justify-start"} text-left`}
+                            >
+                              <div className={`max-w-[85%] rounded-card px-3.5 py-2.5 text-sm ${e.role === "user" ? "bg-solid text-solid-fg" : "bg-surface-1 text-primary"}`}>
+                                {hasVideo && <span className="mb-0.5 block text-[11px] font-medium opacity-60">{interviewReplayService.formatMs(e.tMs)}</span>}
+                                {e.text}
+                              </div>
+                            </button>
+                          ))
+                        : null}
+                      {!(replay && replay.transcript.length > 0 && replay.transcript.some((e) => e.tMs > 0)) && session.messages.map((m, i) => (
                         <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                           <div
                             className={`max-w-[85%] rounded-card px-3.5 py-2.5 text-sm ${
