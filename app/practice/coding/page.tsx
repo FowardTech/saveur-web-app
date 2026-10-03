@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
@@ -10,6 +11,9 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { Button } from "@/components/ui/Button";
+import { Pill } from "@/components/ui/Pill";
+import * as timedCoding from "@/lib/timedCodingService";
 
 // Real backend contract — Saveur-Backend/app/api/coding.py
 //   GET /api/v1/coding/problems -> [{slug, title, difficulty, category, status, bookmarked}]
@@ -50,6 +54,30 @@ export default function CodingPracticePage() {
   const [error, setError] = useState<string | null>(null);
   const [addonRequired, setAddonRequired] = useState(false);
 
+  // Timed practice launcher (parity with mobile: coding interview with a
+  // session length countdown + AI feedback at the end).
+  const router = useRouter();
+  const [timedDifficulty, setTimedDifficulty] = useState("beginner");
+  const [timedMinutes, setTimedMinutes] = useState(30);
+  const [startingTimed, setStartingTimed] = useState(false);
+  const [timedError, setTimedError] = useState<string | null>(null);
+  async function onStartTimed() {
+    if (startingTimed) return;
+    setStartingTimed(true);
+    setTimedError(null);
+    try {
+      const sessionId = await timedCoding.startTimedSession(timedDifficulty, timedMinutes);
+      const slug = await timedCoding.nextProblemSlug(timedDifficulty, []);
+      if (!slug) throw new Error("no_problem");
+      const endsAt = Date.now() + timedMinutes * 60 * 1000;
+      router.push(`/practice/coding/${slug}?session=${sessionId}&endsAt=${endsAt}&difficulty=${timedDifficulty}`);
+    } catch (err) {
+      const apiErr = err as ApiError;
+      setTimedError(apiErr.message || t("common:somethingWentWrong", { defaultValue: "Something went wrong. Please try again." }));
+      setStartingTimed(false);
+    }
+  }
+
   useEffect(() => {
     if (loading) return;
     let cancelled = false;
@@ -85,6 +113,35 @@ export default function CodingPracticePage() {
             title={t("web:practice.coding.title", { defaultValue: "Coding Practice" })}
             subtitle={t("web:practice.coding.subtitle", { defaultValue: "Real problems, instant AI review." })}
           />
+
+          {!addonRequired && (
+            <div className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5">
+              <div>
+                <h2 className="font-semibold text-primary">{t("web:practice.coding.timed.title", { defaultValue: "Timed practice" })}</h2>
+                <p className="text-sm text-hint">
+                  {t("web:practice.coding.timed.subtitle", { defaultValue: "Solve problems against a countdown, then get AI feedback on your session." })}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {["beginner", "intermediate", "advanced"].map((d) => (
+                  <Pill key={d} selected={d === timedDifficulty} onClick={() => setTimedDifficulty(d)}>
+                    {t(`web:practice.codingDifficulty.${d}`, { defaultValue: d[0].toUpperCase() + d.slice(1) })}
+                  </Pill>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[15, 30, 45, 60].map((m) => (
+                  <Pill key={m} selected={m === timedMinutes} onClick={() => setTimedMinutes(m)}>
+                    {t("web:practice.coding.timed.minutes", { defaultValue: "{{count}} min", count: m })}
+                  </Pill>
+                ))}
+              </div>
+              {timedError && <p className="text-sm text-danger">{timedError}</p>}
+              <Button onClick={onStartTimed} disabled={startingTimed} className="w-full sm:w-fit">
+                {startingTimed ? t("web:practice.coding.timed.starting", { defaultValue: "Starting…" }) : t("web:practice.coding.timed.start", { defaultValue: "Start timed session" })}
+              </Button>
+            </div>
+          )}
 
           <Link
             href="/practice/coding/projects"

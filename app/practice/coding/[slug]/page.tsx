@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "next-themes";
 import CodeMirror from "@uiw/react-codemirror";
@@ -16,6 +16,8 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import * as codingService from "@/lib/codingService";
 import type { CodeReviewResult, TestRunResult } from "@/lib/codingService";
 import { languageExtensionForLanguageId } from "@/lib/codingProjectsLanguage";
+import * as timedCoding from "@/lib/timedCodingService";
+import type { TimedState, TimedAttempt } from "@/lib/timedCodingService";
 
 // Web counterpart to mobile's src/practice/CodingProblemSolve.tsx (the
 // free-practice-hub solve screen, reached by browsing the problem list
@@ -87,6 +89,31 @@ export default function CodingProblemDetailPage() {
 
   const [bookmarked, setBookmarked] = useState(false);
 
+  // --- Timed mode (parity with mobile's timed coding interview) ----------
+  // Activated by /practice/coding/<slug>?session=<id>&endsAt=<ms>&difficulty=<d>
+  // (see the "Timed practice" launcher on /practice/coding): countdown,
+  // "Next problem", and Finish -> AI feedback via the interview session.
+  const router = useRouter();
+  const [timed, setTimed] = useState<TimedState | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
+  const [finishing, setFinishing] = useState(false);
+  const autoFinishedRef = useRef(false);
+
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const session = sp.get("session");
+    const endsAt = Number(sp.get("endsAt"));
+    if (session && endsAt) setTimed({ sessionId: session, endsAt, difficulty: sp.get("difficulty") || "beginner" });
+  }, [slug]);
+
+  useEffect(() => {
+    if (!timed) return;
+    const tick = () => setSecondsLeft(Math.max(0, Math.round((timed.endsAt - Date.now()) / 1000)));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [timed]);
+
   const [language, setLanguage] = useState<string>("");
   const [code, setCode] = useState("");
   const codeEditedRef = useRef(false);
@@ -149,6 +176,52 @@ export default function CodingProblemDetailPage() {
     setCode(problem.starter_code[lang] ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problem]);
+
+  function currentAttempt(): TimedAttempt | null {
+    if (!problem) return null;
+    return {
+      problemSlug: problem.slug,
+      problemTitle: problem.title,
+      problemStatement: `${problem.title}\n\n${problem.description}`,
+      language,
+      code,
+      testsPassed: testResults ? testResults.filter((r) => r.passed).length : undefined,
+      testsTotal: testResults ? testResults.length : undefined,
+    };
+  }
+
+  async function onFinishTimed() {
+    if (!timed || finishing) return;
+    setFinishing(true);
+    const attempt = currentAttempt();
+    const attempts = attempt ? timedCoding.saveAttempt(timed.sessionId, attempt) : timedCoding.loadAttempts(timed.sessionId);
+    try {
+      await timedCoding.finishTimedSession(timed.sessionId, attempts);
+    } catch {
+      // Same stance as mobile: the work already happened locally, still move on to feedback.
+    }
+    router.push(`/practice/session/${timed.sessionId}`);
+  }
+
+  async function onNextProblem() {
+    if (!timed || !problem || finishing) return;
+    const attempt = currentAttempt();
+    const attempts = attempt ? timedCoding.saveAttempt(timed.sessionId, attempt) : timedCoding.loadAttempts(timed.sessionId);
+    try {
+      const next = await timedCoding.nextProblemSlug(timed.difficulty, attempts.map((a) => a.problemSlug || "").filter(Boolean));
+      if (next) router.push(`/practice/coding/${next}?session=${timed.sessionId}&endsAt=${timed.endsAt}&difficulty=${timed.difficulty}`);
+    } catch {
+      // stay on the current problem
+    }
+  }
+
+  useEffect(() => {
+    if (timed && secondsLeft === 0 && !autoFinishedRef.current) {
+      autoFinishedRef.current = true;
+      void onFinishTimed();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [secondsLeft, timed]);
 
   function difficultyLabel(value: string) {
     return t(`web:practice.codingDifficulty.${value}`, { defaultValue: value });
@@ -258,6 +331,19 @@ export default function CodingProblemDetailPage() {
               <EvaIcon name="chevron-left-outline" size={16} />
               {t("web:practice.coding.detail.back", { defaultValue: "Back to Coding Practice" })}
             </Link>
+            {timed && secondsLeft !== null && (
+              <div className="flex items-center gap-2">
+                <span className={`rounded-pill px-3 py-1 text-sm font-semibold tabular-nums ${secondsLeft <= 60 ? "bg-tint-rose text-tint-rose-text" : "bg-brand/10 text-brand"}`}>
+                  {String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:{String(secondsLeft % 60).padStart(2, "0")}
+                </span>
+                <Button type="button" size="sm" variant="outline" onClick={onNextProblem} disabled={finishing}>
+                  {t("web:practice.coding.timed.nextProblem", { defaultValue: "Next problem" })}
+                </Button>
+                <Button type="button" size="sm" onClick={onFinishTimed} disabled={finishing}>
+                  {finishing ? t("web:practice.coding.timed.finishing", { defaultValue: "Finishing…" }) : t("web:practice.coding.timed.finish", { defaultValue: "Finish & get feedback" })}
+                </Button>
+              </div>
+            )}
             {problem && (
               <button
                 type="button"
