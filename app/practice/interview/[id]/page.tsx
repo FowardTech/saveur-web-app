@@ -314,6 +314,19 @@ export default function LiveInterviewSessionPage() {
     }
   }, [remainingSeconds, isEnding, onEnd]);
 
+  // Product report: "the AI should wait a bit before the follow-up question"
+  // (it fired instantly after every answer, which felt robotic), and "auto
+  // end the interview when the interviewer says they're ending".
+  const followUpPause = () => new Promise<void>((r) => setTimeout(r, 1800 + Math.random() * 1400));
+  // Gives the candidate time to read/hear the closing line, then ends.
+  const endAfterClosing = useCallback(
+    (spokenDelayMs: number) => {
+      hasAutoEndedRef.current = true;
+      setTimeout(() => void onEnd(), spokenDelayMs);
+    },
+    [onEnd]
+  );
+
   // --- Text mode: submit + advance ---
   async function onSubmitTextAnswer() {
     const trimmed = answerText.trim();
@@ -325,9 +338,11 @@ export default function LiveInterviewSessionPage() {
     try {
       const result = await interviewService.submitAnswer(sessionId, trimmed);
       if (result.flagged && result.caution) showModerationCaution(result.caution);
+      await followUpPause();
       const next = await interviewService.getNextQuestion(sessionId);
       setCurrentQuestion(next.text);
       setTranscript((prev) => [...prev, { role: "interviewer", text: next.text }]);
+      if (next.isClosing) endAfterClosing(4000);
     } catch (err) {
       setAnswerError((err as ApiError).message || t("web:practice.interview.answerFailedDefault", { defaultValue: "Couldn't send your answer right now. Please try again." }));
     } finally {
@@ -427,17 +442,24 @@ export default function LiveInterviewSessionPage() {
       try {
         const result = await interviewService.submitAnswer(sessionId, trimmed);
         if (result.flagged && result.caution) showModerationCaution(result.caution);
+        await followUpPause();
         const next = await interviewService.getNextQuestion(sessionId);
         if (!sessionActiveRef.current) return;
         setCurrentQuestion(next.text);
         setTranscript((prev) => [...prev, { role: "interviewer", text: next.text }]);
+        if (next.isClosing) {
+          // Speak the sign-off, then end instead of listening again.
+          setVoicePhase("speaking");
+          void ttsService.speak(next.text, { language: i18n.language }).then(() => endAfterClosing(800));
+          return;
+        }
         speakAndListen(next.text);
       } catch (err) {
         setVoiceError((err as ApiError).message || t("web:practice.interview.answerFailedDefault", { defaultValue: "Couldn't send your answer right now. Please try again." }));
         if (sessionActiveRef.current) startRecognitionInternal();
       }
     },
-    [sessionId, speakAndListen, startRecognitionInternal, t, showModerationCaution]
+    [sessionId, speakAndListen, startRecognitionInternal, t, showModerationCaution, endAfterClosing, i18n.language]
   );
 
   // Silence-based turn detection.

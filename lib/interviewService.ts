@@ -77,6 +77,8 @@ export async function getSession(sessionId: string | number): Promise<InterviewS
 export interface NextQuestionResult {
   text: string;
   requiresWhiteboard: boolean;
+  /** Interviewer is wrapping up (closing statement) -- client should show it, then end the session. */
+  isClosing: boolean;
 }
 
 /** POST /api/v1/interviews/sessions/:id/next-question. `requiresWhiteboard`
@@ -85,11 +87,11 @@ export interface NextQuestionResult {
  * the returned text as a normal follow-up question instead, a deliberate,
  * honest degradation rather than a broken deep link. */
 export async function getNextQuestion(sessionId: string | number): Promise<NextQuestionResult> {
-  const data = await apiClient.post<{ question_id: string; text: string; requires_whiteboard?: boolean }>(
+  const data = await apiClient.post<{ question_id: string; text: string; requires_whiteboard?: boolean; is_closing?: boolean }>(
     `/api/v1/interviews/sessions/${sessionId}/next-question`,
     {}
   );
-  return { text: data.text, requiresWhiteboard: !!data.requires_whiteboard };
+  return { text: data.text, requiresWhiteboard: !!data.requires_whiteboard, isClosing: !!data.is_closing };
 }
 
 /** POST /api/v1/interviews/sessions/:id/answer — records the candidate's
