@@ -81,7 +81,7 @@ export default function PracticalProjectsPage() {
 
   function beginStage(n: number) {
     if (!active) return;
-    setDrafts((d) => ({ ...d, [n]: d[n] ?? active.files.find((f) => f.path === `STAGE_${n}.md`)?.content ?? "" }));
+    setDrafts((d) => ({ ...d, [n]: d[n] ?? (() => { const f0 = active.files.find((f) => f.path === `STAGE_${n}.md`); return f0?.content_original ?? f0?.content ?? ""; })() }));
     setOpenStage(n);
   }
 

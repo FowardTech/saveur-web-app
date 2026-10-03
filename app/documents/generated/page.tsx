@@ -92,7 +92,7 @@ export default function GeneratedDocumentsPage() {
     // document itself.
     setEditingDoc(doc);
     setEditLabel(doc.label);
-    setEditContent(doc.content ?? "");
+    setEditContent(doc.originalContent ?? doc.content ?? "");
   }
 
   async function onSaveEdit() {

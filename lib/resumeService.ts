@@ -159,7 +159,7 @@ interface ResumeWire {
 
 /** GET /api/v1/resume — which import sources are already uploaded. */
 export async function getImportedSources(): Promise<Record<string, ImportedFileInfo>> {
-  const data = await apiClient.get<ResumeWire>("/api/v1/resume");
+  const data = await apiClient.get<ResumeWire>("/api/v1/resume", { headers: { "X-No-Translate": "1" } });
   const result: Record<string, ImportedFileInfo> = {};
   for (const source of data?.sources ?? []) {
     if (!source?.source_key) continue;
@@ -196,7 +196,7 @@ export async function importSourceFromUrl(sourceKey: ResumeImportSourceKey, url:
  * there's no real structured content yet (bar mirrors the backend's
  * has_structured_content check). */
 export async function getStoredResumeSections(): Promise<ResumeSections | null> {
-  const data = await apiClient.get<ResumeWire>("/api/v1/resume");
+  const data = await apiClient.get<ResumeWire>("/api/v1/resume", { headers: { "X-No-Translate": "1" } });
   const wire = (data?.sections ?? {}) as ResumeSectionsWire;
   const hasContent = !!wire.contact?.name || !!wire.summary || (wire.experience?.length ?? 0) > 0 || (wire.education?.length ?? 0) > 0 || (wire.core_skills?.length ?? 0) > 0;
   return hasContent ? fromSectionsWire(wire) : null;

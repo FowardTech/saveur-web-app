@@ -131,14 +131,14 @@ async function downloadBlob(path: string): Promise<Blob> {
 }
 
 export const apiClient = {
-  get: <T>(path: string, opts?: { auth?: boolean; params?: Record<string, string | undefined> }) => {
+  get: <T>(path: string, opts?: { auth?: boolean; params?: Record<string, string | undefined>; headers?: Record<string, string> }) => {
     const query = opts?.params
       ? "?" +
         new URLSearchParams(
           Object.entries(opts.params).filter(([, v]) => v !== undefined) as [string, string][]
         ).toString()
       : "";
-    return request<T>(`${path}${query}`, { method: "GET", auth: opts?.auth });
+    return request<T>(`${path}${query}`, { method: "GET", auth: opts?.auth, headers: opts?.headers });
   },
   post: <T>(path: string, data?: unknown, opts?: { auth?: boolean }) =>
     request<T>(path, { method: "POST", body: JSON.stringify(data ?? {}), auth: opts?.auth }),

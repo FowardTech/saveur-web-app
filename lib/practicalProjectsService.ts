@@ -35,7 +35,7 @@ export interface PracticalProjectSummary {
 }
 export interface PracticalProjectDetail extends PracticalProjectSummary {
   state?: ProjectState | null;
-  files: { path: string; content: string }[];
+  files: { path: string; content: string; content_original?: string }[];
 }
 
 interface Wire {
@@ -43,7 +43,7 @@ interface Wire {
   name: string;
   language_hint?: string | null;
   updated_at?: string;
-  files?: { path: string; content: string }[];
+  files?: { path: string; content: string; content_original?: string }[];
   state?: ProjectState | null;
 }
 const sum = (w: Wire): PracticalProjectSummary => ({ id: w.id, name: w.name, industry: w.language_hint ?? "", updatedAt: w.updated_at });

@@ -29,6 +29,8 @@ export interface GeneratedDocument {
   // source is the structured Resume Builder instead). See
   // Saveur-Backend/app/models/generated_document.py's own comment.
   content: string | null;
+  /** The user's original text (what editors must load and save) -- `content` may be a display translation. */
+  originalContent: string | null;
   createdAt: string | null;
 }
 
@@ -39,6 +41,7 @@ interface WireDocument {
   format?: string | null;
   url?: string | null;
   content?: string | null;
+  content_original?: string | null;
   created_at?: string | null;
 }
 
@@ -50,6 +53,7 @@ function mapDocument(w: WireDocument): GeneratedDocument {
     format: w.format ?? null,
     url: w.url ?? null,
     content: w.content ?? null,
+    originalContent: w.content_original ?? w.content ?? null,
     createdAt: w.created_at ?? null,
   };
 }
