@@ -5,6 +5,7 @@
 // codes/native labels, which SUPPORTED_LANGUAGES below is kept in sync with.
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { installRuntimeTranslation, runtimeTranslationInitOptions } from "@/lib/runtimeTranslation";
 
 import en from "./locales/en/common.json";
 import es from "./locales/es/common.json";
@@ -96,8 +97,12 @@ if (!i18n.isInitialized) {
     defaultNS: "common",
     ns: ["common", "web"],
     interpolation: { escapeValue: false },
-    react: { useSuspense: false },
+    // "added" re-renders components when a runtime translation is injected
+    // (see lib/runtimeTranslation.ts).
+    react: { useSuspense: false, bindI18nStore: "added" },
+    ...runtimeTranslationInitOptions(),
   });
+  installRuntimeTranslation(i18n);
 }
 
 export default i18n;
