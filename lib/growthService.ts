@@ -22,14 +22,6 @@ export interface PaySummary {
   annualized_growth_pct?: number;
   months_since_last_change?: number;
 }
-export interface MarketCheck {
-  market_range?: { low?: number; mid?: number; high?: number; currency?: string };
-  position?: "below_market" | "at_market" | "above_market";
-  gap_pct?: number;
-  rationale?: string;
-  suggested_ask?: number;
-  next_step?: string;
-}
 export interface PromotionPlan {
   goal: string;
   current_role?: string;
@@ -48,8 +40,6 @@ const lang = () => i18n.language || "en";
 export const listPay = () => apiClient.get<{ records: PayRecord[]; summary: PaySummary }>("/api/v1/growth/pay");
 export const addPay = (body: Record<string, unknown>) => apiClient.post<{ record: PayRecord; summary: PaySummary }>("/api/v1/growth/pay", body);
 export const deletePay = (id: number) => apiClient.delete(`/api/v1/growth/pay/${id}`);
-export const marketCheck = (location: string, yearsExperience?: number) =>
-  apiClient.post<MarketCheck>("/api/v1/growth/market-check", { location, years_experience: yearsExperience, language: lang() });
 export const getPromotionPlan = () => apiClient.get<{ plan: PromotionPlan | null }>("/api/v1/growth/promotion-plan");
 export const makePromotionPlan = (body: Record<string, unknown>) =>
   apiClient.post<{ plan: PromotionPlan }>("/api/v1/growth/promotion-plan", { ...body, language: lang() });
