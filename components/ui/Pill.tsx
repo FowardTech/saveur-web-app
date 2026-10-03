@@ -45,7 +45,7 @@ export function Pill({ selected, onClick, children, locked, icon, leading, class
         </span>
       )}
       {leading}
-      {icon && <EvaIcon name={icon} size={16} className={selected ? "text-white" : ""} />}
+      {icon && <EvaIcon name={icon} size={16} className={selected ? "text-solid-fg" : ""} />}
       {children}
     </button>
   );

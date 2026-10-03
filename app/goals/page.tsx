@@ -210,8 +210,8 @@ function GoalsPageInner() {
               {/* Weekly targets */}
               <section className="flex flex-col gap-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-[9px]" style={{ backgroundColor: "#F59E0B" }}>
-                    <EvaIcon name="clipboard-outline" size={16} className="text-white" />
+                  <span className="inline-flex h-7 w-7 items-center justify-center">
+                    <EvaIcon name="clipboard-outline" size={20} className="text-primary" />
                   </span>
                   <h2 className="text-base font-bold text-primary">{t("web:goals.sectionWeeklyTargets", { defaultValue: "Weekly targets" })}</h2>
                 </div>
@@ -295,8 +295,8 @@ function GoalsPageInner() {
               {/* Progress */}
               <section className="flex flex-col gap-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-[9px]" style={{ backgroundColor: "#10B981" }}>
-                    <EvaIcon name="trending-up-outline" size={16} className="text-white" />
+                  <span className="inline-flex h-7 w-7 items-center justify-center">
+                    <EvaIcon name="trending-up-outline" size={20} className="text-primary" />
                   </span>
                   <h2 className="text-base font-bold text-primary">{t("web:goals.sectionProgress", { defaultValue: "Progress" })}</h2>
                 </div>

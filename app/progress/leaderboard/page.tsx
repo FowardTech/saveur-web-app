@@ -38,9 +38,9 @@ const PERIODS: { key: LeaderboardPeriod; labelKey: string; defaultValue: string 
 
 const PODIUM_ORDER: Array<1 | 2 | 3> = [2, 1, 3];
 const PODIUM_STYLE: Record<1 | 2 | 3, { border: string; badgeBg: string }> = {
-  1: { border: "border-tint-mint-text", badgeBg: "bg-tint-mint-text" },
-  2: { border: "border-primary", badgeBg: "bg-solid" },
-  3: { border: "border-tint-orange-text", badgeBg: "bg-tint-orange-text" },
+  1: { border: "border-transparent", badgeBg: "bg-solid text-solid-fg" },
+  2: { border: "border-transparent", badgeBg: "bg-solid text-solid-fg" },
+  3: { border: "border-transparent", badgeBg: "bg-solid text-solid-fg" },
 };
 
 function ChangeBadge({ changePct, t }: { changePct: number | null; t: (k: string, o?: Record<string, unknown>) => string }) {
@@ -205,7 +205,7 @@ function LeaderboardPageInner() {
                       className="animate-card-in relative flex flex-1 flex-col items-center rounded-card bg-surface-2 px-2 pb-4 pt-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
                       style={{ minHeight: rank === 1 ? 210 : 180, animationDelay: `${i * 60}ms` }}
                     >
-                      <span className={`absolute left-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white ${style.badgeBg}`}>{rank}</span>
+                      <span className={`absolute left-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${style.badgeBg}`}>{rank}</span>
                       <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-surface-3 text-base font-bold text-primary shadow-sm">
                         {entry.name?.[0]?.toUpperCase() ?? "?"}
                       </span>
@@ -213,7 +213,7 @@ function LeaderboardPageInner() {
                         {entry.name}
                         {entry.isCurrentUser ? ` (${t("web:progress.you", { defaultValue: "You" })})` : ""}
                       </span>
-                      <span className={`mt-2 inline-flex items-center gap-1 rounded-pill px-3 py-1 text-xs font-bold text-white ${style.badgeBg}`}>
+                      <span className={`mt-2 inline-flex items-center gap-1 rounded-pill px-3 py-1 text-xs font-bold ${style.badgeBg}`}>
                         <EvaIcon name="star-outline" size={12} />
                         {entry.xp}
                       </span>
