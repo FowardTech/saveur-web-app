@@ -86,6 +86,7 @@ export const primaryNav: NavItem[] = [
       // (a conversational round-based simulator). See
       // app/career/offer-analyzer/page.tsx's own header comment for the
       // full "complementary, not redundant" reasoning.
+      { label: "Salary Benchmark", labelKey: "salaryBenchmark", href: "/career/salary-benchmark", icon: "percent-outline" },
       { label: "Offer Analyzer", labelKey: "offerAnalyzer", href: "/career/offer-analyzer", icon: "pie-chart-outline" },
       // Post-hire retention loop: pay tracking over time, market check,
       // promotion/raise plan, quarterly check-in (app/career/growth/page.tsx).
