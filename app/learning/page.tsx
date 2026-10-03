@@ -502,7 +502,15 @@ export default function LearningPage() {
                     className="flex flex-col gap-2 rounded-card border border-border bg-surface-2 p-4 transition hover:bg-surface-3"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm font-medium text-primary capitalize">{slugTopic}</span>
+                      {/* Product report: completed and ongoing entries for the
+                          same topic looked identical -- `level` was parsed
+                          above but never rendered. */}
+                      <span className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-primary capitalize">{slugTopic}</span>
+                        <span className="rounded-pill bg-brand/10 px-2 py-0.5 text-[11px] font-medium text-brand">
+                          {t(LEVEL_LABEL_KEYS[level], { defaultValue: LEVEL_DEFAULTS[level] })}
+                        </span>
+                      </span>
                       <span className={`text-xs font-semibold ${isDone ? "text-success" : "text-hint"}`}>
                         {isDone ? t("web:learning.completed", { defaultValue: "Completed" }) : `${progressPct}%`}
                       </span>
