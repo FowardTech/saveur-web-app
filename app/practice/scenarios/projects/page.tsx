@@ -214,8 +214,21 @@ export default function PracticalProjectsPage() {
                       onClick={() => open(p.id)}
                       className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 text-left hover:shadow-sm"
                     >
-                      <span className="text-sm font-medium text-primary">{p.name}</span>
-                      <span className="text-xs capitalize text-hint">{p.industry}</span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-medium text-primary">{p.name}</span>
+                        <span className="block text-xs capitalize text-hint">{p.industry}</span>
+                      </span>
+                      {p.status && (
+                        <span
+                          className={`ml-3 shrink-0 rounded-pill px-3 py-1 text-xs font-semibold ${
+                            p.status === "completed" ? "bg-[#19B87A]/15 text-[#0E8F5C]" : "bg-[#FF8A3D]/15 text-[#C2570F]"
+                          }`}
+                        >
+                          {p.status === "completed"
+                            ? t("web:practice.scenarios.projects.completed", { defaultValue: "Completed" })
+                            : t("web:practice.scenarios.projects.inProgress", { defaultValue: "In progress · {{done}}/{{total}}", done: p.stagesDone ?? 0, total: p.stagesTotal ?? 0 })}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>

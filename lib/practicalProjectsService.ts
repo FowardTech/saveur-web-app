@@ -33,6 +33,9 @@ export interface PracticalProjectSummary {
   name: string;
   industry: string;
   updatedAt?: string;
+  status?: "completed" | "in_progress";
+  stagesDone?: number;
+  stagesTotal?: number;
 }
 export interface PracticalProjectDetail extends PracticalProjectSummary {
   state?: ProjectState | null;
@@ -40,6 +43,7 @@ export interface PracticalProjectDetail extends PracticalProjectSummary {
 }
 
 interface Wire {
+  progress?: { status: "completed" | "in_progress"; stages_done: number; stages_total: number };
   id: number;
   name: string;
   language_hint?: string | null;
@@ -47,7 +51,7 @@ interface Wire {
   files?: { path: string; content: string; content_original?: string }[];
   state?: ProjectState | null;
 }
-const sum = (w: Wire): PracticalProjectSummary => ({ id: w.id, name: w.name, industry: w.language_hint ?? "", updatedAt: w.updated_at });
+const sum = (w: Wire): PracticalProjectSummary => ({ id: w.id, name: w.name, industry: w.language_hint ?? "", updatedAt: w.updated_at, status: w.progress?.status, stagesDone: w.progress?.stages_done, stagesTotal: w.progress?.stages_total });
 const detail = (w: Wire): PracticalProjectDetail => ({ ...sum(w), files: w.files ?? [], state: w.state ?? null });
 
 export async function listPracticalProjects(): Promise<PracticalProjectSummary[]> {

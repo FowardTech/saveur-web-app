@@ -913,7 +913,9 @@
         "reading": "Reading file…",
         "uploaded": "Uploaded",
         "fileTooLarge": "That file is too large. The maximum size is 200 MB.",
-        "maxSize": "Maximum file size: 200 MB."
+        "maxSize": "Maximum file size: 200 MB.",
+        "completed": "Completed",
+        "inProgress": "In progress · {{done}}/{{total}}"
       },
       "stepProgress": "Step {{step}} of ~{{total}}",
       "whatDoYouDo": "What do you do?",
