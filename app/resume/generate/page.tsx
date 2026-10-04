@@ -175,6 +175,43 @@ function fieldInput(value: string | undefined, onChange: (v: string) => void, pl
   );
 }
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function monthYearToIso(v?: string): string {
+  const m = /^([A-Za-z]{3})[a-z]*\.?,?\s+(\d{4})$/.exec((v ?? "").trim());
+  if (!m) return /^\d{4}-\d{2}-\d{2}$/.test(v ?? "") ? (v as string) : "";
+  const idx = MONTHS.findIndex((x) => x.toLowerCase() === m[1].toLowerCase());
+  return idx < 0 ? "" : `${m[2]}-${String(idx + 1).padStart(2, "0")}-01`;
+}
+
+/** Date picker for resume start/end - stores "Jan 2022" (or "Present" when allowed). */
+function dateField(value: string | undefined, onChange: (v: string) => void, label: string, presentLabel?: string) {
+  const isPresent = (value ?? "").trim().toLowerCase() === "present";
+  return (
+    <div className="flex flex-col gap-1">
+      <input
+        type="date"
+        aria-label={label}
+        title={label}
+        value={isPresent ? "" : monthYearToIso(value)}
+        disabled={isPresent}
+        onChange={(e) => {
+          const m = /^(\d{4})-(\d{2})/.exec(e.target.value);
+          onChange(m ? `${MONTHS[Number(m[2]) - 1]} ${m[1]}` : "");
+        }}
+        className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2 text-sm text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-50"
+      />
+      <span className="text-[11px] text-hint">{label}</span>
+      {presentLabel && (
+        <label className="flex items-center gap-1.5 text-xs text-primary">
+          <input type="checkbox" checked={isPresent} onChange={(e) => onChange(e.target.checked ? "Present" : "")} />
+          {presentLabel}
+        </label>
+      )}
+    </div>
+  );
+}
+
 function GenerateResumeInner() {
   const { t } = useTranslation();
   const { isPro, loading: authLoading, subscriptionStatus, refreshSubscriptionStatus } = useAuth();
@@ -394,8 +431,8 @@ function GenerateResumeInner() {
                   {fieldInput(entry.title, (v) => update("experience", content.experience.map((e, ei) => (ei === i ? { ...e, title: v } : e))), t("web:resume.generate.jobTitle", { defaultValue: "Job title" }).toString())}
                   {fieldInput(entry.company, (v) => update("experience", content.experience.map((e, ei) => (ei === i ? { ...e, company: v } : e))), t("web:resume.generate.company", { defaultValue: "Company" }).toString())}
                   <div className="grid grid-cols-2 gap-2">
-                    {fieldInput(entry.start, (v) => update("experience", content.experience.map((e, ei) => (ei === i ? { ...e, start: v } : e))), t("web:resume.generate.start", { defaultValue: "Start" }).toString())}
-                    {fieldInput(entry.end, (v) => update("experience", content.experience.map((e, ei) => (ei === i ? { ...e, end: v } : e))), t("web:resume.generate.end", { defaultValue: "End (or Present)" }).toString())}
+                    {dateField(entry.start, (v) => update("experience", content.experience.map((e, ei) => (ei === i ? { ...e, start: v } : e))), t("web:resume.generate.startDate", { defaultValue: "Start date" }).toString())}
+                    {dateField(entry.end, (v) => update("experience", content.experience.map((e, ei) => (ei === i ? { ...e, end: v } : e))), t("web:resume.generate.endDate", { defaultValue: "End date" }).toString(), t("web:resume.generate.present", { defaultValue: "Present" }).toString())}
                   </div>
                   <StringListEditor
                     items={entry.bullets}
@@ -423,8 +460,8 @@ function GenerateResumeInner() {
                   {fieldInput(entry.school, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, school: v } : e))), t("web:resume.generate.school", { defaultValue: "School" }).toString())}
                   {fieldInput(entry.degree, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, degree: v } : e))), t("web:resume.generate.degree", { defaultValue: "Degree" }).toString())}
                   <div className="grid grid-cols-2 gap-2">
-                    {fieldInput(entry.start, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, start: v } : e))), t("web:resume.generate.start", { defaultValue: "Start" }).toString())}
-                    {fieldInput(entry.end, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, end: v } : e))), t("web:resume.generate.end", { defaultValue: "End (or Present)" }).toString())}
+                    {dateField(entry.start, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, start: v } : e))), t("web:resume.generate.startDate", { defaultValue: "Start date" }).toString())}
+                    {dateField(entry.end, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, end: v } : e))), t("web:resume.generate.endDate", { defaultValue: "End date" }).toString(), t("web:resume.generate.present", { defaultValue: "Present" }).toString())}
                   </div>
                 </div>
                 <button type="button" onClick={() => update("education", content.education.filter((_, ei) => ei !== i))} className="h-fit p-1.5 text-hint hover:text-danger" aria-label={t("common:actions.remove", { defaultValue: "Remove" }).toString()}>

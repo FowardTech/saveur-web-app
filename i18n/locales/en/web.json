@@ -1397,7 +1397,10 @@
       "styleTitle": "Style",
       "preparing": "Preparing…",
       "downloadWord": "Download as Word (.docx)",
-      "downloadPdf": "Download as PDF"
+      "downloadPdf": "Download as PDF",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "present": "Present"
     }
   },
   "settings": {
