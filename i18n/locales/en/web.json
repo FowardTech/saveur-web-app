@@ -657,7 +657,8 @@
   "notifications": {
     "empty": "You're all caught up.",
     "manage": "Manage",
-    "title": "Notifications"
+    "title": "Notifications",
+    "markAllRead": "Mark all read"
   },
   "onboarding": {
     "goals": {

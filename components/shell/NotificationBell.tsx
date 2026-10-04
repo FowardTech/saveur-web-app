@@ -114,6 +114,13 @@ export function NotificationBell() {
     if (next) await load();
   }
 
+  function handleMarkAllRead() {
+    const ids = (notifications ?? []).filter((n) => !n.read).map((n) => n.id);
+    if (ids.length === 0) return;
+    setNotifications((prev) => (prev ? prev.map((x) => ({ ...x, read: true })) : prev));
+    markNotificationsRead(ids).catch(() => load());
+  }
+
   async function handleSelect(n: AppNotification) {
     setOpen(false);
     if (!n.read) {
@@ -146,6 +153,16 @@ export function NotificationBell() {
             <h3 className="text-sm font-semibold text-primary">
               {t("web:notifications.title", { defaultValue: "Notifications" })}
             </h3>
+            <div className="flex items-center gap-3">
+            {unreadCount > 0 && (
+              <button
+                type="button"
+                onClick={handleMarkAllRead}
+                className="text-xs font-medium text-primary transition hover:underline"
+              >
+                {t("web:notifications.markAllRead", { defaultValue: "Mark all read" })}
+              </button>
+            )}
             <Link
               href="/settings/security"
               onClick={() => setOpen(false)}
@@ -153,6 +170,7 @@ export function NotificationBell() {
             >
               {t("web:notifications.manage", { defaultValue: "Manage" })}
             </Link>
+            </div>
           </div>
 
           {notifLoading && !notifications && (
