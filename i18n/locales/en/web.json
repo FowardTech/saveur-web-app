@@ -476,7 +476,8 @@
       "shareSend": "Send",
       "shareRequestPending": "Request pending",
       "shareSendRequest": "Send connection request",
-      "applicationTrackedBody": "Added {{role}} at {{company}} to your Application Tracker."
+      "applicationTrackedBody": "Added {{role}} at {{company}} to your Application Tracker.",
+      "theEmployersSite": "the employer's site"
     },
     "filteredByCompany": "Showing alerts for {{company}}",
     "clearFilter": "Clear filter",
@@ -906,7 +907,8 @@
         "attachDocHint": "Upload a PDF, Word, PowerPoint, Excel, CSV or text file instead of editing the draft. The AI will read it.",
         "attachUrlPlaceholder": "https://… public link",
         "attachAdd": "Add",
-        "attachFile": "Choose a file"
+        "attachFile": "Choose a file",
+        "removeAttachment": "Remove attachment"
       },
       "stepProgress": "Step {{step}} of ~{{total}}",
       "whatDoYouDo": "What do you do?",
@@ -1450,7 +1452,11 @@
       "dangerZoneTitle": "Danger zone",
       "dangerZoneSubtitle": "Permanently delete your account and all associated data. This cannot be undone.",
       "deletingAccount": "Deleting account…",
-      "deleteAccount": "Delete Account"
+      "deleteAccount": "Delete Account",
+      "desiredRolesTitle": "Roles you're targeting",
+      "desiredRolesPlaceholder": "Type a job title and add it",
+      "noTargetRoles": "No target roles added yet.",
+      "preferredCountriesTitle": "Countries you'd work in"
     },
     "security": {
       "browserPushDescription": "Get real-time alerts in this browser, even when Saveur isn't open in a tab.",

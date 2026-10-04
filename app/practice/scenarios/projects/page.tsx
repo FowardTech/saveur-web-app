@@ -319,7 +319,7 @@ export default function PracticalProjectsPage() {
                                             <EvaIcon name={a.kind === "media" ? "headphones-outline" : "file-text-outline"} size={16} />
                                             <span className="truncate">{a.name}</span>
                                           </span>
-                                          <button type="button" aria-label="Remove" onClick={() => setAttachments((prev) => prev.filter((_, j) => j !== i))} className="text-hint transition hover:text-primary">
+                                          <button type="button" aria-label={t("web:practice.scenarios.projects.removeAttachment", { defaultValue: "Remove attachment" })} onClick={() => setAttachments((prev) => prev.filter((_, j) => j !== i))} className="text-hint transition hover:text-primary">
                                             <EvaIcon name="close-outline" size={16} />
                                           </button>
                                         </li>

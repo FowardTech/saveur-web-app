@@ -308,7 +308,7 @@ export default function ProfileSettingsPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-primary">{t("auth:desired_roles_title", { defaultValue: "Roles you're targeting" })}</span>
+              <span className="text-sm font-medium text-primary">{t("web:settings.profile.desiredRolesTitle", { defaultValue: "Roles you're targeting" })}</span>
               <div className="flex gap-2">
                 <input
                   value={roleDraft}
@@ -319,7 +319,7 @@ export default function ProfileSettingsPage() {
                       addRole();
                     }
                   }}
-                  placeholder={t("auth:desired_roles_placeholder", { defaultValue: "Type a job title and add it" })}
+                  placeholder={t("web:settings.profile.desiredRolesPlaceholder", { defaultValue: "Type a job title and add it" })}
                   className="w-full rounded-lg border border-border bg-surface-1 px-3.5 py-2.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
                 />
                 <Button type="button" variant="secondary" onClick={addRole}>
@@ -338,7 +338,7 @@ export default function ProfileSettingsPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-hint">{t("more:job_preferences_no_roles", { defaultValue: "No target roles added yet." })}</p>
+                <p className="text-sm text-hint">{t("web:settings.profile.noTargetRoles", { defaultValue: "No target roles added yet." })}</p>
               )}
               <p className="text-xs text-hint">
                 {t("web:onboarding.step2.added", { defaultValue: "{{count}}/{{max}} added", count: roles.length, max: MAX_ROLES })}
@@ -346,7 +346,7 @@ export default function ProfileSettingsPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-primary">{t("auth:preferred_countries_title", { defaultValue: "Countries you'd work in" })}</span>
+              <span className="text-sm font-medium text-primary">{t("web:settings.profile.preferredCountriesTitle", { defaultValue: "Countries you'd work in" })}</span>
               <input
                 value={countryQuery}
                 onChange={(e) => setCountryQuery(e.target.value)}
