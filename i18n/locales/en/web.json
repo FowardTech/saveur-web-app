@@ -908,7 +908,10 @@
         "attachUrlPlaceholder": "https://… public link",
         "attachAdd": "Add",
         "attachFile": "Choose a file",
-        "removeAttachment": "Remove attachment"
+        "removeAttachment": "Remove attachment",
+        "transcribing": "Transcribing…",
+        "reading": "Reading file…",
+        "uploaded": "Uploaded"
       },
       "stepProgress": "Step {{step}} of ~{{total}}",
       "whatDoYouDo": "What do you do?",

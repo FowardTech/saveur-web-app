@@ -36,6 +36,9 @@ export default function PracticalProjectsPage() {
   const [attachments, setAttachments] = useState<service.StageAttachment[]>([]);
   const [mediaUrl, setMediaUrl] = useState("");
   const [attaching, setAttaching] = useState(false);
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
+  const [uploadName, setUploadName] = useState("");
+  const [attachError, setAttachError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [finishing, setFinishing] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -88,6 +91,7 @@ export default function PracticalProjectsPage() {
     setDrafts((d) => ({ ...d, [n]: d[n] ?? (() => { const f0 = active.files.find((f) => f.path === `STAGE_${n}.md`); return f0?.content_original ?? f0?.content ?? ""; })() }));
     setAttachments([]);
     setMediaUrl("");
+    setAttachError(null);
     setOpenStage(n);
   }
 
@@ -96,27 +100,32 @@ export default function PracticalProjectsPage() {
     e.target.value = "";
     if (!file || !active || attaching) return;
     setAttaching(true);
-    setError(null);
+    setAttachError(null);
+    setUploadName(file.name);
+    setUploadPct(0);
     try {
-      const att = await service.uploadStageDocument(active.id, file);
+      const att = await service.uploadStageDocument(active.id, file, setUploadPct);
       setAttachments((prev) => [...prev, att].slice(0, 5));
     } catch (err) {
-      setError((err as ApiError).message);
+      setAttachError((err as ApiError).message);
     } finally {
       setAttaching(false);
+      setUploadPct(null);
     }
   }
 
   async function onAttachUrl() {
     if (!active || attaching || !mediaUrl.trim()) return;
     setAttaching(true);
-    setError(null);
+    setAttachError(null);
+    setUploadName(mediaUrl.trim());
+    setUploadPct(null);
     try {
       const att = await service.attachStageMediaUrl(active.id, mediaUrl.trim());
       setAttachments((prev) => [...prev, att].slice(0, 5));
       setMediaUrl("");
     } catch (err) {
-      setError((err as ApiError).message);
+      setAttachError((err as ApiError).message);
     } finally {
       setAttaching(false);
     }
@@ -311,13 +320,35 @@ export default function PracticalProjectsPage() {
                                       </Button>
                                     </div>
                                   )}
+                                  {attaching && (
+                                    <div className="mt-3" role="status">
+                                      <div className="flex items-center justify-between text-xs text-hint">
+                                        <span className="truncate pr-2">{uploadName}</span>
+                                        <span>
+                                          {uploadPct !== null && uploadPct < 100
+                                            ? `${uploadPct}%`
+                                            : isMedia
+                                              ? t("web:practice.scenarios.projects.transcribing", { defaultValue: "Transcribing…" })
+                                              : t("web:practice.scenarios.projects.reading", { defaultValue: "Reading file…" })}
+                                        </span>
+                                      </div>
+                                      <div className="mt-1 h-1.5 w-full overflow-hidden rounded-pill bg-surface-3">
+                                        <div
+                                          className={`h-full rounded-pill bg-brand transition-all ${uploadPct === null || uploadPct >= 100 ? "animate-pulse" : ""}`}
+                                          style={{ width: `${uploadPct === null || uploadPct >= 100 ? 100 : uploadPct}%`, backgroundColor: "#7C5CFF" }}
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
+                                  {attachError && <p className="mt-3 text-sm text-danger">{attachError}</p>}
                                   {attachments.length > 0 && (
                                     <ul className="mt-3 space-y-2">
                                       {attachments.map((a, i) => (
                                         <li key={`${a.name}-${i}`} className="flex items-center justify-between gap-2 text-sm text-primary">
                                           <span className="flex min-w-0 items-center gap-2">
-                                            <EvaIcon name={a.kind === "media" ? "headphones-outline" : "file-text-outline"} size={16} />
+                                            <EvaIcon name="checkmark-circle-2-outline" size={16} />
                                             <span className="truncate">{a.name}</span>
+                                            <span className="shrink-0 text-xs text-hint">{t("web:practice.scenarios.projects.uploaded", { defaultValue: "Uploaded" })}</span>
                                           </span>
                                           <button type="button" aria-label={t("web:practice.scenarios.projects.removeAttachment", { defaultValue: "Remove attachment" })} onClick={() => setAttachments((prev) => prev.filter((_, j) => j !== i))} className="text-hint transition hover:text-primary">
                                             <EvaIcon name="close-outline" size={16} />

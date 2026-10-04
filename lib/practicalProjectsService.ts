@@ -83,10 +83,18 @@ export async function submitProjectStage(
 }
 
 /** Upload a document (pdf/docx/pptx/xlsx/csv/txt/md); the backend returns its extracted text. */
-export async function uploadStageDocument(id: number | string, file: File): Promise<StageAttachment> {
+export async function uploadStageDocument(
+  id: number | string,
+  file: File,
+  onProgress?: (percent: number) => void,
+): Promise<StageAttachment> {
   const formData = new FormData();
   formData.append("file", file, file.name);
-  return apiClient.upload<StageAttachment>(`/api/v1/practical/projects/${id}/attachments/file`, formData);
+  return apiClient.uploadWithProgress<StageAttachment>(
+    `/api/v1/practical/projects/${id}/attachments/file`,
+    formData,
+    onProgress ?? (() => {}),
+  );
 }
 
 /** Attach a public audio/video link; the backend transcribes it. */

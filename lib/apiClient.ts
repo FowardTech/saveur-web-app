@@ -99,6 +99,48 @@ async function upload<T>(path: string, formData: FormData): Promise<T> {
 }
 
 /**
+ * Same as upload(), but reports upload progress (0-100) via XMLHttpRequest,
+ * since fetch() exposes no upload progress events.
+ */
+function uploadWithProgress<T>(path: string, formData: FormData, onProgress: (percent: number) => void): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    authHeader().then((authHeaders) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${API_BASE_URL}${path}`);
+      Object.entries(authHeaders).forEach(([k, v]) => xhr.setRequestHeader(k, v));
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+      };
+      xhr.onerror = () =>
+        reject({
+          message: i18n.t("web:errorsGeneric.offline", { defaultValue: "No internet connection. Please check your connection and try again." }),
+          code: "ERR_NETWORK",
+        } as ApiError);
+      xhr.onload = () => {
+        let body: any = {};
+        try {
+          body = JSON.parse(xhr.responseText || "{}");
+        } catch {
+          body = {};
+        }
+        if (xhr.status >= 200 && xhr.status < 300) {
+          onProgress(100);
+          resolve(body as T);
+        } else {
+          reject({
+            status: xhr.status,
+            error: body?.error,
+            message: body?.message ?? body?.detail ?? `Request failed with status ${xhr.status}`,
+            code: body?.code,
+          } as ApiError);
+        }
+      };
+      xhr.send(formData);
+    }, reject);
+  });
+}
+
+/**
  * Binary/blob download with auth — for endpoints that return a real file
  * body (not JSON), or for re-fetching a returned download `url` with the
  * user's auth header attached. Returns the raw Blob for the caller to save/
@@ -153,6 +195,7 @@ export const apiClient = {
       ...(opts?.data !== undefined ? { body: JSON.stringify(opts.data) } : {}),
     }),
   upload,
+  uploadWithProgress,
   downloadBlob,
 };
 
