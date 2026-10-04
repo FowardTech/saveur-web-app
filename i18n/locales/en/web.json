@@ -911,7 +911,9 @@
         "removeAttachment": "Remove attachment",
         "transcribing": "Transcribing…",
         "reading": "Reading file…",
-        "uploaded": "Uploaded"
+        "uploaded": "Uploaded",
+        "fileTooLarge": "That file is too large. The maximum size is 200 MB.",
+        "maxSize": "Maximum file size: 200 MB."
       },
       "stepProgress": "Step {{step}} of ~{{total}}",
       "whatDoYouDo": "What do you do?",

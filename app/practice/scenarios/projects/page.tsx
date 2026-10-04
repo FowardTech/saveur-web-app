@@ -99,6 +99,10 @@ export default function PracticalProjectsPage() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file || !active || attaching) return;
+    if (file.size > 200 * 1024 * 1024) {
+      setAttachError(t("web:practice.scenarios.projects.fileTooLarge", { defaultValue: "That file is too large. The maximum size is 200 MB." }));
+      return;
+    }
     setAttaching(true);
     setAttachError(null);
     setUploadName(file.name);
@@ -297,7 +301,7 @@ export default function PracticalProjectsPage() {
                                   <p className="mt-1 text-xs text-hint">
                                     {isMedia
                                       ? t("web:practice.scenarios.projects.attachMediaHint", { defaultValue: "Upload your {{type}} to Google Drive, Dropbox or similar, set it to “anyone with the link”, and paste the link. The AI will transcribe and review it.", type: dtype })
-                                      : t("web:practice.scenarios.projects.attachDocHint", { defaultValue: "Upload a PDF, Word, PowerPoint, Excel, CSV or text file instead of editing the draft. The AI will read it." })}
+                                      : t("web:practice.scenarios.projects.attachDocHint", { defaultValue: "Upload a PDF, Word, PowerPoint, Excel, CSV or text file instead of editing the draft. The AI will read it." }) + " " + t("web:practice.scenarios.projects.maxSize", { defaultValue: "Maximum file size: 200 MB." })}
                                   </p>
                                   {isMedia ? (
                                     <div className="mt-3 flex gap-2">
