@@ -900,7 +900,13 @@
         "finalReview": "Final review",
         "portfolioReady": "Your portfolio write-up is saved. Use Export or Share above.",
         "finishing": "Preparing your review…",
-        "finish": "Finish and get final review"
+        "finish": "Finish and get final review",
+        "attachTitle": "Or attach your own work",
+        "attachMediaHint": "Upload your {{type}} to Google Drive, Dropbox or similar, set it to “anyone with the link”, and paste the link. The AI will transcribe and review it.",
+        "attachDocHint": "Upload a PDF, Word, PowerPoint, Excel, CSV or text file instead of editing the draft. The AI will read it.",
+        "attachUrlPlaceholder": "https://… public link",
+        "attachAdd": "Add",
+        "attachFile": "Choose a file"
       },
       "stepProgress": "Step {{step}} of ~{{total}}",
       "whatDoYouDo": "What do you do?",

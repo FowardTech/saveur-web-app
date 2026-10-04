@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
@@ -33,6 +33,10 @@ export default function PracticalProjectsPage() {
   const [drafts, setDrafts] = useState<Record<number, string>>({});
   const [openStage, setOpenStage] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [attachments, setAttachments] = useState<service.StageAttachment[]>([]);
+  const [mediaUrl, setMediaUrl] = useState("");
+  const [attaching, setAttaching] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [finishing, setFinishing] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +86,40 @@ export default function PracticalProjectsPage() {
   function beginStage(n: number) {
     if (!active) return;
     setDrafts((d) => ({ ...d, [n]: d[n] ?? (() => { const f0 = active.files.find((f) => f.path === `STAGE_${n}.md`); return f0?.content_original ?? f0?.content ?? ""; })() }));
+    setAttachments([]);
+    setMediaUrl("");
     setOpenStage(n);
+  }
+
+  async function onFileChosen(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !active || attaching) return;
+    setAttaching(true);
+    setError(null);
+    try {
+      const att = await service.uploadStageDocument(active.id, file);
+      setAttachments((prev) => [...prev, att].slice(0, 5));
+    } catch (err) {
+      setError((err as ApiError).message);
+    } finally {
+      setAttaching(false);
+    }
+  }
+
+  async function onAttachUrl() {
+    if (!active || attaching || !mediaUrl.trim()) return;
+    setAttaching(true);
+    setError(null);
+    try {
+      const att = await service.attachStageMediaUrl(active.id, mediaUrl.trim());
+      setAttachments((prev) => [...prev, att].slice(0, 5));
+      setMediaUrl("");
+    } catch (err) {
+      setError((err as ApiError).message);
+    } finally {
+      setAttaching(false);
+    }
   }
 
   async function submitStage(n: number) {
@@ -90,7 +127,11 @@ export default function PracticalProjectsPage() {
     setSubmitting(true);
     setError(null);
     try {
-      setActive(await service.submitProjectStage(active.id, n, drafts[n] ?? ""));
+      const template = active.state?.stages.find((x) => x.n === n)?.template ?? "";
+      const draft = drafts[n] ?? "";
+      // An untouched generated template is not the learner's work - don't send it when they attached their own.
+      const content = attachments.length > 0 && draft.trim() === template.trim() ? "" : draft;
+      setActive(await service.submitProjectStage(active.id, n, content, attachments));
       setOpenStage(null);
     } catch (e) {
       setError((e as ApiError).message);
@@ -236,8 +277,60 @@ export default function PracticalProjectsPage() {
                               rows={14}
                               className="w-full rounded-card border border-border bg-surface-2 p-4 font-mono text-sm text-primary focus:border-primary focus:outline-none"
                             />
+                            {(() => {
+                              const dtype = st.deliverable_type ?? "text";
+                              const isMedia = dtype === "audio" || dtype === "video";
+                              return (
+                                <div className="rounded-card border border-border bg-surface-2 p-4">
+                                  <p className="text-sm font-semibold text-primary">
+                                    {t("web:practice.scenarios.projects.attachTitle", { defaultValue: "Or attach your own work" })}
+                                  </p>
+                                  <p className="mt-1 text-xs text-hint">
+                                    {isMedia
+                                      ? t("web:practice.scenarios.projects.attachMediaHint", { defaultValue: "Upload your {{type}} to Google Drive, Dropbox or similar, set it to “anyone with the link”, and paste the link. The AI will transcribe and review it.", type: dtype })
+                                      : t("web:practice.scenarios.projects.attachDocHint", { defaultValue: "Upload a PDF, Word, PowerPoint, Excel, CSV or text file instead of editing the draft. The AI will read it." })}
+                                  </p>
+                                  {isMedia ? (
+                                    <div className="mt-3 flex gap-2">
+                                      <input
+                                        type="url"
+                                        value={mediaUrl}
+                                        onChange={(e) => setMediaUrl(e.target.value)}
+                                        placeholder={t("web:practice.scenarios.projects.attachUrlPlaceholder", { defaultValue: "https://… public link" })}
+                                        className="min-w-0 flex-1 rounded-card border border-primary bg-surface-1 px-3 py-2 text-sm text-primary focus:outline-none"
+                                      />
+                                      <Button size="sm" onClick={onAttachUrl} disabled={attaching || !mediaUrl.trim()}>
+                                        {attaching ? t("common:actions.loading", { defaultValue: "Loading…" }) : t("web:practice.scenarios.projects.attachAdd", { defaultValue: "Add" })}
+                                      </Button>
+                                    </div>
+                                  ) : (
+                                    <div className="mt-3">
+                                      <input ref={fileInputRef} type="file" className="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md" onChange={onFileChosen} />
+                                      <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={attaching || attachments.length >= 5}>
+                                        {attaching ? t("common:actions.loading", { defaultValue: "Loading…" }) : t("web:practice.scenarios.projects.attachFile", { defaultValue: "Choose a file" })}
+                                      </Button>
+                                    </div>
+                                  )}
+                                  {attachments.length > 0 && (
+                                    <ul className="mt-3 space-y-2">
+                                      {attachments.map((a, i) => (
+                                        <li key={`${a.name}-${i}`} className="flex items-center justify-between gap-2 text-sm text-primary">
+                                          <span className="flex min-w-0 items-center gap-2">
+                                            <EvaIcon name={a.kind === "media" ? "headphones-outline" : "file-text-outline"} size={16} />
+                                            <span className="truncate">{a.name}</span>
+                                          </span>
+                                          <button type="button" aria-label="Remove" onClick={() => setAttachments((prev) => prev.filter((_, j) => j !== i))} className="text-hint transition hover:text-primary">
+                                            <EvaIcon name="close-outline" size={16} />
+                                          </button>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </div>
+                              );
+                            })()}
                             <div className="flex gap-2">
-                              <Button onClick={() => submitStage(st.n)} disabled={submitting || (drafts[st.n] ?? "").trim().length < 40}>
+                              <Button onClick={() => submitStage(st.n)} disabled={submitting || ((drafts[st.n] ?? "").trim().length < 40 && attachments.length === 0)}>
                                 {submitting ? t("web:practice.scenarios.projects.reviewing", { defaultValue: "Your manager is reviewing…" }) : t("web:practice.scenarios.projects.submitTo", { defaultValue: "Submit to {{name}}", name: active.state?.persona.name ?? "manager" })}
                               </Button>
                               <Button variant="outline" onClick={() => setOpenStage(null)}>{t("common:actions.cancel", { defaultValue: "Cancel" })}</Button>

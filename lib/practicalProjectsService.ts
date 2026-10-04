@@ -18,6 +18,7 @@ export interface ProjectStage {
   task: string;
   template: string;
   twist: string;
+  deliverable_type?: "text" | "document" | "presentation" | "spreadsheet" | "audio" | "video";
   status: "locked" | "active" | "done";
   attempts: number;
   feedback: StageFeedback | null;
@@ -65,8 +66,32 @@ export async function deletePracticalProject(id: number | string): Promise<void>
   await apiClient.delete(`/api/v1/practical/projects/${id}`);
 }
 
-export async function submitProjectStage(id: number | string, n: number, content: string): Promise<PracticalProjectDetail> {
-  return detail(await apiClient.post<Wire>(`/api/v1/practical/projects/${id}/stages/${n}/submit`, { content }));
+export interface StageAttachment {
+  name: string;
+  kind: "document" | "media";
+  text: string;
+  truncated?: boolean;
+}
+
+export async function submitProjectStage(
+  id: number | string,
+  n: number,
+  content: string,
+  attachments: StageAttachment[] = [],
+): Promise<PracticalProjectDetail> {
+  return detail(await apiClient.post<Wire>(`/api/v1/practical/projects/${id}/stages/${n}/submit`, { content, attachments }));
+}
+
+/** Upload a document (pdf/docx/pptx/xlsx/csv/txt/md); the backend returns its extracted text. */
+export async function uploadStageDocument(id: number | string, file: File): Promise<StageAttachment> {
+  const formData = new FormData();
+  formData.append("file", file, file.name);
+  return apiClient.upload<StageAttachment>(`/api/v1/practical/projects/${id}/attachments/file`, formData);
+}
+
+/** Attach a public audio/video link; the backend transcribes it. */
+export async function attachStageMediaUrl(id: number | string, url: string): Promise<StageAttachment> {
+  return apiClient.post<StageAttachment>(`/api/v1/practical/projects/${id}/attachments/url`, { url });
 }
 export async function finishPracticalProject(id: number | string): Promise<PracticalProjectDetail> {
   return detail(await apiClient.post<Wire>(`/api/v1/practical/projects/${id}/finish`, {}));
