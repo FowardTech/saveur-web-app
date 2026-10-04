@@ -76,7 +76,7 @@ async function upload<T>(path: string, formData: FormData): Promise<T> {
   const authHeaders = await authHeader();
   let res: Response;
   try {
-    res = await fetch(url, { method: "POST", headers: { ...authHeaders }, body: formData });
+    res = await fetch(url, { method: "POST", headers: { "X-App-Language": i18n.language || "en", ...authHeaders }, body: formData });
   } catch {
     const err: ApiError = {
       message: i18n.t("web:errorsGeneric.offline", { defaultValue: "No internet connection. Please check your connection and try again." }),
@@ -107,6 +107,7 @@ function uploadWithProgress<T>(path: string, formData: FormData, onProgress: (pe
     authHeader().then((authHeaders) => {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `${API_BASE_URL}${path}`);
+      xhr.setRequestHeader("X-App-Language", i18n.language || "en");
       Object.entries(authHeaders).forEach(([k, v]) => xhr.setRequestHeader(k, v));
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
