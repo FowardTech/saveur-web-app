@@ -1,5 +1,6 @@
 "use client";
 
+import { LocationSelect, CurrencySelect } from "@/components/ui/LocationFields";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -96,9 +97,9 @@ function SalaryBenchmarkInner() {
           <div className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-5">
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField label={t("web:salaryBenchmark.role", { defaultValue: "Job title" })} value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("web:salaryBenchmark.rolePlaceholder", { defaultValue: "e.g. Product Manager" })} />
-              <TextField label={t("web:salaryBenchmark.location", { defaultValue: "Location" })} value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t("web:salaryBenchmark.locationPlaceholder", { defaultValue: "e.g. Lagos, Nigeria" })} />
+              <LocationSelect label={t("web:salaryBenchmark.location", { defaultValue: "Location" })} value={location} onChange={setLocation} />
               <TextField label={t("web:salaryBenchmark.years", { defaultValue: "Years of experience" })} type="number" value={years} onChange={(e) => setYears(e.target.value)} />
-              <TextField label={t("web:salaryBenchmark.currency", { defaultValue: "Currency (optional)" })} value={currency} onChange={(e) => setCurrency(e.target.value)} placeholder="USD" />
+              <CurrencySelect optional label={t("web:salaryBenchmark.currency", { defaultValue: "Currency (optional)" })} value={currency} onChange={setCurrency} />
             </div>
             <div className="flex flex-col gap-2 border-t border-border pt-4">
               <span className="text-sm font-medium text-primary">{t("web:salaryBenchmark.compareTitle", { defaultValue: "Compare your own number (optional)" })}</span>

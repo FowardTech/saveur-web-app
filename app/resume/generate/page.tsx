@@ -1,5 +1,6 @@
 "use client";
 
+import { LocationSelect } from "@/components/ui/LocationFields";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -404,7 +405,7 @@ function GenerateResumeInner() {
             {fieldInput(content.contact.name, (v) => update("contact", { ...content.contact, name: v }), t("web:resume.generate.fullName", { defaultValue: "Full name" }).toString())}
             {fieldInput(content.contact.email, (v) => update("contact", { ...content.contact, email: v }), t("common:fields.email", { defaultValue: "Email" }).toString())}
             {fieldInput(content.contact.phone, (v) => update("contact", { ...content.contact, phone: v }), t("web:resume.generate.phone", { defaultValue: "Phone" }).toString())}
-            {fieldInput(content.contact.location, (v) => update("contact", { ...content.contact, location: v }), t("web:resume.generate.location", { defaultValue: "Location" }).toString())}
+            <LocationSelect label={t("web:resume.generate.location", { defaultValue: "Location" }).toString()} value={content.contact.location ?? ""} onChange={(v) => update("contact", { ...content.contact, location: v })} />
           </div>
 
           <SectionHeading>{t("web:resume.generate.summary", { defaultValue: "Professional Summary" })}</SectionHeading>

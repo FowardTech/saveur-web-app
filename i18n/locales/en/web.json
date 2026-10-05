@@ -2081,5 +2081,13 @@
   "errorsGeneric": {
     "checkDetails": "Something went wrong. Please check your details and try again.",
     "offline": "No internet connection. Please check your connection and try again."
+  },
+  "fields": {
+    "country": "Country",
+    "city": "City",
+    "selectCountry": "Select country",
+    "selectCity": "Select city (optional)",
+    "selectCurrency": "Select currency",
+    "anyCurrency": "Any / local currency"
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { LocationSelect } from "@/components/ui/LocationFields";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -526,7 +527,7 @@ function InterviewsPageInner() {
                 <form onSubmit={handleAdd} className="flex flex-col gap-4 rounded-card border border-border bg-surface-2 p-6 sm:flex-row sm:items-end sm:flex-wrap">
                   <TextField label={t("web:applications.companyLabel", { defaultValue: "Company" })} value={company} onChange={(e) => setCompany(e.target.value)} required className="sm:w-48" />
                   <TextField label={t("web:applications.roleLabel", { defaultValue: "Role" })} value={role} onChange={(e) => setRole(e.target.value)} required className="sm:w-48" />
-                  <TextField label={t("web:applications.locationLabel", { defaultValue: "Location (optional)" })} value={location} onChange={(e) => setLocation(e.target.value)} className="sm:w-48" />
+                  <LocationSelect label={t("web:applications.locationLabel", { defaultValue: "Location (optional)" })} value={location} onChange={setLocation} className="sm:w-96" />
                   <Button type="submit" disabled={adding || !company.trim() || !role.trim()}>
                     {adding ? t("common:actions.saving", { defaultValue: "Saving…" }) : t("common:actions.add", { defaultValue: "Add" })}
                   </Button>
