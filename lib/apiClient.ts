@@ -12,6 +12,14 @@ export interface ApiError {
 }
 
 async function authHeader(): Promise<Record<string, string>> {
+  // On a hard refresh / new tab Firebase restores the signed-in user
+  // asynchronously, so `currentUser` is briefly null. Wait for that first,
+  // otherwise early requests go out with no token and fail with a 401.
+  try {
+    await firebaseAuth.authStateReady();
+  } catch {
+    /* fall through with whatever currentUser is */
+  }
   const user = firebaseAuth.currentUser;
   if (!user) return {};
   const idToken = await user.getIdToken();
@@ -27,16 +35,28 @@ async function request<T>(
   const authHeaders = auth ? await authHeader() : {};
 
   let res: Response;
-  try {
-    res = await fetch(url, {
+  const doFetch = (h: Record<string, string>) =>
+    fetch(url, {
       ...rest,
       headers: {
         "Content-Type": "application/json",
         "X-App-Language": i18n.language || "en",
-        ...authHeaders,
+        ...h,
         ...headers,
       },
     });
+  try {
+    res = await doFetch(authHeaders);
+    // A 401 on an authenticated call is usually a stale/expired ID token:
+    // force-refresh it once and retry before surfacing an error.
+    if (res.status === 401 && auth && firebaseAuth.currentUser) {
+      try {
+        const fresh = await firebaseAuth.currentUser.getIdToken(true);
+        res = await doFetch({ Authorization: `Bearer ${fresh}` });
+      } catch {
+        /* keep the original 401 response */
+      }
+    }
   } catch {
     const err: ApiError = {
       message: i18n.t("web:errorsGeneric.offline", { defaultValue: "No internet connection. Please check your connection and try again." }),
