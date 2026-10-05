@@ -153,7 +153,7 @@ export default function CareerGrowthPage() {
             <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-4">
               <p className="text-sm text-hint">
                 {paywall === "premium"
-                  ? t("web:growth.premiumPaywall", { defaultValue: "The market check and promotion plan are Premium features." })
+                  ? t("web:growth.premiumPaywall", { defaultValue: "The promotion plan is a Premium feature." })
                   : t("web:growth.paywall", { defaultValue: "Pay tracking is available on paid plans." })}
               </p>
               <Link href="/subscription" className="text-sm font-semibold text-link hover:underline">
