@@ -650,7 +650,8 @@
     "videoPlayer": {
       "saveVideo": "Save video",
       "closeVideo": "Close video",
-      "playbackError": "This video can't be played right now."
+      "playbackError": "This video can't be played right now.",
+      "play": "Play video"
     }
   },
   "linkedinCallback": {

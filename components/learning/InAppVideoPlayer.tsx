@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import * as learningService from "@/lib/learningService";
@@ -44,6 +45,7 @@ interface InAppVideoPlayerProps {
 interface YTPlayerInstance {
   getCurrentTime(): number;
   getDuration(): number;
+  playVideo(): void;
   destroy(): void;
 }
 interface YTPlayerEvent {
@@ -103,6 +105,7 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
   const [isSaved, setIsSaved] = useState(!!video?.isSaved);
   const [isSaving, setIsSaving] = useState(false);
   const [playbackError, setPlaybackError] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayerInstance | null>(null);
@@ -113,6 +116,7 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
   useEffect(() => {
     setIsSaved(!!video?.isSaved);
     setPlaybackError(false);
+    setIsPlaying(false);
     if (video) learningService.logVideoWatch(video, context);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video?.videoId]);
@@ -171,7 +175,17 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
           start: resumeFrom,
         },
         events: {
+          onReady: (e) => {
+            // Browsers often block autoplay; try, and the big Play button
+            // below covers the case where it is blocked.
+            try {
+              e.target.playVideo();
+            } catch {
+              /* ignore */
+            }
+          },
           onStateChange: (e) => {
+            setIsPlaying(e.data === YT_STATE_PLAYING || e.data === 3);
             if (e.data === YT_STATE_PLAYING) {
               startReporting();
             } else {
@@ -213,8 +227,11 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
     setIsSaving(false);
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" role="dialog" aria-modal="true">
+  if (typeof document === "undefined") return null;
+  // Portaled to <body> so no ancestor's transform/stacking context can trap
+  // the dialog beneath other page content.
+  return createPortal(
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true">
       <div className="flex w-full max-w-3xl flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
           <p className="truncate text-sm font-medium text-white">{video.title}</p>
@@ -254,11 +271,30 @@ export function InAppVideoPlayer({ video, context, onClose, startSeconds }: InAp
               </p>
             </div>
           ) : (
-            <div key={video.videoId} ref={containerRef} className="h-full w-full" />
+            <div className="relative h-full w-full">
+              <div key={video.videoId} ref={containerRef} className="h-full w-full" />
+              {!isPlaying && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      playerRef.current?.playVideo();
+                    } catch {
+                      /* player not ready yet */
+                    }
+                  }}
+                  aria-label={t("web:learning.videoPlayer.play", { defaultValue: "Play video" }).toString()}
+                  className="absolute left-1/2 top-1/2 z-10 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black shadow-lg hover:scale-105"
+                >
+                  <EvaIcon name="play-circle-outline" size={36} />
+                </button>
+              )}
+            </div>
           )}
         </div>
         {video.channel && <p className="text-sm text-white/70">{video.channel}</p>}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
