@@ -265,38 +265,49 @@ export default function LiveInterviewSessionPage() {
       clearInterval(frameIntervalRef.current);
       frameIntervalRef.current = null;
     }
-    // Stop the recording and upload it BEFORE navigating away, so the
-    // replay screen (app/practice/session/[id]/page.tsx) has a real
-    // video_url the moment AI feedback finishes generating, same as
-    // mobile's own end-of-session flow.
+    // Stop the recording, then END THE SESSION IMMEDIATELY and open the
+    // feedback screen -- the video uploads in the background afterwards
+    // (the replay page already shows "saving your video" while
+    // video_status is "uploading"). This used to await the whole upload
+    // first, so the candidate stared at "ending" for as long as ~50 MB took
+    // to upload even after a 3-minute interview.
     const recorder = mediaRecorderRef.current;
-    let uploadPromise: Promise<void> | null = null;
+    let stopped: Promise<void> | null = null;
     if (recorder && recorder.state !== "inactive") {
-      uploadPromise = new Promise<void>((resolve) => {
+      stopped = new Promise<void>((resolve) => {
         recorder.onstop = () => resolve();
         try {
           recorder.stop();
         } catch {
           resolve();
         }
-      }).then(async () => {
-        const blob = new Blob(recordedChunksRef.current, { type: recorder.mimeType || "video/webm" });
-        const durationSec = recordingStartRef.current ? Math.round((Date.now() - recordingStartRef.current) / 1000) : 0;
-        if (blob.size > 0) {
-          try {
-            await interviewService.uploadSessionVideo(sessionId, blob, durationSec);
-          } catch {
-            // best-effort — losing the recording is much less bad than
-            // getting the candidate stuck unable to see their score.
-          }
-        }
       });
     }
     cameraStreamRef.current?.getTracks().forEach((track) => track.stop());
     cameraStreamRef.current = null;
+    const startedAt = recordingStartRef.current;
+    const chunks = recordedChunksRef.current;
     try {
-      if (uploadPromise) await uploadPromise;
+      if (stopped) {
+        // Flag the upload as in-flight on the server BEFORE ending, so the
+        // replay screen can tell "video on its way" from "no video".
+        interviewService.markVideoPending(sessionId).catch(() => {});
+      }
       await interviewService.endSession(sessionId);
+      if (stopped) {
+        // Fire-and-forget: keeps running after client-side navigation.
+        void stopped.then(async () => {
+          const blob = new Blob(chunks, { type: recorder?.mimeType || "video/webm" });
+          const durationSec = startedAt ? Math.round((Date.now() - startedAt) / 1000) : 0;
+          if (blob.size > 0) {
+            try {
+              await interviewService.uploadSessionVideo(sessionId, blob, durationSec);
+            } catch {
+              // best-effort -- the transcript and feedback are unaffected.
+            }
+          }
+        });
+      }
       router.push(`/practice/session/${sessionId}`);
     } catch (err) {
       setEndError((err as ApiError).message || t("web:practice.interview.endFailedDefault", { defaultValue: "Couldn't end the session right now. Please try again." }));
@@ -536,7 +547,11 @@ export default function LiveInterviewSessionPage() {
   // (WebM/VP9/VP8) and Safari (MP4/H.264) codec families, and — the other
   // half of the fix — actually surfaces it via recordingUnavailable if
   // every option fails, instead of failing invisibly.
-  const RECORDING_MIME_CANDIDATES = [
+  // Browsers default to ~2.5 Mbps video, which makes a 3-minute interview ~55 MB and
+// the post-interview upload slow. 1 Mbps video + 64 kbps audio is plenty for a
+// webcam replay (~25 MB for 3 minutes).
+const RECORDING_BITRATES = { videoBitsPerSecond: 1_000_000, audioBitsPerSecond: 64_000 };
+const RECORDING_MIME_CANDIDATES = [
     "video/webm;codecs=vp9,opus",
     "video/webm;codecs=vp8,opus",
     "video/webm",
@@ -562,7 +577,7 @@ export default function LiveInterviewSessionPage() {
     const recordingStream = ttsService.buildRecordingStream(stream);
     const supportedType = RECORDING_MIME_CANDIDATES.find((c) => MediaRecorder.isTypeSupported(c));
     try {
-      const recorder = supportedType ? new MediaRecorder(recordingStream, { mimeType: supportedType }) : new MediaRecorder(recordingStream);
+      const recorder = supportedType ? new MediaRecorder(recordingStream, { mimeType: supportedType, ...RECORDING_BITRATES }) : new MediaRecorder(recordingStream, RECORDING_BITRATES);
       recorder.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
       };

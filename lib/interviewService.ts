@@ -224,6 +224,10 @@ export async function postCameraFrame(sessionId: string | number, analysis: Came
  * the session end (recommended: yes, same as mobile's own resilient-retry
  * posture — losing the recording is much less bad than getting the
  * candidate stuck unable to see their score). */
+export async function markVideoPending(sessionId: string | number): Promise<void> {
+  await apiClient.post(`/api/v1/interviews/sessions/${sessionId}/video-pending`, {});
+}
+
 export async function uploadSessionVideo(sessionId: string | number, blob: Blob, durationSec: number): Promise<void> {
   const formData = new FormData();
   formData.append("file", blob, "interview.webm");
