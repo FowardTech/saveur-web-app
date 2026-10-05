@@ -341,19 +341,28 @@ export default function LearningPage() {
           {curriculum === undefined && <SkeletonRows count={4} />}
 
           {certificates.length > 0 && (
-            <div className="rounded-card border border-border bg-surface-2 p-5">
-              <h2 className="font-semibold text-primary">{t("web:learning.yourBadges", { defaultValue: "Your Badges" })}</h2>
-              <div className="mt-3 flex flex-col gap-3">
+            <div className="rounded-card border border-border bg-surface-2 p-5 shadow-soft">
+              <h2 className="text-lg font-bold text-primary">{t("web:learning.yourBadges", { defaultValue: "Your Badges" })}</h2>
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {certificates.map((c) => (
-                  <div key={c.code} className="flex items-center gap-3">
-                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-tint-orange text-tint-orange-text">
-                      <EvaIcon name="award-outline" size={18} />
+                  <div key={c.code} className="flex items-center gap-4 rounded-2xl border border-amber-300/40 bg-amber-400/10 p-4">
+                    <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber-400/25 text-amber-500">
+                      <EvaIcon name="award" size={26} />
                     </span>
-                    <div>
-                      <p className="text-sm font-semibold text-primary">{c.topic}</p>
-                      <p className="text-xs text-hint">
-                        {t("web:learning.badgeTiersCode", { defaultValue: "Basic · Intermediate · Advanced — {{code}}", code: c.code })}
-                      </p>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-primary">{c.topic}</p>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        <span className="rounded-full bg-[#CD7F32]/15 px-2 py-0.5 text-[11px] font-bold text-[#CD7F32]">
+                          {t("web:learning.levels.basic", { defaultValue: "Basic" })}
+                        </span>
+                        <span className="rounded-full bg-[#8E9AAF]/20 px-2 py-0.5 text-[11px] font-bold text-[#8E9AAF]">
+                          {t("web:learning.levels.intermediate", { defaultValue: "Intermediate" })}
+                        </span>
+                        <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[11px] font-bold text-amber-500">
+                          {t("web:learning.levels.advanced", { defaultValue: "Advanced" })}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-hint">{c.code}</p>
                     </div>
                   </div>
                 ))}
