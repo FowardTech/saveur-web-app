@@ -29,7 +29,7 @@ export default function CareerGrowthPage() {
   const [records, setRecords] = useState<PayRecord[]>([]);
   const [summary, setSummary] = useState<PaySummary>({ count: 0 });
   const [error, setError] = useState<string | null>(null);
-  const [paywall, setPaywall] = useState(false);
+  const [paywall, setPaywall] = useState<false | "pro" | "premium">(false);
 
   // add-pay form
   const [date, setDate] = useState("");
@@ -54,15 +54,20 @@ export default function CareerGrowthPage() {
   const [checkinText, setCheckinText] = useState("");
 
   const load = useCallback(async () => {
-    try {
-      const [p, pl, c] = await Promise.all([growth.listPay(), growth.getPromotionPlan(), growth.getPendingCheckin()]);
-      setRecords(p.records);
-      setSummary(p.summary);
-      setPlan(pl.plan);
-      setCheckinId(c.checkin?.id ?? null);
-    } catch (e) {
-      setError((e as ApiError).message);
+    // Independent loads: the promotion plan is Premium-only, so a Basic user's 402 there
+    // must not stop their pay records from loading.
+    const [p, pl, c] = await Promise.allSettled([growth.listPay(), growth.getPromotionPlan(), growth.getPendingCheckin()]);
+    if (p.status === "fulfilled") {
+      setRecords(p.value.records);
+      setSummary(p.value.summary);
+    } else if ((p.reason as ApiError).status === 402) {
+      setPaywall("pro");
+    } else {
+      setError((p.reason as ApiError).message);
     }
+    if (pl.status === "fulfilled") setPlan(pl.value.plan);
+    else if ((pl.reason as ApiError).status === 402) setPaywall((cur) => cur || "premium");
+    if (c.status === "fulfilled") setCheckinId(c.value.checkin?.id ?? null);
   }, []);
 
   useEffect(() => {
@@ -71,7 +76,7 @@ export default function CareerGrowthPage() {
 
   const err = (e: unknown) => {
     const a = e as ApiError;
-    if (a.status === 402 || a.status === 403) setPaywall(true);
+    if (a.status === 402 || a.status === 403) setPaywall(a.error === "premium_required" ? "premium" : "pro");
     else setError(a.message || t("common:somethingWentWrong", { defaultValue: "Something went wrong. Please try again." }));
   };
 
@@ -145,9 +150,18 @@ export default function CareerGrowthPage() {
           />
           {error && <p className="text-sm text-danger">{error}</p>}
           {paywall && (
-            <p className="rounded-card border border-border bg-surface-2 p-4 text-sm text-hint">
-              {t("web:growth.paywall", { defaultValue: "The market check and promotion plan are available on paid plans. Upgrade from the Subscription page." })}
-            </p>
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-4">
+              <p className="text-sm text-hint">
+                {paywall === "premium"
+                  ? t("web:growth.premiumPaywall", { defaultValue: "The market check and promotion plan are Premium features." })
+                  : t("web:growth.paywall", { defaultValue: "Pay tracking is available on paid plans." })}
+              </p>
+              <Link href="/subscription" className="text-sm font-semibold text-link hover:underline">
+                {paywall === "premium"
+                  ? t("web:growth.upgradePremium", { defaultValue: "Upgrade to Premium" })
+                  : t("web:growth.upgrade", { defaultValue: "Upgrade" })}
+              </Link>
+            </div>
           )}
 
           {checkinId && (

@@ -1663,7 +1663,7 @@
   "growth": {
     "title": "Career Growth",
     "subtitle": "Track your pay over time, check if you're paid fairly, and prepare for your next raise or promotion.",
-    "paywall": "The market check and promotion plan are available on paid plans. Upgrade from the Subscription page.",
+    "paywall": "Pay tracking is available on paid plans.",
     "checkinTitle": "Quarterly check-in",
     "checkinBody": "Any new wins, a raise, or a new role since last time? We'll save it to your Career Diary as promotion evidence.",
     "checkinSave": "Save",
@@ -1696,7 +1696,10 @@
     "evidence": "Your evidence",
     "talkingPoints": "What to say",
     "timeline": "Timeline",
-    "risks": "Watch out for"
+    "risks": "Watch out for",
+    "premiumPaywall": "The market check and promotion plan are Premium features.",
+    "upgradePremium": "Upgrade to Premium",
+    "upgrade": "Upgrade"
   },
   "careerDiary": {
     "today": "Today",
