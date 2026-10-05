@@ -55,7 +55,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-h-screen flex-1 flex-col">
         <Topbar showMenuButton onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 bg-page px-4 py-6 sm:px-6 lg:px-8">
+        <main className="page-wash flex-1 bg-page px-4 py-6 sm:px-6 lg:px-8">
           <div key={pathname} className="animate-page-in">
             {children}
           </div>

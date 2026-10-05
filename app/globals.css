@@ -162,6 +162,35 @@
   }
 }
 
+/* Hero banner behind every page title (components/ui/PageHeader.tsx).
+   Pastel in light mode; deep, low-contrast tint in dark mode. */
+.page-hero {
+  background-image: linear-gradient(120deg, var(--hero-a), var(--hero-b));
+}
+.dark .page-hero {
+  background-image: linear-gradient(120deg, #14233f, #1d1a3d);
+}
+.dark .page-hero h1 {
+  color: #fafafa;
+}
+.dark .page-hero p {
+  color: #a1a1aa;
+}
+
+/* Soft lift on every standard card (rounded-card on a surface-2 fill). */
+.rounded-card.bg-surface-2 {
+  box-shadow: var(--shadow-soft);
+}
+
+/* Faint colour wash behind page content: white page stays white, but the
+   corners pick up brand blue and lavender. */
+.page-wash {
+  background-image:
+    radial-gradient(520px 320px at 100% 0%, rgba(0, 99, 248, 0.07), transparent 70%),
+    radial-gradient(480px 300px at 0% 100%, rgba(124, 92, 255, 0.07), transparent 70%);
+  background-repeat: no-repeat;
+}
+
 @layer utilities {
   .shadow-soft {
     box-shadow: var(--shadow-soft);
