@@ -8,7 +8,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Hub, Weekly, Brag, Review, Leadership, RolePlay, Pay, Market, Skills, Timeline } from "@/components/lifetime/Sections";
 
-// Career for Life — weekly check-in, brag document, review/promotion prep,
+// Career Success Hub — weekly check-in, brag document, review/promotion prep,
 // pay & market alerts, market watch, leadership track, skills plan, timeline.
 export default function LifetimePage() {
   return (
@@ -59,11 +59,11 @@ function Inner() {
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
           {tab !== "hub" && (
             <button type="button" onClick={() => go("hub")} className="self-start text-sm font-semibold text-hint underline">
-              ← {t("web:lifetime.hubTitle", { defaultValue: "Career for Life" })}
+              ← {t("web:lifetime.hubTitle", { defaultValue: "Career Success Hub" })}
             </button>
           )}
           <PageHeader
-            title={rp ? t("web:lifetime.roleplayTitle", { defaultValue: "Practice conversation" }) : titles[tab] ?? t("web:lifetime.hubTitle", { defaultValue: "Career for Life" })}
+            title={rp ? t("web:lifetime.roleplayTitle", { defaultValue: "Practice conversation" }) : titles[tab] ?? t("web:lifetime.hubTitle", { defaultValue: "Career Success Hub" })}
             subtitle={tab === "hub" ? t("web:lifetime.hubIntro", { defaultValue: "Tools for every stage, long after you land the job." }) : undefined}
           />
           {body}
