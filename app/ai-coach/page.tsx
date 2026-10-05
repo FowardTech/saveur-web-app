@@ -54,6 +54,7 @@ interface CoachMessage {
   // when app/api/coach.py's advice() moderation check flagged the user's
   // preceding message. Rendered with a distinct caution style below.
   flagged?: boolean;
+  feedback?: "up" | "down";
   // BUG FIX (product report: "The AI career coach does not have file and
   // image attachment like the mobile app does") -- mirrors mobile's
   // Chat.tsx: a picked photo is uploaded first (POST
@@ -326,18 +327,21 @@ function AiCoachPageInner() {
     runSuggestedAction(action, router).catch(() => {});
   }
 
-  async function sendQuestion(question: string, mode?: "voice", imageUrl?: string, codingProjectId?: string) {
+  async function sendQuestion(question: string, mode?: "voice", imageUrl?: string, codingProjectId?: string, regenerate?: boolean) {
     if ((!question && !imageUrl) || sending) return;
     setError(null);
 
-    const optimisticUser: CoachMessage = { id: `local-${Date.now()}`, role: "user", text: question, image_url: imageUrl };
-    setMessages((prev) => [...prev, optimisticUser]);
+    if (!regenerate) {
+      const optimisticUser: CoachMessage = { id: `local-${Date.now()}`, role: "user", text: question, image_url: imageUrl };
+      setMessages((prev) => [...prev, optimisticUser]);
+    }
     setSending(true);
 
     try {
       const history = messages.slice(-10).map((m) => ({ role: m.role, text: m.text }));
       const body: Record<string, unknown> = { question, history, persist_to_history: true, language: i18n.language || "en" };
       if (mode) body.mode = mode;
+      if (regenerate) body.regenerate = true;
       if (imageUrl) body.image_url = imageUrl;
       // See the codingProjectId initial-prompt branch above -- the backend
       // fetches this project's own files server-side rather than the
@@ -349,14 +353,14 @@ function AiCoachPageInner() {
       // it into state at all, so it silently vanished. See
       // lib/suggestedActions.ts for the ~40-destination registry this now
       // wires up (ported from mobile's services/suggestedActions.ts).
-      const data = await apiClient.post<{ reply: string; suggested_course: string | null; suggested_action: SuggestedActionId | null; flagged?: boolean }>(
+      const data = await apiClient.post<{ reply: string; suggested_course: string | null; suggested_action: SuggestedActionId | null; flagged?: boolean; message_id?: string | null }>(
         "/api/v1/coach/advice",
         body
       );
       setMessages((prev) => [
         ...prev,
         {
-          id: `local-reply-${Date.now()}`,
+          id: data.message_id ?? `local-reply-${Date.now()}`,
           role: "coach",
           text: data.reply,
           suggested_course_topic: data.suggested_course,
@@ -377,6 +381,31 @@ function AiCoachPageInner() {
     } finally {
       setSending(false);
     }
+  }
+
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  function copyReply(m: CoachMessage) {
+    navigator.clipboard?.writeText(m.text).catch(() => {});
+    setCopiedId(m.id);
+    setTimeout(() => setCopiedId((cur) => (cur === m.id ? null : cur)), 1500);
+  }
+
+  function rateReply(m: CoachMessage, value: "up" | "down") {
+    const next = m.feedback === value ? undefined : value;
+    setMessages((prev) => prev.map((x) => (x.id === m.id ? { ...x, feedback: next } : x)));
+    apiClient.post(`/api/v1/coach/messages/${m.id}/feedback`, { value: next ?? null }).catch(() => {
+      setMessages((prev) => prev.map((x) => (x.id === m.id ? { ...x, feedback: m.feedback } : x)));
+    });
+  }
+
+  async function retryReply(m: CoachMessage) {
+    if (sending) return;
+    const idx = messages.findIndex((x) => x.id === m.id);
+    const question = [...messages.slice(0, idx)].reverse().find((x) => x.role === "user");
+    if (!question?.text) return;
+    setMessages((prev) => prev.filter((x) => x.id !== m.id));
+    await sendQuestion(question.text, undefined, undefined, undefined, true);
   }
 
   async function handleSend(e: React.FormEvent) {
@@ -555,7 +584,7 @@ function AiCoachPageInner() {
                 href="/ai-coach/voice"
                 className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-1 px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-surface-3"
               >
-                <EvaIcon name="mic-outline" size={16} />
+                <EvaIcon name="audio-lines" size={16} />
                 {t("web:aiCoach.openVoiceCoach", { defaultValue: "Voice Coach" })}
               </Link>
               {messages.length > 0 && (
@@ -655,6 +684,28 @@ function AiCoachPageInner() {
                               <EvaIcon name={ACTION_META[m.suggested_action]!.icon} size={13} />
                               {t("web:aiCoach.goToAction", { defaultValue: "Go to {{title}}", title: actionTitle(m.suggested_action) })}
                             </button>
+                          )}
+                          {m.role === "coach" && !m.flagged && m.text && (
+                            <div className="mt-0.5 flex items-center gap-1 text-hint">
+                              <button type="button" onClick={() => copyReply(m)} aria-label={t("web:aiCoach.copy", { defaultValue: "Copy" })} title={t("web:aiCoach.copy", { defaultValue: "Copy" })} className="rounded-md p-1.5 transition hover:bg-surface-3 hover:text-primary">
+                                <EvaIcon name={copiedId === m.id ? "check" : "copy"} size={15} />
+                              </button>
+                              {/^\d+$/.test(m.id) && (
+                                <>
+                                  <button type="button" onClick={() => rateReply(m, "up")} aria-label={t("web:aiCoach.goodResponse", { defaultValue: "Good response" })} title={t("web:aiCoach.goodResponse", { defaultValue: "Good response" })} className={`rounded-md p-1.5 transition hover:bg-surface-3 ${m.feedback === "up" ? "text-[#7C5CFF]" : "hover:text-primary"}`}>
+                                    <EvaIcon name="thumbs-up" size={15} />
+                                  </button>
+                                  <button type="button" onClick={() => rateReply(m, "down")} aria-label={t("web:aiCoach.badResponse", { defaultValue: "Bad response" })} title={t("web:aiCoach.badResponse", { defaultValue: "Bad response" })} className={`rounded-md p-1.5 transition hover:bg-surface-3 ${m.feedback === "down" ? "text-[#FF5FA2]" : "hover:text-primary"}`}>
+                                    <EvaIcon name="thumbs-down" size={15} />
+                                  </button>
+                                </>
+                              )}
+                              {/^\d+$/.test(m.id) && messages.filter((x) => x.role === "coach").slice(-1)[0]?.id === m.id && (
+                                <button type="button" disabled={sending} onClick={() => retryReply(m)} aria-label={t("web:aiCoach.retry", { defaultValue: "Try again" })} title={t("web:aiCoach.retry", { defaultValue: "Try again" })} className="rounded-md p-1.5 transition hover:bg-surface-3 hover:text-primary disabled:opacity-50">
+                                  <EvaIcon name="retry" size={15} />
+                                </button>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>

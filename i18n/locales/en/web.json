@@ -47,7 +47,11 @@
     "topicGoalNextStep": "What's my next step toward \"{{goal}}\"?",
     "topicResumeReview": "Can you review my resume and suggest improvements?",
     "topicSalaryNegotiation": "How should I approach negotiating my salary?",
-    "topicInterviewNerves": "How do I stay calm and confident during interviews?"
+    "topicInterviewNerves": "How do I stay calm and confident during interviews?",
+    "copy": "Copy",
+    "goodResponse": "Good response",
+    "badResponse": "Bad response",
+    "retry": "Try again"
   },
   "applications": {
     "active": "Active",
