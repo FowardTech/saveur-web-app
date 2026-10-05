@@ -49,7 +49,7 @@ export default function JDAnalyzerPage() {
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proRequired, setProRequired] = useState(false);
-  const [limitMessage, setLimitMessage] = useState<string | null>(null);
+  const [, setLimitMessage] = useState<string | null>(null);
 
   const [showBuildResumeChoices, setShowBuildResumeChoices] = useState(false);
   const [showTailorChoices, setShowTailorChoices] = useState(false);

@@ -90,7 +90,6 @@ const COLUMN_BY_STAGE: Record<string, StageColumn> = {
   Offer: "offer",
   Rejected: "rejected",
 };
-const STAGE_COLUMNS: StageColumn[] = ["applied", "interview", "offer", "rejected"];
 const COLUMN_ICON: Record<ColumnKey, EvaIconName> = {
   recommended: "compass-outline",
   shortlisted: "star-outline",

@@ -126,7 +126,7 @@ function VoiceCoachPageInner() {
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [liveTranscript, setLiveTranscript] = useState("");
-  const [lastCoachLine, setLastCoachLine] = useState(
+  const [, setLastCoachLine] = useState(
     t("web:aiCoach.voiceInitialLine", { defaultValue: GREETING_TEXT })
   );
   const [history, setHistory] = useState<HistoryTurn[]>([]);

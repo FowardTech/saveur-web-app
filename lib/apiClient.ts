@@ -118,7 +118,7 @@ function uploadWithProgress<T>(path: string, formData: FormData, onProgress: (pe
           code: "ERR_NETWORK",
         } as ApiError);
       xhr.onload = () => {
-        let body: any = {};
+        let body: { message?: string; detail?: string; [k: string]: unknown } = {};
         try {
           body = JSON.parse(xhr.responseText || "{}");
         } catch {

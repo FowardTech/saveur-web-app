@@ -51,7 +51,6 @@ function NavLink({
   label,
   active,
   badge,
-  gradientIndex,
 }: {
   href: string;
   icon: Parameters<typeof EvaIcon>[0]["name"];
