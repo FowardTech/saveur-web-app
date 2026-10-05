@@ -524,7 +524,7 @@ export default function JobTrackerPage() {
                       }}
                       onDragLeave={() => setDragOverColumn((prev) => (prev === col.key ? null : prev))}
                       onDrop={(e) => handleDrop(col.key, e)}
-                      className={`flex min-h-[120px] flex-1 flex-col gap-2.5 rounded-b-card border border-t-0 border-border p-2.5 transition ${
+                      className={`flex min-h-[120px] max-h-[700px] flex-1 flex-col gap-2.5 overflow-y-auto rounded-b-card border border-t-0 border-border p-2.5 transition ${
                         isOver ? "bg-surface-1 ring-2 ring-inset ring-primary/10" : "bg-surface-1"
                       }`}
                     >
