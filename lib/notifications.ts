@@ -113,6 +113,14 @@ export function notificationHref(n: AppNotification): string | undefined {
       return "/shared-with-me?tab=requests";
     case "connection_accepted":
       return "/shared-with-me";
+    case "weekly_checkin":
+      return "/career/lifetime?tab=weekly";
+    case "pay_alert":
+      return "/career/lifetime?tab=pay";
+    case "market_watch":
+      return "/career/lifetime?tab=market";
+    case "skill_reminder":
+      return "/career/lifetime?tab=skills";
     case "stale_applications":
       return "/applications";
     default:

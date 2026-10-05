@@ -89,6 +89,7 @@ export const primaryNav: NavItem[] = [
       // Post-hire retention loop: pay tracking over time, market check,
       // promotion/raise plan, quarterly check-in (app/career/growth/page.tsx).
       { label: "Career Growth", labelKey: "careerGrowth", href: "/career/growth", icon: "award-outline" },
+      { label: "Career for Life", labelKey: "careerLifetime", href: "/career/lifetime", icon: "clock-outline" },
       // Mobile: src/more/CareerDiary.tsx — a plain journal (did/learned/
       // achieved) tied to a role/career/job. Nested here rather than
       // top-level since it's a lower-frequency personal-record tool, same

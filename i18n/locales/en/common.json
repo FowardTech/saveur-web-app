@@ -95,7 +95,8 @@
     "resumeVariants": "Resume Variants",
     "salaryNegotiation": "Salary Negotiation",
     "settings": "Settings",
-    "subscription": "Subscription"
+    "subscription": "Subscription",
+    "careerLifetime": "Career for Life"
   },
   "yes": "Yes",
   "no": "No",
@@ -106,5 +107,6 @@
   "loading": "Loading…",
   "save": "Save",
   "rename": "Rename",
-  "submit": "Submit"
+  "submit": "Submit",
+  "back": "Back"
 }
