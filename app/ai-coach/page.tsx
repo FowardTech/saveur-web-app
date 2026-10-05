@@ -93,6 +93,7 @@ function AiCoachPageInner() {
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [proRequired, setProRequired] = useState(false);
+  const [coachLimit, setCoachLimit] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -197,7 +198,9 @@ function AiCoachPageInner() {
       }
     } catch (err) {
       const apiErr = err as ApiError;
-      if (apiErr.status === 402 || apiErr.status === 403) {
+      if (apiErr.error === "coach_limit_reached") {
+        setCoachLimit(apiErr.message);
+      } else if (apiErr.status === 402 || apiErr.status === 403) {
         setProRequired(true);
       } else {
         setError(apiErr.message || t("web:aiCoach.loadFailedDefault", { defaultValue: "Couldn't load your conversation." }));
@@ -373,7 +376,9 @@ function AiCoachPageInner() {
       }
     } catch (err) {
       const apiErr = err as ApiError;
-      if (apiErr.status === 402 || apiErr.status === 403) {
+      if (apiErr.error === "coach_limit_reached") {
+        setCoachLimit(apiErr.message);
+      } else if (apiErr.status === 402 || apiErr.status === 403) {
         setProRequired(true);
       } else {
         setError(apiErr.message || t("web:aiCoach.replyFailedDefault", { defaultValue: "The coach couldn't reply right now. Please try again." }));
@@ -445,7 +450,9 @@ function AiCoachPageInner() {
       await sendQuestion(caption, undefined, url);
     } catch (err) {
       const apiErr = err as ApiError;
-      if (apiErr.status === 402 || apiErr.status === 403) {
+      if (apiErr.error === "coach_limit_reached") {
+        setCoachLimit(apiErr.message);
+      } else if (apiErr.status === 402 || apiErr.status === 403) {
         setProRequired(true);
       } else {
         setError(apiErr.message || t("web:aiCoach.imageUploadFailedDefault", { defaultValue: "Couldn't attach that image. Please try again." }));
@@ -602,6 +609,16 @@ function AiCoachPageInner() {
               </span>
               <h2 className="font-semibold text-primary">{t("web:aiCoach.proRequiredTitle", { defaultValue: "AI Coach requires a paid plan" })}</h2>
               <p className="text-sm text-hint">{t("web:aiCoach.proRequiredSubtitle", { defaultValue: "Upgrade your plan to chat with your AI career coach." })}</p>
+            </div>
+          )}
+
+          {coachLimit && (
+            <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-4">
+              <p className="text-sm font-semibold text-primary">{t("web:aiCoach.limitTitle", { defaultValue: "Monthly limit reached" })}</p>
+              <p className="text-sm text-hint">{coachLimit}</p>
+              <Link href="/subscription" className="text-sm font-semibold text-link hover:underline">
+                {t("web:aiCoach.limitUpgrade", { defaultValue: "Upgrade to Premium" })}
+              </Link>
             </div>
           )}
 

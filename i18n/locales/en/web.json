@@ -51,7 +51,9 @@
     "copy": "Copy",
     "goodResponse": "Good response",
     "badResponse": "Bad response",
-    "retry": "Try again"
+    "retry": "Try again",
+    "limitTitle": "Monthly limit reached",
+    "limitUpgrade": "Upgrade to Premium"
   },
   "applications": {
     "active": "Active",

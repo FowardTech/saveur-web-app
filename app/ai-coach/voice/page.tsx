@@ -371,6 +371,12 @@ function VoiceCoachPageInner() {
         speakReply(replyText);
       } catch (err) {
         const apiErr = err as ApiError;
+        if (apiErr.error === "coach_limit_reached") {
+          setErrorMsg(apiErr.message);
+          sessionActiveRef.current = false;
+          setPhase("idle");
+          return;
+        }
         if (apiErr.status === 402 || apiErr.status === 403) {
           setProRequired(true);
           sessionActiveRef.current = false;
