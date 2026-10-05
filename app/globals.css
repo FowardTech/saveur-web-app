@@ -232,11 +232,16 @@
 }
 
 .animate-page-in {
-  animation: page-fade-in 0.28s ease-out both;
+  /* `backwards` (not `both`): once finished, NO transform is left on the
+     wrapper. A lingering `transform: translateY(0)` makes the wrapper the
+     containing block for every `position: fixed` descendant, so every modal
+     rendered inside a page was positioned relative to the page content
+     (far down, needing a scroll) instead of the viewport. */
+  animation: page-fade-in 0.28s ease-out backwards;
 }
 
 .animate-card-in {
-  animation: card-fade-in 0.32s ease-out both;
+  animation: card-fade-in 0.32s ease-out backwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
