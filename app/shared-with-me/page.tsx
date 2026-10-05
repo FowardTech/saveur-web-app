@@ -82,6 +82,22 @@ function SharedWithMeInner() {
     loadConnections();
   }, [loadConnections]);
 
+  async function onRemoveConnection(username: string) {
+    const ok = window.confirm(
+      t("web:sharedWithMe.removeConnectionConfirm", {
+        defaultValue: "Remove @{{username}} from your connections? You won't be able to share with each other until you reconnect.",
+        username,
+      })
+    );
+    if (!ok) return;
+    try {
+      await sharesService.removeConnection(username);
+      setConnections((prev) => (prev ? prev.filter((x) => x !== username) : prev));
+    } catch (err) {
+      window.alert((err as { message?: string }).message || t("web:errorsGeneric.somethingWentWrong", { defaultValue: "Something went wrong. Please try again." }));
+    }
+  }
+
   const [shares, setShares] = useState<ReceivedShareProps[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -231,7 +247,14 @@ function SharedWithMeInner() {
                   <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                     <EvaIcon name="people-outline" size={18} />
                   </span>
-                  <p className="truncate text-sm font-semibold text-primary">@{u}</p>
+                  <p className="min-w-0 flex-1 truncate text-sm font-semibold text-primary">@{u}</p>
+                  <button
+                    type="button"
+                    onClick={() => onRemoveConnection(u)}
+                    className="shrink-0 rounded-pill bg-danger/10 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger/20"
+                  >
+                    {t("web:sharedWithMe.removeConnection", { defaultValue: "Remove" })}
+                  </button>
                 </div>
               ))}
             </div>
