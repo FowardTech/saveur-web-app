@@ -447,8 +447,8 @@ function CourseSessionInner() {
         <div className="w-full">
           <BackLink href={backHref} t={t} />
         </div>
-        <span className="mt-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-surface-3 text-primary">
-          <EvaIcon name="book-open-outline" size={32} />
+        <span className="mt-4 inline-flex h-24 w-24 items-center justify-center rounded-[28px] bg-hero-gradient text-brand shadow-soft">
+          <EvaIcon name="book-open-outline" size={40} />
         </span>
         <h1 className="text-xl font-bold text-primary">{topic}</h1>
         <p className="text-sm text-hint">

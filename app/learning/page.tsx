@@ -12,7 +12,6 @@ import { SelectField } from "@/components/ui/SelectField";
 import { Button } from "@/components/ui/Button";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
-import { ArtLearningCourses } from "@/components/learning/LearningArt";
 import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
 import {
@@ -294,36 +293,10 @@ export default function LearningPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
-          {/* Hero -- task #46 visual quality pass ("Learning" explicitly
-              called out as looking sparse/unfinished): this page used to
-              open straight into a plain header with no illustration at
-              all, unlike the dashboard's illustrated HomeBanner. Same
-              gradient-card + right-side-art treatment, book illustration
-              (ArtLearningCourses, see LearningArt.tsx) instead of a
-              generic icon. */}
-          <div className="shadow-sm">
-            <section className="relative flex items-center justify-between gap-4 overflow-hidden rounded-card border border-border bg-surface-1 px-6 py-8 sm:px-8 sm:py-10">
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-surface-3 blur-3xl"
-              />
-              <div className="relative flex max-w-lg flex-col items-start gap-2">
-                {/* h1, not h2 -- this hero replaces what used to be the
-                    page's only PageHeader (the sole <h1>), so it keeps
-                    that same heading level rather than leaving the page
-                    with no h1 at all. */}
-                <h1 className="text-2xl font-bold leading-tight text-primary sm:text-3xl">
-                  {t("web:learning.title", { defaultValue: "Learning Courses" })}
-                </h1>
-                <p className="text-sm text-hint sm:text-base">
-                  {t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal — or teach yourself anything." })}
-                </p>
-              </div>
-              <div className="relative hidden shrink-0 md:block">
-                <ArtLearningCourses size={144} />
-              </div>
-            </section>
-          </div>
+          <PageHeader
+            title={t("web:learning.title", { defaultValue: "Learning Courses" })}
+            subtitle={t("web:learning.subtitle", { defaultValue: "An AI-built, week-by-week curriculum toward your career goal — or teach yourself anything." })}
+          />
 
           <div className="flex flex-wrap items-start justify-end gap-3">
             {/* Product report: "The Saved card is not implemented in the
