@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import { useFeatureFlag } from "@/hooks/useFeatureFlag";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -25,6 +26,9 @@ const fmt = (n?: number | null, cur = "USD") =>
 export default function CareerGrowthPage() {
   const { t } = useTranslation();
   const { loading: authLoading } = useAuth();
+  const payOn = useFeatureFlag("pay_tracking");
+  const planOn = useFeatureFlag("promotion_plan");
+  const marketOn = useFeatureFlag("market_check");
   const [tab, setTab] = useState<Tab>("pay");
   const [records, setRecords] = useState<PayRecord[]>([]);
   const [summary, setSummary] = useState<PaySummary>({ count: 0 });
@@ -174,11 +178,11 @@ export default function CareerGrowthPage() {
           )}
 
           <div className="flex gap-2">
-            <Pill selected={tab === "pay"} onClick={() => setTab("pay")}>{t("web:growth.tabPay", { defaultValue: "Pay tracking" })}</Pill>
-            <Pill selected={tab === "plan"} onClick={() => setTab("plan")}>{t("web:growth.tabPlan", { defaultValue: "Raise & promotion plan" })}</Pill>
+            {payOn && <Pill selected={tab === "pay"} onClick={() => setTab("pay")}>{t("web:growth.tabPay", { defaultValue: "Pay tracking" })}</Pill>}
+            {planOn && <Pill selected={tab === "plan"} onClick={() => setTab("plan")}>{t("web:growth.tabPlan", { defaultValue: "Raise & promotion plan" })}</Pill>}
           </div>
 
-          {tab === "pay" && (
+          {tab === "pay" && payOn && (
             <>
               {summary.count > 0 && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -233,7 +237,7 @@ export default function CareerGrowthPage() {
                 </div>
               )}
 
-              {records.length > 0 && (
+              {records.length > 0 && marketOn && (
                 <div className={card}>
                   <h2 className="font-semibold text-primary">{t("web:growth.marketTitle", { defaultValue: "Am I paid fairly?" })}</h2>
                   <p className="text-sm text-hint">{t("web:growth.marketBody", { defaultValue: "Compare your current pay with the market range for your role." })}</p>
@@ -248,7 +252,7 @@ export default function CareerGrowthPage() {
             </>
           )}
 
-          {tab === "plan" && (
+          {tab === "plan" && planOn && (
             <>
               <div className={card}>
                 <div className="flex gap-2">

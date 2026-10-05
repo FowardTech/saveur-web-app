@@ -3,10 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
-import { primaryNav, secondaryNav, isNavGroup, type NavItem } from "@/lib/navigation";
+import { primaryNav as allPrimaryNav, secondaryNav, isNavGroup, filterNav, type NavItem } from "@/lib/navigation";
+import { getAppConfig, isFeatureEnabled } from "@/lib/appConfigService";
 import { SUPPORTED_LANGUAGES, LOCALE_STORAGE_KEY, getLanguageNativeLabel } from "@/i18n/config";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { getMoreBadges, badgeCountFor, type MoreBadges } from "@/lib/moreBadges";
@@ -306,6 +307,17 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firebaseUser, loading]);
+
+  // Admin feature flags: hide rows an admin has switched off.
+  const [flagsTick, setFlagsTick] = useState(0);
+  useEffect(() => {
+    getAppConfig().then(() => setFlagsTick((n) => n + 1));
+  }, []);
+  const primaryNav = useMemo(
+    () => filterNav(allPrimaryNav, (f) => isFeatureEnabled(f as never)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [flagsTick]
+  );
 
   return (
     // BUG FIX (product report: "I want the dashboard sidebar background to

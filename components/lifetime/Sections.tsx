@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { Pill } from "@/components/ui/Pill";
+import { useFeatureFlag } from "@/hooks/useFeatureFlag";
+import { isFeatureEnabled } from "@/lib/appConfigService";
 import { LocationSelect } from "@/components/ui/LocationFields";
 import type { ApiError } from "@/lib/apiClient";
 import * as svc from "@/lib/lifetimeService";
@@ -61,8 +63,20 @@ const Bullets = ({ items }: { items: string[] }) => (
 );
 
 /* ---------------------------------------------------------------- hub */
+const TAB_FLAG: Record<string, "lt_weekly_checkin" | "lt_brag_document" | "lt_review_prep" | "lt_pay_watch" | "lt_market_watch" | "lt_leadership_track" | "lt_skills_plan" | "lt_career_timeline"> = {
+  weekly: "lt_weekly_checkin",
+  brag: "lt_brag_document",
+  review: "lt_review_prep",
+  pay: "lt_pay_watch",
+  market: "lt_market_watch",
+  leadership: "lt_leadership_track",
+  skills: "lt_skills_plan",
+  timeline: "lt_career_timeline",
+};
+
 export function Hub({ onOpen }: { onOpen: (tab: string) => void }) {
   const { t } = useTranslation();
+  useFeatureFlag("career_success_hub"); // re-render once admin flags have loaded
   const [o, setO] = useState<svc.Overview | null>(null);
   useEffect(() => {
     svc.getOverview().then(setO).catch(() => {});
@@ -79,7 +93,7 @@ export function Hub({ onOpen }: { onOpen: (tab: string) => void }) {
   ];
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      {cards.map((c) => (
+      {cards.filter((c) => isFeatureEnabled(TAB_FLAG[c.tab])).map((c) => (
         <button
           key={c.tab}
           type="button"

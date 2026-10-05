@@ -17,6 +17,9 @@ export interface NavLeaf {
    * when set, Sidebar renders a small unread-count pill at the end of this
    * row, mirroring mobile MainDrawer.tsx's per-row `badge` treatment. */
   badgeKey?: "jobAlerts" | "careerEvents" | "settings" | "sharedWithMe";
+  /** Admin feature flag (Admin > Config > Feature flags): the row is hidden
+   * when this flag is switched off. */
+  flag?: string;
 }
 
 export interface NavGroup {
@@ -27,6 +30,24 @@ export interface NavGroup {
 }
 
 export type NavItem = NavLeaf | NavGroup;
+
+/** Hides nav rows whose admin feature flag is off (and groups left empty).
+ * `career_growth_any` is on while at least one of its three sub-features is. */
+export function filterNav(items: NavItem[], isEnabled: (flag: string) => boolean): NavItem[] {
+  const ok = (leaf: NavLeaf) => {
+    if (!leaf.flag) return true;
+    if (leaf.flag === "career_growth_any") return ["pay_tracking", "market_check", "promotion_plan"].some(isEnabled);
+    return isEnabled(leaf.flag);
+  };
+  const out: NavItem[] = [];
+  for (const item of items) {
+    if ("children" in item) {
+      const children = item.children.filter(ok);
+      if (children.length) out.push({ ...item, children });
+    } else if (ok(item)) out.push(item);
+  }
+  return out;
+}
 
 export function isNavGroup(item: NavItem): item is NavGroup {
   return "children" in item;
@@ -85,11 +106,11 @@ export const primaryNav: NavItem[] = [
       { label: "Salary Negotiation", labelKey: "salaryNegotiation", href: "/career/salary-negotiation", icon: "bar-chart-2-outline" },
       // Salary Benchmark also covers offers ("A job offer" mode) -- the old
       // standalone Offer Analyzer page now redirects here.
-      { label: "Salary Benchmark", labelKey: "salaryBenchmark", href: "/career/salary-benchmark", icon: "percent-outline" },
+      { label: "Salary Benchmark", labelKey: "salaryBenchmark", href: "/career/salary-benchmark", icon: "percent-outline", flag: "salary_benchmark" },
       // Post-hire retention loop: pay tracking over time, market check,
       // promotion/raise plan, quarterly check-in (app/career/growth/page.tsx).
-      { label: "Career Growth", labelKey: "careerGrowth", href: "/career/growth", icon: "award-outline" },
-      { label: "Career Success Hub", labelKey: "careerLifetime", href: "/career/lifetime", icon: "clock-outline" },
+      { label: "Career Growth", labelKey: "careerGrowth", href: "/career/growth", icon: "award-outline", flag: "career_growth_any" },
+      { label: "Career Success Hub", labelKey: "careerLifetime", href: "/career/lifetime", icon: "clock-outline", flag: "career_success_hub" },
       // Mobile: src/more/CareerDiary.tsx — a plain journal (did/learned/
       // achieved) tied to a role/career/job. Nested here rather than
       // top-level since it's a lower-frequency personal-record tool, same

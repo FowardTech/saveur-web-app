@@ -41,6 +41,19 @@ export interface FeatureFlags {
   // kill-switch, not something that should silently hide the feature on a
   // config-fetch failure).
   student_verification: boolean;
+  career_success_hub?: boolean;
+  lt_weekly_checkin?: boolean;
+  lt_brag_document?: boolean;
+  lt_review_prep?: boolean;
+  lt_leadership_track?: boolean;
+  lt_pay_watch?: boolean;
+  lt_market_watch?: boolean;
+  lt_skills_plan?: boolean;
+  lt_career_timeline?: boolean;
+  salary_benchmark?: boolean;
+  pay_tracking?: boolean;
+  market_check?: boolean;
+  promotion_plan?: boolean;
 }
 
 // Student verification eligibility + discount (see

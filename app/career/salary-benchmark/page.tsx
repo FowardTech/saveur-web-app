@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
+import { useFeatureFlag } from "@/hooks/useFeatureFlag";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
@@ -27,6 +28,7 @@ export default function SalaryBenchmarkPage() {
 
 function SalaryBenchmarkInner() {
   const { t, i18n } = useTranslation();
+  const benchmarkOn = useFeatureFlag("salary_benchmark");
   const params = useSearchParams();
   const [title, setTitle] = useState(params.get("title") ?? "");
   const [location, setLocation] = useState(params.get("location") ?? "");
@@ -85,6 +87,17 @@ function SalaryBenchmarkInner() {
     { key: "p75", label: t("web:salaryBenchmark.p75", { defaultValue: "75th percentile" }) },
     { key: "p90", label: t("web:salaryBenchmark.p90", { defaultValue: "High (90th percentile)" }) },
   ];
+
+  if (!benchmarkOn)
+    return (
+      <RequireAuth>
+        <AppShell>
+          <div className="mx-auto max-w-3xl rounded-card border border-border bg-surface-2 p-6 text-sm text-hint">
+            {t("web:salaryBenchmark.unavailable", { defaultValue: "Salary Benchmark is unavailable right now. Please check back soon." })}
+          </div>
+        </AppShell>
+      </RequireAuth>
+    );
 
   return (
     <RequireAuth>

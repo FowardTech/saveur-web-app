@@ -8,6 +8,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import Link from "next/link";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useFeatureFlag } from "@/hooks/useFeatureFlag";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Hub, Weekly, Brag, Review, Leadership, RolePlay, Pay, Market, Skills, Timeline } from "@/components/lifetime/Sections";
 
@@ -27,6 +28,7 @@ function Inner() {
   const params = useSearchParams();
   const tab = params.get("tab") ?? "hub";
   const { isPremium, loading: authLoading } = useAuth();
+  const hubOn = useFeatureFlag("career_success_hub");
   const [rp, setRp] = useState<{ scenario: string; context: string } | null>(null);
 
   const titles: Record<string, string> = {
@@ -46,7 +48,13 @@ function Inner() {
   const practice = (scenario: string, context: string) => setRp({ scenario, context });
 
   let body;
-  if (!authLoading && !isPremium)
+  if (!hubOn)
+    body = (
+      <div className="rounded-card border border-border bg-surface-2 p-6 text-sm text-hint">
+        {t("web:lifetime.unavailable", { defaultValue: "Career Success Hub is unavailable right now. Please check back soon." })}
+      </div>
+    );
+  else if (!authLoading && !isPremium)
     body = (
       <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
         <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
