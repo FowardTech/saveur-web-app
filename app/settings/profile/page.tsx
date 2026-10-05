@@ -112,9 +112,9 @@ export default function ProfileSettingsPage() {
     if (roles.length >= MAX_ROLES && !roles.some((r) => r.toLowerCase() === value.toLowerCase())) {
       setCapMessage(
         t("web:settings.profile.maxRolesReached", {
-          defaultValue: `You can target up to {{max}} roles at once.${upsellSuffix("roles")}`,
+          defaultValue: "You can target up to {{max}} roles at once.",
           max: MAX_ROLES,
-        }),
+        }) + upsellSuffix("roles"),
       );
       return;
     }
@@ -134,9 +134,9 @@ export default function ProfileSettingsPage() {
       if (prev.length >= MAX_COUNTRIES) {
         setCapMessage(
           t("web:settings.profile.maxCountriesReached", {
-            defaultValue: `You can pick up to {{max}} countries at once.${upsellSuffix("countries")}`,
+            defaultValue: "You can pick up to {{max}} countries at once.",
             max: MAX_COUNTRIES,
-          }),
+          }) + upsellSuffix("countries"),
         );
         return prev;
       }

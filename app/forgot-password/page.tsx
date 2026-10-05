@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
         <p className="text-sm font-medium text-success-text">
           {t("web:auth.resetEmailSent", {
             email,
-            defaultValue: `If an account exists for ${email}, a reset link is on its way. Check your inbox.`,
+            defaultValue: "If an account exists for {{email}}, a reset link is on its way. Check your inbox.",
           })}
         </p>
       ) : (

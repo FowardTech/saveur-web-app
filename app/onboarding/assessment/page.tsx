@@ -230,7 +230,7 @@ function CareerAssessmentPageInner() {
           {t("web:careerAssessment.questionOf", {
             current: personalityIndex + 1,
             total: personalityQuestions.length,
-            defaultValue: `Question ${personalityIndex + 1} of ${personalityQuestions.length}`,
+            defaultValue: "Question {{current}} of {{total}}",
           })}
         </p>
         <h2 className="mt-2 mb-5 text-lg font-bold text-primary">{question?.text}</h2>
@@ -273,7 +273,7 @@ function CareerAssessmentPageInner() {
           {targetRole
             ? t("web:careerAssessment.skillsIntroSubtitleRole", {
                 role: targetRole,
-                defaultValue: `5 quick multiple-choice questions on ${targetRole} fundamentals — see where you stand before your first mock interview.`,
+                defaultValue: "5 quick multiple-choice questions on {{role}} fundamentals — see where you stand before your first mock interview.",
               })
             : t("web:careerAssessment.skillsIntroSubtitleGeneric", {
                 defaultValue: "5 quick multiple-choice questions to gauge your readiness before your first mock interview.",

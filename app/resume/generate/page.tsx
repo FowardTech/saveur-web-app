@@ -346,7 +346,7 @@ function GenerateResumeInner() {
                 <p className={`text-sm ${remaining > 0 ? "text-primary" : "text-danger"}`}>
                   {remaining > 0
                     ? t("web:resume.generate.freeActionsRemaining", {
-                        defaultValue: `${remaining} free resume tool action${remaining === 1 ? "" : "s"} left this month`,
+                        defaultValue: "{{count}} free resume tool actions left this month",
                         count: remaining,
                       })
                     : t("web:resume.generate.freeActionsUsedUp", { defaultValue: "You've used all your free resume tool actions this month" })}

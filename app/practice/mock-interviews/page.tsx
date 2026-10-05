@@ -354,7 +354,7 @@ function MockInterviewSetupInner() {
                 <p className={`text-sm ${remainingFreeSessions > 0 ? "text-primary" : "text-danger"}`}>
                   {remainingFreeSessions > 0
                     ? t("web:practice.mockInterviews.freeSessionsRemaining", {
-                        defaultValue: `${remainingFreeSessions} free session${remainingFreeSessions === 1 ? "" : "s"} left this month`,
+                        defaultValue: "{{count}} free sessions left this month",
                         count: remainingFreeSessions,
                       })
                     : t("web:practice.mockInterviews.freeSessionsUsedUp", { defaultValue: "You've used all your free sessions this month" })}
