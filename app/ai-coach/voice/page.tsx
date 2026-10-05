@@ -71,9 +71,12 @@ import { actionTitle, runSuggestedAction, type SuggestedActionId } from "@/lib/s
 // choppier (bursty updates rather than a smooth stream), so this uses a
 // slightly longer 1300ms to avoid cutting a turn off mid-word — same idea,
 // adjusted for a slower signal.
-const SILENCE_MS = 2600;
-const SHORT_TURN_SILENCE_MS = 4000;
-const INCOMPLETE_EXTRA_MS = 2200;
+// Tuned for a natural, human-paced exchange: a finished sentence is answered almost
+// immediately; only clearly unfinished speech gets extra grace.
+const SILENCE_MS = 1100;
+const SHORT_TURN_SILENCE_MS = 1700;
+const COMPLETE_SENTENCE_MS = 650;
+const INCOMPLETE_EXTRA_MS = 1000;
 // A sentence ending in one of these (or a comma) is almost certainly unfinished.
 const TRAILING_FILLERS = new Set([
   "and", "but", "so", "because", "or", "then", "that", "which", "with", "to", "of", "for", "in", "on", "at",
@@ -90,6 +93,7 @@ function silenceFor(text: string): number {
   else ms = Math.round(SHORT_TURN_SILENCE_MS - ((words - 3) / 5) * (SHORT_TURN_SILENCE_MS - SILENCE_MS));
   const last = (parts[parts.length - 1] || "").toLowerCase().replace(/[.!?,;:]+$/, "");
   if (/[,;:]$/.test(trimmed) || TRAILING_FILLERS.has(last)) ms += INCOMPLETE_EXTRA_MS;
+  else if (words >= 4 && /[.!?]$/.test(trimmed)) ms = COMPLETE_SENTENCE_MS;
   return ms;
 }
 

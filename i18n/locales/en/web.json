@@ -2109,7 +2109,7 @@
     "checkinIntroTitle": "Two minutes to review your week",
     "copy": "Copy",
     "currentRole": "Your current role",
-    "due": "Due {{date}}",
+    "due": "Due",
     "evidence": "Your evidence",
     "finish": "Finish and get feedback",
     "focus": "Focus for next week",
@@ -2213,6 +2213,11 @@
     "weeks": "weeks",
     "wins": "Wins",
     "youSaid": "You said",
-    "yourReply": "Your reply…"
+    "yourReply": "Your reply…",
+    "dueDate": "Due {{date}}",
+    "msCert": "Certification",
+    "msProject": "Project",
+    "msNetwork": "Networking",
+    "msSkill": "Skill"
   }
 }

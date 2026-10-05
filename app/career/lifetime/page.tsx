@@ -56,7 +56,7 @@ function Inner() {
   return (
     <RequireAuth>
       <AppShell>
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-5">
           {tab !== "hub" && (
             <button type="button" onClick={() => go("hub")} className="self-start text-sm font-semibold text-hint underline">
               ← {t("web:lifetime.hubTitle", { defaultValue: "Career Success Hub" })}

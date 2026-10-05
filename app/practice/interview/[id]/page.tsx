@@ -57,7 +57,7 @@ import * as ttsService from "@/lib/ttsService";
 // accomplishable in web too... make use of AI and some APIs... implement
 // it perfectly on web too"). If the browser can't grant camera access, the
 // candidate is offered Voice or Text instead rather than being dead-ended.
-const SILENCE_MS = 1300;
+const SILENCE_MS = 1100;
 
 type VoicePhase = "idle" | "listening" | "thinking" | "speaking";
 
@@ -317,7 +317,10 @@ export default function LiveInterviewSessionPage() {
   // Product report: "the AI should wait a bit before the follow-up question"
   // (it fired instantly after every answer, which felt robotic), and "auto
   // end the interview when the interviewer says they're ending".
-  const followUpPause = () => new Promise<void>((r) => setTimeout(r, 1800 + Math.random() * 1400));
+  // Short beat that runs IN PARALLEL with the question request, so the wait is the longer of
+  // the two rather than their sum.
+  const withBeat = <T,>(p: Promise<T>) =>
+    Promise.all([p, new Promise<void>((r) => setTimeout(r, 350 + Math.random() * 350))]).then(([v]) => v);
   // Gives the candidate time to read/hear the closing line, then ends.
   const endAfterClosing = useCallback(
     (spokenDelayMs: number) => {
@@ -338,8 +341,7 @@ export default function LiveInterviewSessionPage() {
     try {
       const result = await interviewService.submitAnswer(sessionId, trimmed);
       if (result.flagged && result.caution) showModerationCaution(result.caution);
-      await followUpPause();
-      const next = await interviewService.getNextQuestion(sessionId);
+      const next = await withBeat(interviewService.getNextQuestion(sessionId));
       setCurrentQuestion(next.text);
       setTranscript((prev) => [...prev, { role: "interviewer", text: next.text }]);
       if (next.isClosing) endAfterClosing(4000);
@@ -442,8 +444,7 @@ export default function LiveInterviewSessionPage() {
       try {
         const result = await interviewService.submitAnswer(sessionId, trimmed);
         if (result.flagged && result.caution) showModerationCaution(result.caution);
-        await followUpPause();
-        const next = await interviewService.getNextQuestion(sessionId);
+        const next = await withBeat(interviewService.getNextQuestion(sessionId));
         if (!sessionActiveRef.current) return;
         setCurrentQuestion(next.text);
         setTranscript((prev) => [...prev, { role: "interviewer", text: next.text }]);

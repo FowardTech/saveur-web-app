@@ -564,7 +564,7 @@ export function Skills() {
           <input type="checkbox" checked={m.done} onChange={() => run(async () => { setPlan(await svc.setMilestone(m.id, !m.done)); })} />
           <span className="flex flex-col">
             <span className={`text-sm font-semibold text-primary ${m.done ? "line-through" : ""}`}>{m.title}</span>
-            <span className="text-xs text-hint">{t("web:lifetime.due", { defaultValue: "Due {{date}}", date: m.due })} · {m.type}</span>
+            <span className="text-xs text-hint">{t("web:lifetime.dueDate", { defaultValue: "Due {{date}}", date: m.due })} · {m.type === "cert" ? t("web:lifetime.msCert", { defaultValue: "Certification" }) : m.type === "project" ? t("web:lifetime.msProject", { defaultValue: "Project" }) : m.type === "network" ? t("web:lifetime.msNetwork", { defaultValue: "Networking" }) : t("web:lifetime.msSkill", { defaultValue: "Skill" })}</span>
           </span>
         </label>
       ))}

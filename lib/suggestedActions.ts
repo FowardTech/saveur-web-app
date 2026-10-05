@@ -56,6 +56,15 @@ export type SuggestedActionId =
   | "salary_negotiation"
   | "offer_analyzer"
   | "career_growth"
+  | "career_hub"
+  | "weekly_checkin"
+  | "brag_document"
+  | "review_prep"
+  | "pay_watch"
+  | "market_watch"
+  | "leadership_track"
+  | "skills_plan"
+  | "career_timeline"
   | "system_design_whiteboard"
   | "learning_courses"
   | "career_diary"
@@ -107,6 +116,15 @@ export const ACTION_META: Partial<Record<SuggestedActionId, ActionMeta>> = {
   salary_negotiation: { title: "Salary Negotiation practice", icon: "trending-up-outline" },
   offer_analyzer: { title: "the Offer Analyzer", icon: "pie-chart-outline" },
   career_growth: { title: "Career Growth", icon: "trending-up-outline" },
+  career_hub: { title: "the Career Success Hub", icon: "people-outline" },
+  weekly_checkin: { title: "your Weekly Check-in", icon: "checkmark-circle-2-outline" },
+  brag_document: { title: "your Brag Document", icon: "award-outline" },
+  review_prep: { title: "Review & Promotion Prep", icon: "file-text-outline" },
+  pay_watch: { title: "Pay & Market Alerts", icon: "trending-up-outline" },
+  market_watch: { title: "your Job-market Watch", icon: "globe-outline" },
+  leadership_track: { title: "the Leadership Track", icon: "people-outline" },
+  skills_plan: { title: "your Skills & Certifications plan", icon: "book-open-outline" },
+  career_timeline: { title: "your Career Timeline", icon: "clock-outline" },
   system_design_whiteboard: { title: "System Design Practice", icon: "grid-outline" },
   learning_courses: { title: "Learning Courses", icon: "book-open-outline" },
   career_diary: { title: "your Career Diary", icon: "edit-2-outline" },
@@ -152,6 +170,15 @@ const SCREEN_MAP: Partial<Record<SuggestedActionId, string>> = {
   salary_negotiation: "/career/salary-negotiation",
   offer_analyzer: "/career/offer-analyzer",
   career_growth: "/career/growth",
+  career_hub: "/career/lifetime",
+  weekly_checkin: "/career/lifetime?tab=weekly",
+  brag_document: "/career/lifetime?tab=brag",
+  review_prep: "/career/lifetime?tab=review",
+  pay_watch: "/career/lifetime?tab=pay",
+  market_watch: "/career/lifetime?tab=market",
+  leadership_track: "/career/lifetime?tab=leadership",
+  skills_plan: "/career/lifetime?tab=skills",
+  career_timeline: "/career/lifetime?tab=timeline",
   learning_courses: "/learning",
   career_diary: "/career-diary",
   career_roadmap: "/career/roadmap",
