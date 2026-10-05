@@ -2218,6 +2218,9 @@
     "msCert": "Certification",
     "msProject": "Project",
     "msNetwork": "Networking",
-    "msSkill": "Skill"
+    "msSkill": "Skill",
+    "premiumTitle": "Career Success Hub is a Premium feature",
+    "premiumBody": "Weekly check-ins, a brag document, review and promotion prep, pay and market alerts, a leadership track, skills planning and your career timeline.",
+    "upgradePremium": "Upgrade to Premium"
   }
 }

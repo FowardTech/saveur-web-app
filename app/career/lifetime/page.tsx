@@ -6,6 +6,9 @@ import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
+import Link from "next/link";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Hub, Weekly, Brag, Review, Leadership, RolePlay, Pay, Market, Skills, Timeline } from "@/components/lifetime/Sections";
 
 // Career Success Hub — weekly check-in, brag document, review/promotion prep,
@@ -23,6 +26,7 @@ function Inner() {
   const router = useRouter();
   const params = useSearchParams();
   const tab = params.get("tab") ?? "hub";
+  const { isPremium, loading: authLoading } = useAuth();
   const [rp, setRp] = useState<{ scenario: string; context: string } | null>(null);
 
   const titles: Record<string, string> = {
@@ -42,7 +46,22 @@ function Inner() {
   const practice = (scenario: string, context: string) => setRp({ scenario, context });
 
   let body;
-  if (rp) body = <RolePlay scenario={rp.scenario} context={rp.context} onExit={() => setRp(null)} />;
+  if (!authLoading && !isPremium)
+    body = (
+      <div className="flex flex-col items-start gap-2 rounded-card border border-border bg-surface-2 p-6">
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
+          <EvaIcon name="lock-outline" size={20} />
+        </span>
+        <h2 className="font-semibold text-primary">{t("web:lifetime.premiumTitle", { defaultValue: "Career Success Hub is a Premium feature" })}</h2>
+        <p className="text-sm text-hint">
+          {t("web:lifetime.premiumBody", { defaultValue: "Weekly check-ins, a brag document, review and promotion prep, pay and market alerts, a leadership track, skills planning and your career timeline." })}
+        </p>
+        <Link href="/subscription" className="mt-1 text-sm font-semibold text-link hover:underline">
+          {t("web:lifetime.upgradePremium", { defaultValue: "Upgrade to Premium" })}
+        </Link>
+      </div>
+    );
+  else if (rp) body = <RolePlay scenario={rp.scenario} context={rp.context} onExit={() => setRp(null)} />;
   else if (tab === "weekly") body = <Weekly />;
   else if (tab === "brag") body = <Brag />;
   else if (tab === "review") body = <Review onPractice={practice} />;
