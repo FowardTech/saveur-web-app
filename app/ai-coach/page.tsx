@@ -688,21 +688,21 @@ function AiCoachPageInner() {
                           {m.role === "coach" && !m.flagged && m.text && (
                             <div className="mt-0.5 flex items-center gap-1 text-hint">
                               <button type="button" onClick={() => copyReply(m)} aria-label={t("web:aiCoach.copy", { defaultValue: "Copy" })} title={t("web:aiCoach.copy", { defaultValue: "Copy" })} className="rounded-md p-1.5 transition hover:bg-surface-3 hover:text-primary">
-                                <EvaIcon name={copiedId === m.id ? "check" : "copy"} size={15} />
+                                <EvaIcon name={copiedId === m.id ? "check" : "copy"} size={13} />
                               </button>
                               {/^\d+$/.test(m.id) && (
                                 <>
                                   <button type="button" onClick={() => rateReply(m, "up")} aria-label={t("web:aiCoach.goodResponse", { defaultValue: "Good response" })} title={t("web:aiCoach.goodResponse", { defaultValue: "Good response" })} className={`rounded-md p-1.5 transition hover:bg-surface-3 ${m.feedback === "up" ? "text-[#7C5CFF]" : "hover:text-primary"}`}>
-                                    <EvaIcon name="thumbs-up" size={15} />
+                                    <EvaIcon name="thumbs-up" size={13} />
                                   </button>
                                   <button type="button" onClick={() => rateReply(m, "down")} aria-label={t("web:aiCoach.badResponse", { defaultValue: "Bad response" })} title={t("web:aiCoach.badResponse", { defaultValue: "Bad response" })} className={`rounded-md p-1.5 transition hover:bg-surface-3 ${m.feedback === "down" ? "text-[#FF5FA2]" : "hover:text-primary"}`}>
-                                    <EvaIcon name="thumbs-down" size={15} />
+                                    <EvaIcon name="thumbs-down" size={13} />
                                   </button>
                                 </>
                               )}
                               {/^\d+$/.test(m.id) && messages.filter((x) => x.role === "coach").slice(-1)[0]?.id === m.id && (
                                 <button type="button" disabled={sending} onClick={() => retryReply(m)} aria-label={t("web:aiCoach.retry", { defaultValue: "Try again" })} title={t("web:aiCoach.retry", { defaultValue: "Try again" })} className="rounded-md p-1.5 transition hover:bg-surface-3 hover:text-primary disabled:opacity-50">
-                                  <EvaIcon name="retry" size={15} />
+                                  <EvaIcon name="retry" size={13} />
                                 </button>
                               )}
                             </div>
