@@ -573,7 +573,6 @@ function VoiceCoachPageInner() {
       ? t("web:aiCoach.voiceStatusSpeaking", { defaultValue: "Speaking… tap to interrupt" })
       : t("web:aiCoach.voiceStatusIdle", { defaultValue: "Tap the orb to start talking" });
 
-  const displayLine = phase === "listening" && liveTranscript ? liveTranscript : lastCoachLine;
 
   return (
     <RequireAuth>
@@ -614,7 +613,6 @@ function VoiceCoachPageInner() {
 
               <div className="flex max-w-md flex-col items-center gap-2 text-center">
                 <p className="text-sm font-medium text-hint">{statusLabel}</p>
-                <p className="text-lg text-primary">{displayLine}</p>
               </div>
 
               {errorMsg && <p className="max-w-md text-center text-sm text-danger">{errorMsg}</p>}
