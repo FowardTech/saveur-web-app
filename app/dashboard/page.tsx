@@ -187,11 +187,13 @@ export default function DashboardPage() {
           replayable from Settings. */}
       <AppTour />
       <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
-        <div data-tour="dashboard-greeting">
-          <h1 className="text-2xl font-bold text-primary">
+        <div data-tour="dashboard-greeting" className="relative overflow-hidden rounded-[28px] border border-border bg-hero-gradient px-6 py-7 sm:px-8 sm:py-9">
+          <span className="pointer-events-none absolute -right-10 -top-12 h-48 w-48 rounded-full bg-brand/15 blur-2xl" />
+          <span className="pointer-events-none absolute -bottom-16 right-24 h-40 w-40 rounded-full bg-tint-purple-text/15 blur-2xl" />
+          <h1 className="relative text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
             {greeting}, {firstName}
           </h1>
-          <p className="mt-1 text-sm text-hint">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
+          <p className="relative mt-1.5 text-sm text-hint sm:text-base">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
 
         {/* Quick actions */}

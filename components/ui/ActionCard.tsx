@@ -22,12 +22,12 @@ export function ActionCard({ href, icon, title, description, tint, animationDela
   return (
     <Link
       href={href}
-      className={`group flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${
+      className={`group flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 shadow-soft transition duration-300 hover:-translate-y-0.5 hover:border-brand/40 ${
         animationDelayMs != null ? "animate-card-in" : ""
       }`}
       style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}
     >
-      <span className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${badgeBg} ${badgeText}`}>
+      <span className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${badgeBg} ${badgeText}`}>
         <EvaIcon name={icon} size={20} />
       </span>
       <span className="flex flex-col gap-1">

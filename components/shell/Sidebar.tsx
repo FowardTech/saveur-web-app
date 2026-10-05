@@ -29,7 +29,7 @@ import { onForegroundMessage } from "@/lib/messaging";
 function NavIconBadge({ icon, active }: { icon: Parameters<typeof EvaIcon>[0]["name"]; index?: number; active?: boolean }) {
   return (
     <span className="flex h-6 w-6 shrink-0 items-center justify-center">
-      <EvaIcon name={icon} size={22} className={active ? "text-primary" : "text-hint"} />
+      <EvaIcon name={icon} size={22} className={active ? "text-brand" : "text-hint"} />
     </span>
   );
 }
@@ -39,7 +39,7 @@ function NavIconBadge({ icon, active }: { icon: Parameters<typeof EvaIcon>[0]["n
  * '9+' : item.badge` convention. */
 function NavBadge({ count }: { count: number }) {
   return (
-    <span className="ml-auto flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-pill bg-solid px-1.5 text-[11px] font-semibold text-solid-fg">
+    <span className="ml-auto flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-pill bg-brand px-1.5 text-[11px] font-semibold text-white">
       {count > 9 ? "9+" : count}
     </span>
   );
@@ -78,7 +78,7 @@ function NavLink({
       // reliable choice for an active row that needs to read as
       // meaningfully heavier than font-medium (500) on inactive ones.
       className={`flex items-center gap-3 rounded-pill px-3 py-2 text-[15px] transition ${
-        active ? "bg-surface-3 text-primary font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
+        active ? "bg-brand-soft text-brand font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
       }`}
     >
       <NavIconBadge icon={icon} active={active} />
