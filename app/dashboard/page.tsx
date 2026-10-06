@@ -18,6 +18,7 @@ import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCar
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
 import { AppTour } from "@/components/dashboard/AppTour";
 import { CoachingReportCard } from "@/components/dashboard/CoachingReportCard";
+import { DashboardInsights } from "@/components/dashboard/DashboardInsights";
 import { DailyTipBanner } from "@/components/dashboard/DailyTipBanner";
 import { AdPopupModal } from "@/components/dashboard/AdPopupModal";
 import { RatingModal } from "@/components/dashboard/RatingModal";
@@ -266,6 +267,14 @@ export default function DashboardPage() {
         <div data-tour="dashboard-coaching-report">
           <CoachingReportCard />
         </div>
+
+        {/* Insights — product report: "This web app dashboard homescreen
+            still look scanty... Its too empty". Stats strip, weekly
+            activity, recent interviews, job matches, daily challenge,
+            roadmap, leaderboard, news and an explore-more tool grid. All
+            self-fetched from existing endpoints; each card has its own
+            empty state so a new account still sees a full page. */}
+        <DashboardInsights />
       </div>
 
       {/* Mutual exclusion: never stack this on top of the daily check-in
