@@ -11,8 +11,6 @@ import { WelcomeModal } from "@/components/dashboard/WelcomeModal";
 import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { needsOnboarding } from "@/lib/types";
-import { quickActions } from "@/lib/navigation";
-import { FeatureTile } from "@/components/ui/FeatureTile";
 import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard";
 import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCard";
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
@@ -197,24 +195,9 @@ export default function DashboardPage() {
           <p className="relative mt-1.5 text-sm text-hint sm:text-base">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
 
-        {/* Quick actions */}
-        <div data-tour="dashboard-quick-actions" className="flex flex-col gap-4">
-          <h2 className="text-lg font-bold text-primary">{t("web:dashboard.quickActionsTitle", { defaultValue: "Quick actions" })}</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {quickActions.map((action, i) => (
-              <FeatureTile
-                key={action.href}
-                href={action.href}
-                icon={action.icon}
-                backdrop={action.artBg ?? "#2F6BFF"}
-                title={action.labelKey ? t(`common:nav.${action.labelKey}`, { defaultValue: action.label }) : action.label}
-                description={action.descriptionKey ? t(action.descriptionKey, { defaultValue: action.description }) : action.description}
-                animationDelayMs={i * 50}
-                compact
-              />
-            ))}
-          </div>
-        </div>
+        {/* Quick actions temporarily removed to evaluate the denser layout.
+            The tour step targeting dashboard-quick-actions auto-skips when
+            its element is missing (see AppTour.measureStep). */}
 
         {/* Non-blocking "verify your email" nudge for a password-signup
             account that hasn't clicked its emailed link yet — mirrors
