@@ -124,7 +124,7 @@ export default function CodingProjectsPage() {
             {t("web:practice.coding.detail.back", { defaultValue: "Back to Coding Practice" })}
           </Link>
 
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-end gap-4">
             <PageHeader
               title={t("web:practice.codingProjects.title", { defaultValue: "My Coding Projects" })}
               subtitle={t("web:practice.codingProjects.subtitle", { defaultValue: "Build and run your own multi-file projects, saved to your account." })}

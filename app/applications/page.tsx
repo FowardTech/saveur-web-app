@@ -461,7 +461,7 @@ function InterviewsPageInner() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <PageHeader
               title={t("web:applications.pageTitle", { defaultValue: "Interviews" })}
               subtitle={t("web:applications.pageSubtitle", { defaultValue: "Track every application you've sent, and revisit your past practice sessions." })}

@@ -119,7 +119,7 @@ function LeaderboardPageInner() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-10">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <PageHeader
               title={t("web:progress.leaderboardPage.title", { defaultValue: "Leaderboard" })}
               subtitle={t("web:progress.leaderboardPage.subtitle", { defaultValue: "See how your XP stacks up against the Saveur community." })}

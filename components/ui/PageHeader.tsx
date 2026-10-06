@@ -29,7 +29,7 @@ export function PageHeader({ title, subtitle }: { title: string; subtitle?: stri
   const a = ART.find((x) => pathname.startsWith(x.prefix)) ?? DEFAULT_ART;
   return (
     <div
-      className="page-hero relative overflow-hidden rounded-[24px] border border-border px-6 py-6 sm:px-8 sm:py-8"
+      className="page-hero relative w-full basis-full overflow-hidden rounded-[24px] border border-border px-6 py-6 sm:px-8 sm:py-8"
       style={{ ["--hero-a" as string]: a.from, ["--hero-b" as string]: a.to }}
     >
       {/* soft decorative shapes */}

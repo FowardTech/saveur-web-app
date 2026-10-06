@@ -283,7 +283,7 @@ export default function DreamCompaniesPage() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex max-w-6xl flex-col gap-6 pb-16">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <PageHeader
               title={t("web:career.dreamCompanies.title", { defaultValue: "Dream Company Dashboard" })}
               subtitle={t("web:career.dreamCompanies.subtitle", {
