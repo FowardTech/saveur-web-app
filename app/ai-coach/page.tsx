@@ -544,7 +544,7 @@ function AiCoachPageInner() {
     <RequireAuth>
       <AppShell>
         <div className="mx-auto flex h-[calc(100vh-8rem)] max-w-3xl flex-col gap-4 pb-4">
-          <div className="flex flex-wrap items-center justify-end">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <PageHeader
               title={t("web:aiCoach.title", { defaultValue: "AI Coach" })}
               subtitle={t("web:aiCoach.subtitle", { defaultValue: "Ask anything about your job search, interviews, or career." })}
