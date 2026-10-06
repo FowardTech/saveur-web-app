@@ -210,6 +210,7 @@ export default function DashboardPage() {
                 title={action.labelKey ? t(`common:nav.${action.labelKey}`, { defaultValue: action.label }) : action.label}
                 description={action.descriptionKey ? t(action.descriptionKey, { defaultValue: action.description }) : action.description}
                 animationDelayMs={i * 50}
+                compact
               />
             ))}
           </div>
