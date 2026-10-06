@@ -26,7 +26,15 @@
     "submit": "提交",
     "tryAgain": "重试",
     "viewAll": "查看全部",
-    "yes": "是"
+    "yes": "是",
+    "skip": "跳过",
+    "remove": "移除",
+    "accept": "接受",
+    "decline": "拒绝",
+    "generating": "正在生成…",
+    "dismiss": "忽略",
+    "view": "查看",
+    "refresh": "刷新"
   },
   "auth": {
     "alreadyHaveAccount": "已经有账户？",
@@ -78,6 +86,39 @@
     "resumeVariants": "简历进化",
     "salaryNegotiation": "薪资谈判",
     "settings": "设置",
-    "subscription": "订阅与付款"
-  }
+    "subscription": "订阅与付款",
+    "applicationTracker": "申请追踪",
+    "careerEvents": "职业活动",
+    "myProgress": "我的进度",
+    "recentInterviews": "最近的面试",
+    "careerLifetime": "职业成功中心",
+    "emotionalCoach": "情绪教练",
+    "salaryBenchmark": "薪资基准",
+    "careerGrowth": "职业成长",
+    "careerDiary": "职业日记",
+    "whatsNext": "下一步",
+    "jdAnalyzer": "职位分析器",
+    "myDocuments": "我的文档",
+    "dailyIndustryNews": "每日行业资讯",
+    "jobTracker": "求职追踪",
+    "goals": "目标",
+    "sharedWithMe": "与我分享",
+    "addons": "附加功能"
+  },
+  "legal": {
+    "and": "和",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款"
+  },
+  "yes": "是",
+  "no": "否",
+  "somethingWentWrong": "出了点问题，请重试。",
+  "delete": "删除",
+  "cancel": "取消",
+  "try_again": "重试",
+  "loading": "加载中…",
+  "save": "保存",
+  "rename": "重命名",
+  "submit": "发送",
+  "back": "返回"
 }

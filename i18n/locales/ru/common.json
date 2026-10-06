@@ -26,7 +26,15 @@
     "submit": "Отправить",
     "tryAgain": "Повторить",
     "viewAll": "Смотреть все",
-    "yes": "Да"
+    "yes": "Да",
+    "skip": "Пропустить",
+    "remove": "Удалить",
+    "accept": "Принять",
+    "decline": "Отклонить",
+    "generating": "Создание…",
+    "dismiss": "Закрыть",
+    "view": "Просмотреть",
+    "refresh": "Обновить"
   },
   "auth": {
     "alreadyHaveAccount": "Уже есть аккаунт? ",
@@ -78,6 +86,39 @@
     "resumeVariants": "Эволюция резюме",
     "salaryNegotiation": "Переговоры о зарплате",
     "settings": "Настройки",
-    "subscription": "Подписка и оплата"
-  }
+    "subscription": "Подписка и оплата",
+    "applicationTracker": "Отслеживание откликов",
+    "careerEvents": "Карьерные мероприятия",
+    "myProgress": "Мой прогресс",
+    "recentInterviews": "Недавние собеседования",
+    "careerLifetime": "Центр карьерного успеха",
+    "emotionalCoach": "Эмоциональный коуч",
+    "salaryBenchmark": "Зарплатный ориентир",
+    "careerGrowth": "Карьерный рост",
+    "careerDiary": "Карьерный дневник",
+    "whatsNext": "Что дальше",
+    "jdAnalyzer": "Анализатор вакансий",
+    "myDocuments": "Мои документы",
+    "dailyIndustryNews": "Ежедневные новости отрасли",
+    "jobTracker": "Трекер вакансий",
+    "goals": "Цели",
+    "sharedWithMe": "Поделились со мной",
+    "addons": "Дополнения"
+  },
+  "legal": {
+    "and": "и",
+    "privacyPolicy": "Политика конфиденциальности",
+    "termsOfService": "Условия использования"
+  },
+  "yes": "Да",
+  "no": "Нет",
+  "somethingWentWrong": "Что-то пошло не так. Повторите попытку.",
+  "delete": "Удалить",
+  "cancel": "Отмена",
+  "try_again": "Повторить",
+  "loading": "Загрузка…",
+  "save": "Сохранить",
+  "rename": "Переименовать",
+  "submit": "Отправить",
+  "back": "Назад"
 }

@@ -26,7 +26,15 @@
     "submit": "सबमिट करें",
     "tryAgain": "फिर से कोशिश करें",
     "viewAll": "सभी देखें",
-    "yes": "हाँ"
+    "yes": "हाँ",
+    "skip": "छोड़ें",
+    "remove": "हटाएँ",
+    "accept": "स्वीकार करें",
+    "decline": "अस्वीकार करें",
+    "generating": "बनाया जा रहा है…",
+    "dismiss": "खारिज करें",
+    "view": "देखें",
+    "refresh": "रिफ़्रेश करें"
   },
   "auth": {
     "alreadyHaveAccount": "पहले से खाता है? ",
@@ -78,6 +86,39 @@
     "resumeVariants": "रिज़्यूमे एवोल्यूशन",
     "salaryNegotiation": "वेतन बातचीत",
     "settings": "सेटिंग्स",
-    "subscription": "सदस्यता और भुगतान"
-  }
+    "subscription": "सदस्यता और भुगतान",
+    "applicationTracker": "आवेदन ट्रैकर",
+    "careerEvents": "करियर इवेंट",
+    "myProgress": "मेरी प्रगति",
+    "recentInterviews": "हाल के इंटरव्यू",
+    "careerLifetime": "करियर सफलता केंद्र",
+    "emotionalCoach": "इमोशनल कोच",
+    "salaryBenchmark": "वेतन बेंचमार्क",
+    "careerGrowth": "करियर विकास",
+    "careerDiary": "करियर डायरी",
+    "whatsNext": "आगे क्या",
+    "jdAnalyzer": "जॉब एनालाइज़र",
+    "myDocuments": "मेरे दस्तावेज़",
+    "dailyIndustryNews": "दैनिक उद्योग समाचार",
+    "jobTracker": "जॉब ट्रैकर",
+    "goals": "लक्ष्य",
+    "sharedWithMe": "मेरे साथ साझा किया गया",
+    "addons": "ऐड-ऑन"
+  },
+  "legal": {
+    "and": "और",
+    "privacyPolicy": "गोपनीयता नीति",
+    "termsOfService": "सेवा की शर्तें"
+  },
+  "yes": "हाँ",
+  "no": "नहीं",
+  "somethingWentWrong": "कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
+  "delete": "हटाएँ",
+  "cancel": "रद्द करें",
+  "try_again": "फिर से कोशिश करें",
+  "loading": "लोड हो रहा है…",
+  "save": "सहेजें",
+  "rename": "नाम बदलें",
+  "submit": "भेजें",
+  "back": "वापस"
 }

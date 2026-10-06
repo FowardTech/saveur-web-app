@@ -26,7 +26,15 @@
     "submit": "إرسال",
     "tryAgain": "أعد المحاولة",
     "viewAll": "عرض الكل",
-    "yes": "نعم"
+    "yes": "نعم",
+    "skip": "تخطي",
+    "remove": "إزالة",
+    "accept": "قبول",
+    "decline": "رفض",
+    "generating": "جارٍ الإنشاء…",
+    "dismiss": "تجاهل",
+    "view": "عرض",
+    "refresh": "تحديث"
   },
   "auth": {
     "alreadyHaveAccount": "هل لديك حساب بالفعل؟ ",
@@ -78,6 +86,39 @@
     "resumeVariants": "تطوّر السيرة الذاتية",
     "salaryNegotiation": "التفاوض على الراتب",
     "settings": "الإعدادات",
-    "subscription": "الاشتراك والدفع"
-  }
+    "subscription": "الاشتراك والدفع",
+    "applicationTracker": "متتبع الطلبات",
+    "careerEvents": "فعاليات مهنية",
+    "myProgress": "تقدّمي",
+    "recentInterviews": "المقابلات الأخيرة",
+    "careerLifetime": "مركز النجاح المهني",
+    "emotionalCoach": "المدرب العاطفي",
+    "salaryBenchmark": "مقارنة الرواتب",
+    "careerGrowth": "النمو المهني",
+    "careerDiary": "يوميات المسار المهني",
+    "whatsNext": "الخطوة التالية",
+    "jdAnalyzer": "محلل الوظائف",
+    "myDocuments": "مستنداتي",
+    "dailyIndustryNews": "أخبار القطاع اليومية",
+    "jobTracker": "متتبع الوظائف",
+    "goals": "الأهداف",
+    "sharedWithMe": "تمت مشاركته معي",
+    "addons": "الإضافات"
+  },
+  "legal": {
+    "and": "و",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfService": "شروط الخدمة"
+  },
+  "yes": "نعم",
+  "no": "لا",
+  "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+  "delete": "حذف",
+  "cancel": "إلغاء",
+  "try_again": "إعادة المحاولة",
+  "loading": "جارٍ التحميل…",
+  "save": "حفظ",
+  "rename": "إعادة تسمية",
+  "submit": "إرسال",
+  "back": "رجوع"
 }

@@ -26,7 +26,15 @@
     "submit": "Invia",
     "tryAgain": "Riprova",
     "viewAll": "Vedi tutto",
-    "yes": "Sì"
+    "yes": "Sì",
+    "skip": "Salta",
+    "remove": "Rimuovi",
+    "accept": "Accetta",
+    "decline": "Rifiuta",
+    "generating": "Generazione in corso…",
+    "dismiss": "Ignora",
+    "view": "Visualizza",
+    "refresh": "Aggiorna"
   },
   "auth": {
     "alreadyHaveAccount": "Hai già un account? ",
@@ -78,6 +86,39 @@
     "resumeVariants": "Evoluzione del curriculum",
     "salaryNegotiation": "Negoziazione Salariale",
     "settings": "Impostazioni",
-    "subscription": "Abbonamento e pagamento"
-  }
+    "subscription": "Abbonamento e pagamento",
+    "applicationTracker": "Monitoraggio candidature",
+    "careerEvents": "Eventi di carriera",
+    "myProgress": "I miei progressi",
+    "recentInterviews": "Colloqui recenti",
+    "careerLifetime": "Centro per il successo professionale",
+    "emotionalCoach": "Coach emotivo",
+    "salaryBenchmark": "Benchmark salariale",
+    "careerGrowth": "Crescita professionale",
+    "careerDiary": "Diario di carriera",
+    "whatsNext": "Prossimi passi",
+    "jdAnalyzer": "Analizzatore di annunci",
+    "myDocuments": "I miei documenti",
+    "dailyIndustryNews": "Notizie quotidiane di settore",
+    "jobTracker": "Monitoraggio lavori",
+    "goals": "Obiettivi",
+    "sharedWithMe": "Condivisi con me",
+    "addons": "Componenti aggiuntivi"
+  },
+  "legal": {
+    "and": "e",
+    "privacyPolicy": "Informativa sulla privacy",
+    "termsOfService": "Termini di servizio"
+  },
+  "yes": "Sì",
+  "no": "No",
+  "somethingWentWrong": "Qualcosa è andato storto. Riprova.",
+  "delete": "Elimina",
+  "cancel": "Annulla",
+  "try_again": "Riprova",
+  "loading": "Caricamento…",
+  "save": "Salva",
+  "rename": "Rinomina",
+  "submit": "Invia",
+  "back": "Indietro"
 }

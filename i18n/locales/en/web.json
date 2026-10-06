@@ -654,6 +654,11 @@
       "closeVideo": "Close video",
       "playbackError": "This video can't be played right now.",
       "play": "Play video"
+    },
+    "levels": {
+      "basic": "Basic",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
     }
   },
   "linkedinCallback": {
@@ -1662,7 +1667,8 @@
     "suggestedAsk": "Suggested ask",
     "confidence": "Confidence",
     "factors": "What moves this number",
-    "toNegotiation": "Practice negotiating"
+    "toNegotiation": "Practice negotiating",
+    "unavailable": "Salary Benchmark is unavailable right now. Please check back soon."
   },
   "growth": {
     "title": "Career Growth",
@@ -1800,7 +1806,9 @@
       "feedbackPending": "This feedback is still being generated — check back in a moment.",
       "overallScore": "Overall Score",
       "flaggedMoments": "Flagged Moments"
-    }
+    },
+    "removeConnection": "Remove",
+    "removeConnectionConfirm": "Remove @{{username}} from your connections? You won't be able to share with each other until you reconnect."
   },
   "share": {
     "linkInvalid": "This link is invalid or was revoked by its owner.",
@@ -1817,7 +1825,18 @@
     "linkCopied": "Link copied",
     "copyPublicLink": "Copy public link",
     "projectEmpty": "This project has no files yet.",
-    "readOnly": "Read-only view."
+    "readOnly": "Read-only view.",
+    "aiFeedback": "AI feedback",
+    "improvements": "Ways to improve",
+    "portfolio": "Portfolio write-up",
+    "projectBrief": "Project brief",
+    "reviewedBy": "Reviewed by",
+    "stage": "Stage {{n}}",
+    "stagesDone": "{{done}} of {{total}} stages complete",
+    "statusDone": "Completed",
+    "statusInProgress": "In progress",
+    "strengths": "Strengths",
+    "submittedWork": "Submitted work"
   },
   "jdAnalyzer": {
     "urlFetchFailedDefault": "Couldn't read that job posting.",
@@ -2090,7 +2109,8 @@
   },
   "errorsGeneric": {
     "checkDetails": "Something went wrong. Please check your details and try again.",
-    "offline": "No internet connection. Please check your connection and try again."
+    "offline": "No internet connection. Please check your connection and try again.",
+    "somethingWentWrong": "Something went wrong. Please try again."
   },
   "fields": {
     "country": "Country",
@@ -2098,7 +2118,10 @@
     "selectCountry": "Select country",
     "selectCity": "Select city (optional)",
     "selectCurrency": "Select currency",
-    "anyCurrency": "Any / local currency"
+    "anyCurrency": "Any / local currency",
+    "searchCity": "Search city or town (optional)",
+    "searching": "Searching…",
+    "useTyped": "Use \"{{city}}\""
   },
   "lifetime": {
     "avoid": "Avoid",
@@ -2230,6 +2253,7 @@
     "msSkill": "Skill",
     "premiumTitle": "Career Success Hub is a Premium feature",
     "premiumBody": "Weekly check-ins, a brag document, review and promotion prep, pay and market alerts, a leadership track, skills planning and your career timeline.",
-    "upgradePremium": "Upgrade to Premium"
+    "upgradePremium": "Upgrade to Premium",
+    "unavailable": "Career Success Hub is unavailable right now. Please check back soon."
   }
 }

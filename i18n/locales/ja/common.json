@@ -26,7 +26,15 @@
     "submit": "送信",
     "tryAgain": "再試行",
     "viewAll": "すべて表示",
-    "yes": "はい"
+    "yes": "はい",
+    "skip": "スキップ",
+    "remove": "削除",
+    "accept": "承認",
+    "decline": "拒否",
+    "generating": "生成中…",
+    "dismiss": "閉じる",
+    "view": "表示",
+    "refresh": "更新"
   },
   "auth": {
     "alreadyHaveAccount": "既にアカウントをお持ちですか？",
@@ -78,6 +86,39 @@
     "resumeVariants": "レジュメ・エボリューション",
     "salaryNegotiation": "給与交渉",
     "settings": "設定",
-    "subscription": "サブスクリプションと支払い"
-  }
+    "subscription": "サブスクリプションと支払い",
+    "applicationTracker": "応募トラッカー",
+    "careerEvents": "キャリアイベント",
+    "myProgress": "自分の進捗",
+    "recentInterviews": "最近の面接",
+    "careerLifetime": "キャリア成功センター",
+    "emotionalCoach": "メンタルコーチ",
+    "salaryBenchmark": "給与ベンチマーク",
+    "careerGrowth": "キャリア成長",
+    "careerDiary": "キャリア日記",
+    "whatsNext": "次のステップ",
+    "jdAnalyzer": "求人アナライザー",
+    "myDocuments": "マイドキュメント",
+    "dailyIndustryNews": "毎日の業界ニュース",
+    "jobTracker": "求人トラッカー",
+    "goals": "目標",
+    "sharedWithMe": "共有されたもの",
+    "addons": "アドオン"
+  },
+  "legal": {
+    "and": "と",
+    "privacyPolicy": "プライバシーポリシー",
+    "termsOfService": "利用規約"
+  },
+  "yes": "はい",
+  "no": "いいえ",
+  "somethingWentWrong": "問題が発生しました。もう一度お試しください。",
+  "delete": "削除",
+  "cancel": "キャンセル",
+  "try_again": "再試行",
+  "loading": "読み込み中…",
+  "save": "保存",
+  "rename": "名前を変更",
+  "submit": "送信",
+  "back": "戻る"
 }
