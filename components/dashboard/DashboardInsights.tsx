@@ -121,7 +121,9 @@ function EmptyLine({ text, cta }: { text: string; cta?: { href: string; label: s
   );
 }
 
-export function DashboardInsights() {
+/** `leftColumnExtra` renders at the bottom of the wide left column (used for
+ * the coaching report so it fills the space beside the taller right column). */
+export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: ReactNode }) {
   const { t, i18n } = useTranslation();
   const { firebaseUser, profile, loading: authLoading, isPremium } = useAuth();
 
@@ -367,6 +369,8 @@ export function DashboardInsights() {
               </>
             )}
           </Card>
+
+          {leftColumnExtra}
         </div>
 
         <div className="flex flex-col gap-6">

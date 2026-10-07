@@ -243,20 +243,24 @@ export default function DashboardPage() {
             activity, recent interviews, job matches, daily challenge,
             roadmap, leaderboard, news and an explore-more tool grid. All
             self-fetched from existing endpoints; each card has its own
-            empty state so a new account still sees a full page. */}
-        <DashboardInsights />
+            empty state so a new account still sees a full page.
 
-        {/* Coaching report — product report: "the web app dashboard look
-            so empty" [Yoodli's own dashboard report card]. Self-contained,
-            renders nothing while loading and shows an honest empty state
-            (with a CTA) rather than fabricated content for a new user with
-            fewer than 2 graded mock interviews. The data-tour wrapper is
-            deliberately on this stable outer div rather than inside the
-            component, since the component itself can render nothing while
-            its data is still loading — see AppTour.tsx's STEPS comment. */}
-        <div data-tour="dashboard-coaching-report">
-          <CoachingReportCard />
-        </div>
+            Coaching report — product report: "the web app dashboard look
+            so empty" [Yoodli's own dashboard report card]. Passed in as the
+            bottom of the insights' wide left column so it fills the space
+            beside the taller right column. Self-contained; shows an honest
+            empty state (with a CTA) for a user with fewer than 2 graded
+            mock interviews. The data-tour wrapper is deliberately on this
+            stable outer div rather than inside the component, since the
+            component can render nothing while loading — see AppTour.tsx's
+            STEPS comment. */}
+        <DashboardInsights
+          leftColumnExtra={
+            <div data-tour="dashboard-coaching-report">
+              <CoachingReportCard />
+            </div>
+          }
+        />
       </div>
 
       {/* Mutual exclusion: never stack this on top of the daily check-in
