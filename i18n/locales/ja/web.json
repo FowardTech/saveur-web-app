@@ -1495,7 +1495,11 @@
     "toggleSidebar": "サイドバーを切り替え",
     "toggleTheme": "テーマを切り替え",
     "searchPlaceholder": "何でもページでも検索…",
-    "searchNoResults": "一致するページが見つかりませんでした。"
+    "searchNoResults": "一致するページが見つかりませんでした。",
+    "sectionMenu": "メニュー",
+    "sectionAccount": "アカウント",
+    "footer": "Saveur · AIキャリアコーチング",
+    "footerSupport": "ヘルプとサポート"
   },
   "subscription": {
     "checkoutFailedDefault": "チェックアウトを開始できませんでした。もう一度お試しください。",

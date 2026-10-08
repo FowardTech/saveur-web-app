@@ -1631,7 +1631,11 @@
     "toggleSidebar": "Toggle sidebar",
     "toggleTheme": "Toggle theme",
     "searchPlaceholder": "Search anything or any page…",
-    "searchNoResults": "No matching pages found."
+    "searchNoResults": "No matching pages found.",
+    "sectionMenu": "Menu",
+    "sectionAccount": "Account",
+    "footer": "Saveur · AI career coaching",
+    "footerSupport": "Help & support"
   },
   "subscription": {
     "checkoutFailedDefault": "Couldn't start checkout. Please try again.",

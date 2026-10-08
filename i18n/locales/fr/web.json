@@ -1495,7 +1495,11 @@
     "toggleSidebar": "Afficher/masquer le menu latéral",
     "toggleTheme": "Changer de thème",
     "searchPlaceholder": "Recherchez n'importe quoi ou n'importe quelle page…",
-    "searchNoResults": "Aucune page correspondante trouvée."
+    "searchNoResults": "Aucune page correspondante trouvée.",
+    "sectionMenu": "Menu",
+    "sectionAccount": "Compte",
+    "footer": "Saveur · coaching de carrière par IA",
+    "footerSupport": "Aide et assistance"
   },
   "subscription": {
     "checkoutFailedDefault": "Impossible de démarrer le paiement. Veuillez réessayer.",

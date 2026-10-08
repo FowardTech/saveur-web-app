@@ -1495,7 +1495,11 @@
     "toggleSidebar": "Alternar barra lateral",
     "toggleTheme": "Cambiar tema",
     "searchPlaceholder": "Busca cualquier cosa o página…",
-    "searchNoResults": "No se encontraron páginas coincidentes."
+    "searchNoResults": "No se encontraron páginas coincidentes.",
+    "sectionMenu": "Menú",
+    "sectionAccount": "Cuenta",
+    "footer": "Saveur · coaching profesional con IA",
+    "footerSupport": "Ayuda y soporte"
   },
   "subscription": {
     "checkoutFailedDefault": "No se pudo iniciar el pago. Inténtalo de nuevo.",

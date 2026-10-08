@@ -49,6 +49,32 @@ const montserratAlternates = localFont({
   display: "swap",
 });
 
+
+// Admin-console design pattern (product request: "make the web app look and
+// feel like the admin dashboard design pattern"): Inter for body copy and
+// Poppins for display headings, same pairing as the Admin app, self-hosted
+// via @fontsource for the same no-network-at-build reason as above.
+const inter = localFont({
+  src: [
+    { path: "../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "../node_modules/@fontsource/inter/files/inter-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const poppins = localFont({
+  src: [
+    { path: "../node_modules/@fontsource/poppins/files/poppins-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../node_modules/@fontsource/poppins/files/poppins-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "../node_modules/@fontsource/poppins/files/poppins-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
 // NEXT_PUBLIC_SITE_URL isn't set anywhere yet (no web deployment domain is
 // confirmed in this repo's env files) — falls back to the app.saveurnow.com
 // convention the rest of this app follows (api.saveurnow.com is already
@@ -91,7 +117,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${plusJakartaSans.variable} ${montserratAlternates.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${montserratAlternates.variable} ${inter.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-page text-primary">
         <ThemeProvider>

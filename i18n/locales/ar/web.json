@@ -1511,7 +1511,11 @@
     "toggleSidebar": "تبديل الشريط الجانبي",
     "toggleTheme": "تبديل المظهر",
     "searchPlaceholder": "ابحث عن أي شيء أو أي صفحة…",
-    "searchNoResults": "لم يتم العثور على صفحات مطابقة."
+    "searchNoResults": "لم يتم العثور على صفحات مطابقة.",
+    "sectionMenu": "القائمة",
+    "sectionAccount": "الحساب",
+    "footer": "Saveur · التدريب المهني بالذكاء الاصطناعي",
+    "footerSupport": "المساعدة والدعم"
   },
   "subscription": {
     "checkoutFailedDefault": "تعذّر بدء الدفع. يرجى المحاولة مرة أخرى.",

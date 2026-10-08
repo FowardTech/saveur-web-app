@@ -1495,7 +1495,11 @@
     "toggleSidebar": "切换侧边栏",
     "toggleTheme": "切换主题",
     "searchPlaceholder": "搜索任何内容或页面…",
-    "searchNoResults": "未找到匹配的页面。"
+    "searchNoResults": "未找到匹配的页面。",
+    "sectionMenu": "菜单",
+    "sectionAccount": "账户",
+    "footer": "Saveur · AI 职业辅导",
+    "footerSupport": "帮助与支持"
   },
   "subscription": {
     "checkoutFailedDefault": "无法开始结账，请重试。",

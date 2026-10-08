@@ -1495,7 +1495,11 @@
     "toggleSidebar": "Attiva/disattiva barra laterale",
     "toggleTheme": "Cambia tema",
     "searchPlaceholder": "Cerca qualsiasi cosa o pagina…",
-    "searchNoResults": "Nessuna pagina corrispondente trovata."
+    "searchNoResults": "Nessuna pagina corrispondente trovata.",
+    "sectionMenu": "Menu",
+    "sectionAccount": "Account",
+    "footer": "Saveur · coaching di carriera con IA",
+    "footerSupport": "Aiuto e supporto"
   },
   "subscription": {
     "checkoutFailedDefault": "Impossibile avviare il pagamento. Riprova.",

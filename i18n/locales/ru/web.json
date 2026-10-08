@@ -1503,7 +1503,11 @@
     "toggleSidebar": "Переключить боковую панель",
     "toggleTheme": "Переключить тему",
     "searchPlaceholder": "Ищите что угодно или любую страницу…",
-    "searchNoResults": "Подходящих страниц не найдено."
+    "searchNoResults": "Подходящих страниц не найдено.",
+    "sectionMenu": "Меню",
+    "sectionAccount": "Аккаунт",
+    "footer": "Saveur · карьерный коучинг с ИИ",
+    "footerSupport": "Помощь и поддержка"
   },
   "subscription": {
     "checkoutFailedDefault": "Не удалось начать оформление заказа. Попробуйте снова.",

@@ -188,7 +188,7 @@ export default function DashboardPage() {
       <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
         <div data-tour="dashboard-greeting">
           <h1 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
-            {greeting}, {firstName}
+            {greeting}, <span className="mark">{firstName}</span>
           </h1>
           <p className="mt-1.5 text-sm text-hint sm:text-base">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>

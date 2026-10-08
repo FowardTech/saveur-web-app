@@ -13,14 +13,14 @@
  * --------------------------------------------------------------------- */
 :root {
   /* brand / base palette — identical in both modes */
-  --brand: #0063f8;
-  --brand-600: #004fc6;
-  --brand-700: #0040a1;
+  --brand: #2773ee;
+  --brand-600: #1d5fd0;
+  --brand-700: #174fb0;
   --success: #00d65b;
   --danger: #fa4169;
   --warning: #fe9870;
   --accent-purple: #71717a;
-  --solid: #18181b;
+  --solid: #2773ee;
   --solid-fg: #ffffff;
 
   /* light mode */
@@ -36,14 +36,14 @@
      --surface-3 (#f0f0f0) below is unchanged -- only the tint is gone
      (R=G=B now). Mirrors the identical fix to color-basic-200 in the
      mobile app's constants/theme/appTheme.json. */
-  --surface-1: #fafafa;
+  --surface-1: #f6f9fd;
   --surface-2: #ffffff;
-  --surface-3: #f4f4f5;
-  --surface-4: #e4e4e7;
-  --border: #e4e4e7;
-  --text-primary: #18181b;
-  --text-hint: #71717a;
-  --text-link: #0063f8;
+  --surface-3: #ecf2f9;
+  --surface-4: #e0e9f3;
+  --border: #d6dfe8;
+  --text-primary: #08152c;
+  --text-hint: #515f6e;
+  --text-link: #2773ee;
   --success-text: #047857;
 
   /* Colorful pastel chips (blue / mint / orange / rose / purple). */
@@ -57,11 +57,12 @@
   --tint-rose-text: #c01e47;
   --tint-purple: #ece6ff;
   --tint-purple-text: #5b3fd1;
-  --brand-soft: #eef4ff;
+  --brand-soft: #e9f1fd;
   --hero-from: #e8f0ff;
   --hero-via: #efe9ff;
   --hero-to: #e3f7f0;
-  --shadow-soft: 0 1px 2px rgba(16, 24, 40, 0.04), 0 6px 20px -6px rgba(0, 99, 248, 0.14);
+  --shadow-soft: 0 1px 2px rgba(8, 21, 44, 0.04), 0 8px 24px -12px rgba(8, 21, 44, 0.1);
+  --highlight: #ffe658;
 }
 
 .dark {
@@ -78,6 +79,7 @@
   --text-primary: #fafafa;
   --text-hint: #a1a1aa;
   --text-link: #8fb4ff;
+  --highlight: #8a7a1c;
   --success-text: #6ee7b7;
 
   --tint-blue: #14233f;
@@ -100,7 +102,9 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Admin-console display face for headings. */
+  --font-display: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   /* Wordmark-only font — mirrors mobile's BrandWordmark.tsx use of
      MontserratAlternates-Black for the "Saveur" text specifically. Not a
      replacement for --font-sans; apply via the `font-brand` utility only
@@ -142,7 +146,7 @@
   --color-tint-purple: var(--tint-purple);
   --color-tint-purple-text: var(--tint-purple-text);
 
-  --radius-card: 16px;
+  --radius-card: 12px;
   --radius-pill: 12px;
 }
 
@@ -159,7 +163,26 @@
   body {
     background-color: var(--page);
     color: var(--text-primary);
+    font-feature-settings: "cv11", "ss01";
   }
+  /* Admin-console pattern: Poppins display headings. Utility classes such
+     as font-brand (wordmark) still win over this element rule. */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Admin-console yellow marker highlight for a word in a headline. */
+.mark {
+  background: linear-gradient(180deg, transparent 58%, var(--highlight) 58%);
+  padding: 0 0.15em;
+  color: inherit;
+}
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }
 
 /* Hero banner behind every page title (components/ui/PageHeader.tsx).
@@ -186,8 +209,8 @@
    corners pick up brand blue and lavender. */
 .page-wash {
   background-image:
-    radial-gradient(520px 320px at 100% 0%, rgba(0, 99, 248, 0.07), transparent 70%),
-    radial-gradient(480px 300px at 0% 100%, rgba(124, 92, 255, 0.07), transparent 70%);
+    radial-gradient(900px 520px at 85% -8%, rgba(39, 115, 238, 0.07), transparent 60%),
+    radial-gradient(700px 420px at -5% 100%, rgba(255, 230, 88, 0.1), transparent 55%);
   background-repeat: no-repeat;
 }
 
@@ -199,7 +222,7 @@
     background-image: linear-gradient(120deg, var(--hero-from), var(--hero-via) 55%, var(--hero-to));
   }
   .bg-brand-gradient {
-    background-image: linear-gradient(135deg, #1a73ff, #0050d6);
+    background-image: linear-gradient(135deg, #3a82f6, #1d5fd0);
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;

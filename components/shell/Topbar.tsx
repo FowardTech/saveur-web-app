@@ -1,6 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import { primaryNav, secondaryNav, isNavGroup } from "@/lib/navigation";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
@@ -13,13 +16,45 @@ import { LinkButton } from "@/components/ui/Button";
 // hamburger on mobile) is the app's single source of branding now, so this
 // bar doesn't repeat "Saveur." next to it.
 
-export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: () => void; showMenuButton?: boolean }) {
+export function Topbar({
+  onMenuClick,
+  showMenuButton = false,
+  showTitle = false,
+}: {
+  onMenuClick?: () => void;
+  showMenuButton?: boolean;
+  /** Admin-console style page title (eyebrow + title) on the left. */
+  showTitle?: boolean;
+}) {
   const { t } = useTranslation();
+  const pathname = usePathname() ?? "";
+  // Resolve the current page's nav label (and its group, as the eyebrow) from
+  // the same nav tree the Sidebar renders, longest matching href wins.
+  const current = useMemo(() => {
+    let best: { label: string; labelKey?: string; group?: string; groupKey?: string; len: number } | null = null;
+    const consider = (item: { label: string; labelKey?: string; href: string }, group?: { label: string; labelKey?: string }) => {
+      const base = item.href.split("?")[0];
+      if ((pathname === base || pathname.startsWith(base + "/")) && (!best || base.length > best.len)) {
+        best = { label: item.label, labelKey: item.labelKey, group: group?.label, groupKey: group?.labelKey, len: base.length };
+      }
+    };
+    for (const item of [...primaryNav, ...secondaryNav]) {
+      if (isNavGroup(item)) item.children.forEach((c) => consider(c, item));
+      else consider(item);
+    }
+    return best as { label: string; labelKey?: string; group?: string; groupKey?: string } | null;
+  }, [pathname]);
+  const pageTitle = current ? (current.labelKey ? t(`common:nav.${current.labelKey}`, { defaultValue: current.label }) : current.label) : "";
+  const eyebrow = current?.group
+    ? current.groupKey
+      ? t(`common:nav.${current.groupKey}`, { defaultValue: current.group })
+      : current.group
+    : "Saveur";
   const { firebaseUser, loading } = useAuth();
   const isSignedIn = !!firebaseUser;
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-surface-2/80 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border/70 bg-page/80 px-4 backdrop-blur-md sm:px-6 lg:px-8">
       <div className="flex items-center gap-3">
         {showMenuButton && (
           <button
@@ -30,6 +65,12 @@ export function Topbar({ onMenuClick, showMenuButton = false }: { onMenuClick?: 
           >
             <EvaIcon name="menu-outline" size={20} />
           </button>
+        )}
+        {showTitle && pageTitle && (
+          <div className="hidden min-w-0 md:block">
+            <div className="text-[10px] uppercase tracking-[0.22em] text-hint">{eyebrow}</div>
+            <div className="font-display truncate text-lg font-bold leading-none text-primary">{pageTitle}</div>
+          </div>
         )}
       </div>
 

@@ -5,7 +5,7 @@ type Variant = "primary" | "secondary" | "ghost" | "outline";
 type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-brand-gradient text-white shadow-soft hover:brightness-110 disabled:opacity-50",
+  primary: "bg-brand text-white shadow-[0_10px_24px_-10px_rgba(39,115,238,0.55)] hover:-translate-y-px hover:bg-brand-600 hover:shadow-[0_14px_30px_-10px_rgba(39,115,238,0.6)] disabled:opacity-50",
   secondary: "bg-surface-3 text-primary hover:bg-surface-4",
   ghost: "text-primary hover:bg-surface-3",
   outline: "border border-border text-primary hover:bg-surface-3",
@@ -18,7 +18,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const base =
-  "inline-flex items-center justify-center rounded-pill font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center rounded-full font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
 
 interface CommonProps {
   variant?: Variant;

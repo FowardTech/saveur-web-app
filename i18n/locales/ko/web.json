@@ -1495,7 +1495,11 @@
     "toggleSidebar": "사이드바 전환",
     "toggleTheme": "테마 전환",
     "searchPlaceholder": "무엇이든 또는 페이지를 검색…",
-    "searchNoResults": "일치하는 페이지를 찾을 수 없습니다."
+    "searchNoResults": "일치하는 페이지를 찾을 수 없습니다.",
+    "sectionMenu": "메뉴",
+    "sectionAccount": "계정",
+    "footer": "Saveur · AI 커리어 코칭",
+    "footerSupport": "도움말 및 지원"
   },
   "subscription": {
     "checkoutFailedDefault": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",

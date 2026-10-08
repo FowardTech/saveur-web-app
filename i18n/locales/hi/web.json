@@ -1495,7 +1495,11 @@
     "toggleSidebar": "साइडबार टॉगल करें",
     "toggleTheme": "थीम बदलें",
     "searchPlaceholder": "कुछ भी या कोई भी पेज खोजें…",
-    "searchNoResults": "कोई मेल खाता पेज नहीं मिला।"
+    "searchNoResults": "कोई मेल खाता पेज नहीं मिला।",
+    "sectionMenu": "मेनू",
+    "sectionAccount": "खाता",
+    "footer": "Saveur · AI करियर कोचिंग",
+    "footerSupport": "सहायता और समर्थन"
   },
   "subscription": {
     "checkoutFailedDefault": "चेकआउट शुरू नहीं हो सका। कृपया फिर से कोशिश करें।",

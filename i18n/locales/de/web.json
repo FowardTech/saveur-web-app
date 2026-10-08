@@ -1495,7 +1495,11 @@
     "toggleSidebar": "Seitenleiste umschalten",
     "toggleTheme": "Design umschalten",
     "searchPlaceholder": "Nach allem oder einer Seite suchen…",
-    "searchNoResults": "Keine passenden Seiten gefunden."
+    "searchNoResults": "Keine passenden Seiten gefunden.",
+    "sectionMenu": "Menü",
+    "sectionAccount": "Konto",
+    "footer": "Saveur · KI-Karrierecoaching",
+    "footerSupport": "Hilfe & Support"
   },
   "subscription": {
     "checkoutFailedDefault": "Der Bezahlvorgang konnte nicht gestartet werden. Bitte versuche es erneut.",

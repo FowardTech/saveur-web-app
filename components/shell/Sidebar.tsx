@@ -30,7 +30,7 @@ import { onForegroundMessage } from "@/lib/messaging";
 function NavIconBadge({ icon, active }: { icon: Parameters<typeof EvaIcon>[0]["name"]; index?: number; active?: boolean }) {
   return (
     <span className="flex h-6 w-6 shrink-0 items-center justify-center">
-      <EvaIcon name={icon} size={22} className={active ? "text-brand" : "text-hint"} />
+      <EvaIcon name={icon} size={20} className={active ? "text-brand" : "text-hint"} />
     </span>
   );
 }
@@ -52,6 +52,7 @@ function NavLink({
   label,
   active,
   badge,
+  collapsed,
 }: {
   href: string;
   icon: Parameters<typeof EvaIcon>[0]["name"];
@@ -59,10 +60,12 @@ function NavLink({
   active: boolean;
   badge?: number;
   gradientIndex: number;
+  collapsed?: boolean;
 }) {
   return (
     <Link
       href={href}
+      title={collapsed ? label : undefined}
       // BUG FIX (product report: "I want the font weight for the sidebar
       // elements to be bolder", then follow-up "I thought I asked you to
       // make the font weight of the web app sidebar bolder" after the
@@ -78,13 +81,15 @@ function NavLink({
       // (700) IS one of the three registered weights, so it's the
       // reliable choice for an active row that needs to read as
       // meaningfully heavier than font-medium (500) on inactive ones.
-      className={`flex items-center gap-3 rounded-pill px-3 py-2 text-[15px] transition ${
-        active ? "bg-brand-soft text-brand font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
-      }`}
+      // Admin-console nav pattern: rounded-lg rows, small text, active row
+      // is a soft brand tint (bg-brand/10) with brand-colored text.
+      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+        active ? "bg-brand/10 text-brand" : "text-hint hover:bg-surface-3 hover:text-primary"
+      } ${collapsed ? "justify-center px-0" : ""}`}
     >
       <NavIconBadge icon={icon} active={active} />
-      <span className="truncate">{label}</span>
-      {!!badge && <NavBadge count={badge} />}
+      {!collapsed && <span className="truncate">{label}</span>}
+      {!collapsed && !!badge && <NavBadge count={badge} />}
     </Link>
   );
 }
@@ -94,24 +99,40 @@ function NavGroupItem({
   pathname,
   badges,
   gradientIndex,
+  collapsed,
 }: {
   item: Extract<NavItem, { children: unknown[] }>;
   pathname: string;
   badges: MoreBadges | null;
   gradientIndex: number;
+  collapsed?: boolean;
 }) {
   const { t } = useTranslation();
   const hasActiveChild = item.children.some((c) => pathname.startsWith(c.href));
   const [open, setOpen] = useState(hasActiveChild);
   const groupBadge = item.children.reduce((sum, c) => sum + (badgeCountFor(c.badgeKey, badges) || 0), 0);
+  const groupLabel = item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label;
+  if (collapsed) {
+    // Icon-rail mode: a group collapses to a single icon linking to its first page.
+    return (
+      <Link
+        href={item.children[0].href}
+        title={groupLabel}
+        className={`flex items-center justify-center rounded-lg py-2 transition-colors ${
+          hasActiveChild ? "bg-brand/10 text-brand" : "text-hint hover:bg-surface-3 hover:text-primary"
+        }`}
+      >
+        <NavIconBadge icon={item.icon} active={hasActiveChild} />
+      </Link>
+    );
+  }
   return (
     <div>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        // See NavLink's own comment on this same font-weight fix.
-        className={`flex w-full items-center gap-3 rounded-pill px-3 py-2 text-[15px] transition ${
-          hasActiveChild ? "text-primary font-bold" : "text-hint hover:bg-surface-3 hover:text-primary font-medium"
+        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+          hasActiveChild ? "text-primary" : "text-hint hover:bg-surface-3 hover:text-primary"
         }`}
       >
         <NavIconBadge icon={item.icon} active={hasActiveChild} />
@@ -140,7 +161,7 @@ function NavGroupItem({
   );
 }
 
-function LanguageMenu() {
+function LanguageMenu({ collapsed }: { collapsed?: boolean }) {
   const { t, i18n } = useTranslation();
   const { profile, updateProfile } = useAuth();
   const [open, setOpen] = useState(false);
@@ -180,11 +201,14 @@ function LanguageMenu() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         disabled={saving}
-        className="flex w-full items-center gap-3 rounded-pill px-3 py-2 text-[15px] text-hint transition hover:bg-surface-3 hover:text-primary disabled:opacity-60"
+        title={collapsed ? t("common:nav.language", { defaultValue: "Language" }) : undefined}
+        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-hint transition-colors hover:bg-surface-3 hover:text-primary disabled:opacity-60 ${
+          collapsed ? "justify-center px-0" : ""
+        }`}
       >
-        <EvaIcon name="globe-2-outline" size={22} />
-        <span className="flex-1 text-left">{t("common:nav.language", { defaultValue: "Language" })}</span>
-        <span className="text-xs text-hint">{getLanguageNativeLabel(i18n.language)}</span>
+        <EvaIcon name="globe-2-outline" size={20} />
+        {!collapsed && <span className="flex-1 text-left">{t("common:nav.language", { defaultValue: "Language" })}</span>}
+        {!collapsed && <span className="text-xs text-hint">{getLanguageNativeLabel(i18n.language)}</span>}
       </button>
 
       {open && (
@@ -208,7 +232,16 @@ function LanguageMenu() {
   );
 }
 
-export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+export function Sidebar({
+  onNavigate,
+  collapsed = false,
+  onToggleCollapse,
+}: {
+  onNavigate?: () => void;
+  /** Icon-rail mode (desktop only). */
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+}) {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { firebaseUser, loading } = useAuth();
@@ -328,26 +361,48 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     // existing border-r border-border wrap around <Sidebar /> in
     // AppShell.tsx already gives it a visible edge against the (also now
     // white) main content, so this doesn't need its own border/shadow.
-    <div className="flex h-full w-64 flex-col bg-page">
-      <div className="flex items-center gap-2 px-4 py-4">
-        <Image src="/logo-badge.png" alt="" width={28} height={28} priority className="rounded-[22%]" />
-        <span className="font-brand text-xl tracking-tight text-primary">
-          Saveur<span className="text-primary">.</span>
-        </span>
+    <div className={`flex h-full flex-col bg-page transition-[width] duration-200 ${collapsed ? "w-[72px]" : "w-64"}`}>
+      {/* Admin-console sidebar header: logo with brand glow, display-font
+          wordmark, and a collapse toggle. */}
+      <div className="flex h-16 items-center gap-2 border-b border-border/60 px-4">
+        <Image
+          src="/logo-badge.png"
+          alt=""
+          width={32}
+          height={32}
+          priority
+          className="h-8 w-8 shrink-0 rounded-lg object-cover shadow-[0_8px_20px_-8px_rgba(39,115,238,0.55)]"
+        />
+        {!collapsed && (
+          <span className="font-display truncate text-lg font-bold text-primary">
+            Saveur<span className="text-brand">.</span>
+          </span>
+        )}
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            aria-label={t("web:shell.toggleSidebar", { defaultValue: "Toggle sidebar" })}
+            className="ml-auto rounded p-1 text-hint hover:text-primary"
+          >
+            <EvaIcon name={collapsed ? "chevron-right-outline" : "chevron-left-outline"} size={18} />
+          </button>
+        )}
       </div>
 
-      {/* data-tour anchor for AppTour.tsx's "sidebar-nav" step (product
-          report: "The tour guide only pointed out few things in the web
-          dashboard it did not even point out the features in the sidebar
-          and the navbar") -- every real nav item lives inside this <nav>,
-          so a single spotlight around the whole thing (rather than one
-          step per link) covers "the sidebar" as a feature area without
-          needing a step per nav item. */}
-      <nav data-tour="sidebar-nav" className="flex-1 overflow-y-auto scrollbar-hide px-3" onClick={onNavigate}>
+      {/* data-tour anchor for AppTour.tsx's "sidebar-nav" step -- every real
+          nav item lives inside this <nav>, so a single spotlight around the
+          whole thing covers "the sidebar" as a feature area. */}
+      <nav data-tour="sidebar-nav" className="scrollbar-hide flex-1 overflow-y-auto px-3 pt-4" onClick={onNavigate}>
+        {!collapsed && (
+          <div className="mb-1 px-3 text-[10px] uppercase tracking-[0.16em] text-hint/80">
+            {t("web:shell.sectionMenu", { defaultValue: "Menu" })}
+          </div>
+        )}
         <div className="flex flex-col gap-0.5">
           {primaryNav.map((item, i) =>
             isNavGroup(item) ? (
-              <NavGroupItem key={item.label} item={item} pathname={pathname} badges={badges} gradientIndex={i} />
+              <NavGroupItem key={item.label} item={item} pathname={pathname} badges={badges} gradientIndex={i} collapsed={collapsed} />
             ) : (
               <NavLink
                 key={item.href}
@@ -357,13 +412,18 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 active={pathname === item.href}
                 badge={badgeCountFor(item.badgeKey, badges)}
                 gradientIndex={i}
+                collapsed={collapsed}
               />
             )
           )}
         </div>
 
-        <div className="my-3 border-t border-border" />
-
+        <div className="my-3 border-t border-border/60" />
+        {!collapsed && (
+          <div className="mb-1 px-3 text-[10px] uppercase tracking-[0.16em] text-hint/80">
+            {t("web:shell.sectionAccount", { defaultValue: "Account" })}
+          </div>
+        )}
         <div className="flex flex-col gap-0.5 pb-4">
           {secondaryNav.map((item, i) => (
             <NavLink
@@ -374,13 +434,14 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               active={pathname === item.href}
               badge={badgeCountFor(item.badgeKey, badges)}
               gradientIndex={primaryNav.length + i}
+              collapsed={collapsed}
             />
           ))}
         </div>
       </nav>
 
-      <div className="border-t border-border px-3 py-3">
-        <LanguageMenu />
+      <div className="border-t border-border/60 px-3 py-3">
+        <LanguageMenu collapsed={collapsed} />
       </div>
     </div>
   );
