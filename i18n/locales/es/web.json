@@ -429,6 +429,26 @@
       "newsUpsell": "Recibe cada día un resumen de noticias de tu sector y tus puestos objetivo, seleccionado por IA, con Premium.",
       "seePlans": "Ver planes",
       "exploreTitle": "Explora más herramientas"
+    },
+    "coachReadiness": {
+      "resumeLabel": "Sube tu currículum",
+      "resumeWhy": "Tu coach lo lee para adaptar los consejos a tu experiencia real y tu puntuación ATS.",
+      "rolesLabel": "Elige tus puestos y países objetivo",
+      "rolesWhy": "Impulsa las ofertas de empleo, tu hoja de ruta y la práctica de entrevistas por puesto.",
+      "goalLabel": "Elige tu meta profesional",
+      "goalWhy": "Define tu coaching, los consejos diarios y el plan que creamos para ti.",
+      "assessmentLabel": "Haz la evaluación profesional",
+      "assessmentWhy": "Crea tu Career DNA para que los consejos se ajusten a tus fortalezas y estilo de trabajo.",
+      "doneTitle": "Tu coach de IA está listo",
+      "doneSubtitle": "Saveur ya tiene lo necesario para personalizar tu coaching, práctica y recomendaciones.",
+      "title": "Configura tu coach profesional de IA",
+      "subtitle": "Completa primero estos {{count}} pasos: tu coach te ayudará mucho mejor y de forma más personal cuando te conozca.",
+      "startHere": "Empieza aquí",
+      "optionalTitle": "Opcional",
+      "promptTitle": "Lo primero que debes hacer",
+      "promptBody": "Tu coach de IA es tan bueno como lo que sabe de ti. Termina estos {{count}} pasos rápidos para que te dé la ayuda más precisa y personal.",
+      "promptCta": "Empezar: {{step}}",
+      "promptLater": "Lo haré más tarde"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "Puestos a los que apuntas",
       "desiredRolesPlaceholder": "Escribe un cargo y añádelo",
       "noTargetRoles": "Aún no has añadido puestos objetivo.",
-      "preferredCountriesTitle": "Países en los que trabajarías"
+      "preferredCountriesTitle": "Países en los que trabajarías",
+      "careerGoalTitle": "Tu meta profesional",
+      "careerGoalSubtitle": "Define tu coaching de IA, los consejos diarios y tu plan de carrera."
     },
     "security": {
       "codeSentTo": "Introduce el código enviado a {{email}}.",

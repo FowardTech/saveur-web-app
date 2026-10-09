@@ -429,6 +429,26 @@
       "newsUpsell": "Premiumなら、業界と希望職種に合わせたAI厳選のニュースを毎日お届けします。",
       "seePlans": "プランを見る",
       "exploreTitle": "さらにツールを探す"
+    },
+    "coachReadiness": {
+      "resumeLabel": "履歴書をアップロード",
+      "resumeWhy": "コーチが読み取り、あなたの実際の経験とATSスコアに合わせてアドバイスします。",
+      "rolesLabel": "希望職種と国を選ぶ",
+      "rolesWhy": "求人マッチ、ロードマップ、職種別の面接練習に活用されます。",
+      "goalLabel": "キャリア目標を選ぶ",
+      "goalWhy": "コーチング、毎日のヒント、作成するプランの方向性を決めます。",
+      "assessmentLabel": "キャリア診断を受ける",
+      "assessmentWhy": "Career DNAを作成し、あなたの強みや働き方に合ったアドバイスにします。",
+      "doneTitle": "AIコーチの準備が整いました",
+      "doneSubtitle": "Saveurがコーチング、練習、おすすめをパーソナライズするために必要な情報が揃いました。",
+      "title": "AIキャリアコーチを設定しましょう",
+      "subtitle": "まずこの{{count}}ステップを完了してください。コーチがあなたを知るほど、より的確で個人に合ったサポートができます。",
+      "startHere": "ここから開始",
+      "optionalTitle": "あると便利",
+      "promptTitle": "最初にやること",
+      "promptBody": "AIコーチはあなたについて知っている分だけ役に立ちます。この{{count}}つの簡単なステップを完了すると、最も正確でパーソナルなサポートが受けられます。",
+      "promptCta": "開始：{{step}}",
+      "promptLater": "あとでやる"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "目標にしている職種",
       "desiredRolesPlaceholder": "役職を入力して追加",
       "noTargetRoles": "目標の職種はまだ追加されていません。",
-      "preferredCountriesTitle": "働きたい国"
+      "preferredCountriesTitle": "働きたい国",
+      "careerGoalTitle": "あなたのキャリア目標",
+      "careerGoalSubtitle": "AIコーチング、毎日のヒント、キャリアプランの方向性を決めます。"
     },
     "security": {
       "codeSentTo": "{{email}} に送信されたコードを入力してください。",

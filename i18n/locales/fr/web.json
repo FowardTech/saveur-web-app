@@ -429,6 +429,26 @@
       "newsUpsell": "Recevez chaque jour une sélection d'actualités de votre secteur et de vos postes cibles, choisie par l'IA, avec Premium.",
       "seePlans": "Voir les offres",
       "exploreTitle": "Explorer plus d'outils"
+    },
+    "coachReadiness": {
+      "resumeLabel": "Téléversez votre CV",
+      "resumeWhy": "Votre coach le lit pour adapter ses conseils à votre expérience réelle et à votre score ATS.",
+      "rolesLabel": "Choisissez vos postes et pays cibles",
+      "rolesWhy": "Alimente les offres, votre feuille de route et l'entraînement aux entretiens par poste.",
+      "goalLabel": "Choisissez votre objectif de carrière",
+      "goalWhy": "Oriente votre coaching, vos conseils quotidiens et le plan que nous créons pour vous.",
+      "assessmentLabel": "Passez l'évaluation de carrière",
+      "assessmentWhy": "Crée votre Career DNA pour que les conseils correspondent à vos forces et à votre style de travail.",
+      "doneTitle": "Votre coach IA est prêt",
+      "doneSubtitle": "Saveur a maintenant ce qu'il faut pour personnaliser votre coaching, votre entraînement et vos recommandations.",
+      "title": "Configurez votre coach de carrière IA",
+      "subtitle": "Terminez d'abord ces {{count}} étapes : votre coach vous aidera bien mieux et de façon plus personnelle une fois qu'il vous connaît.",
+      "startHere": "Commencez ici",
+      "optionalTitle": "Facultatif",
+      "promptTitle": "La première chose à faire",
+      "promptBody": "Votre coach IA n'est aussi bon que ce qu'il sait de vous. Terminez ces {{count}} étapes rapides pour qu'il vous aide de façon plus précise et personnelle.",
+      "promptCta": "Commencer : {{step}}",
+      "promptLater": "Je le ferai plus tard"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "Postes que vous visez",
       "desiredRolesPlaceholder": "Saisissez un intitulé de poste et ajoutez-le",
       "noTargetRoles": "Aucun poste visé pour l'instant.",
-      "preferredCountriesTitle": "Pays où vous travailleriez"
+      "preferredCountriesTitle": "Pays où vous travailleriez",
+      "careerGoalTitle": "Votre objectif de carrière",
+      "careerGoalSubtitle": "Oriente votre coaching IA, vos conseils quotidiens et votre plan de carrière."
     },
     "security": {
       "codeSentTo": "Entrez le code envoyé à {{email}}.",

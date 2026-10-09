@@ -15,6 +15,7 @@ import { UpcomingSessionCard } from "@/components/dashboard/UpcomingSessionCard"
 import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCard";
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
 import { AppTour } from "@/components/dashboard/AppTour";
+import { CoachSetupPrompt } from "@/components/dashboard/CoachSetupPrompt";
 import { CoachingReportCard } from "@/components/dashboard/CoachingReportCard";
 import { DashboardInsights } from "@/components/dashboard/DashboardInsights";
 import { DailyTipBanner } from "@/components/dashboard/DailyTipBanner";
@@ -185,6 +186,7 @@ export default function DashboardPage() {
           attributes below on stable wrapper divs are what it targets;
           replayable from Settings. */}
       <AppTour />
+      <CoachSetupPrompt />
       <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
         <div data-tour="dashboard-greeting">
           <h1 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
@@ -192,6 +194,13 @@ export default function DashboardPage() {
           </h1>
           <p className="mt-1.5 text-sm text-hint sm:text-base">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
+
+        {/* Coach readiness — product report: "when users login for the first
+            time the app dont really tell them what is the first thing they
+            should do". Sits directly under the greeting so it is the first
+            thing seen; see GettingStartedChecklist.tsx / lib/coachReadiness.ts.
+            Self-contained and cannot be dismissed until the essentials are done. */}
+        <GettingStartedChecklist />
 
         {/* Quick actions temporarily removed to evaluate the denser layout.
             The tour step targeting dashboard-quick-actions auto-skips when
@@ -211,14 +220,6 @@ export default function DashboardPage() {
             tips just the way it is in the mobile app". Self-contained,
             renders nothing if the user has no active goals yet. */}
         <DailyTipBanner />
-
-        {/* "Getting Started" checklist — product report: "When a user logs
-            in for the first time, the app should suggest important steps
-            to the user things like Upload a resume, Tell us about
-            yourself, ... Update your profile etc." Self-contained, renders
-            nothing only once the user dismisses it -- reaching 100% no
-            longer auto-hides it, see that component's own header comment. */}
-        <GettingStartedChecklist />
 
         {/* Home banner */}
         <div data-tour="dashboard-home-banner">

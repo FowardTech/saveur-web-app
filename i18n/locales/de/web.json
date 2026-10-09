@@ -429,6 +429,26 @@
       "newsUpsell": "Erhalte mit Premium täglich eine KI-kuratierte Nachrichtenauswahl für deine Branche und Zielrollen.",
       "seePlans": "Tarife ansehen",
       "exploreTitle": "Weitere Tools entdecken"
+    },
+    "coachReadiness": {
+      "resumeLabel": "Lebenslauf hochladen",
+      "resumeWhy": "Dein Coach liest ihn, um Ratschläge an deine tatsächliche Erfahrung und deinen ATS-Score anzupassen.",
+      "rolesLabel": "Zielrollen und -länder wählen",
+      "rolesWhy": "Steuert Jobvorschläge, deine Roadmap und rollenspezifisches Interviewtraining.",
+      "goalLabel": "Karriereziel auswählen",
+      "goalWhy": "Prägt dein Coaching, die täglichen Tipps und den Plan, den wir für dich erstellen.",
+      "assessmentLabel": "Karriere-Assessment machen",
+      "assessmentWhy": "Erstellt deine Career DNA, damit die Ratschläge zu deinen Stärken und deinem Arbeitsstil passen.",
+      "doneTitle": "Dein KI-Coach ist bereit",
+      "doneSubtitle": "Saveur hat jetzt, was es braucht, um Coaching, Training und Empfehlungen zu personalisieren.",
+      "title": "Richte deinen KI-Karrierecoach ein",
+      "subtitle": "Schließe zuerst diese {{count}} Schritte ab – dein Coach hilft dir deutlich besser und persönlicher, wenn er dich kennt.",
+      "startHere": "Hier starten",
+      "optionalTitle": "Optional",
+      "promptTitle": "Als Erstes zu tun",
+      "promptBody": "Dein KI-Coach ist nur so gut wie das, was er über dich weiß. Erledige diese {{count}} kurzen Schritte, damit er dir die genaueste, persönlichste Hilfe geben kann.",
+      "promptCta": "Starten: {{step}}",
+      "promptLater": "Später erledigen"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "Rollen, die du anvisierst",
       "desiredRolesPlaceholder": "Gib eine Berufsbezeichnung ein und füge sie hinzu",
       "noTargetRoles": "Noch keine Zielrollen hinzugefügt.",
-      "preferredCountriesTitle": "Länder, in denen du arbeiten würdest"
+      "preferredCountriesTitle": "Länder, in denen du arbeiten würdest",
+      "careerGoalTitle": "Dein Karriereziel",
+      "careerGoalSubtitle": "Prägt dein KI-Coaching, die täglichen Tipps und deinen Karriereplan."
     },
     "security": {
       "codeSentTo": "Gib den Code ein, der an {{email}} gesendet wurde.",

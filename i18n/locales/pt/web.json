@@ -429,6 +429,26 @@
       "newsUpsell": "Receba todo dia um resumo de notícias do seu setor e cargos-alvo, curado por IA, com o Premium.",
       "seePlans": "Ver planos",
       "exploreTitle": "Explorar mais ferramentas"
+    },
+    "coachReadiness": {
+      "resumeLabel": "Envie seu currículo",
+      "resumeWhy": "Seu coach o lê para adaptar os conselhos à sua experiência real e à sua pontuação ATS.",
+      "rolesLabel": "Escolha seus cargos e países-alvo",
+      "rolesWhy": "Alimenta as vagas, seu roteiro e a prática de entrevistas por cargo.",
+      "goalLabel": "Escolha seu objetivo de carreira",
+      "goalWhy": "Molda seu coaching, as dicas diárias e o plano que criamos para você.",
+      "assessmentLabel": "Faça a avaliação de carreira",
+      "assessmentWhy": "Cria seu Career DNA para que os conselhos combinem com seus pontos fortes e estilo de trabalho.",
+      "doneTitle": "Seu coach de IA está pronto",
+      "doneSubtitle": "O Saveur agora tem o que precisa para personalizar seu coaching, prática e recomendações.",
+      "title": "Configure seu coach de carreira de IA",
+      "subtitle": "Conclua primeiro estas {{count}} etapas: seu coach ajuda muito mais e de forma mais pessoal quando conhece você.",
+      "startHere": "Comece aqui",
+      "optionalTitle": "Opcional",
+      "promptTitle": "A primeira coisa a fazer",
+      "promptBody": "Seu coach de IA é tão bom quanto o que sabe sobre você. Conclua estas {{count}} etapas rápidas para ele dar a ajuda mais precisa e pessoal.",
+      "promptCta": "Começar: {{step}}",
+      "promptLater": "Farei isso depois"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "Cargos que você busca",
       "desiredRolesPlaceholder": "Digite um cargo e adicione",
       "noTargetRoles": "Nenhum cargo-alvo adicionado ainda.",
-      "preferredCountriesTitle": "Países em que você trabalharia"
+      "preferredCountriesTitle": "Países em que você trabalharia",
+      "careerGoalTitle": "Seu objetivo de carreira",
+      "careerGoalSubtitle": "Molda seu coaching de IA, as dicas diárias e seu plano de carreira."
     },
     "security": {
       "codeSentTo": "Digite o código enviado para {{email}}.",

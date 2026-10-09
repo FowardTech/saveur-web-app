@@ -429,6 +429,26 @@
       "newsUpsell": "Premium으로 업계와 목표 직무에 맞춘 AI 선별 뉴스 요약을 매일 받아보세요.",
       "seePlans": "요금제 보기",
       "exploreTitle": "더 많은 도구 살펴보기"
+    },
+    "coachReadiness": {
+      "resumeLabel": "이력서 업로드",
+      "resumeWhy": "코치가 이력서를 읽고 실제 경험과 ATS 점수에 맞춰 조언합니다.",
+      "rolesLabel": "목표 직무와 국가 선택",
+      "rolesWhy": "채용공고 매칭, 로드맵, 직무별 면접 연습에 활용됩니다.",
+      "goalLabel": "커리어 목표 선택",
+      "goalWhy": "코칭, 일일 팁, 맞춤 계획의 방향을 정합니다.",
+      "assessmentLabel": "커리어 진단 받기",
+      "assessmentWhy": "Career DNA를 만들어 강점과 업무 스타일에 맞는 조언을 제공합니다.",
+      "doneTitle": "AI 코치가 준비되었습니다",
+      "doneSubtitle": "이제 Saveur가 코칭, 연습, 추천을 맞춤화하는 데 필요한 정보를 갖췄습니다.",
+      "title": "AI 커리어 코치 설정하기",
+      "subtitle": "먼저 이 {{count}}단계를 완료하세요. 코치가 당신을 알수록 훨씬 더 정확하고 개인화된 도움을 줍니다.",
+      "startHere": "여기서 시작",
+      "optionalTitle": "있으면 좋아요",
+      "promptTitle": "가장 먼저 할 일",
+      "promptBody": "AI 코치는 당신에 대해 아는 만큼만 도움이 됩니다. 이 {{count}}개의 간단한 단계를 마치면 가장 정확하고 개인화된 도움을 받을 수 있어요.",
+      "promptCta": "시작: {{step}}",
+      "promptLater": "나중에 할게요"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "목표로 하는 직무",
       "desiredRolesPlaceholder": "직함을 입력하고 추가하세요",
       "noTargetRoles": "아직 추가된 목표 직무가 없습니다.",
-      "preferredCountriesTitle": "일하고 싶은 국가"
+      "preferredCountriesTitle": "일하고 싶은 국가",
+      "careerGoalTitle": "나의 커리어 목표",
+      "careerGoalSubtitle": "AI 코칭, 일일 팁, 커리어 계획의 방향을 정합니다."
     },
     "security": {
       "codeSentTo": "{{email}}(으)로 전송된 코드를 입력하세요.",

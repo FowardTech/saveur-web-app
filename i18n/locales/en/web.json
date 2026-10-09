@@ -490,6 +490,26 @@
       "newsUpsell": "Get a daily, AI-curated digest of news for your industry and target roles with Premium.",
       "seePlans": "See plans",
       "exploreTitle": "Explore more tools"
+    },
+    "coachReadiness": {
+      "resumeLabel": "Upload your resume",
+      "resumeWhy": "Your coach reads it to tailor advice to your real experience and ATS score.",
+      "rolesLabel": "Choose your target roles & countries",
+      "rolesWhy": "Powers job matches, your roadmap and role-specific interview practice.",
+      "goalLabel": "Pick your career goal",
+      "goalWhy": "Shapes your coaching, daily tips and the plan we build for you.",
+      "assessmentLabel": "Take the career assessment",
+      "assessmentWhy": "Builds your Career DNA so advice fits your strengths and work style.",
+      "doneTitle": "Your AI coach is ready",
+      "doneSubtitle": "Saveur now has what it needs to personalize your coaching, practice and recommendations.",
+      "title": "Set up your AI career coach",
+      "subtitle": "Complete these {{count}} steps first — your coach gives much better, more personal help once it knows you.",
+      "startHere": "Start here",
+      "optionalTitle": "Nice to have",
+      "promptTitle": "One thing to do first",
+      "promptBody": "Your AI coach is only as good as what it knows about you. Finish these {{count}} quick steps so it can give you the most accurate, personal help.",
+      "promptCta": "Start: {{step}}",
+      "promptLater": "I'll do it later"
     }
   },
   "jobAlerts": {
@@ -1551,7 +1571,9 @@
       "desiredRolesTitle": "Roles you're targeting",
       "desiredRolesPlaceholder": "Type a job title and add it",
       "noTargetRoles": "No target roles added yet.",
-      "preferredCountriesTitle": "Countries you'd work in"
+      "preferredCountriesTitle": "Countries you'd work in",
+      "careerGoalTitle": "Your career goal",
+      "careerGoalSubtitle": "Shapes your AI coaching, daily tips and career plan."
     },
     "security": {
       "browserPushDescription": "Get real-time alerts in this browser, even when Saveur isn't open in a tab.",

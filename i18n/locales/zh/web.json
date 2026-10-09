@@ -429,6 +429,26 @@
       "newsUpsell": "升级 Premium，每天获得 AI 精选的行业与目标职位新闻摘要。",
       "seePlans": "查看方案",
       "exploreTitle": "探索更多工具"
+    },
+    "coachReadiness": {
+      "resumeLabel": "上传你的简历",
+      "resumeWhy": "你的教练会阅读它，根据你的真实经历和 ATS 分数来定制建议。",
+      "rolesLabel": "选择目标职位和国家",
+      "rolesWhy": "为职位推荐、你的路线图和针对职位的面试练习提供支持。",
+      "goalLabel": "选择你的职业目标",
+      "goalWhy": "决定你的辅导方向、每日提示以及我们为你制定的计划。",
+      "assessmentLabel": "完成职业测评",
+      "assessmentWhy": "生成你的 Career DNA，让建议契合你的优势和工作风格。",
+      "doneTitle": "你的 AI 教练已就绪",
+      "doneSubtitle": "Saveur 现在已掌握所需信息，可以个性化你的辅导、练习和推荐。",
+      "title": "设置你的 AI 职业教练",
+      "subtitle": "请先完成这 {{count}} 个步骤——教练了解你之后，会给出好得多、更个性化的帮助。",
+      "startHere": "从这里开始",
+      "optionalTitle": "可选",
+      "promptTitle": "首先要做的一件事",
+      "promptBody": "AI 教练能帮你多少，取决于它对你的了解。完成这 {{count}} 个简单步骤，它就能给你最准确、最个性化的帮助。",
+      "promptCta": "开始：{{step}}",
+      "promptLater": "稍后再做"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "你锁定的职位",
       "desiredRolesPlaceholder": "输入职位名称并添加",
       "noTargetRoles": "尚未添加目标职位。",
-      "preferredCountriesTitle": "你愿意工作的国家"
+      "preferredCountriesTitle": "你愿意工作的国家",
+      "careerGoalTitle": "你的职业目标",
+      "careerGoalSubtitle": "决定你的 AI 辅导、每日提示和职业规划。"
     },
     "security": {
       "codeSentTo": "输入发送到 {{email}} 的验证码。",

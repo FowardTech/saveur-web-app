@@ -14,6 +14,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import type { ApiError } from "@/lib/apiClient";
 import { COUNTRIES } from "@/lib/countries";
 import { jobRoleCountryCaps } from "@/lib/jobPreferenceCaps";
+import { CAREER_GOALS } from "@/lib/careerGoalLabels";
 import * as studentVerificationService from "@/lib/studentVerificationService";
 
 // Same real target-role/country list job onboarding (app/onboarding/
@@ -143,6 +144,22 @@ export default function ProfileSettingsPage() {
       setCapMessage(null);
       return [...prev, country];
     });
+  }
+
+  // Career goal (single choice, stored as profile.goals = [goal] -- same shape
+  // signup writes). Saves immediately on tap; feeds the "Coach readiness" card.
+  const [savingGoal, setSavingGoal] = useState(false);
+  async function selectGoal(value: string) {
+    if (savingGoal || profile?.goals?.[0] === value) return;
+    setSavingGoal(true);
+    setError(null);
+    try {
+      await updateProfile({ goals: [value] });
+    } catch (err) {
+      setError((err as ApiError).message || t("web:settings.profile.saveFailedDefault", { defaultValue: "Couldn't save your profile right now." }));
+    } finally {
+      setSavingGoal(false);
+    }
   }
 
   async function handleSavePreferences(e: React.FormEvent) {
@@ -301,7 +318,32 @@ export default function ProfileSettingsPage() {
               is a quick inline shortcut to the same data). Tier-gated the
               same way mobile's JobPreferences.tsx is — see
               lib/jobPreferenceCaps.ts. */}
-          <form onSubmit={handleSavePreferences} className="flex flex-col gap-5 rounded-card border border-border bg-surface-2 p-6">
+          <div id="career-goal" className="flex scroll-mt-24 flex-col gap-3 rounded-card border border-border bg-surface-2 p-6">
+            <div>
+              <h2 className="font-semibold text-primary">{t("web:settings.profile.careerGoalTitle", { defaultValue: "Your career goal" })}</h2>
+              <p className="text-sm text-hint">{t("web:settings.profile.careerGoalSubtitle", { defaultValue: "Shapes your AI coaching, daily tips and career plan." })}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {CAREER_GOALS.map((g) => {
+                const selected = profile?.goals?.[0] === g.defaultValue;
+                return (
+                  <button
+                    key={g.key}
+                    type="button"
+                    onClick={() => selectGoal(g.defaultValue)}
+                    disabled={savingGoal}
+                    className={`rounded-pill border px-4 py-2 text-sm font-medium transition ${
+                      selected ? "border-brand bg-brand/10 text-brand" : "border-border bg-surface-1 text-hint hover:border-brand/30 hover:text-primary"
+                    }`}
+                  >
+                    {t(`web:onboarding.goals.${g.key}`, { defaultValue: g.defaultValue })}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <form id="target-roles" onSubmit={handleSavePreferences} className="flex scroll-mt-24 flex-col gap-5 rounded-card border border-border bg-surface-2 p-6">
             <div>
               <h2 className="font-semibold text-primary">{t("web:settings.profile.jobPreferencesTitle", { defaultValue: "Target roles & countries" })}</h2>
               <p className="text-sm text-hint">{t("web:settings.profile.jobPreferencesSubtitle", { defaultValue: "Used for Job Alerts, Career Events, and your AI Career Roadmap." })}</p>

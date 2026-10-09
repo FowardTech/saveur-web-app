@@ -429,6 +429,26 @@
       "newsUpsell": "Con Premium ricevi ogni giorno una selezione di notizie per il tuo settore e i ruoli target, curata dall'IA.",
       "seePlans": "Vedi i piani",
       "exploreTitle": "Esplora altri strumenti"
+    },
+    "coachReadiness": {
+      "resumeLabel": "Carica il tuo CV",
+      "resumeWhy": "Il tuo coach lo legge per adattare i consigli alla tua esperienza reale e al tuo punteggio ATS.",
+      "rolesLabel": "Scegli ruoli e paesi target",
+      "rolesWhy": "Alimenta le offerte di lavoro, la tua roadmap e la pratica dei colloqui per ruolo.",
+      "goalLabel": "Scegli il tuo obiettivo di carriera",
+      "goalWhy": "Dà forma al tuo coaching, ai consigli giornalieri e al piano che creiamo per te.",
+      "assessmentLabel": "Fai la valutazione di carriera",
+      "assessmentWhy": "Crea il tuo Career DNA così i consigli si adattano ai tuoi punti di forza e al tuo stile di lavoro.",
+      "doneTitle": "Il tuo coach IA è pronto",
+      "doneSubtitle": "Saveur ora ha ciò che serve per personalizzare coaching, pratica e consigli.",
+      "title": "Configura il tuo coach di carriera IA",
+      "subtitle": "Completa prima questi {{count}} passaggi: il tuo coach ti aiuterà molto meglio e in modo più personale quando ti conoscerà.",
+      "startHere": "Inizia da qui",
+      "optionalTitle": "Facoltativo",
+      "promptTitle": "La prima cosa da fare",
+      "promptBody": "Il tuo coach IA è valido quanto ciò che sa di te. Completa questi {{count}} passaggi rapidi per ricevere un aiuto più preciso e personale.",
+      "promptCta": "Inizia: {{step}}",
+      "promptLater": "Lo farò più tardi"
     }
   },
   "jobAlerts": {
@@ -1415,7 +1435,9 @@
       "desiredRolesTitle": "Ruoli a cui punti",
       "desiredRolesPlaceholder": "Scrivi una qualifica e aggiungila",
       "noTargetRoles": "Nessun ruolo obiettivo aggiunto.",
-      "preferredCountriesTitle": "Paesi in cui lavoreresti"
+      "preferredCountriesTitle": "Paesi in cui lavoreresti",
+      "careerGoalTitle": "Il tuo obiettivo di carriera",
+      "careerGoalSubtitle": "Dà forma al tuo coaching IA, ai consigli giornalieri e al piano di carriera."
     },
     "security": {
       "codeSentTo": "Inserisci il codice inviato a {{email}}.",
