@@ -13,6 +13,7 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import { getMoreBadges, badgeCountFor, type MoreBadges } from "@/lib/moreBadges";
 import { getSharedWithMeBadgeCount } from "@/lib/sharesService";
 import { onForegroundMessage } from "@/lib/messaging";
+import apiClient from "@/lib/apiClient";
 
 // Product report: "The sidebar items icons in the web app should have
 // linear gradient background just as the items in the mobile app settings"
@@ -313,6 +314,23 @@ export function Sidebar({
       document.removeEventListener("visibilitychange", refresh);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firebaseUser, loading]);
+
+  // Keep job alerts coming without the user ever opening Job Alerts / Job
+  // Tracker (product report: alerts only arrived after navigating there).
+  // Silent, best-effort ping on load and whenever the tab regains focus; the
+  // backend rate-limits it per user to once per refresh interval (non-
+  // subscribers just get a 402 we ignore). The 60s badge poll above then
+  // picks up the new unread count, and a push arrives per new alert.
+  useEffect(() => {
+    if (loading || !firebaseUser) return;
+    const ping = () => {
+      if (document.visibilityState === "hidden") return;
+      apiClient.post("/api/v1/job-alerts/ensure-fresh").catch(() => {});
+    };
+    ping();
+    document.addEventListener("visibilitychange", ping);
+    return () => document.removeEventListener("visibilitychange", ping);
   }, [firebaseUser, loading]);
 
   // Live-updates the badges (including Shared with Me) when a foreground
