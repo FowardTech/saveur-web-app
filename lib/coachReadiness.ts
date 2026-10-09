@@ -48,7 +48,7 @@ export function useCoachReadiness(): CoachReadiness {
     let cancelled = false;
     documentsService
       .listDocuments()
-      .then((docs) => !cancelled && setHasResume(docs.some((d) => d.kind === "resume")))
+      .then((docs) => !cancelled && setHasResume(docs.some((d) => [null, undefined, "", "document", "resume", "resume_variant"].includes(d.kind))))
       .catch(() => !cancelled && setHasResume(false));
     onboardingAssessmentService
       .getStatus()
