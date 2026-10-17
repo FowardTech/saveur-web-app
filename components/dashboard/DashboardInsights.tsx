@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { CircularProgress } from "@/components/ui/CircularProgress";
+import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
+import { guessCompanyLogoUrl } from "@/lib/companyData";
 import { Skeleton } from "@/components/ui/Skeleton";
 import apiClient from "@/lib/apiClient";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -45,6 +47,7 @@ interface JobAlert {
   company: string;
   location?: string;
   apply_url?: string;
+  company_logo_url?: string;
   read: boolean;
 }
 interface Analytics {
@@ -348,7 +351,7 @@ export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: React
                   {jobs.slice(0, 4).map((j) => (
                     <li key={j.id}>
                       <Link href={`/job-alerts/${j.id}`} className="flex items-center gap-3 rounded-2xl border border-border bg-surface-1 p-3 transition hover:bg-surface-3">
-                        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-tint-orange text-sm font-bold text-tint-orange-text">{(j.company || "?").slice(0, 1).toUpperCase()}</span>
+                        <CompanyLogoAvatar logoUrl={j.company_logo_url ?? guessCompanyLogoUrl(j.company)} companyName={j.company} size={40} className="shrink-0 bg-tint-mint" />
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-semibold text-primary">{j.title}</p>
                           <p className="truncate text-xs text-hint">

@@ -66,7 +66,7 @@ export function JobAlertCard({ alert: a, logoUrl, togglingPin, onTogglePin, onMa
         <CompanyLogoAvatar logoUrl={logoUrl ?? undefined} companyName={a.company} size={44} className="shrink-0 bg-tint-mint" />
         <div>
           {!a.read && (
-            <span className="mb-1 inline-block rounded-pill bg-solid px-2 py-0.5 text-xs font-semibold text-primary">
+            <span className="mb-1 inline-block rounded-pill bg-solid px-2 py-0.5 text-xs font-semibold text-solid-fg">
               {t("web:jobAlerts.newBadge", { defaultValue: "New" })}
             </span>
           )}

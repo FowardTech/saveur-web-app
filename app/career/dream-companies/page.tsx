@@ -624,7 +624,7 @@ function CompanyCard({
           </Badge>
         )}
         {c.hasNewJobAlert && (
-          <Badge className="bg-solid text-primary">
+          <Badge className="bg-solid text-solid-fg">
             {t("web:career.dreamCompanies.newJobMatch", { defaultValue: "New job match!" })}
           </Badge>
         )}
