@@ -12,7 +12,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { FileTree } from "@/components/coding/FileTree";
-import { needsStdin, pythonInputPrompts, looksLikeMissingInput } from "@/lib/stdinNeeds";
+import { advance, needsUpfrontInput, type InteractiveState } from "@/lib/interactiveRun";
 import { RunPanel } from "@/components/coding/RunPanel";
 import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
 import * as projectActions from "@/lib/projectActionsService";
@@ -335,39 +335,27 @@ export default function CodingProjectEditorPage() {
     }
   }
 
-  // Set once we've asked the user for input for the current entry file, so a
-  // second Run press with the field still empty just runs (some programs read
-  // input but are fine with none).
-  const [inputAsked, setInputAsked] = useState(false);
-  const entryNeedsInput = !!activeTab && needsStdin(runLanguage, files[activeTab] ?? "");
-  const inputRequired = entryNeedsInput && stdin.trim() === "";
-  const inputHints = activeTab && runLanguage.toLowerCase() === "python" ? pythonInputPrompts(files[activeTab] ?? "") : [];
-  const inputMissingError = looksLikeMissingInput(runResult?.stderr);
+  // Terminal-style interactive run (see lib/interactiveRun.ts): the program is
+  // replayed with each answer the user types, so scripts that call input() /
+  // Scanner / scanf / cin work like in a real terminal.
+  const [session, setSession] = useState<InteractiveState | null>(null);
+  // Languages that can't be live (C, C++, Go, JS, ...): ask for all the input
+  // before running. A second Run press with the box still empty just runs.
+  const [upfrontAsked, setUpfrontAsked] = useState(false);
+  const upfrontNeeded = !!activeTab && needsUpfrontInput(runLanguage, files[activeTab] ?? "") && stdin.trim() === "";
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setInputAsked(false);
+    setUpfrontAsked(false);
   }, [activeTab, runLanguage]);
 
-  async function handleRun() {
+  async function runSession(answers: string[], snapshots: string[]) {
     if (!project || project.projectType !== "script" || !activeTab) return;
-    setBottomPanelOpen(true);
-    // Product report: input() -> "EOFError: EOF when reading a line". Ask for the
-    // program's input up front instead of running it with none.
-    if (inputRequired && !inputAsked) {
-      setInputAsked(true);
-      setRunResult(null);
-      setRunError(null);
-      return;
-    }
     setRunning(true);
     setRunError(null);
-    setRunResult(null);
     try {
-      // The run endpoint executes the SAVED content of entry_path, so make
-      // sure the server actually has what's currently in the editor first.
-      if (isDirty) await saveFiles();
-      const result = await projectsService.runProject(project.id, activeTab, runLanguage, stdin);
-      setRunResult(result);
+      const next = await advance((stdinText) => projectsService.runProject(project.id, activeTab, runLanguage, stdinText), runLanguage, answers, snapshots, files[activeTab] ?? "");
+      setSession(next);
+      setRunResult(next.last as RunResult | null);
     } catch (err) {
       const apiErr = err as ApiError;
       if (apiErr.status === 413) {
@@ -378,6 +366,35 @@ export default function CodingProjectEditorPage() {
     } finally {
       setRunning(false);
     }
+  }
+
+  async function handleRun() {
+    if (!project || project.projectType !== "script" || !activeTab) return;
+    setBottomPanelOpen(true);
+    if (upfrontNeeded && !upfrontAsked) {
+      setUpfrontAsked(true);
+      setRunResult(null);
+      setSession(null);
+      setRunError(null);
+      return;
+    }
+    setRunResult(null);
+    setSession(null);
+    try {
+      // The run endpoint executes the SAVED content of entry_path, so make
+      // sure the server actually has what's currently in the editor first.
+      if (isDirty) await saveFiles();
+    } catch {
+      /* saveFiles reports its own errors */
+    }
+    // Anything typed in the optional "pre-filled input" box seeds the answers.
+    const seeded = stdin.trim() === "" ? [] : stdin.replace(/\r/g, "").replace(/\n+$/, "").split("\n");
+    await runSession(seeded, []);
+  }
+
+  function handleSubmitLine(line: string) {
+    if (!session || !session.waiting || running) return;
+    void runSession([...session.answers, line], session.snapshots);
   }
 
   async function onRenameProject() {
@@ -651,9 +668,9 @@ export default function CodingProjectEditorPage() {
                 result={runResult}
                 error={runError}
                 onClose={() => setBottomPanelOpen(false)}
-                inputRequired={inputRequired && inputAsked}
-                inputHints={inputHints}
-                inputMissingError={inputMissingError}
+                session={session}
+                onSubmitLine={handleSubmitLine}
+                inputRequired={upfrontNeeded && upfrontAsked}
               />
             </div>
           )}

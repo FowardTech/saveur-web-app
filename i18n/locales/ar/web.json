@@ -1128,7 +1128,11 @@
       "tooLargeClientSide": "حجم هذا المشروع {{actual}}، وهو يتجاوز حد 50 ميغابايت ({{max}}). أزل بعض الملفات أو قلّل حجمها قبل الحفظ.",
       "inputNeededTitle": "هذا البرنامج ينتظر إدخالاً",
       "inputNeededBody": "التشغيل هنا ليس طرفية تفاعلية، لذا اكتب أدناه كل ما سيطلبه البرنامج — قيمة واحدة في كل سطر وبالترتيب الذي يطلبه — ثم اضغط تشغيل.",
-      "inputHintBlank": "(إدخال)"
+      "inputHintBlank": "(إدخال)",
+      "consoleInputPlaceholder": "اكتب إجابتك واضغط Enter",
+      "stdinPrefillLabel": "إدخال مسبق (اختياري) — قيمة واحدة في كل سطر",
+      "stdinPrefillPlaceholder": "تخطَّ هذا — سيطلب برنامجك الإدخال في وحدة التحكم أعلاه",
+      "consoleInputLabel": "إدخال البرنامج"
     }
   },
   "referral": {

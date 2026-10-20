@@ -1191,7 +1191,11 @@
       "tooLargeClientSide": "This project is {{actual}}, which is over the 50 MB limit ({{max}}). Remove or shrink some files before saving.",
       "inputNeededTitle": "This program is waiting for input",
       "inputNeededBody": "Runs here aren't an interactive terminal, so type everything the program will ask for below — one value per line, in the order it asks — then press Run.",
-      "inputHintBlank": "(input)"
+      "inputHintBlank": "(input)",
+      "consoleInputPlaceholder": "Type your answer and press Enter",
+      "stdinPrefillLabel": "Pre-filled input (optional) — one value per line",
+      "stdinPrefillPlaceholder": "Skip this — your program will ask for input in the console above",
+      "consoleInputLabel": "Program input"
     }
   },
   "progress": {

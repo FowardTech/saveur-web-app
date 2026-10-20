@@ -1124,7 +1124,11 @@
       "tooLargeClientSide": "Questo progetto è di {{actual}}, oltre il limite di 50 MB ({{max}}). Rimuovi o riduci alcuni file prima di salvare.",
       "inputNeededTitle": "Questo programma è in attesa di input",
       "inputNeededBody": "Le esecuzioni qui non sono un terminale interattivo: digita sotto tutto ciò che il programma chiederà, un valore per riga e nell'ordine richiesto, poi premi Esegui.",
-      "inputHintBlank": "(input)"
+      "inputHintBlank": "(input)",
+      "consoleInputPlaceholder": "Scrivi la risposta e premi Invio",
+      "stdinPrefillLabel": "Input precompilato (facoltativo) — un valore per riga",
+      "stdinPrefillPlaceholder": "Salta questo: il programma chiederà l'input nella console sopra",
+      "consoleInputLabel": "Input del programma"
     }
   },
   "referral": {

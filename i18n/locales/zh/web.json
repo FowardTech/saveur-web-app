@@ -1124,7 +1124,11 @@
       "tooLargeClientSide": "此项目为 {{actual}}，超过 50 MB 限制（{{max}}）。请在保存前移除或缩小一些文件。",
       "inputNeededTitle": "此程序正在等待输入",
       "inputNeededBody": "这里的运行不是交互式终端，请在下方输入程序会询问的所有内容——每行一个值，按它询问的顺序——然后点击运行。",
-      "inputHintBlank": "（输入）"
+      "inputHintBlank": "（输入）",
+      "consoleInputPlaceholder": "输入你的答案并按回车",
+      "stdinPrefillLabel": "预填输入（可选）——每行一个值",
+      "stdinPrefillPlaceholder": "可跳过——程序会在上方控制台中请求输入",
+      "consoleInputLabel": "程序输入"
     }
   },
   "referral": {

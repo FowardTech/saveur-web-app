@@ -1124,7 +1124,11 @@
       "tooLargeClientSide": "このプロジェクトは{{actual}}で、50 MBの上限（{{max}}）を超えています。保存する前にファイルを削除または縮小してください。",
       "inputNeededTitle": "このプログラムは入力を待っています",
       "inputNeededBody": "ここでの実行は対話型ターミナルではありません。プログラムが求める内容を、1行に1つの値で、求められる順に下へ入力してから「実行」を押してください。",
-      "inputHintBlank": "（入力）"
+      "inputHintBlank": "（入力）",
+      "consoleInputPlaceholder": "回答を入力してEnterを押してください",
+      "stdinPrefillLabel": "事前入力（任意）— 1行に1つの値",
+      "stdinPrefillPlaceholder": "これは省略できます。プログラムは上のコンソールで入力を求めます",
+      "consoleInputLabel": "プログラム入力"
     }
   },
   "referral": {

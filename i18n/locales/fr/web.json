@@ -1124,7 +1124,11 @@
       "tooLargeClientSide": "Ce projet fait {{actual}}, ce qui dépasse la limite de 50 Mo ({{max}}). Supprimez ou réduisez certains fichiers avant d'enregistrer.",
       "inputNeededTitle": "Ce programme attend une saisie",
       "inputNeededBody": "Les exécutions ici ne sont pas un terminal interactif : saisissez ci-dessous tout ce que le programme demandera, une valeur par ligne et dans l'ordre demandé, puis appuyez sur Exécuter.",
-      "inputHintBlank": "(saisie)"
+      "inputHintBlank": "(saisie)",
+      "consoleInputPlaceholder": "Saisissez votre réponse et appuyez sur Entrée",
+      "stdinPrefillLabel": "Entrée pré-remplie (facultatif) — une valeur par ligne",
+      "stdinPrefillPlaceholder": "Ignorez ceci : votre programme demandera la saisie dans la console ci-dessus",
+      "consoleInputLabel": "Entrée du programme"
     }
   },
   "referral": {

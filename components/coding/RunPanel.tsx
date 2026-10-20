@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Button } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/SelectField";
 import type { RunResult } from "@/lib/codingProjectsService";
+import type { InteractiveState } from "@/lib/interactiveRun";
 
 interface RunPanelProps {
   languages: string[];
@@ -18,12 +20,12 @@ interface RunPanelProps {
   result: RunResult | null;
   error: string | null;
   onClose: () => void;
-  /** The entry file asks for input (see lib/stdinNeeds.ts) and none is filled in yet. */
+  /** Terminal-style interactive session (lib/interactiveRun.ts). */
+  session?: InteractiveState | null;
+  /** The user typed a line into the console while the program was waiting. */
+  onSubmitLine?: (line: string) => void;
+  /** Language can't prompt live (C, C++, Go, ...): ask for all input up front. */
   inputRequired?: boolean;
-  /** Prompts detected in the source (Python input("...")), shown as hints. */
-  inputHints?: string[];
-  /** The last run failed because the program wanted input that wasn't supplied. */
-  inputMissingError?: boolean;
 }
 
 /** Bottom run panel for "script" type projects — POST
@@ -32,10 +34,23 @@ interface RunPanelProps {
  * sibling files via their own import/require; compiled languages are
  * best-effort, hence the soft "may not see other files" note rather than a
  * flat claim it works. */
-export function RunPanel({ languages, language, onLanguageChange, stdin, onStdinChange, entryPath, running, onRun, result, error, onClose, inputRequired, inputHints, inputMissingError }: RunPanelProps) {
+export function RunPanel({ languages, language, onLanguageChange, stdin, onStdinChange, entryPath, running, onRun, result, error, onClose, session, onSubmitLine, inputRequired }: RunPanelProps) {
   const { t } = useTranslation();
   const passed = result?.passed === true;
   const hasVerdict = result && typeof result.status === "string";
+  const waiting = !!session?.waiting;
+  const [line, setLine] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (waiting && !running) inputRef.current?.focus();
+  }, [waiting, running, session?.transcript]);
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!waiting || running) return;
+    onSubmitLine?.(line);
+    setLine("");
+  }
 
   return (
     <div className="flex h-full flex-col border-t border-border bg-surface-2">
@@ -68,42 +83,56 @@ export function RunPanel({ languages, language, onLanguageChange, stdin, onStdin
           </Button>
         </div>
 
-        {(inputRequired || inputMissingError) && (
+        {/* Terminal console: program output with your answers echoed in place; when
+            the program asks for input, type it here and press Enter. */}
+        {(session || running) && (
+          <div className="rounded-lg border border-border bg-[#0b1220] p-3 font-mono text-xs text-[#e4e4f0]">
+            <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words">{session?.transcript ?? ""}</pre>
+            {waiting && (
+              <form onSubmit={submit} className="mt-1 flex items-center gap-2">
+                <span className="text-[#5fe38e]">&gt;</span>
+                <input
+                  ref={inputRef}
+                  value={line}
+                  onChange={(e) => setLine(e.target.value)}
+                  disabled={running}
+                  autoComplete="off"
+                  spellCheck={false}
+                  aria-label={t("web:practice.codingProjects.consoleInputLabel", { defaultValue: "Program input" }).toString()}
+                  placeholder={t("web:practice.codingProjects.consoleInputPlaceholder", { defaultValue: "Type your answer and press Enter" }).toString()}
+                  className="min-w-0 flex-1 bg-transparent text-[#e4e4f0] placeholder:text-[#6b7280] focus:outline-none"
+                />
+              </form>
+            )}
+            {running && <p className="mt-1 text-[#8b8ba7]">{t("web:practice.codingProjects.running", { defaultValue: "Running…" })}</p>}
+          </div>
+        )}
+
+        {inputRequired && (
           <div className="rounded-lg border border-warning/40 bg-tint-orange p-3 text-sm text-tint-orange-text">
-            <p className="font-semibold">
-              {t("web:practice.codingProjects.inputNeededTitle", { defaultValue: "This program is waiting for input" })}
-            </p>
+            <p className="font-semibold">{t("web:practice.codingProjects.inputNeededTitle", { defaultValue: "This program is waiting for input" })}</p>
             <p className="mt-0.5 text-xs">
               {t("web:practice.codingProjects.inputNeededBody", {
                 defaultValue: "Runs here aren't an interactive terminal, so type everything the program will ask for below — one value per line, in the order it asks — then press Run.",
               })}
             </p>
-            {!!inputHints?.length && (
-              <ol className="mt-2 list-decimal pl-5 text-xs">
-                {inputHints.map((h, i) => (
-                  <li key={i}>{h || t("web:practice.codingProjects.inputHintBlank", { defaultValue: "(input)" })}</li>
-                ))}
-              </ol>
-            )}
           </div>
         )}
 
         <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-hint">{t("web:practice.codingProjects.stdinLabel", { defaultValue: "Program input (stdin) — one value per line" })}</span>
+          <span className="text-xs font-medium text-hint">{t("web:practice.codingProjects.stdinPrefillLabel", { defaultValue: "Pre-filled input (optional) — one value per line" })}</span>
           <textarea
             value={stdin}
             onChange={(e) => onStdinChange(e.target.value)}
-            rows={inputRequired || inputMissingError ? 4 : 2}
-            className={`w-full rounded-lg border bg-surface-1 px-3 py-2 font-mono text-xs text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 ${
-              inputRequired || inputMissingError ? "border-warning" : "border-border"
-            }`}
-            placeholder={t("web:practice.codingProjects.stdinPlaceholder", { defaultValue: "e.g.\n10\n+\n5" }).toString()}
+            rows={inputRequired ? 4 : 2}
+            className={`w-full rounded-lg border bg-surface-1 px-3 py-2 font-mono text-xs text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 ${inputRequired ? "border-warning" : "border-border"}`}
+            placeholder={t("web:practice.codingProjects.stdinPrefillPlaceholder", { defaultValue: "Skip this — your program will ask for input in the console above" }).toString()}
           />
         </label>
 
         {error && <p className="text-sm text-danger">{error}</p>}
 
-        {hasVerdict && result && (
+        {hasVerdict && result && !waiting && (
           <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface-1 p-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className={`rounded-pill px-2.5 py-1 text-xs font-medium ${passed ? "bg-tint-mint text-tint-mint-text" : "bg-tint-rose text-tint-rose-text"}`}>{result.status}</span>
@@ -116,7 +145,7 @@ export function RunPanel({ languages, language, onLanguageChange, stdin, onStdin
                 </span>
               )}
             </div>
-            {(result.stdout || result.actual_output) && (
+            {!session?.transcript && (result.stdout || result.actual_output) && (
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-hint">{t("web:practice.codingProjects.stdout", { defaultValue: "Output" })}</p>
                 <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap rounded bg-surface-2 p-2 font-mono text-xs text-primary">{result.stdout || result.actual_output}</pre>

@@ -1124,7 +1124,11 @@
       "tooLargeClientSide": "이 프로젝트는 {{actual}}로, 50MB 제한({{max}})을 초과합니다. 저장하기 전에 일부 파일을 삭제하거나 줄이세요.",
       "inputNeededTitle": "이 프로그램이 입력을 기다리고 있습니다",
       "inputNeededBody": "여기서의 실행은 대화형 터미널이 아닙니다. 프로그램이 요청할 내용을 한 줄에 하나씩, 요청하는 순서대로 아래에 입력한 뒤 실행을 누르세요.",
-      "inputHintBlank": "(입력)"
+      "inputHintBlank": "(입력)",
+      "consoleInputPlaceholder": "답변을 입력하고 Enter를 누르세요",
+      "stdinPrefillLabel": "미리 채울 입력(선택) — 한 줄에 하나씩",
+      "stdinPrefillPlaceholder": "건너뛰어도 됩니다. 프로그램이 위 콘솔에서 입력을 요청합니다",
+      "consoleInputLabel": "프로그램 입력"
     }
   },
   "referral": {

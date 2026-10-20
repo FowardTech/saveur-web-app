@@ -1124,7 +1124,11 @@
       "tooLargeClientSide": "Dieses Projekt ist {{actual}} groß und überschreitet damit das Limit von 50 MB ({{max}}). Entferne oder verkleinere vor dem Speichern einige Dateien.",
       "inputNeededTitle": "Dieses Programm wartet auf eine Eingabe",
       "inputNeededBody": "Ausführungen hier sind kein interaktives Terminal: Gib unten alles ein, was das Programm abfragt – ein Wert pro Zeile, in der abgefragten Reihenfolge – und drücke dann auf Ausführen.",
-      "inputHintBlank": "(Eingabe)"
+      "inputHintBlank": "(Eingabe)",
+      "consoleInputPlaceholder": "Antwort eingeben und Enter drücken",
+      "stdinPrefillLabel": "Vorab eingetragene Eingabe (optional) – ein Wert pro Zeile",
+      "stdinPrefillPlaceholder": "Überspringen – dein Programm fragt die Eingabe in der Konsole oben ab",
+      "consoleInputLabel": "Programmeingabe"
     }
   },
   "referral": {
