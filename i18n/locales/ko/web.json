@@ -1100,7 +1100,7 @@
       "runEntry": "진입점: {{path}}",
       "runNoEntry": "파일을 열어 진입점으로 설정하세요.",
       "language": "언어",
-      "stdinLabel": "stdin(선택 사항)",
+      "stdinLabel": "프로그램 입력(stdin) — 한 줄에 하나씩",
       "stdinPlaceholder": "프로그램에 전달되는 입력(있는 경우)",
       "multiFileForwarded": "다른 프로젝트 파일이 실행에 전달되었습니다(컴파일 언어는 최선을 다해 지원).",
       "stdout": "출력",
@@ -1121,7 +1121,10 @@
       "noFiles": "아직 파일이 없습니다. 위에서 하나 만드세요.",
       "rename": "이름 바꾸기",
       "delete": "삭제",
-      "tooLargeClientSide": "이 프로젝트는 {{actual}}로, 50MB 제한({{max}})을 초과합니다. 저장하기 전에 일부 파일을 삭제하거나 줄이세요."
+      "tooLargeClientSide": "이 프로젝트는 {{actual}}로, 50MB 제한({{max}})을 초과합니다. 저장하기 전에 일부 파일을 삭제하거나 줄이세요.",
+      "inputNeededTitle": "이 프로그램이 입력을 기다리고 있습니다",
+      "inputNeededBody": "여기서의 실행은 대화형 터미널이 아닙니다. 프로그램이 요청할 내용을 한 줄에 하나씩, 요청하는 순서대로 아래에 입력한 뒤 실행을 누르세요.",
+      "inputHintBlank": "(입력)"
     }
   },
   "referral": {

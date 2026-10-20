@@ -18,6 +18,12 @@ interface RunPanelProps {
   result: RunResult | null;
   error: string | null;
   onClose: () => void;
+  /** The entry file asks for input (see lib/stdinNeeds.ts) and none is filled in yet. */
+  inputRequired?: boolean;
+  /** Prompts detected in the source (Python input("...")), shown as hints. */
+  inputHints?: string[];
+  /** The last run failed because the program wanted input that wasn't supplied. */
+  inputMissingError?: boolean;
 }
 
 /** Bottom run panel for "script" type projects — POST
@@ -26,7 +32,7 @@ interface RunPanelProps {
  * sibling files via their own import/require; compiled languages are
  * best-effort, hence the soft "may not see other files" note rather than a
  * flat claim it works. */
-export function RunPanel({ languages, language, onLanguageChange, stdin, onStdinChange, entryPath, running, onRun, result, error, onClose }: RunPanelProps) {
+export function RunPanel({ languages, language, onLanguageChange, stdin, onStdinChange, entryPath, running, onRun, result, error, onClose, inputRequired, inputHints, inputMissingError }: RunPanelProps) {
   const { t } = useTranslation();
   const passed = result?.passed === true;
   const hasVerdict = result && typeof result.status === "string";
@@ -62,14 +68,36 @@ export function RunPanel({ languages, language, onLanguageChange, stdin, onStdin
           </Button>
         </div>
 
+        {(inputRequired || inputMissingError) && (
+          <div className="rounded-lg border border-warning/40 bg-tint-orange p-3 text-sm text-tint-orange-text">
+            <p className="font-semibold">
+              {t("web:practice.codingProjects.inputNeededTitle", { defaultValue: "This program is waiting for input" })}
+            </p>
+            <p className="mt-0.5 text-xs">
+              {t("web:practice.codingProjects.inputNeededBody", {
+                defaultValue: "Runs here aren't an interactive terminal, so type everything the program will ask for below — one value per line, in the order it asks — then press Run.",
+              })}
+            </p>
+            {!!inputHints?.length && (
+              <ol className="mt-2 list-decimal pl-5 text-xs">
+                {inputHints.map((h, i) => (
+                  <li key={i}>{h || t("web:practice.codingProjects.inputHintBlank", { defaultValue: "(input)" })}</li>
+                ))}
+              </ol>
+            )}
+          </div>
+        )}
+
         <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-hint">{t("web:practice.codingProjects.stdinLabel", { defaultValue: "stdin (optional)" })}</span>
+          <span className="text-xs font-medium text-hint">{t("web:practice.codingProjects.stdinLabel", { defaultValue: "Program input (stdin) — one value per line" })}</span>
           <textarea
             value={stdin}
             onChange={(e) => onStdinChange(e.target.value)}
-            rows={2}
-            className="w-full rounded-lg border border-border bg-surface-1 px-3 py-2 font-mono text-xs text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
-            placeholder={t("web:practice.codingProjects.stdinPlaceholder", { defaultValue: "Input piped to the program, if any" }).toString()}
+            rows={inputRequired || inputMissingError ? 4 : 2}
+            className={`w-full rounded-lg border bg-surface-1 px-3 py-2 font-mono text-xs text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 ${
+              inputRequired || inputMissingError ? "border-warning" : "border-border"
+            }`}
+            placeholder={t("web:practice.codingProjects.stdinPlaceholder", { defaultValue: "e.g.\n10\n+\n5" }).toString()}
           />
         </label>
 

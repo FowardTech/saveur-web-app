@@ -1100,7 +1100,7 @@
       "runEntry": "Punto di ingresso: {{path}}",
       "runNoEntry": "Apri un file per impostarlo come punto di ingresso.",
       "language": "Linguaggio",
-      "stdinLabel": "stdin (facoltativo)",
+      "stdinLabel": "Input del programma (stdin) — un valore per riga",
       "stdinPlaceholder": "Input inviato al programma, se presente",
       "multiFileForwarded": "Gli altri file del progetto sono stati inoltrati all'esecuzione (al meglio per i linguaggi compilati).",
       "stdout": "Output",
@@ -1121,7 +1121,10 @@
       "noFiles": "Ancora nessun file: creane uno qui sopra.",
       "rename": "Rinomina",
       "delete": "Elimina",
-      "tooLargeClientSide": "Questo progetto è di {{actual}}, oltre il limite di 50 MB ({{max}}). Rimuovi o riduci alcuni file prima di salvare."
+      "tooLargeClientSide": "Questo progetto è di {{actual}}, oltre il limite di 50 MB ({{max}}). Rimuovi o riduci alcuni file prima di salvare.",
+      "inputNeededTitle": "Questo programma è in attesa di input",
+      "inputNeededBody": "Le esecuzioni qui non sono un terminale interattivo: digita sotto tutto ciò che il programma chiederà, un valore per riga e nell'ordine richiesto, poi premi Esegui.",
+      "inputHintBlank": "(input)"
     }
   },
   "referral": {

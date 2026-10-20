@@ -1167,7 +1167,7 @@
       "runEntry": "Entry: {{path}}",
       "runNoEntry": "Open a file to set it as the entry point.",
       "language": "Language",
-      "stdinLabel": "stdin (optional)",
+      "stdinLabel": "Program input (stdin) — one value per line",
       "stdinPlaceholder": "Input piped to the program, if any",
       "multiFileForwarded": "Other project files were forwarded to the run (best-effort for compiled languages).",
       "stdout": "Output",
@@ -1188,7 +1188,10 @@
       "noFiles": "No files yet — create one above.",
       "rename": "Rename",
       "delete": "Delete",
-      "tooLargeClientSide": "This project is {{actual}}, which is over the 50 MB limit ({{max}}). Remove or shrink some files before saving."
+      "tooLargeClientSide": "This project is {{actual}}, which is over the 50 MB limit ({{max}}). Remove or shrink some files before saving.",
+      "inputNeededTitle": "This program is waiting for input",
+      "inputNeededBody": "Runs here aren't an interactive terminal, so type everything the program will ask for below — one value per line, in the order it asks — then press Run.",
+      "inputHintBlank": "(input)"
     }
   },
   "progress": {

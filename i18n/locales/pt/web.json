@@ -1100,7 +1100,7 @@
       "runEntry": "Ponto de entrada: {{path}}",
       "runNoEntry": "Abra um arquivo para defini-lo como ponto de entrada.",
       "language": "Linguagem",
-      "stdinLabel": "stdin (opcional)",
+      "stdinLabel": "Entrada do programa (stdin) — um valor por linha",
       "stdinPlaceholder": "Entrada enviada ao programa, se houver",
       "multiFileForwarded": "Outros arquivos do projeto foram encaminhados à execução (melhor esforço para linguagens compiladas).",
       "stdout": "Saída",
@@ -1121,7 +1121,10 @@
       "noFiles": "Nenhum arquivo ainda: crie um acima.",
       "rename": "Renomear",
       "delete": "Excluir",
-      "tooLargeClientSide": "Este projeto tem {{actual}}, acima do limite de 50 MB ({{max}}). Remova ou reduza alguns arquivos antes de salvar."
+      "tooLargeClientSide": "Este projeto tem {{actual}}, acima do limite de 50 MB ({{max}}). Remova ou reduza alguns arquivos antes de salvar.",
+      "inputNeededTitle": "Este programa está aguardando entrada",
+      "inputNeededBody": "As execuções aqui não são um terminal interativo: digite abaixo tudo o que o programa vai pedir, um valor por linha e na ordem em que pede, e depois toque em Executar.",
+      "inputHintBlank": "(entrada)"
     }
   },
   "referral": {

@@ -12,6 +12,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { FileTree } from "@/components/coding/FileTree";
+import { needsStdin, pythonInputPrompts, looksLikeMissingInput } from "@/lib/stdinNeeds";
 import { RunPanel } from "@/components/coding/RunPanel";
 import { ShareToUserModal } from "@/components/jobAlerts/ShareToUserModal";
 import * as projectActions from "@/lib/projectActionsService";
@@ -334,9 +335,30 @@ export default function CodingProjectEditorPage() {
     }
   }
 
+  // Set once we've asked the user for input for the current entry file, so a
+  // second Run press with the field still empty just runs (some programs read
+  // input but are fine with none).
+  const [inputAsked, setInputAsked] = useState(false);
+  const entryNeedsInput = !!activeTab && needsStdin(runLanguage, files[activeTab] ?? "");
+  const inputRequired = entryNeedsInput && stdin.trim() === "";
+  const inputHints = activeTab && runLanguage.toLowerCase() === "python" ? pythonInputPrompts(files[activeTab] ?? "") : [];
+  const inputMissingError = looksLikeMissingInput(runResult?.stderr);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setInputAsked(false);
+  }, [activeTab, runLanguage]);
+
   async function handleRun() {
     if (!project || project.projectType !== "script" || !activeTab) return;
     setBottomPanelOpen(true);
+    // Product report: input() -> "EOFError: EOF when reading a line". Ask for the
+    // program's input up front instead of running it with none.
+    if (inputRequired && !inputAsked) {
+      setInputAsked(true);
+      setRunResult(null);
+      setRunError(null);
+      return;
+    }
     setRunning(true);
     setRunError(null);
     setRunResult(null);
@@ -629,6 +651,9 @@ export default function CodingProjectEditorPage() {
                 result={runResult}
                 error={runError}
                 onClose={() => setBottomPanelOpen(false)}
+                inputRequired={inputRequired && inputAsked}
+                inputHints={inputHints}
+                inputMissingError={inputMissingError}
               />
             </div>
           )}

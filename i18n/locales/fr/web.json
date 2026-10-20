@@ -1100,7 +1100,7 @@
       "runEntry": "Point d'entrée : {{path}}",
       "runNoEntry": "Ouvrez un fichier pour le définir comme point d'entrée.",
       "language": "Langage",
-      "stdinLabel": "stdin (facultatif)",
+      "stdinLabel": "Entrée du programme (stdin) — une valeur par ligne",
       "stdinPlaceholder": "Entrée transmise au programme, le cas échéant",
       "multiFileForwarded": "Les autres fichiers du projet ont été transmis à l'exécution (au mieux pour les langages compilés).",
       "stdout": "Sortie",
@@ -1121,7 +1121,10 @@
       "noFiles": "Aucun fichier pour l'instant : créez-en un ci-dessus.",
       "rename": "Renommer",
       "delete": "Supprimer",
-      "tooLargeClientSide": "Ce projet fait {{actual}}, ce qui dépasse la limite de 50 Mo ({{max}}). Supprimez ou réduisez certains fichiers avant d'enregistrer."
+      "tooLargeClientSide": "Ce projet fait {{actual}}, ce qui dépasse la limite de 50 Mo ({{max}}). Supprimez ou réduisez certains fichiers avant d'enregistrer.",
+      "inputNeededTitle": "Ce programme attend une saisie",
+      "inputNeededBody": "Les exécutions ici ne sont pas un terminal interactif : saisissez ci-dessous tout ce que le programme demandera, une valeur par ligne et dans l'ordre demandé, puis appuyez sur Exécuter.",
+      "inputHintBlank": "(saisie)"
     }
   },
   "referral": {

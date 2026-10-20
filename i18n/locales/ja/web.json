@@ -1100,7 +1100,7 @@
       "runEntry": "エントリポイント：{{path}}",
       "runNoEntry": "ファイルを開いてエントリポイントに設定してください。",
       "language": "言語",
-      "stdinLabel": "stdin（任意）",
+      "stdinLabel": "プログラム入力（stdin）— 1行に1つの値",
       "stdinPlaceholder": "プログラムに渡される入力（ある場合）",
       "multiFileForwarded": "その他のプロジェクトファイルは実行環境に転送されました（コンパイル言語では可能な範囲で）。",
       "stdout": "出力",
@@ -1121,7 +1121,10 @@
       "noFiles": "ファイルはまだありません。上で作成してください。",
       "rename": "名前を変更",
       "delete": "削除",
-      "tooLargeClientSide": "このプロジェクトは{{actual}}で、50 MBの上限（{{max}}）を超えています。保存する前にファイルを削除または縮小してください。"
+      "tooLargeClientSide": "このプロジェクトは{{actual}}で、50 MBの上限（{{max}}）を超えています。保存する前にファイルを削除または縮小してください。",
+      "inputNeededTitle": "このプログラムは入力を待っています",
+      "inputNeededBody": "ここでの実行は対話型ターミナルではありません。プログラムが求める内容を、1行に1つの値で、求められる順に下へ入力してから「実行」を押してください。",
+      "inputHintBlank": "（入力）"
     }
   },
   "referral": {

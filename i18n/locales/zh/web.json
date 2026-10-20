@@ -1100,7 +1100,7 @@
       "runEntry": "入口：{{path}}",
       "runNoEntry": "打开一个文件以将其设为入口。",
       "language": "语言",
-      "stdinLabel": "stdin（可选）",
+      "stdinLabel": "程序输入（stdin）——每行一个值",
       "stdinPlaceholder": "传给程序的输入（如有）",
       "multiFileForwarded": "其他项目文件已转发到运行环境（对编译型语言尽力而为）。",
       "stdout": "输出",
@@ -1121,7 +1121,10 @@
       "noFiles": "还没有文件：请在上方创建一个。",
       "rename": "重命名",
       "delete": "删除",
-      "tooLargeClientSide": "此项目为 {{actual}}，超过 50 MB 限制（{{max}}）。请在保存前移除或缩小一些文件。"
+      "tooLargeClientSide": "此项目为 {{actual}}，超过 50 MB 限制（{{max}}）。请在保存前移除或缩小一些文件。",
+      "inputNeededTitle": "此程序正在等待输入",
+      "inputNeededBody": "这里的运行不是交互式终端，请在下方输入程序会询问的所有内容——每行一个值，按它询问的顺序——然后点击运行。",
+      "inputHintBlank": "（输入）"
     }
   },
   "referral": {
