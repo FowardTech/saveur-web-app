@@ -3,41 +3,37 @@ import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 
 interface FeatureTileProps {
   href: string;
-  /** White line icon shown large at the top of the tile. */
+  /** Line icon shown in the neutral icon tile. */
   icon: EvaIconName;
-  /** Plain solid backdrop color. */
-  backdrop: string;
+  /** Unused — kept so existing callers keep compiling (tiles are no longer colored). */
+  backdrop?: string;
   title: string;
   description?: string;
   animationDelayMs?: number;
-  /** Smaller tile (used on the dashboard quick actions). */
+  /** Unused — kept for API compatibility. */
   compact?: boolean;
 }
 
-/** App Store "Today"-style tile: solid color backdrop, white line icon,
- * dark scrim fading in at the bottom, big bold title + description. Mirrors
- * the mobile Home FeatureCard. */
-export function FeatureTile({ href, icon, backdrop, title, description, animationDelayMs, compact }: FeatureTileProps) {
+/** Indeed-style tool card: flat white card with a thin warm-gray outline, a
+ * small gray icon tile, bold dark title, gray description and a chevron.
+ * Replaces the old full-color "App Store Today" tile. */
+export function FeatureTile({ href, icon, title, description, animationDelayMs }: FeatureTileProps) {
   return (
     <Link
       href={href}
-      className={`group relative flex flex-col justify-end overflow-hidden shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${
-        compact ? "min-h-[150px] rounded-[22px]" : "min-h-[300px] rounded-[28px]"
-      } ${animationDelayMs != null ? "animate-card-in" : ""}`}
-      style={{ backgroundColor: backdrop, ...(animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : {}) }}
+      className={`group flex items-start gap-3 rounded-card border border-border bg-surface-2 p-4 transition hover:border-brand/40 hover:bg-surface-1 ${
+        animationDelayMs != null ? "animate-card-in" : ""
+      }`}
+      style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}
     >
-      <span
-        className={`pointer-events-none absolute inline-flex items-center justify-center bg-white/20 text-white transition duration-300 group-hover:scale-105 ${
-          compact ? "left-4 top-4 h-10 w-10 rounded-xl" : "left-5 top-5 h-14 w-14 rounded-2xl"
-        }`}
-      >
-        <EvaIcon name={icon} size={compact ? 20 : 30} />
+      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-primary">
+        <EvaIcon name={icon} size={22} />
       </span>
-      <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-35% to-black/60" />
-      <span className={`relative flex flex-col ${compact ? "gap-0.5 p-4 pt-[80px]" : "gap-1.5 p-5 pt-[200px]"}`}>
-        <span className={`font-extrabold leading-tight tracking-tight text-white ${compact ? "text-base" : "text-2xl"}`}>{title}</span>
-        {description && <span className={`font-medium text-white/90 ${compact ? "line-clamp-2 text-xs" : "text-sm"}`}>{description}</span>}
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="text-base font-bold leading-snug text-primary">{title}</span>
+        {description && <span className="line-clamp-2 text-sm text-hint">{description}</span>}
       </span>
+      <EvaIcon name="chevron-right-outline" size={18} className="mt-1 shrink-0 text-hint transition group-hover:text-brand" />
     </Link>
   );
 }

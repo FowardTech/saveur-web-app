@@ -152,7 +152,7 @@
   --color-tint-purple-text: var(--tint-purple-text);
 
   --radius-card: 8px;
-  --radius-pill: 8px;
+  --radius-pill: 9999px;
 }
 
 @layer base {

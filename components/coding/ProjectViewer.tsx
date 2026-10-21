@@ -58,7 +58,7 @@ function PracticalProjectView({ name, files, state }: { name: string; files: Vie
   const section = "flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 shadow-soft";
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-[28px] border border-border bg-hero-gradient p-6">
+      <div className="rounded-card border border-border bg-hero-gradient p-6">
         <h1 className="text-xl font-extrabold tracking-tight text-primary sm:text-2xl">{name}</h1>
         <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
           {state.industry && <span className="rounded-full bg-tint-blue px-3 py-1 text-tint-blue-text">{state.industry}</span>}

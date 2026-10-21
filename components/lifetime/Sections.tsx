@@ -98,14 +98,13 @@ export function Hub({ onOpen }: { onOpen: (tab: string) => void }) {
           key={c.tab}
           type="button"
           onClick={() => onOpen(c.tab)}
-          style={{ backgroundColor: c.color }}
-          className="flex flex-col gap-1 rounded-card p-5 text-left text-white transition hover:opacity-90"
+          className="flex flex-col gap-1 rounded-card border border-border bg-surface-2 p-5 text-left transition hover:border-brand/40 hover:bg-surface-1"
         >
           <span className="flex items-center justify-between gap-2">
-            <span className="text-base font-bold">{c.title}</span>
-            {c.badge && <span className="rounded-pill bg-white/25 px-2.5 py-0.5 text-xs font-bold">{c.badge}</span>}
+            <span className="text-base font-bold text-primary">{c.title}</span>
+            {c.badge && <span className="rounded-pill bg-tint-blue px-2.5 py-0.5 text-xs font-bold text-tint-blue-text">{c.badge}</span>}
           </span>
-          <span className="line-clamp-2 text-sm text-white/90">{c.body}</span>
+          <span className="line-clamp-2 text-sm text-hint">{c.body}</span>
         </button>
       ))}
     </div>
@@ -149,7 +148,7 @@ export function Weekly() {
             {current.learnings.length > 0 && (<><h3 className={h}>{t("web:lifetime.learnings", { defaultValue: "What you learned" })}</h3><Bullets items={current.learnings} /></>)}
             {current.focus_next_week && (<><h3 className={h}>{t("web:lifetime.focus", { defaultValue: "Focus for next week" })}</h3><p className="text-sm text-primary">{current.focus_next_week}</p></>)}
           </div>
-          <div className="flex flex-col gap-2 rounded-card bg-[#7C5CFF] p-5 text-white">
+          <div className="flex flex-col gap-2 rounded-card bg-brand p-5 text-white">
             <span className="text-xs font-bold uppercase tracking-wide opacity-90">{t("web:lifetime.nextStep", { defaultValue: "Your one next step" })}</span>
             <h3 className="text-lg font-bold">{current.next_step.title}</h3>
             <p className="text-sm opacity-90">{current.next_step.why}</p>
@@ -319,7 +318,7 @@ export function RolePlay({ scenario, context, onExit }: { scenario: string; cont
       <Err msg={error} />
       {msgs.map((m, i) => (
         <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-          <div className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm ${m.role === "user" ? "bg-[#7C5CFF] text-white" : "border border-border text-primary"}`}>{m.text}</div>
+          <div className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm ${m.role === "user" ? "bg-brand text-white" : "border border-border text-primary"}`}>{m.text}</div>
         </div>
       ))}
       {busy && <p className="text-xs text-hint">{t("web:lifetime.thinking", { defaultValue: "Thinking…" })}</p>}
@@ -527,7 +526,7 @@ export function Market() {
           {digest.summary && <p className="text-sm text-primary">{digest.summary}</p>}
           {digest.roles.map((r) => (
             <div key={r.id} className={card}>
-              <span className="self-start rounded-pill bg-[#7C5CFF]/15 px-2.5 py-0.5 text-xs font-bold text-[#7C5CFF]">{stepLabel(r.step_up)}</span>
+              <span className="self-start rounded-pill bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand">{stepLabel(r.step_up)}</span>
               <h3 className="font-semibold text-primary">{r.title}</h3>
               <p className="text-sm text-hint">{r.company}{r.location ? ` · ${r.location}` : ""}</p>
               <p className="text-sm text-primary">{r.why}</p>
@@ -568,7 +567,7 @@ export function Skills() {
     <div className="flex flex-col gap-4">
       <Err msg={error} />
       <div className={card}>
-        <span className="self-start rounded-pill bg-[#7C5CFF]/15 px-2.5 py-0.5 text-xs font-bold text-[#7C5CFF]">{(plan.current_role || t("web:lifetime.today", { defaultValue: "Today" }))} → {plan.target_role}</span>
+        <span className="self-start rounded-pill bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand">{(plan.current_role || t("web:lifetime.today", { defaultValue: "Today" }))} → {plan.target_role}</span>
         <p className="text-sm text-primary">{plan.gap_summary}</p>
         <button type="button" className="self-start text-sm font-semibold underline text-primary" onClick={() => setEditing(true)}>{t("web:lifetime.newPlan", { defaultValue: "Plan for a different role" })}</button>
       </div>
@@ -601,7 +600,7 @@ export function Skills() {
 }
 
 /* ----------------------------------------------------------- timeline */
-const KIND_COLORS: Record<string, string> = { win: "#19B87A", role: "#7C5CFF", raise: "#FF8A3D", certificate: "#2F6BFF", milestone: "#FF5FA2", review: "#F5B000" };
+const KIND_COLORS: Record<string, string> = { win: "#19B87A", role: "#2557a7", raise: "#2557a7", certificate: "#2557a7", milestone: "#2557a7", review: "#2557a7" };
 export function Timeline() {
   const { t } = useTranslation();
   const { busy, error, run } = useAction();
