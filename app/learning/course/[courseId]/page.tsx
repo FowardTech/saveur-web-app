@@ -597,7 +597,7 @@ function CourseSessionInner() {
 
           {currentImage ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={currentImage} alt="" className="h-44 w-full rounded-card object-cover" />
+            <img src={currentImage} alt="" className="h-56 w-full rounded-card bg-surface-2 object-contain sm:h-72" />
           ) : null}
 
           {currentModule.body.split(/\n{2,}/).map((para, i) => (
