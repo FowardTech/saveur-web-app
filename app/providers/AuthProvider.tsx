@@ -4,6 +4,7 @@ import React from "react";
 import { onAuthStateChanged, signOut as firebaseSignOut, type User as FirebaseUser } from "firebase/auth";
 import { firebaseAuth } from "@/lib/firebase";
 import apiClient from "@/lib/apiClient";
+import { clearPendingReferralCode, getPendingReferralCode } from "@/lib/referral";
 import { profileFromWire, profileToWirePatch, type UserProfile, type UserProfileWire } from "@/lib/types";
 import { getSubscriptionStatus, isPremiumTier, isProTier, type SubscriptionStatus } from "@/lib/billingService";
 
@@ -98,7 +99,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // POST /api/users/me upserts + returns the backend user record — see
       // Saveur-Backend app/api/users.py's sync(). Safe to call on every
       // sign-in, not just first sign-up.
-      const wire = await apiClient.post<UserProfileWire>("/api/users/me", {});
+      // A referral code captured from a shared /r/<code> link (see
+      // lib/referral.ts) rides along; the backend only applies it on a
+      // brand-new user's first sync and ignores it afterward, so it's safe
+      // to clear as soon as this call succeeds.
+      const referredByCode = getPendingReferralCode();
+      const wire = await apiClient.post<UserProfileWire>("/api/users/me", referredByCode ? { referred_by_code: referredByCode } : {});
+      if (referredByCode) clearPendingReferralCode();
       const next = profileFromWire(wire);
       setProfile(next);
       return next;

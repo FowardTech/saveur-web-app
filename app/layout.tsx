@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { AuthProvider } from "./providers/AuthProvider";
 import { I18nProvider } from "./providers/I18nProvider";
+import { ReferralCapture } from "@/components/auth/ReferralCapture";
 
 // Plus Jakarta Sans, self-hosted via the @fontsource/plus-jakarta-sans
 // package (next/font/local reads its .woff2 files at build time — no
@@ -123,6 +124,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           <AuthProvider>
             <I18nProvider>{children}</I18nProvider>
+            <ReferralCapture />
           </AuthProvider>
         </ThemeProvider>
       </body>
