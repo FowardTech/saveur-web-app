@@ -9,6 +9,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { UploadStatus, startUpload, withProgress, type UploadState } from "@/components/ui/UploadStatus";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { CircularProgress } from "@/components/ui/CircularProgress";
@@ -162,6 +163,7 @@ export default function ResumeBuilderPage() {
   const [imported, setImported] = useState<Record<string, ImportedFileInfo>>({});
   const [importingKey, setImportingKey] = useState<ResumeImportSourceKey | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [importUpload, setImportUpload] = useState<UploadState | null>(null);
   const [documentPickerFor, setDocumentPickerFor] = useState<ResumeImportSourceKey | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingImportKey, setPendingImportKey] = useState<ResumeImportSourceKey | null>(null);
@@ -184,11 +186,15 @@ export default function ResumeBuilderPage() {
     if (!file || !key) return;
     setImportingKey(key);
     setImportError(null);
+    setImportUpload(startUpload(file));
     try {
-      await resumeService.importSource(key, file);
+      await resumeService.importSource(key, file, (pct) => setImportUpload((prev) => withProgress(prev, pct)));
       setImported((prev) => ({ ...prev, [key]: { name: file.name, sizeBytes: file.size, mimeType: file.type } }));
+      setImportUpload((prev) => (prev ? { ...prev, percent: 100, phase: "done" } : prev));
     } catch (err) {
-      setImportError((err as ApiError).message || t("web:resume.builder.importFailedDefault", { defaultValue: "Upload failed. Please try again." }));
+      const msg = (err as ApiError).message || t("web:resume.builder.importFailedDefault", { defaultValue: "Upload failed. Please try again." });
+      setImportError(msg);
+      setImportUpload((prev) => (prev ? { ...prev, phase: "error", error: msg } : prev));
     } finally {
       setImportingKey(null);
     }
@@ -200,11 +206,15 @@ export default function ResumeBuilderPage() {
     if (!key || !doc.url) return;
     setImportingKey(key);
     setImportError(null);
+    setImportUpload({ name: doc.name ?? "Document", sizeBytes: doc.sizeBytes ?? undefined, percent: 0, phase: "uploading" });
     try {
-      await resumeService.importSourceFromUrl(key, doc.url, doc.name ?? t("web:resume.builder.documentFallbackName", { defaultValue: "Document" }).toString(), doc.mimeType);
+      await resumeService.importSourceFromUrl(key, doc.url, doc.name ?? t("web:resume.builder.documentFallbackName", { defaultValue: "Document" }).toString(), doc.mimeType, (pct) => setImportUpload((prev) => withProgress(prev, pct)));
       setImported((prev) => ({ ...prev, [key]: { name: doc.name ?? "Document", sizeBytes: doc.sizeBytes, mimeType: doc.mimeType } }));
+      setImportUpload((prev) => (prev ? { ...prev, percent: 100, phase: "done" } : prev));
     } catch (err) {
-      setImportError((err as ApiError).message || t("web:resume.builder.importFailedDefault", { defaultValue: "Upload failed. Please try again." }));
+      const msg = (err as ApiError).message || t("web:resume.builder.importFailedDefault", { defaultValue: "Upload failed. Please try again." });
+      setImportError(msg);
+      setImportUpload((prev) => (prev ? { ...prev, phase: "error", error: msg } : prev));
     } finally {
       setImportingKey(null);
     }
@@ -410,7 +420,6 @@ export default function ResumeBuilderPage() {
           </div>
 
           {error && <p className="text-sm text-danger">{error}</p>}
-          {importError && <p className="text-sm text-danger">{importError}</p>}
 
           {/* Step 1 — "Import from" grid: mobile's ResumeBuilder.tsx
               equivalent (device picker or "choose from My Documents") for
@@ -425,6 +434,7 @@ export default function ResumeBuilderPage() {
               title={t("web:resume.builder.importFromTitle", { defaultValue: "Import your resume" }).toString()}
               subtitle={t("web:resume.builder.importFromSubtitle", { defaultValue: "Upload an existing resume, LinkedIn export, or other source — or skip this and generate one from scratch below." }).toString()}
             />
+            <UploadStatus upload={importUpload} onDismiss={() => setImportUpload(null)} />
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {IMPORT_OPTIONS.map((opt) => {
                 const file = imported[opt.key];

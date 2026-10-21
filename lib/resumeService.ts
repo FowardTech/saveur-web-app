@@ -173,11 +173,11 @@ export async function getImportedSources(): Promise<Record<string, ImportedFileI
  * of the fixed import-source slots (resume/linkedin/portfolio/certificates/
  * transcript). Mirrors mobile's ResumeBuilder.tsx "Import from" grid.
  */
-export async function importSource(sourceKey: ResumeImportSourceKey, file: File): Promise<void> {
+export async function importSource(sourceKey: ResumeImportSourceKey, file: File, onProgress?: (percent: number) => void): Promise<void> {
   const formData = new FormData();
   formData.append("source_key", sourceKey);
   formData.append("file", file, file.name);
-  await apiClient.upload("/api/v1/resume/upload", formData);
+  await apiClient.upload("/api/v1/resume/upload", formData, onProgress);
 }
 
 /**
@@ -185,11 +185,11 @@ export async function importSource(sourceKey: ResumeImportSourceKey, file: File)
  * instead of a fresh local file — mirrors mobile's onPickFromMyDocuments,
  * which re-posts the document's remote URL through the same import flow.
  */
-export async function importSourceFromUrl(sourceKey: ResumeImportSourceKey, url: string, name: string, mimeType?: string | null): Promise<void> {
+export async function importSourceFromUrl(sourceKey: ResumeImportSourceKey, url: string, name: string, mimeType?: string | null, onProgress?: (percent: number) => void): Promise<void> {
   const res = await fetch(url);
   const blob = await res.blob();
   const file = new File([blob], name, { type: mimeType || blob.type || "application/octet-stream" });
-  await importSource(sourceKey, file);
+  await importSource(sourceKey, file, onProgress);
 }
 
 /** GET /api/v1/resume's `sections`, converted to ResumeSections — null when

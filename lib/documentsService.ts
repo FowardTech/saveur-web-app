@@ -58,11 +58,11 @@ export async function listDocuments(): Promise<DocumentRecord[]> {
  * — round-tripped back as `kind` on GET so the My Documents list can label
  * each file.
  */
-export async function uploadDocument(file: File, docType?: string): Promise<DocumentRecord> {
+export async function uploadDocument(file: File, docType?: string, onProgress?: (percent: number) => void): Promise<DocumentRecord> {
   const formData = new FormData();
   if (docType) formData.append("doc_type", docType);
   formData.append("file", file, file.name);
-  const data = await apiClient.upload<DocumentWire>("/api/v1/documents/upload", formData);
+  const data = await apiClient.upload<DocumentWire>("/api/v1/documents/upload", formData, onProgress);
   return fromWire(data);
 }
 

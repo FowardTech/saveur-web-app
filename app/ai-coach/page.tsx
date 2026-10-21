@@ -22,6 +22,7 @@ import {
 import * as ttsService from "@/lib/ttsService";
 import { courseIdFor } from "@/lib/learningService";
 import { ACTION_META, actionTitle, runSuggestedAction, type SuggestedActionId } from "@/lib/suggestedActions";
+import { UploadStatus, startUpload, withProgress, type UploadState } from "@/components/ui/UploadStatus";
 import { getSuggestedTopics, uploadChatImage, type SuggestedTopic } from "@/lib/coachService";
 
 // Real backend contract — Saveur-Backend/app/api/coach.py
@@ -132,6 +133,7 @@ function AiCoachPageInner() {
   // brief "Attaching photo…" hint here is a small improvement rather than
   // a functional gap).
   const [attachingImage, setAttachingImage] = useState(false);
+  const [imageUpload, setImageUpload] = useState<UploadState | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -444,8 +446,10 @@ function AiCoachPageInner() {
     if (!file || attachingImage || sending) return;
     setAttachingImage(true);
     setError(null);
+    setImageUpload(startUpload(file));
     try {
-      const url = await uploadChatImage(file);
+      const url = await uploadChatImage(file, (pct) => setImageUpload((prev) => withProgress(prev, pct)));
+      setImageUpload((prev) => (prev ? { ...prev, percent: 100, phase: "done" } : prev));
       const caption = t("web:aiCoach.sentPhotoCaption", { defaultValue: "📷 Sent a photo" }).toString();
       await sendQuestion(caption, undefined, url);
     } catch (err) {
@@ -457,8 +461,12 @@ function AiCoachPageInner() {
       } else {
         setError(apiErr.message || t("web:aiCoach.imageUploadFailedDefault", { defaultValue: "Couldn't attach that image. Please try again." }));
       }
+      setImageUpload((prev) => (prev ? { ...prev, phase: "error", error: apiErr.message || t("web:aiCoach.imageUploadFailedDefault", { defaultValue: "Couldn't attach that image. Please try again." }).toString() } : prev));
     } finally {
       setAttachingImage(false);
+      // The photo is sent as a chat message on success, so the strip only
+      // needs to linger long enough to confirm it; errors stay until dismissed.
+      setTimeout(() => setImageUpload((prev) => (prev && prev.phase !== "error" ? null : prev)), 1500);
     }
   }
 
@@ -759,7 +767,7 @@ function AiCoachPageInner() {
               {voiceError && <p className="text-sm text-danger">{voiceError}</p>}
               {listening && <p className="text-sm text-hint">{t("web:aiCoach.listening", { defaultValue: "Listening…" })}</p>}
               {speaking && <p className="text-sm text-hint">{t("web:aiCoach.speakingHint", { defaultValue: "Speaking… (tap the mic to stop)" })}</p>}
-              {attachingImage && <p className="text-sm text-hint">{t("web:aiCoach.attachingImage", { defaultValue: "Attaching photo…" })}</p>}
+              <UploadStatus upload={imageUpload} onDismiss={() => setImageUpload(null)} />
 
               <form onSubmit={handleSend} className="flex items-center gap-3">
                 <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={onImageChosen} />

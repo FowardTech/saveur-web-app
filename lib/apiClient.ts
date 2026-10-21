@@ -93,7 +93,10 @@ async function request<T>(
  * request() does, but lets the browser generate its own multipart
  * Content-Type boundary rather than forcing application/json.
  */
-async function upload<T>(path: string, formData: FormData): Promise<T> {
+async function upload<T>(path: string, formData: FormData, onProgress?: (percent: number) => void): Promise<T> {
+  // With a progress callback, go through XHR so the UI can show a real
+  // percentage (fetch() exposes no upload progress).
+  if (onProgress) return uploadWithProgress<T>(path, formData, onProgress);
   const url = `${API_BASE_URL}${path}`;
   const authHeaders = await authHeader();
   let res: Response;

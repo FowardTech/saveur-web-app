@@ -72,9 +72,9 @@ export async function getSuggestedTopics(context?: SuggestedTopicsContext): Prom
 // as lib/documentsService.ts's uploadDocument, reusing apiClient.upload's
 // existing multipart plumbing instead of adding a new one. Gated
 // @require_pro server-side, same as the rest of the AI Coach.
-export async function uploadChatImage(file: File): Promise<string> {
+export async function uploadChatImage(file: File, onProgress?: (percent: number) => void): Promise<string> {
   const formData = new FormData();
   formData.append("file", file, file.name);
-  const data = await apiClient.upload<{ url: string }>("/api/v1/coach/messages/image", formData);
+  const data = await apiClient.upload<{ url: string }>("/api/v1/coach/messages/image", formData, onProgress);
   return data.url;
 }

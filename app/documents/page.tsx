@@ -7,6 +7,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
+import { UploadStatus, startUpload, withProgress, type UploadState } from "@/components/ui/UploadStatus";
 import { SelectField } from "@/components/ui/SelectField";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { SkeletonRows } from "@/components/ui/Skeleton";
@@ -53,6 +54,7 @@ export default function DocumentsPage() {
   const [docType, setDocType] = useState(DOC_TYPES[0].value);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadState, setUploadState] = useState<UploadState | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function load() {
@@ -82,11 +84,15 @@ export default function DocumentsPage() {
     if (!file) return;
     setUploading(true);
     setUploadError(null);
+    setUploadState(startUpload(file));
     try {
-      const doc = await documentsService.uploadDocument(file, docType);
+      const doc = await documentsService.uploadDocument(file, docType, (pct) => setUploadState((prev) => withProgress(prev, pct)));
       setDocuments((prev) => (prev ? [doc, ...prev] : [doc]));
+      setUploadState((prev) => (prev ? { ...prev, percent: 100, phase: "done" } : prev));
     } catch (err) {
-      setUploadError((err as ApiError).message || t("web:documents.uploadFailedDefault", { defaultValue: "Upload failed. Please try again." }));
+      const msg = (err as ApiError).message || t("web:documents.uploadFailedDefault", { defaultValue: "Upload failed. Please try again." });
+      setUploadError(msg);
+      setUploadState((prev) => (prev ? { ...prev, phase: "error", error: msg } : prev));
     } finally {
       setUploading(false);
     }
@@ -149,7 +155,7 @@ export default function DocumentsPage() {
               <EvaIcon name="upload-outline" size={16} />
               {uploading ? t("web:documents.uploading", { defaultValue: "Uploading…" }) : t("web:documents.uploadAFile", { defaultValue: "Upload a File" })}
             </Button>
-            {uploadError && <p className="text-sm text-danger">{uploadError}</p>}
+            <UploadStatus upload={uploadState} onDismiss={() => setUploadState(null)} />
           </div>
 
           {loadError && <p className="text-sm text-danger">{loadError}</p>}
