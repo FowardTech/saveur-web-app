@@ -456,7 +456,7 @@ export default function CodingProblemDetailPage() {
                     </div>
                   </div>
 
-                  <div className="overflow-hidden rounded-lg border border-border">
+                  <div className="overflow-hidden rounded-xl border border-border">
                     <CodeMirror
                       value={code}
                       height="360px"
@@ -503,7 +503,7 @@ export default function CodingProblemDetailPage() {
                       </div>
 
                       {justSolved && (
-                        <div className="flex items-center gap-2 rounded-lg border border-tint-mint bg-tint-mint/20 px-3 py-2">
+                        <div className="flex items-center gap-2 rounded-xl border border-tint-mint bg-tint-mint/20 px-3 py-2">
                           <EvaIcon name="checkmark-circle-2-outline" size={16} className="text-tint-mint-text" />
                           <span className="text-sm font-medium text-tint-mint-text">
                             {t("web:practice.coding.detail.solvedBanner", { defaultValue: "Solved! Great work." })}

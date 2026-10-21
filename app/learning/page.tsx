@@ -658,7 +658,7 @@ export default function LearningPage() {
               return (
                 <div
                   key={course.id}
-                  className="animate-card-in flex flex-col rounded-card border border-border bg-surface-2 p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
+                  className="animate-card-in flex flex-col rounded-card border border-border bg-surface-2 p-5 transition duration-300 hover:-translate-y-0.5"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-center justify-between gap-3">

@@ -426,7 +426,7 @@ function GenerateResumeInner() {
           <SectionHeading>{t("web:resume.generate.experience", { defaultValue: "Professional Experience" })}</SectionHeading>
           <div className="flex flex-col gap-3">
             {content.experience.map((entry, i) => (
-              <div key={i} className="flex gap-2 rounded-lg border border-border bg-surface-1 p-3">
+              <div key={i} className="flex gap-2 rounded-xl border border-border bg-surface-1 p-3">
                 <ReorderControls index={i} count={content.experience.length} onMove={(from, to) => update("experience", moveItem(content.experience, from, to))} />
                 <div className="flex-1 flex flex-col gap-2">
                   {fieldInput(entry.title, (v) => update("experience", content.experience.map((e, ei) => (ei === i ? { ...e, title: v } : e))), t("web:resume.generate.jobTitle", { defaultValue: "Job title" }).toString())}
@@ -455,7 +455,7 @@ function GenerateResumeInner() {
           <SectionHeading>{t("web:resume.generate.education", { defaultValue: "Education" })}</SectionHeading>
           <div className="flex flex-col gap-3">
             {content.education.map((entry, i) => (
-              <div key={i} className="flex gap-2 rounded-lg border border-border bg-surface-1 p-3">
+              <div key={i} className="flex gap-2 rounded-xl border border-border bg-surface-1 p-3">
                 <ReorderControls index={i} count={content.education.length} onMove={(from, to) => update("education", moveItem(content.education, from, to))} />
                 <div className="flex-1 flex flex-col gap-2">
                   {fieldInput(entry.school, (v) => update("education", content.education.map((e, ei) => (ei === i ? { ...e, school: v } : e))), t("web:resume.generate.school", { defaultValue: "School" }).toString())}
@@ -479,7 +479,7 @@ function GenerateResumeInner() {
           <SectionHeading>{t("web:resume.generate.projects", { defaultValue: "Projects & Publications" })}</SectionHeading>
           <div className="flex flex-col gap-3">
             {content.projects.map((entry, i) => (
-              <div key={i} className="flex gap-2 rounded-lg border border-border bg-surface-1 p-3">
+              <div key={i} className="flex gap-2 rounded-xl border border-border bg-surface-1 p-3">
                 <ReorderControls index={i} count={content.projects.length} onMove={(from, to) => update("projects", moveItem(content.projects, from, to))} />
                 <div className="flex-1 flex flex-col gap-2">
                   {fieldInput(entry.name, (v) => update("projects", content.projects.map((e, ei) => (ei === i ? { ...e, name: v } : e))), t("web:resume.generate.projectName", { defaultValue: "Project name" }).toString())}
@@ -499,7 +499,7 @@ function GenerateResumeInner() {
           <SectionHeading>{t("web:resume.generate.volunteer", { defaultValue: "Volunteer Experience" })}</SectionHeading>
           <div className="flex flex-col gap-3">
             {content.volunteer.map((entry, i) => (
-              <div key={i} className="flex gap-2 rounded-lg border border-border bg-surface-1 p-3">
+              <div key={i} className="flex gap-2 rounded-xl border border-border bg-surface-1 p-3">
                 <ReorderControls index={i} count={content.volunteer.length} onMove={(from, to) => update("volunteer", moveItem(content.volunteer, from, to))} />
                 <div className="flex-1 flex flex-col gap-2">
                   {fieldInput(entry.role, (v) => update("volunteer", content.volunteer.map((e, ei) => (ei === i ? { ...e, role: v } : e))), t("web:resume.generate.role", { defaultValue: "Role" }).toString())}
@@ -525,7 +525,7 @@ function GenerateResumeInner() {
           <SectionHeading>{t("web:resume.generate.references", { defaultValue: "References" })}</SectionHeading>
           <div className="flex flex-col gap-3">
             {content.references.map((entry, i) => (
-              <div key={i} className="flex gap-2 rounded-lg border border-border bg-surface-1 p-3">
+              <div key={i} className="flex gap-2 rounded-xl border border-border bg-surface-1 p-3">
                 <ReorderControls index={i} count={content.references.length} onMove={(from, to) => update("references", moveItem(content.references, from, to))} />
                 <div className="flex-1 flex flex-col gap-2">
                   {fieldInput(entry.name, (v) => update("references", content.references.map((e, ei) => (ei === i ? { ...e, name: v } : e))), t("web:resume.generate.name", { defaultValue: "Name" }).toString())}

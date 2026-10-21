@@ -92,7 +92,7 @@ export function HomeBanner() {
     : { background: backgroundCss };
 
   return (
-    <div className="rounded-card shadow-sm">
+    <div className="rounded-card">
       <section
         className="relative overflow-hidden rounded-card border border-border px-6 py-8 sm:px-8 sm:py-10"
         style={sectionStyle}

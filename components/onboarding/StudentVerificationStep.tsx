@@ -290,7 +290,7 @@ export function StudentVerificationStep({ onDone }: { onDone?: () => void }) {
             />
             {isSearching && <EvaIcon name="loader-outline" size={16} className="animate-spin text-hint" />}
             {!selectedUniversity && universityResults.length > 0 && (
-              <div className="flex flex-col overflow-hidden rounded-lg border border-border">
+              <div className="flex flex-col overflow-hidden rounded-xl border border-border">
                 {universityResults.map((u, i) => (
                   <button
                     key={i}

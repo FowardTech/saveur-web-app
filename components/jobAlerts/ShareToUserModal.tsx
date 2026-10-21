@@ -221,7 +221,7 @@ export function ShareToUserModal({ open, onClose, contentType, contentId, getPub
                 {allSelected ? t("web:share.clearAll", { defaultValue: "Clear" }) : t("web:share.selectAll", { defaultValue: "Select all" })}
               </button>
             </div>
-            <div className="flex max-h-36 flex-col gap-1 overflow-y-auto rounded-lg border border-border bg-surface-1 p-2">
+            <div className="flex max-h-36 flex-col gap-1 overflow-y-auto rounded-xl border border-border bg-surface-1 p-2">
               {connections.map((name) => (
                 <label key={name} className="flex cursor-pointer items-center gap-2 rounded px-1 py-1 text-sm text-primary hover:bg-surface-3">
                   <input type="checkbox" checked={selected.includes(name)} onChange={() => toggle(name)} className="h-4 w-4 accent-primary" />

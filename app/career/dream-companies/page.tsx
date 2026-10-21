@@ -732,7 +732,7 @@ function CompanyCard({
                         key={i}
                         type="button"
                         onClick={() => onDrillQuestion(q)}
-                        className="flex items-start justify-between gap-2 rounded-lg border border-border bg-surface-1 px-3 py-2 text-left text-sm text-primary transition hover:border-primary/30"
+                        className="flex items-start justify-between gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2 text-left text-sm text-primary transition hover:border-primary/30"
                       >
                         <span>
                           {i + 1}. {q}

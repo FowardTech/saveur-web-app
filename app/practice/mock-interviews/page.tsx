@@ -383,7 +383,7 @@ function MockInterviewSetupInner() {
                     ))}
                   </div>
                   {videoGateNotice && (
-                    <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-border p-3 text-sm text-hint">
+                    <div className="flex items-center justify-between gap-3 rounded-xl border border-dashed border-border p-3 text-sm text-hint">
                       <span>
                         {t("web:practice.mockInterviews.videoPremiumGate", {
                           defaultValue: "Practicing on camera with video analysis needs Saveur Premium or Premium (Yearly).",
@@ -495,7 +495,7 @@ function MockInterviewSetupInner() {
                         type="button"
                         disabled={aiSearchState === "searching"}
                         onClick={onSearchCompanyOnline}
-                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-border py-3 text-sm font-medium text-link disabled:opacity-60"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border py-3 text-sm font-medium text-link disabled:opacity-60"
                       >
                         <EvaIcon name="globe-2-outline" size={16} />
                         {aiSearchState === "searching"
@@ -538,7 +538,7 @@ function MockInterviewSetupInner() {
               </section>
 
               {addonRequiredNotice && (
-                <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-border p-3 text-sm text-hint">
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-dashed border-border p-3 text-sm text-hint">
                   <span>{addonRequiredNotice}</span>
                   <LinkButton href="/addons" size="sm" variant="outline">
                     {t("web:addons.title", { defaultValue: "Add-ons" })}
@@ -546,7 +546,7 @@ function MockInterviewSetupInner() {
                 </div>
               )}
               {upgradeRequiredNotice && (
-                <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-border p-3 text-sm text-hint">
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-dashed border-border p-3 text-sm text-hint">
                   <span>
                     {t("web:practice.mockInterviews.freeLimitReachedBody", {
                       defaultValue: "Free plans include {{limit}} practice sessions a month. Upgrade to Basic for unlimited practice.",

@@ -336,7 +336,7 @@ export default function PracticalScenariosSetupPage() {
                           key={c.id}
                           type="button"
                           onClick={() => onChoose(c.id)}
-                          className="flex items-start gap-3 rounded-lg border border-border px-3.5 py-2.5 text-left text-sm text-primary transition hover:border-primary/30 hover:bg-surface-1"
+                          className="flex items-start gap-3 rounded-xl border border-border px-3.5 py-2.5 text-left text-sm text-primary transition hover:border-primary/30 hover:bg-surface-1"
                         >
                           <span className="font-semibold uppercase text-hint">{c.id}.</span>
                           <span>{c.text}</span>
@@ -346,7 +346,7 @@ export default function PracticalScenariosSetupPage() {
                   )}
 
                   {choiceError && (
-                    <div className="flex flex-col items-start gap-2 rounded-lg border border-border bg-surface-1 p-4">
+                    <div className="flex flex-col items-start gap-2 rounded-xl border border-border bg-surface-1 p-4">
                       <span
                         className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${
                           choiceErrorIsLLM ? "bg-tint-orange text-tint-orange-text" : "bg-surface-3 text-hint"
@@ -367,7 +367,7 @@ export default function PracticalScenariosSetupPage() {
                 <>
                   {taskFeedback ? (
                     <div className="flex flex-col gap-4">
-                      <div className="flex items-start gap-3 rounded-lg border border-tint-mint bg-tint-mint p-4">
+                      <div className="flex items-start gap-3 rounded-xl border border-tint-mint bg-tint-mint p-4">
                         <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-2 text-tint-mint-text">
                           <EvaIcon name="checkmark-circle-2-outline" size={18} />
                         </span>
@@ -422,7 +422,7 @@ export default function PracticalScenariosSetupPage() {
                     </div>
                   ) : (
                     <>
-                      <div className="flex flex-col gap-2 rounded-lg border-2 border-tint-purple bg-tint-purple p-4">
+                      <div className="flex flex-col gap-2 rounded-xl border-2 border-tint-purple bg-tint-purple p-4">
                         <div className="flex items-center gap-2">
                           <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-surface-2 text-tint-purple-text">
                             <EvaIcon name="edit-2-outline" size={14} />
@@ -453,7 +453,7 @@ export default function PracticalScenariosSetupPage() {
                       )}
 
                       {taskError && (
-                        <div className="flex flex-col items-start gap-2 rounded-lg border border-border bg-surface-1 p-4">
+                        <div className="flex flex-col items-start gap-2 rounded-xl border border-border bg-surface-1 p-4">
                           <span
                             className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${
                               taskErrorIsLLM ? "bg-tint-orange text-tint-orange-text" : "bg-surface-3 text-hint"

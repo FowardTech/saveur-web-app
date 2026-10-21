@@ -212,7 +212,7 @@ export default function PracticalProjectsPage() {
                       key={p.id}
                       type="button"
                       onClick={() => open(p.id)}
-                      className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 text-left hover:shadow-sm"
+                      className="flex items-center justify-between rounded-card border border-border bg-surface-2 p-4 text-left"
                     >
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-medium text-primary">{p.name}</span>

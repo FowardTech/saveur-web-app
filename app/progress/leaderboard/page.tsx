@@ -131,7 +131,7 @@ function LeaderboardPageInner() {
 
           {/* "Your standing" */}
           {streak && (
-            <div className="rounded-card bg-surface-2 p-4 shadow-sm">
+            <div className="rounded-card bg-surface-2 p-4">
               <div className="flex items-center gap-3">
                 <CircularProgress progress={Math.min(100, (streak.streakDays / 7) * 100)} size={60} strokeWidth={6}>
                   <span className="text-sm font-bold text-primary">{streak.streakDays}</span>
@@ -202,7 +202,7 @@ function LeaderboardPageInner() {
                   return (
                     <div
                       key={rank}
-                      className="animate-card-in relative flex flex-1 flex-col items-center rounded-card bg-surface-2 px-2 pb-4 pt-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-sm"
+                      className="animate-card-in relative flex flex-1 flex-col items-center rounded-card bg-surface-2 px-2 pb-4 pt-5 transition duration-300 hover:-translate-y-0.5"
                       style={{ minHeight: rank === 1 ? 210 : 180, animationDelay: `${i * 60}ms` }}
                     >
                       <span className={`absolute left-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${style.badgeBg}`}>{rank}</span>
@@ -226,7 +226,7 @@ function LeaderboardPageInner() {
               {rest.length > 0 && (
                 <div className="flex flex-col gap-1">
                   <h3 className="mb-1 text-sm font-bold text-primary">{t("web:progress.leaderboardPage.moreRankings", { defaultValue: "More Rankings" })}</h3>
-                  <div className="flex flex-col divide-y divide-border rounded-card bg-surface-2 shadow-sm">
+                  <div className="flex flex-col divide-y divide-border rounded-card bg-surface-2">
                     {rest.map((entry, index) => (
                       <div
                         key={entry.id}

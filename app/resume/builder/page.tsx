@@ -440,7 +440,7 @@ export default function ResumeBuilderPage() {
                 const file = imported[opt.key];
                 const busy = importingKey === opt.key;
                 return (
-                  <div key={opt.key} className="flex flex-col items-center gap-2 rounded-lg border border-border bg-surface-1 p-4 text-center">
+                  <div key={opt.key} className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface-1 p-4 text-center">
                     <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-solid text-solid-fg">
                       <EvaIcon name={opt.icon} size={16} />
                     </span>
@@ -694,7 +694,7 @@ export default function ResumeBuilderPage() {
                               const dateLine = [record.start, record.end].filter(Boolean).join(" – ");
                               const entryLabel = titleLine || (SECTION_LABELS[key] || key);
                               return (
-                                <div key={entryIndex} className="rounded-lg border border-border bg-surface-1 p-3">
+                                <div key={entryIndex} className="rounded-xl border border-border bg-surface-1 p-3">
                                   {(titleLine || dateLine) && (
                                     <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-1">
                                       {titleLine && <p className="text-sm font-semibold text-primary">{titleLine}</p>}
@@ -821,7 +821,7 @@ export default function ResumeBuilderPage() {
                                 bodyText = typeof record.description === "string" ? record.description : "";
                               }
                               return (
-                                <div key={entryIndex} className="rounded-lg border border-border bg-surface-1 p-3">
+                                <div key={entryIndex} className="rounded-xl border border-border bg-surface-1 p-3">
                                   {(titleLine || dateLine) && (
                                     <div className="mb-1 flex flex-wrap items-baseline justify-between gap-1">
                                       {titleLine && <p className="text-sm font-semibold text-primary">{titleLine}</p>}
@@ -875,7 +875,7 @@ export default function ResumeBuilderPage() {
                               const relationship = typeof record.relationship === "string" ? record.relationship : "";
                               const contactInfo = typeof record.contact === "string" ? record.contact : "";
                               return (
-                                <div key={entryIndex} className="rounded-lg border border-border bg-surface-1 p-3">
+                                <div key={entryIndex} className="rounded-xl border border-border bg-surface-1 p-3">
                                   {name && <p className="text-sm font-semibold text-primary">{name}</p>}
                                   {relationship && <p className="text-xs text-hint">{relationship}</p>}
                                   {contactInfo && <p className="mt-0.5 text-sm text-hint">{contactInfo}</p>}
@@ -949,7 +949,7 @@ export default function ResumeBuilderPage() {
                       <p className="text-xs font-semibold uppercase tracking-wide text-hint">{t("web:resume.builder.before", { defaultValue: "Before" })}</p>
                       <p className="mt-1.5 text-sm text-primary">{bulletText.trim()}</p>
                     </div>
-                    <div className="rounded-lg border border-primary bg-surface-1 p-4">
+                    <div className="rounded-xl border border-primary bg-surface-1 p-4">
                       <p className="text-xs font-semibold uppercase tracking-wide text-success-text">{t("web:resume.builder.after", { defaultValue: "After" })}</p>
                       <p className="mt-1.5 text-sm font-medium text-primary">{rewriteResult.rewritten}</p>
                       {rewriteResult.explanation && <p className="mt-2 text-xs text-hint">{rewriteResult.explanation}</p>}

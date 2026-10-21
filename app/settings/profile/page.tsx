@@ -414,7 +414,7 @@ export default function ProfileSettingsPage() {
               <p className="text-xs text-hint">
                 {t("web:onboarding.step3.added", { defaultValue: "{{count}}/{{max}} added", count: countries.length, max: MAX_COUNTRIES })}
               </p>
-              <div className="flex max-h-56 flex-col overflow-y-auto rounded-lg border border-border">
+              <div className="flex max-h-56 flex-col overflow-y-auto rounded-xl border border-border">
                 {filteredCountries.map((country) => {
                   const selected = countries.includes(country);
                   return (

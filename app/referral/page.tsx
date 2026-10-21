@@ -142,7 +142,7 @@ export default function ReferralProgramPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-1 px-3.5 py-2.5">
+                <div className="flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3.5 py-2.5">
                   <span className="flex-1 truncate text-sm text-primary">{info.share_url}</span>
                   <Button size="sm" variant="outline" onClick={handleCopy}>
                     {copied ? t("web:referral.copied", { defaultValue: "Copied!" }) : t("web:referral.copy", { defaultValue: "Copy" })}

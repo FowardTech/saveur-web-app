@@ -157,7 +157,7 @@ function AlertKanbanCard({
         onDragStart();
       }}
       onDragEnd={onDragEnd}
-      className={`cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
+      className={`cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 transition active:cursor-grabbing ${
         isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-sm"
       }`}
     >
@@ -231,7 +231,7 @@ function ApplicationKanbanCard({
         onDragStart();
       }}
       onDragEnd={onDragEnd}
-      className={`group cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 shadow-sm transition active:cursor-grabbing ${
+      className={`group cursor-grab flex flex-col gap-2.5 rounded-card border border-border bg-surface-2 p-4 transition active:cursor-grabbing ${
         isDragging ? "opacity-40" : "hover:-translate-y-0.5 hover:shadow-sm"
       }`}
     >

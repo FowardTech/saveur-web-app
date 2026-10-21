@@ -158,7 +158,7 @@ export function ChooseUsernameStep({ onDone }: { onDone: () => void }) {
       </div>
 
       {mode === "suggested" ? (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface-1 px-4 py-3">
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-border bg-surface-1 px-4 py-3">
           <div>
             <p className="text-xs text-hint">{t("web:auth.usernameYourHandle", { defaultValue: "Your handle" })}</p>
             <p className="text-base font-semibold text-primary">@{profile?.username ?? "…"}</p>

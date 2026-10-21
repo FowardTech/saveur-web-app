@@ -243,7 +243,7 @@ function SharedWithMeInner() {
                 />
               )}
               {connections?.map((u) => (
-                <div key={u} className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm">
+                <div key={u} className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4">
                   <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                     <EvaIcon name="people-outline" size={18} />
                   </span>
@@ -280,7 +280,7 @@ function SharedWithMeInner() {
                   <Link
                     key={share.id}
                     href={`/shared-with-me/${share.id}`}
-                    className={`flex items-center gap-3 rounded-card border bg-surface-2 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-sm ${
+                    className={`flex items-center gap-3 rounded-card border bg-surface-2 p-4 transition hover:-translate-y-0.5 ${
                       !share.read ? "border-primary" : "border-border"
                     }`}
                   >
@@ -317,7 +317,7 @@ function SharedWithMeInner() {
               {requests &&
                 requests.length > 0 &&
                 requests.map((req) => (
-                  <div key={req.id} className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4 shadow-sm">
+                  <div key={req.id} className="flex items-center gap-3 rounded-card border border-border bg-surface-2 p-4">
                     <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-purple text-tint-purple-text">
                       <EvaIcon name="people-outline" size={18} />
                     </span>

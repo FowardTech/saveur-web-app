@@ -35,7 +35,7 @@ export function Pill({ selected, onClick, children, locked, icon, leading, class
       disabled={disabled}
       className={`relative inline-flex items-center gap-1.5 rounded-pill border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
         selected
-          ? "border-primary bg-solid text-solid-fg"
+          ? "border-brand bg-brand text-white"
           : "border-border bg-surface-1 text-hint hover:border-primary/30 hover:text-primary"
       } ${className}`}
     >
@@ -45,7 +45,7 @@ export function Pill({ selected, onClick, children, locked, icon, leading, class
         </span>
       )}
       {leading}
-      {icon && <EvaIcon name={icon} size={16} className={selected ? "text-solid-fg" : ""} />}
+      {icon && <EvaIcon name={icon} size={16} className={selected ? "text-white" : ""} />}
       {children}
     </button>
   );

@@ -32,7 +32,7 @@ export default function GlobalErrorBoundary({
         </Link>
       </header>
       <div className="flex flex-1 items-center justify-center px-4 pb-16">
-        <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded-card border border-border bg-surface-2 p-6 text-center shadow-sm sm:p-8">
+        <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded-card border border-border bg-surface-2 p-6 text-center sm:p-8">
           <div className="mb-1 flex items-center gap-2">
             <Image src="/logo-badge.png" alt="" width={32} height={32} priority className="rounded-[22%]" />
             <span className="font-brand text-2xl tracking-tight text-primary">

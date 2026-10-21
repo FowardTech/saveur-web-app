@@ -86,7 +86,7 @@ export function RunPanel({ languages, language, onLanguageChange, stdin, onStdin
         {/* Terminal console: program output with your answers echoed in place; when
             the program asks for input, type it here and press Enter. */}
         {(session || running) && (
-          <div className="rounded-lg border border-border bg-[#0b1220] p-3 font-mono text-xs text-[#e4e4f0]">
+          <div className="rounded-xl border border-border bg-[#0b1220] p-3 font-mono text-xs text-[#e4e4f0]">
             <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words">{session?.transcript ?? ""}</pre>
             {waiting && (
               <form onSubmit={submit} className="mt-1 flex items-center gap-2">
@@ -109,7 +109,7 @@ export function RunPanel({ languages, language, onLanguageChange, stdin, onStdin
         )}
 
         {inputRequired && (
-          <div className="rounded-lg border border-warning/40 bg-tint-orange p-3 text-sm text-tint-orange-text">
+          <div className="rounded-xl border border-warning/40 bg-tint-orange p-3 text-sm text-tint-orange-text">
             <p className="font-semibold">{t("web:practice.codingProjects.inputNeededTitle", { defaultValue: "This program is waiting for input" })}</p>
             <p className="mt-0.5 text-xs">
               {t("web:practice.codingProjects.inputNeededBody", {
@@ -133,7 +133,7 @@ export function RunPanel({ languages, language, onLanguageChange, stdin, onStdin
         {error && <p className="text-sm text-danger">{error}</p>}
 
         {hasVerdict && result && !waiting && (
-          <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface-1 p-3">
+          <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface-1 p-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className={`rounded-pill px-2.5 py-1 text-xs font-medium ${passed ? "bg-tint-mint text-tint-mint-text" : "bg-tint-rose text-tint-rose-text"}`}>{result.status}</span>
               {result.multi_file_forwarded && (

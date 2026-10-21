@@ -90,7 +90,7 @@ export function NewProjectModal({ open, onClose, onCreate, creating, error }: Ne
               <button
                 type="button"
                 onClick={() => setProjectType("web")}
-                className={`flex flex-col items-start gap-1 rounded-lg border p-3 text-left transition ${
+                className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition ${
                   projectType === "web" ? "border-primary bg-surface-1" : "border-border hover:bg-surface-3"
                 }`}
               >
@@ -101,7 +101,7 @@ export function NewProjectModal({ open, onClose, onCreate, creating, error }: Ne
               <button
                 type="button"
                 onClick={() => setProjectType("script")}
-                className={`flex flex-col items-start gap-1 rounded-lg border p-3 text-left transition ${
+                className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition ${
                   projectType === "script" ? "border-primary bg-surface-1" : "border-border hover:bg-surface-3"
                 }`}
               >

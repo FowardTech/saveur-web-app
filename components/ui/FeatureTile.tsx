@@ -26,7 +26,7 @@ export function FeatureTile({ href, icon, title, description, animationDelayMs }
       }`}
       style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}
     >
-      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-primary">
+      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-3 text-primary">
         <EvaIcon name={icon} size={22} />
       </span>
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">

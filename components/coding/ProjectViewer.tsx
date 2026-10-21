@@ -170,7 +170,7 @@ export function ProjectViewer({ name, files }: { name: string; files: ViewerFile
         <p className="text-sm text-hint">{t("web:share.projectEmpty", { defaultValue: "This project has no files yet." })}</p>
       ) : (
         <div className="grid gap-3 md:grid-cols-[220px_1fr]">
-          <div className="flex max-h-96 flex-col gap-1 overflow-y-auto rounded-lg border border-border bg-surface-1 p-2">
+          <div className="flex max-h-96 flex-col gap-1 overflow-y-auto rounded-xl border border-border bg-surface-1 p-2">
             {files.map((f) => (
               <button
                 key={f.path}
@@ -183,11 +183,11 @@ export function ProjectViewer({ name, files }: { name: string; files: ViewerFile
             ))}
           </div>
           {current?.path.endsWith(".md") ? (
-            <div className="max-h-96 overflow-auto rounded-lg border border-border bg-surface-1 p-4">
+            <div className="max-h-96 overflow-auto rounded-xl border border-border bg-surface-1 p-4">
               <SimpleMarkdown text={current.content} />
             </div>
           ) : (
-            <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-surface-1 p-3 text-xs text-primary">
+            <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded-xl border border-border bg-surface-1 p-3 text-xs text-primary">
               {current?.content}
             </pre>
           )}

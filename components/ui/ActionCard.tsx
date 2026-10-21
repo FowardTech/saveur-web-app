@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
+import { type EvaIconName } from "@/components/icons/EvaIcon";
+import { FeatureTile } from "@/components/ui/FeatureTile";
 
 interface ActionCardProps {
   href: string;
@@ -13,27 +13,10 @@ interface ActionCardProps {
   animationDelayMs?: number;
 }
 
-/** Matches the mobile app's ActionCard: rounded-12 card, soft tinted icon
- * badge, subtle shadow. Used for both the dashboard quick-actions grid and
- * the landing page's feature showcase. */
-export function ActionCard({ href, icon, title, description, tint, animationDelayMs }: ActionCardProps) {
-  const badgeBg = tint?.bg ?? "bg-tint-mint";
-  const badgeText = tint?.text ?? "text-tint-mint-text";
+/** Indeed-style tool card (same flat look as FeatureTile). The `tint` prop is
+ * accepted for compatibility but no longer colors the icon tile. */
+export function ActionCard({ href, icon, title, description, animationDelayMs }: ActionCardProps) {
   return (
-    <Link
-      href={href}
-      className={`group flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-5 shadow-soft transition duration-300 hover:-translate-y-0.5 hover:border-brand/40 ${
-        animationDelayMs != null ? "animate-card-in" : ""
-      }`}
-      style={animationDelayMs != null ? { animationDelay: `${animationDelayMs}ms` } : undefined}
-    >
-      <span className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${badgeBg} ${badgeText}`}>
-        <EvaIcon name={icon} size={20} />
-      </span>
-      <span className="flex flex-col gap-1">
-        <span className="font-medium text-primary">{title}</span>
-        {description && <span className="text-sm text-hint">{description}</span>}
-      </span>
-    </Link>
+    <FeatureTile href={href} icon={icon} title={title} description={description} animationDelayMs={animationDelayMs} />
   );
 }

@@ -100,7 +100,7 @@ export default function LandingPage() {
           <h2 className="text-xl font-bold text-primary">{t("web:landing.howItWorksTitle", { defaultValue: "How it works" })}</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {howItWorks.map((item) => (
-              <div key={item.step} className="rounded-card border border-border bg-surface-2 p-5 shadow-sm">
+              <div key={item.step} className="rounded-card border border-border bg-surface-2 p-5">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-3 text-primary">
                   <EvaIcon name={item.icon} size={18} />
                 </span>

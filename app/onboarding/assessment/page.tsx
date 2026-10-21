@@ -357,7 +357,7 @@ function CareerAssessmentPageInner() {
         )}
       </header>
       <div className="flex flex-1 items-center justify-center px-4 pb-16">
-        <div className="w-full max-w-lg rounded-card border border-border bg-surface-2 p-6 shadow-sm sm:p-8">{body}</div>
+        <div className="w-full max-w-lg rounded-card border border-border bg-surface-2 p-6 sm:p-8">{body}</div>
       </div>
     </div>
   );

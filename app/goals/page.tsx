@@ -265,7 +265,7 @@ function GoalsPageInner() {
                   </div>
 
                   {editingKey && (
-                    <form onSubmit={onSaveTarget} className="mt-4 flex items-center gap-2 rounded-lg border border-border bg-surface-1 p-3">
+                    <form onSubmit={onSaveTarget} className="mt-4 flex items-center gap-2 rounded-xl border border-border bg-surface-1 p-3">
                       <label className="flex flex-1 items-center gap-2 text-sm text-primary">
                         {editTitle}
                         <input

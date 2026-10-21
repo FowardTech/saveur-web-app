@@ -202,7 +202,7 @@ export default function OnboardingPage() {
       </header>
 
       <div className="flex flex-1 items-center justify-center px-4 pb-16">
-        <div className="w-full max-w-2xl rounded-card border border-border bg-surface-2 p-6 shadow-sm sm:p-8">
+        <div className="w-full max-w-2xl rounded-card border border-border bg-surface-2 p-6 sm:p-8">
           {/* progress */}
           <div className="mb-6 flex items-center gap-2">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -346,7 +346,7 @@ export default function OnboardingPage() {
               </p>
               {capMessage && <p className="text-xs font-medium text-warning-text">{capMessage}</p>}
 
-              <div className="flex max-h-64 flex-col overflow-y-auto rounded-lg border border-border">
+              <div className="flex max-h-64 flex-col overflow-y-auto rounded-xl border border-border">
                 {filteredCountries.map((country) => {
                   const selected = countries.includes(country);
                   return (
