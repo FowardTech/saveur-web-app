@@ -547,7 +547,8 @@
     "step2Title": "AIコーチと一緒に練習する",
     "step3Description": "履歴書をブラッシュアップし、毎日求人アラートを受け取り、1つのロードマップで進捗を管理できます。",
     "step3Title": "自信を持って応募する",
-    "stepLabel": "ステップ{{step}}"
+    "stepLabel": "ステップ{{step}}",
+    "howItWorksCredits": "AI の操作ごとに、月間クレジットから数クレジットを消費します。"
   },
   "learning": {
     "buildCurriculum": "カリキュラムを作成",

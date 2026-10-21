@@ -547,7 +547,8 @@
     "step2Title": "Übe mit deinem KI-Coach",
     "step3Description": "Verbessere deinen Lebenslauf, erhalte tägliche Job-Benachrichtigungen und verfolge deinen Fortschritt auf einer Roadmap.",
     "step3Title": "Bewirb dich mit Zuversicht",
-    "stepLabel": "Schritt {{step}}"
+    "stepLabel": "Schritt {{step}}",
+    "howItWorksCredits": "Jede KI-Aktion verbraucht einige Credits aus deinem Monatskontingent."
   },
   "learning": {
     "buildCurriculum": "Meinen Lehrplan erstellen",

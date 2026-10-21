@@ -608,7 +608,8 @@
     "step2Title": "Practice with your AI coach",
     "step3Description": "Ship a stronger resume, get daily job alerts, and track your progress on one roadmap.",
     "step3Title": "Apply with confidence",
-    "stepLabel": "Step {{step}}"
+    "stepLabel": "Step {{step}}",
+    "howItWorksCredits": "Every AI action uses a few credits from your monthly allowance."
   },
   "legal": {
     "loadFailed": "Couldn't load this content. Please try again."

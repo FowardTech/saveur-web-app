@@ -547,7 +547,8 @@
     "step2Title": "Practica con tu coach de IA",
     "step3Description": "Mejora tu currículum, recibe alertas de empleo diarias y sigue tu progreso en una sola hoja de ruta.",
     "step3Title": "Postúlate con confianza",
-    "stepLabel": "Paso {{step}}"
+    "stepLabel": "Paso {{step}}",
+    "howItWorksCredits": "Cada acción de IA usa algunos créditos de tu asignación mensual."
   },
   "learning": {
     "buildCurriculum": "Crear mi plan de estudios",

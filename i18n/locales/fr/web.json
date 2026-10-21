@@ -547,7 +547,8 @@
     "step2Title": "Entraînez-vous avec votre coach IA",
     "step3Description": "Renforcez votre CV, recevez des alertes emploi quotidiennes et suivez votre progression sur une seule feuille de route.",
     "step3Title": "Postulez en toute confiance",
-    "stepLabel": "Étape {{step}}"
+    "stepLabel": "Étape {{step}}",
+    "howItWorksCredits": "Chaque action d'IA utilise quelques crédits de votre allocation mensuelle."
   },
   "learning": {
     "buildCurriculum": "Créer mon cursus",

@@ -547,7 +547,8 @@
     "step2Title": "Esercitati con il tuo coach IA",
     "step3Description": "Migliora il tuo CV, ricevi avvisi di lavoro quotidiani e monitora i tuoi progressi su un unico percorso.",
     "step3Title": "Candidati con sicurezza",
-    "stepLabel": "Passo {{step}}"
+    "stepLabel": "Passo {{step}}",
+    "howItWorksCredits": "Ogni azione di IA utilizza alcuni crediti della tua quota mensile."
   },
   "learning": {
     "buildCurriculum": "Crea il mio programma",

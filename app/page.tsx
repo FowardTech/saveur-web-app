@@ -98,6 +98,9 @@ export default function LandingPage() {
         {/* How it works */}
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-bold text-primary">{t("web:landing.howItWorksTitle", { defaultValue: "How it works" })}</h2>
+          <p className="-mt-2 text-sm text-hint">
+            {t("web:landing.howItWorksCredits", { defaultValue: "Every AI action uses a few credits from your monthly allowance." })}
+          </p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {howItWorks.map((item) => (
               <div key={item.step} className="rounded-card border border-border bg-surface-2 p-5">

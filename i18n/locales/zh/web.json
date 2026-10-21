@@ -547,7 +547,8 @@
     "step2Title": "与你的AI教练一起练习",
     "step3Description": "打磨更出色的简历，接收每日职位提醒，并在同一个路线图中跟踪进度。",
     "step3Title": "自信地投递申请",
-    "stepLabel": "第 {{step}} 步"
+    "stepLabel": "第 {{step}} 步",
+    "howItWorksCredits": "每次 AI 操作都会消耗你每月额度中的少量积分。"
   },
   "learning": {
     "buildCurriculum": "制定我的学习计划",
