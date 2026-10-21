@@ -267,7 +267,7 @@ export function DashboardInsights({ leftColumnExtra, compact = false }: { leftCo
 
       {/* Main two-column area */}
       <div className={`grid grid-cols-1 gap-6 ${compact ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
-        <div className={`flex flex-col gap-6 ${compact ? "" : "lg:col-span-2"}`}>
+        <div className={compact ? "grid grid-cols-1 items-start gap-6 lg:col-span-2 lg:grid-cols-2" : "flex flex-col gap-6 lg:col-span-2"}>
           <Card
             title={t("web:dashboard.insights.weekTitle", { defaultValue: "This week's practice" })}
             icon="bar-chart-2-outline"
