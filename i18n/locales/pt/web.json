@@ -2360,5 +2360,17 @@
     "premiumBody": "Check-ins semanais, documento de conquistas, preparação para avaliação e promoção, alertas de remuneração e mercado, trilha de liderança, planejamento de habilidades e sua linha do tempo da carreira.",
     "upgradePremium": "Fazer upgrade para Premium",
     "unavailable": "A Central de sucesso profissional está indisponível no momento. Volte em breve."
+  },
+  "upcoming": {
+    "title": "Próximas",
+    "subtitle": "Todas as suas entrevistas simuladas agendadas em um só lugar.",
+    "today": "Hoje",
+    "tomorrow": "Amanhã",
+    "emptyTitle": "Nenhuma sessão próxima",
+    "emptyBody": "Agende uma entrevista simulada e ela aparecerá aqui.",
+    "schedule": "Agendar uma sessão",
+    "min": "min",
+    "start": "Iniciar",
+    "locked": "Bloqueada"
   }
 }

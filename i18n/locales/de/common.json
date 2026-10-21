@@ -103,7 +103,8 @@
     "jobTracker": "Job-Tracker",
     "goals": "Ziele",
     "sharedWithMe": "Mit mir geteilt",
-    "addons": "Add-ons"
+    "addons": "Add-ons",
+    "upcoming": "Anstehend"
   },
   "legal": {
     "and": "und",

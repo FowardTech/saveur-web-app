@@ -44,7 +44,9 @@ export function UpcomingSessionCard() {
   const load = () => {
     scheduledInterviewService
       .listUpcoming()
-      .then((list) => setSession(list[0] ?? null))
+      // Only a session scheduled for TODAY shows on the dashboard; later
+      // ones are listed on /upcoming (see app/upcoming/page.tsx).
+      .then((list) => setSession(list[0] && new Date(list[0].scheduledAt).toDateString() === new Date().toDateString() ? list[0] : null))
       .catch(() => setSession(null));
   };
 

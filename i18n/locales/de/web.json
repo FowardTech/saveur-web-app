@@ -2360,5 +2360,17 @@
     "premiumBody": "Wöchentliche Check-ins, Erfolgsdokument, Beurteilungs- und Beförderungsvorbereitung, Gehalts- und Marktbenachrichtigungen, Führungs-Track, Fähigkeitsplanung und deine Karriere-Zeitleiste.",
     "upgradePremium": "Auf Premium upgraden",
     "unavailable": "Das Karriere-Erfolgszentrum ist gerade nicht verfügbar. Bitte schau bald wieder vorbei."
+  },
+  "upcoming": {
+    "title": "Anstehend",
+    "subtitle": "Alle geplanten Probe-Interviews an einem Ort.",
+    "today": "Heute",
+    "tomorrow": "Morgen",
+    "emptyTitle": "Keine anstehenden Sitzungen",
+    "emptyBody": "Plane ein Probe-Interview und es erscheint hier.",
+    "schedule": "Sitzung planen",
+    "min": "Min.",
+    "start": "Starten",
+    "locked": "Gesperrt"
   }
 }

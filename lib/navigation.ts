@@ -82,6 +82,9 @@ export const primaryNav: NavItem[] = [
       // structure here: this points at the merged app/applications/page.tsx
       // with ?tab=history, not a separate route.
       { label: "Recent Interviews", labelKey: "recentInterviews", href: "/applications?tab=history", icon: "clock-outline" },
+      // Mobile drawer "Upcoming": every scheduled mock interview (today's
+      // also shows on the dashboard; later ones live only here).
+      { label: "Upcoming", labelKey: "upcoming", href: "/upcoming", icon: "calendar-outline" },
     ],
   },
   {

@@ -2360,5 +2360,17 @@
     "premiumBody": "Points hebdomadaires, document de réalisations, préparation d'évaluation et de promotion, alertes rémunération et marché, parcours leadership, planification des compétences et votre parcours de carrière.",
     "upgradePremium": "Passer à Premium",
     "unavailable": "Le Centre de réussite professionnelle est indisponible pour le moment. Revenez bientôt."
+  },
+  "upcoming": {
+    "title": "À venir",
+    "subtitle": "Tous vos entretiens simulés planifiés au même endroit.",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "emptyTitle": "Aucune séance à venir",
+    "emptyBody": "Planifiez un entretien simulé et il apparaîtra ici.",
+    "schedule": "Planifier une séance",
+    "min": "min",
+    "start": "Commencer",
+    "locked": "Verrouillée"
   }
 }

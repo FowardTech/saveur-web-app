@@ -2360,5 +2360,17 @@
     "premiumBody": "Registros semanales, documento de logros, preparación de evaluación y ascenso, alertas de sueldo y mercado, ruta de liderazgo, planificación de habilidades y tu trayectoria profesional.",
     "upgradePremium": "Mejorar a Premium",
     "unavailable": "El Centro de éxito profesional no está disponible en este momento. Vuelve pronto."
+  },
+  "upcoming": {
+    "title": "Próximas",
+    "subtitle": "Todas tus entrevistas simuladas programadas en un solo lugar.",
+    "today": "Hoy",
+    "tomorrow": "Mañana",
+    "emptyTitle": "No hay sesiones próximas",
+    "emptyBody": "Programa una entrevista simulada y aparecerá aquí.",
+    "schedule": "Programar una sesión",
+    "min": "min",
+    "start": "Iniciar",
+    "locked": "Bloqueada"
   }
 }

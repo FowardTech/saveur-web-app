@@ -2360,5 +2360,17 @@
     "premiumBody": "Check-in settimanali, documento dei successi, preparazione a valutazione e promozione, avvisi su retribuzione e mercato, percorso di leadership, pianificazione delle competenze e la tua cronologia di carriera.",
     "upgradePremium": "Passa a Premium",
     "unavailable": "Il Centro per il successo professionale non è disponibile al momento. Ricontrolla presto."
+  },
+  "upcoming": {
+    "title": "In arrivo",
+    "subtitle": "Tutti i tuoi colloqui simulati pianificati in un unico posto.",
+    "today": "Oggi",
+    "tomorrow": "Domani",
+    "emptyTitle": "Nessuna sessione in arrivo",
+    "emptyBody": "Pianifica un colloquio simulato e apparirà qui.",
+    "schedule": "Pianifica una sessione",
+    "min": "min",
+    "start": "Inizia",
+    "locked": "Bloccata"
   }
 }

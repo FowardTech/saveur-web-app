@@ -2360,5 +2360,17 @@
     "premiumBody": "주간 체크인, 성과 문서, 평가 및 승진 준비, 급여 및 시장 알림, 리더십 트랙, 역량 계획, 커리어 타임라인.",
     "upgradePremium": "Premium으로 업그레이드",
     "unavailable": "커리어 성공 허브를 지금은 사용할 수 없습니다. 곧 다시 확인해 주세요."
+  },
+  "upcoming": {
+    "title": "예정",
+    "subtitle": "예약한 모의 면접을 한곳에서 확인하세요.",
+    "today": "오늘",
+    "tomorrow": "내일",
+    "emptyTitle": "예정된 세션이 없습니다",
+    "emptyBody": "모의 면접을 예약하면 여기에 표시됩니다.",
+    "schedule": "세션 예약",
+    "min": "분",
+    "start": "시작",
+    "locked": "잠김"
   }
 }

@@ -108,7 +108,8 @@
     "jobTracker": "Job Tracker",
     "goals": "Goals",
     "sharedWithMe": "Shared with Me",
-    "addons": "Add-ons"
+    "addons": "Add-ons",
+    "upcoming": "Upcoming"
   },
   "yes": "Yes",
   "no": "No",

@@ -2360,5 +2360,17 @@
     "premiumBody": "每周回顾、成就文档、评估与晋升准备、薪酬与市场提醒、领导力路径、技能规划以及你的职业时间线。",
     "upgradePremium": "升级到 Premium",
     "unavailable": "职业成功中心暂时不可用，请稍后再来看看。"
+  },
+  "upcoming": {
+    "title": "即将到来",
+    "subtitle": "您安排的所有模拟面试集中在此。",
+    "today": "今天",
+    "tomorrow": "明天",
+    "emptyTitle": "暂无即将进行的面试",
+    "emptyBody": "安排一场模拟面试，它会显示在这里。",
+    "schedule": "安排面试",
+    "min": "分钟",
+    "start": "开始",
+    "locked": "已锁定"
   }
 }

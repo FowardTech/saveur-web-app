@@ -2357,5 +2357,17 @@
     "premiumBody": "Weekly check-ins, a brag document, review and promotion prep, pay and market alerts, a leadership track, skills planning and your career timeline.",
     "upgradePremium": "Upgrade to Premium",
     "unavailable": "Career Success Hub is unavailable right now. Please check back soon."
+  },
+  "upcoming": {
+    "title": "Upcoming",
+    "subtitle": "All your scheduled mock interviews in one place.",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "emptyTitle": "No upcoming sessions",
+    "emptyBody": "Schedule a mock interview and it will show up here.",
+    "schedule": "Schedule a session",
+    "min": "min",
+    "start": "Start",
+    "locked": "Locked"
   }
 }
