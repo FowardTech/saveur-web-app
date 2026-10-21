@@ -190,8 +190,13 @@
 /* Faint colour wash behind page content: white page stays white, but the
    corners pick up brand blue and lavender. */
 .page-wash {
-  /* Indeed look: no decorative color wash behind pages. */
-  background-image: none;
+  /* Indeed-style soft blue swoosh in the top-left corner behind the page
+     header/search area; fades to plain white lower down. */
+  background-image: radial-gradient(1200px 640px at 6% -12%, rgba(39, 115, 238, 0.11), transparent 62%);
+  background-repeat: no-repeat;
+}
+.dark .page-wash {
+  background-image: radial-gradient(1200px 640px at 6% -12%, rgba(39, 115, 238, 0.14), transparent 62%);
 }
 
 @layer utilities {

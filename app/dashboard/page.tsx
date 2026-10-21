@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
+import { SiteSearch } from "@/components/shell/SiteSearch";
 import { HomeBanner } from "@/components/dashboard/HomeBanner";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { EmailVerificationBanner } from "@/components/dashboard/EmailVerificationBanner";
@@ -193,6 +194,12 @@ export default function DashboardPage() {
             {greeting}, {firstName}
           </h1>
           <p className="mt-1.5 text-sm text-hint sm:text-base">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
+        </div>
+
+        {/* Indeed-style hero search: a big rounded search over the soft blue
+            page wash -- jumps to any page or tool in the app. */}
+        <div className="-mt-2">
+          <SiteSearch large />
         </div>
 
         {/* Coach readiness — product report: "when users login for the first

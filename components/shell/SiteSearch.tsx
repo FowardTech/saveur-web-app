@@ -59,7 +59,7 @@ function scoreMatch(label: string, query: string): number {
  * keystroke, which is a meaningfully bigger feature than "let me jump to a
  * page" — left out here as an honest scope boundary rather than a half-built
  * attempt at full content search. */
-export function SiteSearch() {
+export function SiteSearch({ large = false }: { large?: boolean } = {}) {
   const { t } = useTranslation();
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -114,12 +114,12 @@ export function SiteSearch() {
   }
 
   return (
-    <div className="relative w-full max-w-xl" ref={ref}>
+    <div className={`relative w-full ${large ? "max-w-3xl" : "max-w-xl"}`} ref={ref}>
       <div className="relative">
         <EvaIcon
           name="search-outline"
-          size={16}
-          className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-hint"
+          size={large ? 20 : 16}
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 text-primary ${large ? "left-5" : "left-3.5 text-hint"}`}
         />
         <input
           ref={inputRef}
@@ -134,7 +134,7 @@ export function SiteSearch() {
           onKeyDown={onKeyDown}
           placeholder={t("web:shell.searchPlaceholder", { defaultValue: "Search anything or any page…" })}
           aria-label={t("web:shell.searchPlaceholder", { defaultValue: "Search anything or any page…" })}
-          className="w-full rounded-pill border border-border bg-surface-1 py-2 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
+          className={large ? "w-full rounded-full border-2 border-primary/80 bg-surface-2 py-3.5 pl-12 pr-5 text-base text-primary shadow-sm placeholder:text-hint focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15" : "w-full rounded-pill border border-border bg-surface-1 py-2 pl-9 pr-3.5 text-sm text-primary placeholder:text-hint focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"}
         />
       </div>
 
