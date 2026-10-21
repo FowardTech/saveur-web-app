@@ -148,8 +148,14 @@
   --color-tint-purple: var(--tint-purple);
   --color-tint-purple-text: var(--tint-purple-text);
 
-  --radius-card: 8px;
+  /* Larger, friendlier corners (product request: card radius 16-20px). The
+     Tailwind scale is bumped too so every rounded-lg/xl/2xl block follows. */
+  --radius-card: 18px;
   --radius-pill: 9999px;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
 }
 
 @layer base {

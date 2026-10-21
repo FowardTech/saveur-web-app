@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/shell/AppShell";
 import { SiteSearch } from "@/components/shell/SiteSearch";
-import { HomeBanner } from "@/components/dashboard/HomeBanner";
+import { FeatureTile } from "@/components/ui/FeatureTile";
+import { quickActions } from "@/lib/navigation";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { EmailVerificationBanner } from "@/components/dashboard/EmailVerificationBanner";
 import { WelcomeModal } from "@/components/dashboard/WelcomeModal";
@@ -17,9 +18,7 @@ import { ContinueWatchingCard } from "@/components/dashboard/ContinueWatchingCar
 import { GettingStartedChecklist } from "@/components/dashboard/GettingStartedChecklist";
 import { AppTour } from "@/components/dashboard/AppTour";
 import { CoachSetupPrompt } from "@/components/dashboard/CoachSetupPrompt";
-import { CoachingReportCard } from "@/components/dashboard/CoachingReportCard";
 import { DashboardInsights } from "@/components/dashboard/DashboardInsights";
-import { DailyTipBanner } from "@/components/dashboard/DailyTipBanner";
 import { AdPopupModal } from "@/components/dashboard/AdPopupModal";
 import { RatingModal } from "@/components/dashboard/RatingModal";
 import { DailyCheckInModal, type DailyCheckInMode } from "@/components/dashboard/DailyCheckInModal";
@@ -188,87 +187,46 @@ export default function DashboardPage() {
           replayable from Settings. */}
       <AppTour />
       <CoachSetupPrompt />
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 pb-10">
-        <div data-tour="dashboard-greeting">
-          <h1 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
+      {/* Indeed-style home (product request: "simple and professional like
+          Indeed, not too many things"): a welcome line, one big search, the
+          coach-setup checklist while it's unfinished, anything time-sensitive
+          (upcoming session / video in progress), six tool cards, and two
+          activity cards. Everything else that used to live here (daily tip,
+          promo banner, challenge, roadmap, leaderboard, news, coaching report,
+          the extra tool grid) is still one click away in the top navigation. */}
+      <div className="mx-auto flex max-w-5xl flex-col gap-8 pb-10">
+        <div data-tour="dashboard-greeting" className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
             {greeting}, {firstName}
           </h1>
-          <p className="mt-1.5 text-sm text-hint sm:text-base">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
+          <p className="text-sm text-hint sm:text-base">{t("web:dashboard.subtitle", { defaultValue: "Here's what's next on your career journey." })}</p>
         </div>
 
-        {/* Indeed-style hero search: a big rounded search over the soft blue
-            page wash -- jumps to any page or tool in the app. */}
-        <div className="-mt-2">
-          <SiteSearch large />
-        </div>
+        <SiteSearch large />
 
-        {/* Coach readiness — product report: "when users login for the first
-            time the app dont really tell them what is the first thing they
-            should do". Sits directly under the greeting so it is the first
-            thing seen; see GettingStartedChecklist.tsx / lib/coachReadiness.ts.
-            Self-contained and cannot be dismissed until the essentials are done. */}
         <GettingStartedChecklist />
-
-        {/* Quick actions temporarily removed to evaluate the denser layout.
-            The tour step targeting dashboard-quick-actions auto-skips when
-            its element is missing (see AppTour.measureStep). */}
-
-        {/* Non-blocking "verify your email" nudge for a password-signup
-            account that hasn't clicked its emailed link yet — mirrors
-            mobile's Home screen placement (see EmailVerificationBanner's
-            own header comment). Renders nothing once verified/signed out. */}
         <EmailVerificationBanner />
-
-        {/* Admin-authored announcement strip (policy changes, etc.) — above
-            the decorative HomeBanner hero card per product ask. */}
         <AnnouncementBanner />
-
-        {/* Daily tip — product report: "you did not implement... daily
-            tips just the way it is in the mobile app". Self-contained,
-            renders nothing if the user has no active goals yet. */}
-        <DailyTipBanner />
-
-        {/* Home banner */}
-        <div data-tour="dashboard-home-banner">
-          <HomeBanner />
-        </div>
-
-
-        {/* Upcoming Session — self-contained, renders nothing when there's
-            nothing scheduled (see app/practice/schedule/page.tsx for the
-            scheduling entry point, reached from the Practice hub). */}
         <UpcomingSessionCard />
-
-        {/* Continue Watching — product report: "Continue video is not
-            implemented in the web version." Self-contained, renders
-            nothing when there's no in-progress video (see
-            components/learning/InAppVideoPlayer.tsx for the real position
-            tracking that feeds this). */}
         <ContinueWatchingCard />
 
-        {/* Insights — product report: "This web app dashboard homescreen
-            still look scanty... Its too empty". Stats strip, weekly
-            activity, recent interviews, job matches, daily challenge,
-            roadmap, leaderboard, news and an explore-more tool grid. All
-            self-fetched from existing endpoints; each card has its own
-            empty state so a new account still sees a full page.
+        <section className="flex flex-col gap-4">
+          <h2 className="text-xl font-bold text-primary">{t("web:dashboard.toolsTitle", { defaultValue: "Jump into a tool" })}</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {quickActions.slice(0, 6).map((action, i) => (
+              <FeatureTile
+                key={action.href}
+                href={action.href}
+                icon={action.icon}
+                title={action.labelKey ? t(`common:nav.${action.labelKey}`, { defaultValue: action.label }) : action.label}
+                description={action.descriptionKey ? t(action.descriptionKey, { defaultValue: action.description }) : action.description}
+                animationDelayMs={i * 40}
+              />
+            ))}
+          </div>
+        </section>
 
-            Coaching report — product report: "the web app dashboard look
-            so empty" [Yoodli's own dashboard report card]. Passed in as the
-            bottom of the insights' wide left column so it fills the space
-            beside the taller right column. Self-contained; shows an honest
-            empty state (with a CTA) for a user with fewer than 2 graded
-            mock interviews. The data-tour wrapper is deliberately on this
-            stable outer div rather than inside the component, since the
-            component can render nothing while loading — see AppTour.tsx's
-            STEPS comment. */}
-        <DashboardInsights
-          leftColumnExtra={
-            <div data-tour="dashboard-coaching-report">
-              <CoachingReportCard />
-            </div>
-          }
-        />
+        <DashboardInsights compact />
       </div>
 
       {/* Mutual exclusion: never stack this on top of the daily check-in

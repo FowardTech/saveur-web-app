@@ -126,7 +126,7 @@ function EmptyLine({ text, cta }: { text: string; cta?: { href: string; label: s
 
 /** `leftColumnExtra` renders at the bottom of the wide left column (used for
  * the coaching report so it fills the space beside the taller right column). */
-export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: ReactNode }) {
+export function DashboardInsights({ leftColumnExtra, compact = false }: { leftColumnExtra?: ReactNode; compact?: boolean }) {
   const { t, i18n } = useTranslation();
   const { firebaseUser, profile, loading: authLoading, isPremium } = useAuth();
 
@@ -266,8 +266,8 @@ export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: React
       </div>
 
       {/* Main two-column area */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="flex flex-col gap-6 lg:col-span-2">
+      <div className={`grid grid-cols-1 gap-6 ${compact ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
+        <div className={`flex flex-col gap-6 ${compact ? "" : "lg:col-span-2"}`}>
           <Card
             title={t("web:dashboard.insights.weekTitle", { defaultValue: "This week's practice" })}
             icon="bar-chart-2-outline"
@@ -293,6 +293,7 @@ export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: React
             </p>
           </Card>
 
+          {!compact && (
           <Card
             title={t("web:dashboard.insights.recentTitle", { defaultValue: "Recent interviews" })}
             icon="clock-outline"
@@ -328,6 +329,7 @@ export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: React
               </ul>
             )}
           </Card>
+          )}
 
           <Card
             title={t("web:dashboard.insights.jobsTitle", { defaultValue: "Job matches for you" })}
@@ -373,9 +375,10 @@ export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: React
             )}
           </Card>
 
-          {leftColumnExtra}
+          {!compact && leftColumnExtra}
         </div>
 
+        {!compact && (
         <div className="flex flex-col gap-6">
           <Card title={t("web:dashboard.insights.challengeTitle", { defaultValue: "Today's challenge" })} icon="flash-outline" tint="bg-tint-rose text-tint-rose-text" action={{ href: "/progress", label: t("web:dashboard.insights.open", { defaultValue: "Open" }) }}>
             {challenge === undefined ? (
@@ -474,9 +477,10 @@ export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: React
             )}
           </Card>
         </div>
+        )}
       </div>
 
-      {/* Explore more */}
+      {!compact && (
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold text-primary">{t("web:dashboard.insights.exploreTitle", { defaultValue: "Explore more tools" })}</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -493,6 +497,7 @@ export function DashboardInsights({ leftColumnExtra }: { leftColumnExtra?: React
           ))}
         </div>
       </div>
+      )}
     </>
   );
 }
