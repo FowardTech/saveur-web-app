@@ -13,14 +13,16 @@
  * --------------------------------------------------------------------- */
 :root {
   /* brand / base palette — identical in both modes */
-  --brand: #2773ee;
-  --brand-600: #1d5fd0;
-  --brand-700: #174fb0;
+  /* Indeed-style palette (product request: "give the web app the Indeed kind of
+     look"): Indeed blue accent, near-black text, warm-gray borders. */
+  --brand: #2557a7;
+  --brand-600: #1d4686;
+  --brand-700: #163769;
   --success: #00d65b;
   --danger: #fa4169;
   --warning: #fe9870;
   --accent-purple: #71717a;
-  --solid: #2773ee;
+  --solid: #2557a7;
   --solid-fg: #ffffff;
 
   /* light mode */
@@ -36,35 +38,40 @@
      --surface-3 (#f0f0f0) below is unchanged -- only the tint is gone
      (R=G=B now). Mirrors the identical fix to color-basic-200 in the
      mobile app's constants/theme/appTheme.json. */
-  --surface-1: #f6f9fd;
+  --surface-1: #f9f9f8;
   --surface-2: #ffffff;
-  --surface-3: #ecf2f9;
-  --surface-4: #e0e9f3;
-  --border: #d6dfe8;
-  --text-primary: #08152c;
-  --text-hint: #515f6e;
-  --text-link: #2773ee;
+  --surface-3: #f3f2f1;
+  --surface-4: #e4e2e0;
+  --border: #e4e2e0;
+  --text-primary: #2d2d2d;
+  --text-hint: #595959;
+  --text-link: #2557a7;
   --success-text: #047857;
 
   /* Colorful pastel chips (blue / mint / orange / rose / purple). */
-  --tint-blue: #e4eeff;
-  --tint-blue-text: #0050cc;
-  --tint-orange: #ffecdc;
-  --tint-orange-text: #c2560f;
-  --tint-mint: #dcf7ea;
-  --tint-mint-text: #067a4d;
-  --tint-rose: #ffe3ea;
-  --tint-rose-text: #c01e47;
-  --tint-purple: #ece6ff;
-  --tint-purple-text: #5b3fd1;
-  --brand-soft: #e9f1fd;
-  --hero-from: #e8f0ff;
-  --hero-via: #efe9ff;
-  --hero-to: #e3f7f0;
-  --shadow-soft: 0 1px 2px rgba(8, 21, 44, 0.04), 0 8px 24px -12px rgba(8, 21, 44, 0.1);
+  /* Indeed uses ONE accent: every tint is the soft blue (or neutral gray) so
+     the UI stays calm instead of rainbow-colored. */
+  --tint-blue: #e8eefa;
+  --tint-blue-text: #2557a7;
+  --tint-orange: #f3f2f1;
+  --tint-orange-text: #2d2d2d;
+  --tint-mint: #f3f2f1;
+  --tint-mint-text: #2d2d2d;
+  --tint-rose: #f3f2f1;
+  --tint-rose-text: #2d2d2d;
+  --tint-purple: #e8eefa;
+  --tint-purple-text: #2557a7;
+  --brand-soft: #e8eefa;
+  --hero-from: #e8eefa;
+  --hero-via: #e8eefa;
+  --hero-to: #e8eefa;
+  --shadow-soft: 0 1px 2px rgba(45, 45, 45, 0.06);
 }
 
 .dark {
+  --brand: #5b8def;
+  --brand-600: #4a7ae0;
+  --brand-700: #3a68cc;
   --page: #09090b;
   --surface-1: #111113;
   /* Product report: dark-mode cards had a lighter slab background; they
@@ -102,7 +109,7 @@
 @theme inline {
   --font-sans: var(--font-inter), var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
   /* Admin-console display face for headings. */
-  --font-display: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   /* Wordmark-only font — mirrors mobile's BrandWordmark.tsx use of
      MontserratAlternates-Black for the "Saveur" text specifically. Not a
      replacement for --font-sans; apply via the `font-brand` utility only
@@ -144,8 +151,8 @@
   --color-tint-purple: var(--tint-purple);
   --color-tint-purple-text: var(--tint-purple-text);
 
-  --radius-card: 12px;
-  --radius-pill: 12px;
+  --radius-card: 8px;
+  --radius-pill: 8px;
 }
 
 @layer base {
@@ -177,18 +184,17 @@
   letter-spacing: -0.02em;
 }
 
-/* Soft lift on every standard card (rounded-card on a surface-2 fill). */
+/* Indeed-style cards: flat white with a thin warm-gray outline (the border
+   comes from `border-border` on each card), no drop shadow. */
 .rounded-card.bg-surface-2 {
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
 }
 
 /* Faint colour wash behind page content: white page stays white, but the
    corners pick up brand blue and lavender. */
 .page-wash {
-  background-image:
-    radial-gradient(900px 520px at 85% -8%, rgba(39, 115, 238, 0.07), transparent 60%),
-    radial-gradient(700px 420px at -5% 100%, rgba(255, 230, 88, 0.1), transparent 55%);
-  background-repeat: no-repeat;
+  /* Indeed look: no decorative color wash behind pages. */
+  background-image: none;
 }
 
 @layer utilities {
@@ -199,7 +205,7 @@
     background-image: linear-gradient(120deg, var(--hero-from), var(--hero-via) 55%, var(--hero-to));
   }
   .bg-brand-gradient {
-    background-image: linear-gradient(135deg, #3a82f6, #1d5fd0);
+    background-image: linear-gradient(135deg, #2557a7, #1d4686);
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
