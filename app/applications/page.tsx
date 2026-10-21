@@ -1,5 +1,6 @@
 "use client";
 
+import { brandLogoUrl } from "@/lib/companyData";
 import { LocationSelect } from "@/components/ui/LocationFields";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -84,7 +85,7 @@ const PROVIDER_LOGO_DOMAIN: Record<"gmail" | "outlook_mail" | "google_calendar" 
   google_calendar: "calendar.google.com",
   outlook_calendar: "outlook.com",
 };
-const providerLogoUrl = (key: keyof typeof PROVIDER_LOGO_DOMAIN) => `https://geticon.dev/?url=${PROVIDER_LOGO_DOMAIN[key]}`;
+const providerLogoUrl = (key: keyof typeof PROVIDER_LOGO_DOMAIN) => brandLogoUrl(PROVIDER_LOGO_DOMAIN[key]);
 
 function stageLabel(t: (k: string, o?: Record<string, unknown>) => string, stage: string) {
   return t(`web:applications.stages.${stage.toLowerCase()}`, { defaultValue: stage });

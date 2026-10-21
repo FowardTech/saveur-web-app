@@ -284,27 +284,28 @@ const KNOWN_DOMAIN_OVERRIDES: Record<string, string> = {
   ebay: "ebay.com",
 };
 
-const CORPORATE_SUFFIXES = new Set([
-  "incorporated", "corporation", "holdings", "limited", "company", "group",
-  "worldwide", "global", "international", "technologies", "solutions",
-  "services", "partners", "llc", "inc", "ltd", "corp", "co", "plc", "gmbh",
-  "sa", "ag", "nv", "pty",
-]);
+const LOGO_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.saveurnow.com";
 
-function guessCompanyDomain(company: string): string | null {
-  const name = company.trim().toLowerCase();
+/** Live logo URL for a company, served by the backend
+ * (/api/v1/company-logos/img): it resolves the company's real domain, fetches
+ * the actual brand icon from the company's own site, caches it and returns a
+ * plain image — always fresh, nothing bundled in the app. */
+export function guessCompanyLogoUrl(company?: string | null): string | null {
+  const name = (company ?? "").trim();
   if (!name) return null;
-  const override = KNOWN_DOMAIN_OVERRIDES[name];
-  if (override) return override;
-  const words = (name.match(/[a-z0-9]+/g) ?? []).filter((w) => !CORPORATE_SUFFIXES.has(w));
-  const slug = words.join("");
-  return slug ? `${slug}.com` : null;
+  return liveLogoUrl(name, KNOWN_DOMAIN_OVERRIDES[name.toLowerCase()]);
 }
 
-/** Best-effort geticon.dev logo URL for a company name, or null when
- * nothing usable could be guessed. */
-export function guessCompanyLogoUrl(company?: string | null): string | null {
-  if (!company) return null;
-  const domain = guessCompanyDomain(company);
-  return domain ? `https://geticon.dev/?url=${encodeURIComponent(domain)}` : null;
+/** Logo for a fixed brand domain (e.g. mail.google.com); prefers the
+ * high-res favicon so per-product Google/Outlook icons come out right. */
+export function brandLogoUrl(domain: string): string {
+  return liveLogoUrl("", domain, true);
+}
+
+function liveLogoUrl(name: string, domain?: string | null, favicon = false): string {
+  const qs: string[] = [];
+  if (name) qs.push(`name=${encodeURIComponent(name.slice(0, 100))}`);
+  if (domain) qs.push(`domain=${encodeURIComponent(domain)}`);
+  if (favicon) qs.push("prefer=favicon");
+  return `${LOGO_API_BASE}/api/v1/company-logos/img?${qs.join("&")}`;
 }
