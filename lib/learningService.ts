@@ -255,10 +255,10 @@ export async function getSavedModuleContent(
       module: {
         index: moduleIndex,
         title: data.content.title,
-        body: data.content.body,
+        body: foldLegacyHeaderImage(data.content.body, data.content.image_url ?? null),
         checkQuestion: data.content.check_question ?? undefined,
       },
-      imageUrl: data.content.image_url ?? null,
+      imageUrl: null,
     };
   } catch {
     return null;
@@ -287,6 +287,86 @@ export async function saveModuleContent(
   } catch {
     // best-effort — worst case this module regenerates next visit
   }
+}
+
+// ---------------------------------------------------------------------------
+// Inline lesson illustrations. The AI marks where an illustration belongs on
+// its own line:  [[visual: photo|diagram | English image description | short
+// caption in the lesson language]]  — placed right after the paragraph it
+// illustrates, 1-3 per lesson (examples, scenes, diagrams, flows). The lesson
+// text shows immediately with a placeholder at each marker; resolveVisuals()
+// then generates every image in parallel and swaps each marker for a
+// markdown image line  ![caption](url)  (or drops it if generation failed).
+// Saved lessons store only the resolved markdown, so reviewing a module is
+// stable. There is no header image any more.
+// ---------------------------------------------------------------------------
+export const VISUAL_MARKER_INSTRUCTION =
+  "Where a picture would genuinely help the learner understand — a concrete example scene, a " +
+  "process or flow, a comparison, a structure or architecture — add an illustration marker on its " +
+  "OWN line directly after the paragraph it illustrates, in exactly this format: " +
+  "[[visual: photo | one-sentence English description of the image | short caption in the lesson language]] " +
+  "(use 'diagram' instead of 'photo' for flows, structures, charts and comparisons). Use between 1 and 3 " +
+  "markers per lesson, never before the first paragraph, and nothing else in that line.";
+
+const VISUAL_MARKER_RE = /^\[\[visual:\s*(photo|diagram)\s*\|\s*([^|\]]+?)\s*(?:\|\s*([^\]]*?)\s*)?\]\]$/i;
+const IMAGE_LINE_RE = /^!\[([^\]]*)\]\((\S+?)\)$/;
+
+export type LessonBlock =
+  | { type: "text"; text: string }
+  | { type: "pending" }
+  | { type: "image"; url: string; caption: string };
+
+/** Splits a lesson body into render blocks (text / image / loading placeholder). */
+export function parseLessonBlocks(body: string): LessonBlock[] {
+  return body
+    .split(/\n{2,}/)
+    .map((raw) => raw.trim())
+    .filter(Boolean)
+    .map((para): LessonBlock => {
+      const img = para.match(IMAGE_LINE_RE);
+      if (img) return { type: "image", url: img[2], caption: img[1] };
+      if (VISUAL_MARKER_RE.test(para)) return { type: "pending" };
+      return { type: "text", text: para };
+    });
+}
+
+export function hasPendingVisuals(body: string): boolean {
+  return body.split("\n").some((l) => VISUAL_MARKER_RE.test(l.trim()));
+}
+
+/** The lesson text only (no marker/image lines) — for voice narration. */
+export function lessonTextOnly(body: string): string {
+  return parseLessonBlocks(body)
+    .filter((b): b is { type: "text"; text: string } => b.type === "text")
+    .map((b) => b.text)
+    .join("\n\n");
+}
+
+/** Generates every marked illustration in parallel and returns the body with
+ * each marker replaced by a markdown image line (failed ones are removed). */
+export async function resolveVisuals(body: string, topic: string): Promise<string> {
+  const lines = body.split("\n\n");
+  const resolved = await Promise.all(
+    lines.map(async (line) => {
+      const m = line.trim().match(VISUAL_MARKER_RE);
+      if (!m) return line;
+      const kind = m[1].toLowerCase() === "diagram" ? "diagram" : "photo";
+      const url = await generateVisual(`${m[2]} (context: ${topic})`, kind);
+      if (!url) return null;
+      const caption = (m[3] ?? "").replace(/[\[\]()]/g, "").trim();
+      return `![${caption}](${url})`;
+    })
+  );
+  return resolved.filter((l): l is string => l !== null).join("\n\n");
+}
+
+/** Older saved lessons stored a single header image separately; fold it in
+ * as an inline illustration after the first paragraph instead. */
+export function foldLegacyHeaderImage(body: string, imageUrl: string | null): string {
+  if (!imageUrl || body.includes("![")) return body;
+  const parts = body.split("\n\n");
+  parts.splice(Math.min(1, parts.length), 0, `![](${imageUrl})`);
+  return parts.join("\n\n");
 }
 
 /**
@@ -325,7 +405,8 @@ export async function generateModule(
     `modules but nothing after this one. Include one concrete, worked example (real code if the ` +
     `topic is technical/coding). End with exactly one short check-for-understanding question on ` +
     `its own final line. Keep the whole response focused and roughly 150-250 words, formatted as ` +
-    `plain paragraphs (no numbered module headers, since the app already shows those separately).`;
+    `plain paragraphs (no numbered module headers, since the app already shows those separately). ` +
+    VISUAL_MARKER_INSTRUCTION;
 
   const reply = await askCoachOneOff(prompt, language);
   const lines = reply
@@ -381,9 +462,9 @@ export async function getAnswerFeedback(
  * transient provider outage) rather than throwing — the image is a bonus on
  * top of the text lesson, never something the lesson should block on.
  */
-export async function generateVisual(prompt: string): Promise<string | null> {
+export async function generateVisual(prompt: string, kind: "photo" | "diagram" = "photo"): Promise<string | null> {
   try {
-    const data = await apiClient.post<{ image_url?: string; url?: string }>("/api/v1/learning/visual", { prompt });
+    const data = await apiClient.post<{ image_url?: string; url?: string }>("/api/v1/learning/visual", { prompt, kind });
     return data.image_url ?? data.url ?? null;
   } catch {
     return null;

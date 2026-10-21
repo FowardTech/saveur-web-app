@@ -27,7 +27,10 @@ import {
   saveModuleContent,
   generateModule,
   getAnswerFeedback,
-  generateVisual,
+  resolveVisuals,
+  hasPendingVisuals,
+  lessonTextOnly,
+  parseLessonBlocks,
   issueCertificateIfEligible,
   isLLMUnavailable,
   getModuleVideos,
@@ -92,7 +95,6 @@ function CourseSessionInner() {
   const [showIntro, setShowIntro] = useState(true);
   const [syllabus, setSyllabus] = useState<string[] | null>(null);
   const [moduleCache, setModuleCache] = useState<Record<number, CourseModule>>({});
-  const [imageCache, setImageCache] = useState<Record<number, string | null>>({});
   const [isLoadingModule, setIsLoadingModule] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loadErrorIsLLM, setLoadErrorIsLLM] = useState(false);
@@ -183,16 +185,23 @@ function CourseSessionInner() {
         const saved = await getSavedModuleContent(courseId, index, language);
         if (saved) {
           setModuleCache((prev) => ({ ...prev, [index]: saved.module }));
-          if (saved.imageUrl) setImageCache((prev) => ({ ...prev, [index]: saved.imageUrl }));
           return;
         }
         const mod = await generateModule(topic, index, totalModules, titles[index], level, language);
         setModuleCache((prev) => ({ ...prev, [index]: mod }));
-        // Best-effort, non-blocking illustration — never gates the lesson.
-        generateVisual(`${topic}: ${titles[index]}`).then((url) => {
-          setImageCache((prev) => ({ ...prev, [index]: url }));
-          saveModuleContent(courseId, index, mod, url, language);
-        });
+        // The lesson text (with a placeholder at each illustration marker)
+        // is already showing. Generate the inline illustrations in the
+        // background — never gating the lesson — then swap them in and save
+        // the finished lesson (first-write-wins server-side).
+        if (hasPendingVisuals(mod.body)) {
+          resolveVisuals(mod.body, topic).then((body) => {
+            const finished = { ...mod, body };
+            setModuleCache((prev) => ({ ...prev, [index]: finished }));
+            saveModuleContent(courseId, index, finished, null, language);
+          });
+        } else {
+          saveModuleContent(courseId, index, mod, null, language);
+        }
       } catch (e) {
         const apiErr = e as ApiError;
         if (apiErr.status === 402 || apiErr.status === 403) {
@@ -236,7 +245,6 @@ function CourseSessionInner() {
   }, [syllabus, moduleIndex]);
 
   const currentModule = moduleCache[moduleIndex];
-  const currentImage = imageCache[moduleIndex];
 
   useEffect(() => {
     if (!currentModule || videosByModule[moduleIndex] !== undefined) return;
@@ -256,7 +264,7 @@ function CourseSessionInner() {
     (async () => {
       setIsSpeaking(true);
       try {
-        await ttsService.speak(currentModule.body, { language });
+        await ttsService.speak(lessonTextOnly(currentModule.body), { language });
         if (!cancelled && currentModule.checkQuestion) {
           await ttsService.speak(currentModule.checkQuestion, { language });
         }
@@ -595,16 +603,23 @@ function CourseSessionInner() {
             </div>
           )}
 
-          {currentImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={currentImage} alt="" className="h-56 w-full rounded-card bg-surface-2 object-contain sm:h-72" />
-          ) : null}
-
-          {currentModule.body.split(/\n{2,}/).map((para, i) => (
-            <p key={i} className="whitespace-pre-line text-sm leading-relaxed text-primary">
-              {para}
-            </p>
-          ))}
+          {parseLessonBlocks(currentModule.body).map((block, i) =>
+            block.type === "image" ? (
+              <figure key={i} className="flex flex-col items-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={block.url} alt={block.caption} className="max-h-96 w-full rounded-card border border-border bg-surface-2 object-contain" />
+                {block.caption ? <figcaption className="text-center text-xs text-hint">{block.caption}</figcaption> : null}
+              </figure>
+            ) : block.type === "pending" ? (
+              <div key={i} className="flex h-48 w-full animate-pulse items-center justify-center rounded-card bg-surface-3 text-xs text-hint">
+                {t("web:learning.session.illustrationLoading", { defaultValue: "Preparing illustration…" })}
+              </div>
+            ) : (
+              <p key={i} className="whitespace-pre-line text-sm leading-relaxed text-primary">
+                {block.text}
+              </p>
+            ),
+          )}
 
           {currentModule.checkQuestion ? (
             <div className="rounded-card border border-border bg-surface-2 p-4">
