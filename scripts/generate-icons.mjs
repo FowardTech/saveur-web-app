@@ -20,6 +20,10 @@ const OUT_FILE = path.join(__dirname, "..", "lib", "eva-icons.generated.ts");
 
 // Every eva-icons outline name referenced anywhere in this app.
 const ICONS = [
+  "smiling-face-outline",
+  "minus-circle-outline",
+  "cube-outline",
+  "paper-plane-outline",
   "home-outline",
   "message-circle-outline",
   "mic-outline",

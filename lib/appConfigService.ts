@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import apiClient from "./apiClient";
 
 // ---------------------------------------------------------------------------
@@ -131,23 +132,38 @@ const DEFAULT_DASHBOARD_HERO: DashboardHeroConfig = {
 // complexity" per the product ask: one fetch per page session, shared by any
 // component that calls getAppConfig() while the promise is in flight or
 // after it resolves.
-let cached: AppConfig | null = null;
-let inFlight: Promise<AppConfig> | null = null;
+//
+// BUG FIX (product report: interviewer persona cards stayed English after
+// switching language): this cache ignored the language, so whichever caller
+// ran first (often the sidebar, with no language) pinned the English config
+// for the whole session. The backend translates admin-written config text per
+// `language`, so the cache is now keyed by language and callers that don't
+// pass one use the live i18n language.
+const cachedByLang: Partial<Record<string, AppConfig>> = {};
+const inFlightByLang: Partial<Record<string, Promise<AppConfig>>> = {};
+let cached: AppConfig | null = null; // most recently resolved (sync getters)
 
 /** Fetches (and caches for the session) the public app config. Never throws
  * — falls back to safe defaults on any network/parse failure, same
  * fail-open convention as mobile's loadAppConfig(). */
-export async function getAppConfig(language?: string): Promise<AppConfig> {
-  if (cached) return cached;
-  if (inFlight) return inFlight;
+export async function getAppConfig(languageArg?: string): Promise<AppConfig> {
+  const language = (languageArg || i18n.language || "en").split("-")[0];
+  const hit = cachedByLang[language];
+  if (hit) {
+    cached = hit;
+    return hit;
+  }
+  const pending = inFlightByLang[language];
+  if (pending) return pending;
 
-  inFlight = (async () => {
+  inFlightByLang[language] = (async () => {
+    let result: AppConfig;
     try {
       const data = await apiClient.get<Partial<AppConfig>>("/api/v1/content/config", {
         auth: false,
         params: language ? { language } : undefined,
       });
-      cached = {
+      result = {
         ...data,
         home_banner: { ...DEFAULT_HOME_BANNER, ...data.home_banner },
         feature_flags: { ...DEFAULT_FEATURE_FLAGS, ...data.feature_flags },
@@ -161,17 +177,20 @@ export async function getAppConfig(language?: string): Promise<AppConfig> {
       // fail CLOSED — see that const's own comment — this outer fail-open
       // is only about the fetch itself, not what those individual flags
       // default to.)
-      cached = {
+      result = {
         home_banner: DEFAULT_HOME_BANNER,
         feature_flags: DEFAULT_FEATURE_FLAGS,
         student_eligibility: DEFAULT_STUDENT_ELIGIBILITY,
         dashboard_hero: DEFAULT_DASHBOARD_HERO,
       };
     }
-    return cached;
+    cachedByLang[language] = result;
+    cached = result;
+    delete inFlightByLang[language];
+    return result;
   })();
 
-  return inFlight;
+  return inFlightByLang[language] as Promise<AppConfig>;
 }
 
 /** Synchronous read of whichever feature-flag section was last fetched by
