@@ -9,6 +9,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { CreditCost } from "@/components/ui/CreditCost";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
@@ -197,6 +198,7 @@ function CoverLetterPageInner() {
             <Button type="submit" disabled={loading || !canSubmit} className="mt-1 w-full">
               {loading ? t("web:resume.coverLetter.generating", { defaultValue: "Generating…" }) : t("web:resume.coverLetter.generateCoverLetter", { defaultValue: "Generate cover letter" })}
             </Button>
+            <CreditCost action="cover_letter" className="text-center" />
           </form>
 
           {letter && (

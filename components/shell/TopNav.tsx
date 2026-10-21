@@ -9,6 +9,7 @@ import { BrandLockup } from "./BrandLockup";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import { NotificationBell } from "./NotificationBell";
+import { CreditsChip } from "@/components/shell/CreditsChip";
 import { SiteSearch } from "./SiteSearch";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { LinkButton } from "@/components/ui/Button";
@@ -188,6 +189,7 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
         )}
         {!loading && isSignedIn && (
           <>
+            <CreditsChip />
             <ThemeToggle />
             <span data-tour="navbar-notifications">
               <NotificationBell />

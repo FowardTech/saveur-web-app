@@ -8,6 +8,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { CreditCost } from "@/components/ui/CreditCost";
 import { EvaIcon } from "@/components/icons/EvaIcon";
 import { useAuth } from "@/app/providers/AuthProvider";
 import apiClient, { type ApiError } from "@/lib/apiClient";
@@ -115,6 +116,7 @@ function CompanyIntelligencePageInner() {
             <Button type="submit" disabled={loading || !company.trim()} className="mt-1 w-full">
               {loading ? t("web:career.companyIntelligence.researching", { defaultValue: "Researching…" }) : t("web:career.companyIntelligence.researchCompany", { defaultValue: "Research company" })}
             </Button>
+            <CreditCost action="company_research" className="text-center" />
           </form>
 
           {intel && (

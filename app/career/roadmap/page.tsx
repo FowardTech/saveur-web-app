@@ -7,6 +7,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TextField } from "@/components/ui/TextField";
 import { Button } from "@/components/ui/Button";
+import { CreditCost } from "@/components/ui/CreditCost";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { Skeleton, SkeletonRows } from "@/components/ui/Skeleton";
 import { CircularProgress } from "@/components/ui/CircularProgress";
@@ -183,6 +184,7 @@ export default function CareerRoadmapPage() {
               <Button type="submit" disabled={generating} className="mt-1 w-full">
                 {generating ? t("web:career.roadmap.generating", { defaultValue: "Generating…" }) : t("web:career.roadmap.generateRoadmap", { defaultValue: "Generate roadmap" })}
               </Button>
+              <CreditCost action="roadmap_generate" className="text-center" />
             </form>
           )}
 

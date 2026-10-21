@@ -73,6 +73,15 @@ async function request<T>(
     : undefined;
 
   if (!res.ok) {
+    // Out of AI credits (backend 402 `insufficient_credits`): tell the global
+    // credits UI to open its "buy more credits" dialog. The error is thrown
+    // with status 429, NOT 402, because dozens of screens read any 402 as
+    // "this needs a paid plan" and would show a paywall for a user who simply
+    // ran out of credits.
+    if (res.status === 402 && body?.error === "insufficient_credits") {
+      if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("credits:insufficient", { detail: body }));
+      throw { status: 429, error: "insufficient_credits", message: body?.message ?? "Not enough credits.", code: body?.code } as ApiError;
+    }
     const err: ApiError = {
       status: res.status,
       error: body?.error,
@@ -80,6 +89,11 @@ async function request<T>(
       code: body?.code,
     };
     throw err;
+  }
+
+  // Any successful write may have spent credits -> let the balance refresh.
+  if (typeof window !== "undefined" && (rest.method ?? "GET").toUpperCase() !== "GET") {
+    window.dispatchEvent(new Event("credits:stale"));
   }
 
   return body as T;

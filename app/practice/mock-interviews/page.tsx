@@ -8,6 +8,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button, LinkButton } from "@/components/ui/Button";
+import { CreditCost } from "@/components/ui/CreditCost";
 import { Pill, PillCard } from "@/components/ui/Pill";
 import { EvaIcon, type EvaIconName } from "@/components/icons/EvaIcon";
 import { CompanyLogoAvatar } from "@/components/practice/CompanyLogoAvatar";
@@ -563,6 +564,10 @@ function MockInterviewSetupInner() {
               <Button type="submit" disabled={isStarting} className="w-full">
                 {isStarting ? t("web:practice.mockInterviews.startingLabel", { defaultValue: "Starting…" }) : t("web:practice.mockInterviews.startSession", { defaultValue: "Start session" })}
               </Button>
+              <CreditCost
+                action={/coding|system/i.test(interviewType.label) ? "coding_session" : mode === "Video" ? "interview_video" : mode === "Voice" ? "interview_voice" : "interview_text"}
+                className="-mt-3 text-center"
+              />
             </form>
           )}
 

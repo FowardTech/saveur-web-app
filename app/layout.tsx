@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { AuthProvider } from "./providers/AuthProvider";
 import { I18nProvider } from "./providers/I18nProvider";
+import { CreditsProvider } from "./providers/CreditsProvider";
 import { ReferralCapture } from "@/components/auth/ReferralCapture";
 
 // Plus Jakarta Sans, self-hosted via the @fontsource/plus-jakarta-sans
@@ -123,7 +124,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col font-sans bg-page text-primary">
         <ThemeProvider>
           <AuthProvider>
-            <I18nProvider>{children}</I18nProvider>
+            <I18nProvider>
+              <CreditsProvider>{children}</CreditsProvider>
+            </I18nProvider>
             <ReferralCapture />
           </AuthProvider>
         </ThemeProvider>

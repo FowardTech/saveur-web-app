@@ -210,6 +210,8 @@ export const secondaryNav: NavLeaf[] = [
   // — a one-time-purchase catalog (Coding Practice, etc.) independent of
   // subscription tier, see src/more/AddOns.tsx.
   { label: "Add-ons", labelKey: "addons", href: "/addons", icon: "pricetags-outline" },
+  // AI usage credits: balance, history, and top-up packs.
+  { label: "Credits", labelKey: "credits", href: "/credits", icon: "flash-outline" },
   { label: "Subscription", labelKey: "subscription", href: "/subscription", icon: "credit-card-outline" },
   // badgeKey "settings" folds Daily Industry News + Weekly Career Report
   // unread flags together (0/1/2) — same combined-row treatment mobile's
