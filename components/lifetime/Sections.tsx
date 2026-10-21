@@ -600,7 +600,7 @@ export function Skills() {
 }
 
 /* ----------------------------------------------------------- timeline */
-const KIND_COLORS: Record<string, string> = { win: "#19B87A", role: "#2557a7", raise: "#2557a7", certificate: "#2557a7", milestone: "#2557a7", review: "#2557a7" };
+const KIND_COLORS: Record<string, string> = { win: "#19B87A", role: "#2773ee", raise: "#2773ee", certificate: "#2773ee", milestone: "#2773ee", review: "#2773ee" };
 export function Timeline() {
   const { t } = useTranslation();
   const { busy, error, run } = useAction();
