@@ -672,7 +672,8 @@
       "previous": "السابق",
       "finish": "إنهاء",
       "nextModule": "الوحدة التالية",
-      "back": "العودة إلى التعلّم"
+      "back": "العودة إلى التعلّم",
+      "illustrationLoading": "جارٍ تجهيز الرسم التوضيحي…"
     },
     "videoPlayer": {
       "saveVideo": "حفظ الفيديو",

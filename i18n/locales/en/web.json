@@ -736,7 +736,8 @@
       "previous": "Previous",
       "finish": "Finish",
       "nextModule": "Next Module",
-      "back": "Back to Learning"
+      "back": "Back to Learning",
+      "illustrationLoading": "Preparing illustration…"
     },
     "videoPlayer": {
       "saveVideo": "Save video",

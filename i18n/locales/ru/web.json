@@ -672,7 +672,8 @@
       "previous": "Назад",
       "finish": "Завершить",
       "nextModule": "Следующий модуль",
-      "back": "Назад к обучению"
+      "back": "Назад к обучению",
+      "illustrationLoading": "Подготовка иллюстрации…"
     },
     "videoPlayer": {
       "saveVideo": "Сохранить видео",

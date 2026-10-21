@@ -672,7 +672,8 @@
       "previous": "이전",
       "finish": "완료",
       "nextModule": "다음 모듈",
-      "back": "학습으로 돌아가기"
+      "back": "학습으로 돌아가기",
+      "illustrationLoading": "일러스트 준비 중…"
     },
     "videoPlayer": {
       "saveVideo": "동영상 저장",

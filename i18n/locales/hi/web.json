@@ -672,7 +672,8 @@
       "previous": "पिछला",
       "finish": "समाप्त करें",
       "nextModule": "अगला मॉड्यूल",
-      "back": "लर्निंग पर वापस जाएँ"
+      "back": "लर्निंग पर वापस जाएँ",
+      "illustrationLoading": "चित्र तैयार हो रहा है…"
     },
     "videoPlayer": {
       "saveVideo": "वीडियो सहेजें",

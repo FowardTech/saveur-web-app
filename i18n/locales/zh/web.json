@@ -672,7 +672,8 @@
       "previous": "上一个",
       "finish": "完成",
       "nextModule": "下一个模块",
-      "back": "返回学习"
+      "back": "返回学习",
+      "illustrationLoading": "正在准备插图…"
     },
     "videoPlayer": {
       "saveVideo": "保存视频",

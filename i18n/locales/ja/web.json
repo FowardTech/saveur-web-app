@@ -672,7 +672,8 @@
       "previous": "前へ",
       "finish": "完了",
       "nextModule": "次のモジュール",
-      "back": "学習に戻る"
+      "back": "学習に戻る",
+      "illustrationLoading": "イラストを準備中…"
     },
     "videoPlayer": {
       "saveVideo": "動画を保存",

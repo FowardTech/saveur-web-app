@@ -672,7 +672,8 @@
       "previous": "Anterior",
       "finish": "Concluir",
       "nextModule": "Próximo módulo",
-      "back": "Voltar ao aprendizado"
+      "back": "Voltar ao aprendizado",
+      "illustrationLoading": "Preparando ilustração…"
     },
     "videoPlayer": {
       "saveVideo": "Salvar vídeo",
