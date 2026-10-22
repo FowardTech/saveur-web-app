@@ -131,6 +131,11 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
   }, []);
 
   const moreActive = more.some((m) => isActiveHref(pathname, m.href));
+  const [searchOpen, setSearchOpen] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSearchOpen(false);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-border bg-page px-4 sm:px-6 lg:px-8">
@@ -172,9 +177,33 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
 
       <div className="ml-auto flex items-center gap-2">
         {!loading && isSignedIn && (
-          <div data-tour="navbar-search" className="hidden 2xl:block">
-            <SiteSearch />
-          </div>
+          <>
+            {/* Wide screens: the full search field in the bar. Narrower
+                screens: a search button that opens the same field in a
+                dropdown below the bar, so search is always reachable. */}
+            <div data-tour="navbar-search" className="hidden w-72 2xl:block">
+              <SiteSearch />
+            </div>
+            <div className="relative 2xl:hidden">
+              <button
+                type="button"
+                onClick={() => setSearchOpen((v) => !v)}
+                aria-label={t("web:shell.searchPlaceholder", { defaultValue: "Search anything or any page…" })}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-primary hover:bg-surface-3"
+              >
+                <EvaIcon name="search-outline" size={18} />
+              </button>
+              {searchOpen && (
+                <div className="fixed left-4 right-4 top-[4.25rem] z-50 sm:left-auto sm:right-6 sm:w-[28rem]">
+                  <div className="rounded-card border border-border bg-surface-2 p-3 shadow-lg" onClick={() => setSearchOpen(false)}>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <SiteSearch />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
         )}
         {!loading && !isSignedIn && (
           <>
