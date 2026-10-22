@@ -46,7 +46,7 @@ function labelOf(t: (k: string, o: { defaultValue: string }) => string, item: { 
   return item.labelKey ? t(`common:nav.${item.labelKey}`, { defaultValue: item.label }) : item.label;
 }
 
-const linkBase = "relative flex h-16 items-center px-3 text-sm font-bold transition-colors";
+const linkBase = "relative flex h-16 shrink-0 items-center whitespace-nowrap px-2.5 text-sm font-bold transition-colors";
 
 function NavLink({ item, pathname, t }: { item: NavLeaf; pathname: string; t: Parameters<typeof labelOf>[0] }) {
   const active = isActiveHref(pathname, item.href);
@@ -138,7 +138,7 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
         type="button"
         onClick={onMenuClick}
         aria-label={t("web:shell.toggleSidebar", { defaultValue: "Toggle sidebar" })}
-        className="mr-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-primary hover:bg-surface-3 lg:hidden"
+        className="mr-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-primary hover:bg-surface-3 xl:hidden"
       >
         <EvaIcon name="menu-outline" size={20} />
       </button>
@@ -148,7 +148,7 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
       </Link>
 
       {isSignedIn && (
-        <nav className="hidden items-center lg:flex">
+        <nav className="hidden items-center whitespace-nowrap xl:flex">
           {inline.map((item) =>
             isNavGroup(item) ? (
               <Dropdown key={item.label} label={labelOf(t, item)} active={item.children.some((c) => isActiveHref(pathname, c.href))}>

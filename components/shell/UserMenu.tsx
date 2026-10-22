@@ -33,7 +33,7 @@ export function UserMenu() {
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-solid text-sm font-medium text-solid-fg">
           {initial}
         </span>
-        <span className="hidden text-sm font-medium text-primary sm:inline">{firstName}</span>
+        <span className="hidden text-sm font-medium text-primary 2xl:inline">{firstName}</span>
         <EvaIcon name="chevron-down-outline" size={14} className="hidden text-hint sm:inline" />
       </button>
 
