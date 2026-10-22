@@ -122,7 +122,7 @@ export function GettingStartedChecklist() {
                 href={step.href}
                 className={`group flex items-center gap-3 rounded-xl border px-3.5 py-3 transition ${
                   step.done
-                    ? "border-transparent bg-surface-2/60"
+                    ? "border-transparent bg-surface-2"
                     : isNext
                       ? "border-brand/40 bg-surface-2 shadow-soft"
                       : "border-border bg-surface-2 hover:border-brand/30"
