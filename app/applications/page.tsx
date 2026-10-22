@@ -306,6 +306,37 @@ function InterviewsPageInner() {
     }
   }
 
+  // Auto-sync: while this page is open and any inbox/calendar is connected,
+  // ask the server to scan right away (it also scans on its own every few
+  // minutes), then reload the list; repeats every 2 minutes while the tab is
+  // visible. The server rate-limits repeat calls; failures stay silent.
+  const anyConnectionActive =
+    !!emailConnections?.some((c) => c.isActive) || !!calendarConnections?.some((c) => c.isActive);
+  useEffect(() => {
+    if (!anyConnectionActive || proRequired) return;
+    let cancelled = false;
+    const run = async () => {
+      try {
+        const r = await emailConnectionService.syncNow();
+        if (!cancelled && r.tracked > 0) loadApplications();
+      } catch {
+        // silent
+      }
+    };
+    run();
+    const id = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        run();
+        loadApplications();
+      }
+    }, 120000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anyConnectionActive, proRequired]);
+
   async function loadApplications() {
     try {
       const [apps, stats] = await Promise.all([
