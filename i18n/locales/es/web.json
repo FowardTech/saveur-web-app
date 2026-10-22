@@ -1648,7 +1648,14 @@
     "tabs": {
       "applications": "Solicitudes",
       "history": "Historial de práctica"
-    }
+    },
+    "syncNow": "Sincronizar ahora",
+    "syncing": "Sincronizando…",
+    "syncTitle": "Sincronizar",
+    "syncThrottled": "Ya se sincronizó — inténtalo de nuevo en un minuto.",
+    "syncFailed": "No se pudo sincronizar ahora. Prueba a volver a conectar tu cuenta.",
+    "syncTracked": "Se encontraron {{count}} actualización(es) de solicitudes.",
+    "syncNone": "Todo al día — no hay correos de solicitudes nuevos."
   },
   "legal": {
     "loadFailed": "No se pudo cargar este contenido. Inténtalo de nuevo."

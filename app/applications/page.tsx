@@ -1,6 +1,7 @@
 "use client";
 
 import { brandLogoUrl, guessCompanyLogoUrl } from "@/lib/companyData";
+import { getErrorMessage } from "@/lib/errors";
 import { LocationSelect } from "@/components/ui/LocationFields";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -508,6 +509,10 @@ function InterviewsPageInner() {
                   onDisconnectCalendar={onDisconnectCalendar}
                   resultBanner={connectResultBanner}
                   onDismissBanner={() => setConnectResultBanner(null)}
+                  onSynced={() => {
+                    loadApplications();
+                    loadConnections();
+                  }}
                 />
               )}
 
@@ -779,6 +784,7 @@ function ConnectInboxSection({
   onDisconnectCalendar,
   resultBanner,
   onDismissBanner,
+  onSynced,
 }: {
   flags: { outlookMail: boolean; gmail: boolean; googleCalendar: boolean; outlookCalendar: boolean } | null;
   emailConnections: EmailConnectionProps[] | null;
@@ -793,8 +799,36 @@ function ConnectInboxSection({
   onDisconnectCalendar: (p: CalendarProvider) => void;
   resultBanner: { ok: boolean; label: string; email?: string; errorCode?: string } | null;
   onDismissBanner: () => void;
+  onSynced?: () => void;
 }) {
   const { t } = useTranslation();
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const anyConnected =
+    !!emailConnections?.some((c) => c.isActive) || !!calendarConnections?.some((c) => c.isActive);
+
+  async function onSyncNow() {
+    if (syncing) return;
+    setSyncing(true);
+    setSyncMsg(null);
+    try {
+      const r = await emailConnectionService.syncNow();
+      if (r.throttled) {
+        setSyncMsg(t("web:applications.syncThrottled", { defaultValue: "Just synced — try again in a minute." }));
+      } else if (r.errors.length > 0 && r.tracked === 0) {
+        setSyncMsg(t("web:applications.syncFailed", { defaultValue: "Couldn't sync right now. Try reconnecting your account." }));
+      } else if (r.tracked > 0) {
+        setSyncMsg(t("web:applications.syncTracked", { defaultValue: "Found {{count}} application update(s).", count: r.tracked }));
+        onSynced?.();
+      } else {
+        setSyncMsg(t("web:applications.syncNone", { defaultValue: "All caught up — no new application emails." }));
+      }
+    } catch (err: unknown) {
+      setSyncMsg(getErrorMessage(err, t("web:applications.syncFailed", { defaultValue: "Couldn't sync right now. Try reconnecting your account." })));
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   const rows: React.ReactNode[] = [];
   if (flags?.outlookMail) {
@@ -902,6 +936,17 @@ function ConnectInboxSection({
             </p>
           </div>
           <div className="flex flex-col gap-2">{rows}</div>
+          {anyConnected && (
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="outline" size="sm" onClick={onSyncNow} disabled={syncing}>
+                <EvaIcon name="refresh-outline" size={14} />
+                {syncing
+                  ? t("web:applications.syncing", { defaultValue: "Syncing…" })
+                  : t("web:applications.syncNow", { defaultValue: "Sync now" })}
+              </Button>
+              {syncMsg && <span className="text-sm text-hint">{syncMsg}</span>}
+            </div>
+          )}
         </>
       )}
     </div>

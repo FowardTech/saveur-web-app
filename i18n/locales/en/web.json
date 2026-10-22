@@ -114,7 +114,14 @@
     "tabs": {
       "applications": "Applications",
       "history": "Practice History"
-    }
+    },
+    "syncNow": "Sync now",
+    "syncing": "Syncing…",
+    "syncTitle": "Sync",
+    "syncThrottled": "Just synced — try again in a minute.",
+    "syncFailed": "Couldn't sync right now. Try reconnecting your account.",
+    "syncTracked": "Found {{count}} application update(s).",
+    "syncNone": "All caught up — no new application emails."
   },
   "auth": {
     "agreeTerms": "By continuing, you agree to our",

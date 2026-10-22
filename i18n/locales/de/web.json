@@ -1648,7 +1648,14 @@
     "tabs": {
       "applications": "Bewerbungen",
       "history": "Übungsverlauf"
-    }
+    },
+    "syncNow": "Jetzt synchronisieren",
+    "syncing": "Synchronisiere…",
+    "syncTitle": "Synchronisierung",
+    "syncThrottled": "Gerade erst synchronisiert — versuche es in einer Minute erneut.",
+    "syncFailed": "Synchronisierung derzeit nicht möglich. Verbinde dein Konto erneut.",
+    "syncTracked": "{{count}} Bewerbungs-Update(s) gefunden.",
+    "syncNone": "Alles aktuell — keine neuen Bewerbungs-E-Mails."
   },
   "legal": {
     "loadFailed": "Dieser Inhalt konnte nicht geladen werden. Bitte versuche es erneut."

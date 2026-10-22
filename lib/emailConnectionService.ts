@@ -63,6 +63,21 @@ export async function listConnections(): Promise<EmailConnectionProps[]> {
   return (data ?? []).map(fromWire);
 }
 
+export interface SyncResult {
+  connected: boolean;
+  synced: number;
+  tracked: number;
+  throttled: boolean;
+  errors: string[];
+}
+
+/** POST /api/v1/email-connections/sync -- "Sync now": runs the same scan the
+ * background job does (every ~15 min) right away for every connected inbox and
+ * calendar. Premium only; the server rate-limits repeat taps (throttled). */
+export async function syncNow(): Promise<SyncResult> {
+  return apiClient.post<SyncResult>("/api/v1/email-connections/sync", {});
+}
+
 /** DELETE /api/v1/email-connections/{provider} — stops auto-scanning that
  * inbox immediately and best-effort revokes the token on Google's side for
  * Gmail. */

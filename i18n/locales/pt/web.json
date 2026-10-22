@@ -1648,7 +1648,14 @@
     "tabs": {
       "applications": "Candidaturas",
       "history": "Histórico de prática"
-    }
+    },
+    "syncNow": "Sincronizar agora",
+    "syncing": "Sincronizando…",
+    "syncTitle": "Sincronizar",
+    "syncThrottled": "Acabou de sincronizar — tente novamente em um minuto.",
+    "syncFailed": "Não foi possível sincronizar agora. Tente reconectar sua conta.",
+    "syncTracked": "{{count}} atualização(ões) de candidatura encontrada(s).",
+    "syncNone": "Tudo em dia — nenhum e-mail de candidatura novo."
   },
   "legal": {
     "loadFailed": "Não foi possível carregar este conteúdo. Tente novamente."

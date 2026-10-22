@@ -1648,7 +1648,14 @@
     "tabs": {
       "applications": "Candidatures",
       "history": "Historique d'entraînement"
-    }
+    },
+    "syncNow": "Synchroniser maintenant",
+    "syncing": "Synchronisation…",
+    "syncTitle": "Synchronisation",
+    "syncThrottled": "Déjà synchronisé — réessayez dans une minute.",
+    "syncFailed": "Impossible de synchroniser pour le moment. Essayez de reconnecter votre compte.",
+    "syncTracked": "{{count}} mise(s) à jour de candidature trouvée(s).",
+    "syncNone": "Tout est à jour — aucun nouvel e-mail de candidature."
   },
   "legal": {
     "loadFailed": "Impossible de charger ce contenu. Veuillez réessayer."

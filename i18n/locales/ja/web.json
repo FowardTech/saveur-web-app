@@ -1648,7 +1648,14 @@
     "tabs": {
       "applications": "応募",
       "history": "練習履歴"
-    }
+    },
+    "syncNow": "今すぐ同期",
+    "syncing": "同期中…",
+    "syncTitle": "同期",
+    "syncThrottled": "先ほど同期したばかりです。1 分後にもう一度お試しください。",
+    "syncFailed": "現在同期できません。アカウントを再接続してみてください。",
+    "syncTracked": "応募の更新が {{count}} 件見つかりました。",
+    "syncNone": "最新の状態です。新しい応募メールはありません。"
   },
   "legal": {
     "loadFailed": "このコンテンツを読み込めませんでした。もう一度お試しください。"

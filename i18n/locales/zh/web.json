@@ -1648,7 +1648,14 @@
     "tabs": {
       "applications": "申请",
       "history": "练习历史"
-    }
+    },
+    "syncNow": "立即同步",
+    "syncing": "正在同步…",
+    "syncTitle": "同步",
+    "syncThrottled": "刚刚同步过 — 请一分钟后再试。",
+    "syncFailed": "暂时无法同步。请尝试重新连接你的账户。",
+    "syncTracked": "发现 {{count}} 条申请更新。",
+    "syncNone": "已是最新 — 没有新的申请邮件。"
   },
   "legal": {
     "loadFailed": "无法加载此内容，请重试。"

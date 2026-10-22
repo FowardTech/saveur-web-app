@@ -1648,7 +1648,14 @@
     "tabs": {
       "applications": "지원",
       "history": "연습 기록"
-    }
+    },
+    "syncNow": "지금 동기화",
+    "syncing": "동기화 중…",
+    "syncTitle": "동기화",
+    "syncThrottled": "방금 동기화했습니다. 1분 후에 다시 시도하세요.",
+    "syncFailed": "지금은 동기화할 수 없습니다. 계정을 다시 연결해 보세요.",
+    "syncTracked": "지원 업데이트 {{count}}건을 찾았습니다.",
+    "syncNone": "모두 최신 상태입니다. 새로운 지원 이메일이 없습니다."
   },
   "legal": {
     "loadFailed": "이 콘텐츠를 불러올 수 없습니다. 다시 시도해 주세요."
