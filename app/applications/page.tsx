@@ -1,6 +1,6 @@
 "use client";
 
-import { brandLogoUrl } from "@/lib/companyData";
+import { brandLogoUrl, guessCompanyLogoUrl } from "@/lib/companyData";
 import { LocationSelect } from "@/components/ui/LocationFields";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -54,6 +54,7 @@ interface Application {
   company: string;
   role: string;
   location: string;
+  company_logo_url?: string | null;
   stage: Stage;
   status: Stage;
   next_step?: string;
@@ -594,9 +595,12 @@ function InterviewsPageInner() {
                         <div key={app.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface-2 p-4">
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="flex items-center gap-3">
-                              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-tint-mint text-tint-mint-text font-semibold">
-                                {app.company?.[0]?.toUpperCase() || "?"}
-                              </span>
+                              <CompanyLogoAvatar
+                                logoUrl={app.company_logo_url || guessCompanyLogoUrl(app.company)}
+                                companyName={app.company}
+                                size={44}
+                                className="bg-white ring-1 ring-border"
+                              />
                               <div>
                                 <h3 className="font-medium text-primary">{app.role}</h3>
                                 <p className="text-sm text-hint">
