@@ -7,7 +7,7 @@ import { EvaIcon } from "@/components/icons/EvaIcon";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { useCoachReadiness } from "@/lib/coachReadiness";
-import { ArtRoadmapPath, ArtTrophy } from "./GettingStartedArt";
+import { CoachReadyArt, CoachSetupArt } from "./CoachReadinessArt";
 
 // "Coach readiness" card (formerly the plain "Getting Started" checklist).
 // Product report: "when users login for the first time the app dont really
@@ -70,16 +70,16 @@ export function GettingStartedChecklist() {
   ].filter((e) => !e.done);
 
   return (
-    <div className="flex flex-col gap-5 rounded-card border border-brand/30 bg-brand-soft p-5 sm:flex-row sm:items-start sm:gap-6">
+    <div className="flex flex-col gap-5 rounded-card bg-brand p-5 text-white sm:flex-row sm:items-start sm:gap-6">
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-4">
-            <CircularProgress progress={percent} size={64} strokeWidth={7} progressClassName={allDone ? "text-success" : "text-brand"}>
-              <span className="text-sm font-extrabold text-primary">{percent}%</span>
+            <CircularProgress progress={percent} size={64} strokeWidth={7} trackClassName="text-white/25" progressClassName={allDone ? "text-success" : "text-white"}>
+              <span className="text-sm font-extrabold text-white">{percent}%</span>
             </CircularProgress>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-lg font-bold text-primary">
+                <h2 className="text-lg font-bold text-white">
                   {allDone
                     ? t("web:dashboard.coachReadiness.doneTitle", { defaultValue: "Your AI coach is ready" })
                     : t("web:dashboard.coachReadiness.title", { defaultValue: "Set up your AI career coach" })}
@@ -91,7 +91,7 @@ export function GettingStartedChecklist() {
                   </span>
                 )}
               </div>
-              <p className="mt-0.5 text-sm text-hint">
+              <p className="mt-0.5 text-sm text-white/85">
                 {allDone
                   ? t("web:dashboard.coachReadiness.doneSubtitle", { defaultValue: "Saveur now has what it needs to personalize your coaching, practice and recommendations." })
                   : t("web:dashboard.coachReadiness.subtitle", {
@@ -106,7 +106,7 @@ export function GettingStartedChecklist() {
               type="button"
               onClick={onDismiss}
               aria-label={t("common:actions.close", { defaultValue: "Close" })}
-              className="shrink-0 rounded-full p-1 text-hint transition hover:bg-surface-3 hover:text-primary"
+              className="shrink-0 rounded-full p-1 text-white/80 transition hover:bg-white/15 hover:text-white"
             >
               <EvaIcon name="close-outline" size={16} />
             </button>
@@ -152,7 +152,7 @@ export function GettingStartedChecklist() {
 
         {extras.length > 0 && (
           <div className="mt-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-hint">
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
               {t("web:dashboard.coachReadiness.optionalTitle", { defaultValue: "Nice to have" })}
             </p>
             <div className="mt-1.5 flex flex-wrap gap-2">
@@ -170,7 +170,7 @@ export function GettingStartedChecklist() {
         )}
       </div>
 
-      <div className="hidden shrink-0 sm:block">{allDone ? <ArtTrophy size={124} /> : <ArtRoadmapPath size={124} />}</div>
+      <div className="hidden shrink-0 sm:block">{allDone ? <CoachReadyArt size={132} /> : <CoachSetupArt size={132} />}</div>
     </div>
   );
 }
