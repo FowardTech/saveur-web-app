@@ -96,13 +96,13 @@ function stageLabel(t: (k: string, o?: Record<string, unknown>) => string, stage
 function stageColor(stage: string) {
   switch (stage) {
     case "Offer":
-      return "bg-tint-mint text-tint-mint-text";
+      return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
     case "Rejected":
-      return "bg-tint-rose text-tint-rose-text";
+      return "bg-rose-500/15 text-rose-700 dark:text-rose-300";
     case "Interviewing":
-      return "bg-tint-purple text-tint-purple-text";
-    default:
-      return "bg-tint-orange text-tint-orange-text";
+      return "bg-violet-500/15 text-violet-700 dark:text-violet-300";
+    default: // Applied
+      return "bg-blue-500/15 text-blue-700 dark:text-blue-300";
   }
 }
 
