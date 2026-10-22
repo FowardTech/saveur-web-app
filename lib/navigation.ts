@@ -85,6 +85,8 @@ export const primaryNav: NavItem[] = [
       // Mobile drawer "Upcoming": every scheduled mock interview (today's
       // also shows on the dashboard; later ones live only here).
       { label: "Upcoming", labelKey: "upcoming", href: "/upcoming", icon: "calendar-outline" },
+      // Moved off the dashboard onto its own page (mirrors mobile's drawer).
+      { label: "Coaching Report", labelKey: "coachingReport", href: "/practice/coaching-report", icon: "bar-chart-2-outline" },
     ],
   },
   {

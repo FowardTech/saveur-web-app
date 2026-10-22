@@ -2186,11 +2186,8 @@
     "later": "Magari più tardi"
   },
   "coachingReport": {
-    "title": "Il tuo rapporto di coaching",
-    "emptyBody": "Il tuo rapporto di coaching è vuoto: completa {{count}} colloqui simulati per vedere cosa fai bene e su cosa lavorare dopo.",
-    "emptyCta": "Esercitati con un colloquio simulato",
-    "basedOnSessions": "In base ai tuoi ultimi {{count}} colloqui simulati",
-    "panelEmpty": "Ancora nulla qui."
+    "title": "Rapporto di coaching",
+    "subtitle": "Cosa fai bene e su cosa lavorare dopo, in base ai tuoi colloqui di prova recenti."
   },
   "rating": {
     "title": "Ti piace Saveur?",

@@ -2186,11 +2186,8 @@
     "later": "Peut-être plus tard"
   },
   "coachingReport": {
-    "title": "Votre rapport de coaching",
-    "emptyBody": "Votre rapport de coaching est vide : terminez {{count}} entretiens simulés pour voir ce que vous faites bien et ce qu'il faut travailler ensuite.",
-    "emptyCta": "S'entraîner à un entretien simulé",
-    "basedOnSessions": "Basé sur vos {{count}} derniers entretiens simulés",
-    "panelEmpty": "Rien pour l'instant."
+    "title": "Rapport de coaching",
+    "subtitle": "Ce que vous faites bien et ce qu'il faut travailler ensuite, d'après vos simulations récentes."
   },
   "rating": {
     "title": "Vous aimez Saveur ?",

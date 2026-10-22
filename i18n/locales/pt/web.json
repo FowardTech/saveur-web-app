@@ -2186,11 +2186,8 @@
     "later": "Talvez depois"
   },
   "coachingReport": {
-    "title": "Seu relatório de coaching",
-    "emptyBody": "Seu relatório de coaching está vazio: conclua {{count}} entrevistas simuladas para ver o que você faz bem e o que trabalhar a seguir.",
-    "emptyCta": "Praticar uma entrevista simulada",
-    "basedOnSessions": "Com base nas suas últimas {{count}} entrevistas simuladas",
-    "panelEmpty": "Nada aqui ainda."
+    "title": "Relatório de coaching",
+    "subtitle": "O que você faz bem e no que trabalhar a seguir, com base nas suas simulações recentes."
   },
   "rating": {
     "title": "Curtindo o Saveur?",

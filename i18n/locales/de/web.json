@@ -2186,11 +2186,8 @@
     "later": "Vielleicht später"
   },
   "coachingReport": {
-    "title": "Dein Coaching-Bericht",
-    "emptyBody": "Dein Coaching-Bericht ist leer: absolviere {{count}} Probeinterviews, um zu sehen, was du gut machst und woran du als Nächstes arbeiten solltest.",
-    "emptyCta": "Ein Probeinterview üben",
-    "basedOnSessions": "Basierend auf deinen letzten {{count}} Probeinterviews",
-    "panelEmpty": "Noch nichts hier."
+    "title": "Coaching-Bericht",
+    "subtitle": "Was du gut machst und woran du als Nächstes arbeiten solltest – basierend auf deinen letzten Probeinterviews."
   },
   "rating": {
     "title": "Gefällt dir Saveur?",

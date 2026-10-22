@@ -2187,10 +2187,7 @@
   },
   "coachingReport": {
     "title": "コーチングレポート",
-    "emptyBody": "コーチングレポートは空です。模擬面接を{{count}}回完了すると、できていることと次に取り組むことがわかります。",
-    "emptyCta": "模擬面接を練習",
-    "basedOnSessions": "直近{{count}}回の模擬面接に基づく",
-    "panelEmpty": "まだ何もありません。"
+    "subtitle": "最近の模擬面接をもとに、できていることと次に取り組むことをまとめました。"
   },
   "rating": {
     "title": "Saveurを楽しんでいますか？",

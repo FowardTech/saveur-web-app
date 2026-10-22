@@ -2186,11 +2186,8 @@
     "later": "以后再说"
   },
   "coachingReport": {
-    "title": "你的辅导报告",
-    "emptyBody": "你的辅导报告为空：完成 {{count}} 次模拟面试，即可看到你的优势和下一步该改进的地方。",
-    "emptyCta": "练习一次模拟面试",
-    "basedOnSessions": "基于你最近的 {{count}} 次模拟面试",
-    "panelEmpty": "这里还没有内容。"
+    "title": "辅导报告",
+    "subtitle": "根据你最近的模拟面试，了解你做得好的地方和接下来要改进的方向。"
   },
   "rating": {
     "title": "喜欢 Saveur 吗？",

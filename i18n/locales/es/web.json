@@ -2186,11 +2186,8 @@
     "later": "Quizá más tarde"
   },
   "coachingReport": {
-    "title": "Tu informe de coaching",
-    "emptyBody": "Tu informe de coaching está vacío: completa {{count}} entrevistas simuladas para ver qué haces bien y qué trabajar a continuación.",
-    "emptyCta": "Practicar una entrevista simulada",
-    "basedOnSessions": "Basado en tus últimas {{count}} entrevistas simuladas",
-    "panelEmpty": "Aún no hay nada."
+    "title": "Informe de coaching",
+    "subtitle": "Lo que haces bien y en qué trabajar a continuación, según tus simulacros recientes."
   },
   "rating": {
     "title": "¿Disfrutas de Saveur?",

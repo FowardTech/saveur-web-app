@@ -2184,10 +2184,7 @@
   },
   "coachingReport": {
     "title": "Your Coaching Report",
-    "emptyBody": "Your coaching report is empty — complete {{count}} mock interviews to see what you're doing well and what to work on next.",
-    "emptyCta": "Practice a mock interview",
-    "basedOnSessions": "Based on your last {{count}} mock interviews",
-    "panelEmpty": "Nothing here yet."
+    "subtitle": "What you're doing well and what to work on next, based on your recent mock interviews."
   },
   "rating": {
     "title": "Enjoying Saveur?",
