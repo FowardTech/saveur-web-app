@@ -71,6 +71,20 @@ export function NotificationBell() {
   useEffect(() => {
     if (loading || !firebaseUser) return;
     load();
+    // Pick up new notifications (e.g. an application status change detected
+    // from the inbox) without a page refresh: poll once a minute while the tab
+    // is visible, and again when the tab regains focus.
+    const id = setInterval(() => {
+      if (document.visibilityState === "visible") load();
+    }, 60000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firebaseUser, loading]);
 

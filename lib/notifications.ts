@@ -60,6 +60,10 @@ export function notificationHref(n: AppNotification): string | undefined {
       // when we have its id, same as mobile's bell-tap routing
       // (src/home/Notification/index.tsx) does, rather than just the list.
       return n.job_alert?.id ? `/job-alerts/${n.job_alert.id}` : "/job-alerts";
+    case "application_update":
+      // Tracked application changed status / was auto-detected from a
+      // connected inbox or calendar (Saveur-Backend's application_notify.py).
+      return "/applications";
     case "career_event":
       // Career Events is now the default tab of the merged Networking
       // Assistant screen (app/career/networking/page.tsx), not its own
