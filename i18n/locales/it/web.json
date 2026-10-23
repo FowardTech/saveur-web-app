@@ -1608,9 +1608,23 @@
     "couponAmountApplied": "{{code}} applicato: {{amount}} di sconto"
   },
   "support": {
-    "description": "La chat di assistenza dal vivo nell'app arriverà sulla versione web in un futuro aggiornamento. Nel frattempo, contattaci direttamente e ti risponderemo il prima possibile.",
-    "emailCta": "Scrivi a {{email}}",
-    "title": "Assistenza dal vivo"
+    "title": "Assistenza dal vivo",
+    "subtitle": "Hai domande? Abbiamo le risposte! Trova ciò che ti serve nelle risorse seguenti o contattaci direttamente.",
+    "helpCenter": {
+      "title": "Centro assistenza",
+      "body": "Dai un’occhiata al nostro [centro assistenza] per le domande frequenti.",
+      "cta": "Vai al centro assistenza"
+    },
+    "contact": {
+      "title": "Contattaci",
+      "body": "Puoi sempre scriverci a [{{email}}] per ricevere assistenza.",
+      "cta": "Contattaci"
+    },
+    "faq": {
+      "title": "Domande frequenti",
+      "loading": "Caricamento…",
+      "empty": "Le risposte non sono disponibili al momento. Scrivici e ti aiuteremo."
+    }
   },
   "welcomeModal": {
     "cta": "Iniziamo",

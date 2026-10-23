@@ -1608,9 +1608,23 @@
     "couponAmountApplied": "已应用 {{code}}：减免 {{amount}}"
   },
   "support": {
-    "description": "应用内实时聊天支持将在未来的更新中登陆网页版。在此之前，请直接联系我们，我们会尽快回复你。",
-    "emailCta": "发送邮件至 {{email}}",
-    "title": "实时支持"
+    "title": "实时支持",
+    "subtitle": "有问题？我们有答案！请在以下资源中查找所需内容，或直接联系我们。",
+    "helpCenter": {
+      "title": "帮助中心",
+      "body": "请查看我们的[帮助中心]了解常见问题。",
+      "cta": "访问帮助中心"
+    },
+    "contact": {
+      "title": "联系我们",
+      "body": "如需帮助，您随时可以发送邮件至 [{{email}}]。",
+      "cta": "联系我们"
+    },
+    "faq": {
+      "title": "常见问题",
+      "loading": "加载中…",
+      "empty": "暂时无法显示解答。请给我们发邮件，我们会为您提供帮助。"
+    }
   },
   "welcomeModal": {
     "cta": "开始使用",

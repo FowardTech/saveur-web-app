@@ -1767,9 +1767,23 @@
     "couponAmountApplied": "{{code}} applied: {{amount}} off"
   },
   "support": {
-    "description": "In-app live chat support is coming to the web app in a future update. In the meantime, reach us directly and we'll get back to you as soon as we can.",
-    "emailCta": "Email {{email}}",
-    "title": "Support"
+    "title": "Support",
+    "subtitle": "You've got questions, we've got answers! Find what you need in the following resources or contact us directly.",
+    "helpCenter": {
+      "title": "Help Center",
+      "body": "Take a look at our [help center] for frequently asked questions.",
+      "cta": "Visit Help Center"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "body": "You can always email us at [{{email}}] for assistance.",
+      "cta": "Contact Us"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "loading": "Loading…",
+      "empty": "Answers aren't available right now. Please email us and we'll help."
+    }
   },
   "welcomeModal": {
     "cta": "Let's get started",

@@ -1608,9 +1608,23 @@
     "couponAmountApplied": "{{code}} aplicado: {{amount}} de descuento"
   },
   "support": {
-    "description": "El chat de soporte en vivo dentro de la app llegará a la versión web en una futura actualización. Mientras tanto, contáctanos directamente y te responderemos lo antes posible.",
-    "emailCta": "Escribir a {{email}}",
-    "title": "Soporte en vivo"
+    "title": "Soporte en vivo",
+    "subtitle": "¡Tienes preguntas y tenemos respuestas! Encuentra lo que necesitas en los siguientes recursos o contáctanos directamente.",
+    "helpCenter": {
+      "title": "Centro de ayuda",
+      "body": "Echa un vistazo a nuestro [centro de ayuda] para ver las preguntas frecuentes.",
+      "cta": "Visitar el centro de ayuda"
+    },
+    "contact": {
+      "title": "Contáctanos",
+      "body": "Siempre puedes escribirnos a [{{email}}] para recibir ayuda.",
+      "cta": "Contáctanos"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "loading": "Cargando…",
+      "empty": "Las respuestas no están disponibles en este momento. Escríbenos y te ayudaremos."
+    }
   },
   "welcomeModal": {
     "cta": "Empecemos",

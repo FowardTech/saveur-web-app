@@ -1608,9 +1608,23 @@
     "couponAmountApplied": "{{code}} angewendet: {{amount}} Rabatt"
   },
   "support": {
-    "description": "Live-Chat-Support in der App kommt mit einem zukünftigen Update auch für die Web-App. Kontaktiere uns in der Zwischenzeit direkt — wir melden uns so schnell wie möglich.",
-    "emailCta": "An {{email}} schreiben",
-    "title": "Live-Support"
+    "title": "Live-Support",
+    "subtitle": "Du hast Fragen, wir haben Antworten! Finde, was du brauchst, in den folgenden Ressourcen oder kontaktiere uns direkt.",
+    "helpCenter": {
+      "title": "Hilfecenter",
+      "body": "Wirf einen Blick in unser [Hilfecenter] für häufig gestellte Fragen.",
+      "cta": "Zum Hilfecenter"
+    },
+    "contact": {
+      "title": "Kontakt",
+      "body": "Du kannst uns jederzeit unter [{{email}}] per E-Mail erreichen, wenn du Hilfe brauchst.",
+      "cta": "Kontakt aufnehmen"
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "loading": "Wird geladen…",
+      "empty": "Die Antworten sind gerade nicht verfügbar. Schreib uns eine E-Mail, wir helfen dir gern."
+    }
   },
   "welcomeModal": {
     "cta": "Los geht's",

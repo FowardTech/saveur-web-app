@@ -1608,9 +1608,23 @@
     "couponAmountApplied": "{{code}} appliqué : {{amount}} de réduction"
   },
   "support": {
-    "description": "Le chat d'assistance en direct dans l'application arrivera sur le web dans une prochaine mise à jour. En attendant, contactez-nous directement et nous vous répondrons dès que possible.",
-    "emailCta": "Écrire à {{email}}",
-    "title": "Assistance en direct"
+    "title": "Assistance en direct",
+    "subtitle": "Vous avez des questions, nous avons les réponses ! Trouvez ce dont vous avez besoin dans les ressources suivantes ou contactez-nous directement.",
+    "helpCenter": {
+      "title": "Centre d’aide",
+      "body": "Consultez notre [centre d’aide] pour les questions fréquentes.",
+      "cta": "Visiter le centre d’aide"
+    },
+    "contact": {
+      "title": "Nous contacter",
+      "body": "Vous pouvez toujours nous écrire à [{{email}}] pour obtenir de l’aide.",
+      "cta": "Nous contacter"
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "loading": "Chargement…",
+      "empty": "Les réponses ne sont pas disponibles pour le moment. Écrivez-nous et nous vous aiderons."
+    }
   },
   "welcomeModal": {
     "cta": "C'est parti",

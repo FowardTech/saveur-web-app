@@ -1608,9 +1608,23 @@
     "couponAmountApplied": "{{code}} aplicado: {{amount}} de desconto"
   },
   "support": {
-    "description": "O suporte por chat ao vivo dentro do app chega à versão web em uma atualização futura. Enquanto isso, fale diretamente conosco e responderemos o mais rápido possível.",
-    "emailCta": "Enviar e-mail para {{email}}",
-    "title": "Suporte ao Vivo"
+    "title": "Suporte ao Vivo",
+    "subtitle": "Você tem dúvidas, nós temos respostas! Encontre o que precisa nos recursos abaixo ou fale diretamente conosco.",
+    "helpCenter": {
+      "title": "Central de ajuda",
+      "body": "Confira nossa [central de ajuda] para ver as perguntas frequentes.",
+      "cta": "Visitar a central de ajuda"
+    },
+    "contact": {
+      "title": "Fale conosco",
+      "body": "Você sempre pode nos enviar um e-mail em [{{email}}] para obter ajuda.",
+      "cta": "Fale conosco"
+    },
+    "faq": {
+      "title": "Perguntas frequentes",
+      "loading": "Carregando…",
+      "empty": "As respostas não estão disponíveis no momento. Envie um e-mail e ajudaremos você."
+    }
   },
   "welcomeModal": {
     "cta": "Vamos começar",
