@@ -124,8 +124,10 @@ export default function OnboardingPage() {
     }
   }, [loading, profile, router]);
 
+  // Exactly ONE primary goal (same as mobile's SignupSecondStep and web's
+  // settings/profile): picking another replaces the current one.
   function toggleGoal(goal: string) {
-    setGoals((prev) => (prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]));
+    setGoals([goal]);
   }
 
   // Same tier-aware cap enforcement mobile's toggleCountry (JobPreferences.
@@ -238,7 +240,7 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-bold text-primary">{t("web:onboarding.step1.title", { defaultValue: "What's your primary goal?" })}</h1>
-                <p className="mt-1 text-sm text-hint">{t("web:onboarding.step1.subtitle", { defaultValue: "Pick everything that applies — this shapes your roadmap." })}</p>
+                <p className="mt-1 text-sm text-hint">{t("web:onboarding.step1.subtitle", { defaultValue: "Pick one — this shapes your roadmap." })}</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {GOALS.map((goal) => (
