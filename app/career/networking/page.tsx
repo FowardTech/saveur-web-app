@@ -74,29 +74,35 @@ const MESSAGE_TONES: { id: MessageTone; label: string }[] = [
   { id: "warm", label: "Warm" },
 ];
 
-function contactsStorageKey(uid?: string | null) {
+// Contacts are stored in the database (GET/POST /api/v1/networking/contacts,
+// PATCH/DELETE /api/v1/networking/contacts/{id}) so they sync with the mobile
+// app. They used to live in localStorage; any still there (per-uid key, so
+// never another account's) are uploaded once via POST .../contacts/import.
+function legacyContactsStorageKey(uid?: string | null) {
   return `saveur:networkingContacts:${uid ?? "anon"}`;
 }
 
-function readContacts(uid?: string | null): Contact[] {
+function readLegacyContacts(uid: string): Contact[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(contactsStorageKey(uid));
-    return raw ? (JSON.parse(raw) as Contact[]) : [];
+    const raw = window.localStorage.getItem(legacyContactsStorageKey(uid));
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? (parsed as Contact[]) : [];
   } catch {
     return [];
   }
 }
 
-function writeContacts(uid: string | null | undefined, contacts: Contact[]) {
-  if (typeof window === "undefined") return;
+function clearLegacyContacts(uid: string) {
   try {
-    window.localStorage.setItem(contactsStorageKey(uid), JSON.stringify(contacts));
+    window.localStorage.removeItem(legacyContactsStorageKey(uid));
   } catch {
-    // Storage full/unavailable (private browsing, etc.) -- same
-    // best-effort tolerance mobile's own AsyncStorage writes get.
+    // ignore
   }
 }
+
+const sortContacts = (list: Contact[]) =>
+  [...list].sort((a, b) => Number(b.lastContactedDate ?? 0) - Number(a.lastContactedDate ?? 0));
 
 function formatEventDate(iso?: string) {
   if (!iso) return null;
@@ -193,15 +199,39 @@ function NetworkingAssistantInner() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setContacts(readContacts(uid).sort((a, b) => Number(b.lastContactedDate ?? 0) - Number(a.lastContactedDate ?? 0)));
-  }, [uid]);
+  const [contactsError, setContactsError] = useState<string | null>(null);
+  const [savingContact, setSavingContact] = useState(false);
 
-  function persistContacts(next: Contact[]) {
-    setContacts(next);
-    writeContacts(uid, next);
-  }
+  const contactsFailedMessage = t("web:errorsGeneric.somethingWentWrong", { defaultValue: "Something went wrong. Please try again." });
+
+  useEffect(() => {
+    if (authLoading || !uid) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const legacy = readLegacyContacts(uid);
+        const res = legacy.length
+          ? await apiClient.post<{ data: Contact[] }>("/api/v1/networking/contacts/import", {
+              contacts: legacy.map((c) => ({ name: c.name, company: c.company, role: c.role, note: c.note, lastContactedDate: c.lastContactedDate })),
+            })
+          : await apiClient.get<{ data: Contact[] }>("/api/v1/networking/contacts");
+        if (legacy.length) clearLegacyContacts(uid);
+        if (!cancelled) {
+          setContacts(sortContacts(res.data));
+          setContactsError(null);
+        }
+      } catch (err) {
+        const apiErr = err as ApiError;
+        // Leave `contacts` null on failure so the list shows its skeleton
+        // rather than an empty state that reads like lost data.
+        if (!cancelled) setContactsError(apiErr.message || contactsFailedMessage);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, uid]);
 
   function onOpenAdd() {
     setEditingId(null);
@@ -218,24 +248,45 @@ function NetworkingAssistantInner() {
     setEditingId(null);
     setForm(emptyForm);
   }
-  function onSaveContact(e: React.FormEvent) {
+  async function onSaveContact(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name.trim()) return;
+    if (!form.name.trim() || savingContact) return;
     const current = contacts ?? [];
-    if (editingId != null) {
-      persistContacts(current.map((c) => (c.id === editingId ? { ...c, ...form } : c)));
-    } else {
-      const created: Contact = { ...form, id: `contact_${Date.now()}`, lastContactedDate: null };
-      persistContacts([created, ...current]);
+    setSavingContact(true);
+    setContactsError(null);
+    try {
+      if (editingId != null) {
+        const updated = await apiClient.patch<Contact>(`/api/v1/networking/contacts/${editingId}`, form);
+        setContacts(sortContacts(current.map((c) => (c.id === editingId ? updated : c))));
+      } else {
+        const created = await apiClient.post<Contact>("/api/v1/networking/contacts", { ...form, lastContactedDate: null });
+        setContacts(sortContacts([created, ...current]));
+      }
+      onCancelForm();
+    } catch (err) {
+      setContactsError((err as ApiError).message || contactsFailedMessage);
+    } finally {
+      setSavingContact(false);
     }
-    onCancelForm();
   }
-  function onDeleteContact(id: string) {
-    persistContacts((contacts ?? []).filter((c) => c.id !== id));
-    if (messageContactId === id) onCloseGenerateMessage();
+  async function onDeleteContact(id: string) {
+    setContactsError(null);
+    try {
+      await apiClient.delete(`/api/v1/networking/contacts/${id}`);
+      setContacts((prev) => (prev ? prev.filter((c) => c.id !== id) : prev));
+      if (messageContactId === id) onCloseGenerateMessage();
+    } catch (err) {
+      setContactsError((err as ApiError).message || contactsFailedMessage);
+    }
   }
-  function onMarkContactedToday(contact: Contact) {
-    persistContacts((contacts ?? []).map((c) => (c.id === contact.id ? { ...c, lastContactedDate: Date.now() } : c)));
+  async function onMarkContactedToday(contact: Contact) {
+    setContactsError(null);
+    try {
+      const updated = await apiClient.patch<Contact>(`/api/v1/networking/contacts/${contact.id}`, { lastContactedDate: Date.now() });
+      setContacts((prev) => (prev ? sortContacts(prev.map((c) => (c.id === contact.id ? updated : c))) : prev));
+    } catch (err) {
+      setContactsError((err as ApiError).message || contactsFailedMessage);
+    }
   }
 
   // "Generate Message" panel -- one contact's at a time, same as mobile.
@@ -390,6 +441,7 @@ function NetworkingAssistantInner() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
+                  {contactsError && <p className="text-sm text-danger">{contactsError}</p>}
                   {contacts === null ? (
                     <SkeletonRows count={2} />
                   ) : contacts.length === 0 ? (
@@ -524,7 +576,7 @@ function NetworkingAssistantInner() {
                 />
               </label>
               <div className="flex items-center gap-3">
-                <Button type="submit" disabled={!form.name.trim()}>
+                <Button type="submit" disabled={!form.name.trim() || savingContact}>
                   {t("common:actions.save", { defaultValue: "Save" })}
                 </Button>
                 <Button type="button" variant="ghost" onClick={onCancelForm}>
