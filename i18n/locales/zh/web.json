@@ -260,7 +260,13 @@
       "totalStepsLabel": "总步骤",
       "allComplete": "你已达成迈向{{role}}的所有里程碑！",
       "milestoneOverview": "里程碑概览",
-      "typeCaption": "已完成 {{completed}} / {{total}} 个步骤"
+      "typeCaption": "已完成 {{completed}} / {{total}} 个步骤",
+      "type": {
+        "skill": "技能",
+        "project": "项目",
+        "interview": "面试",
+        "milestone": "里程碑"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "你的诉求",
@@ -449,7 +455,8 @@
       "promptBody": "AI 教练能帮你多少，取决于它对你的了解。完成这 {{count}} 个简单步骤，它就能给你最准确、最个性化的帮助。",
       "promptCta": "开始：{{step}}",
       "promptLater": "稍后再做"
-    }
+    },
+    "toolsTitle": "快速进入工具"
   },
   "jobAlerts": {
     "empty": "暂无职位提醒——请在下次刷新后再来查看。",
@@ -511,7 +518,8 @@
       "shareRequestPending": "请求待处理",
       "shareSendRequest": "发送连接请求",
       "applicationTrackedBody": "已将{{company}}的{{role}}添加到你的申请追踪。",
-      "theEmployersSite": "雇主网站"
+      "theEmployersSite": "雇主网站",
+      "shareText": "看看这个职位：{{company}} 的 {{title}} — 来自 Saveur。"
     },
     "filteredByCompany": "正在显示{{company}}的职位提醒",
     "clearFilter": "移除筛选",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "针对特定面试官风格练习：AI 面试实验室。",
       "freeLimitReachedBody": "免费套餐每月包含 {{limit}} 次练习。升级到 Basic 可无限练习。",
       "upgradeToBasic": "升级到 Basic",
-      "goToCodingPractice": "前往编程练习"
+      "goToCodingPractice": "前往编程练习",
+      "modes": {
+        "voice": "语音",
+        "text": "文字",
+        "video": "视频"
+      },
+      "modeDescriptions": {
+        "voice": "用语音回答，获得语音反馈",
+        "text": "按自己的节奏输入答案",
+        "video": "像真实面试一样对着镜头练习"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "请在你的账户中购买实战场景附加功能，以解锁此练习模式。",
@@ -963,7 +981,13 @@
       "rubricScores": "技能得分",
       "summary": "总结",
       "decisionByDecision": "逐项决策",
-      "stepLabel": "第 {{order}} 步"
+      "stepLabel": "第 {{order}} 步",
+      "scores": {
+        "judgment": "判断力",
+        "domainKnowledge": "领域知识",
+        "communication": "沟通",
+        "criticalThinking": "批判性思维"
+      }
     },
     "history": {
       "durationMin": "{{min}} 分钟",
@@ -1011,7 +1035,16 @@
       "fillers": "口头禅",
       "longPauses": "长时间停顿",
       "transcript": "文字记录",
-      "discussWithCoach": "与你的教练讨论这次面试"
+      "discussWithCoach": "与你的教练讨论这次面试",
+      "skills": {
+        "confidence": "自信",
+        "communication": "沟通",
+        "technical": "技术能力",
+        "leadership": "领导力",
+        "problem_solving": "解决问题",
+        "creativity": "创造力",
+        "critical_thinking": "批判性思维"
+      }
     },
     "schedule": {
       "dateTimeRequired": "为提醒选择日期和时间。",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "预填输入（可选）——每行一个值",
       "stdinPrefillPlaceholder": "可跳过——程序会在上方控制台中请求输入",
       "consoleInputLabel": "程序输入"
-    }
+    },
+    "anyCompany": "其他 / 任意公司"
   },
   "referral": {
     "copied": "已复制！",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "我们已向 {{email}} 发送了 6 位验证码。",
       "codeLabel": "验证码",
       "codePlaceholder": "6 位验证码",
-      "verifyCode": "验证"
+      "verifyCode": "验证",
+      "personalEmailBlock": "这是个人邮箱服务商——请改用学校官方邮箱。",
+      "emailDomainWarn": "这看起来不像 {{school}} 的邮箱——应以 @{{domain}} 结尾。"
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "菜单",
     "sectionAccount": "账户",
     "footer": "Saveur · AI 职业辅导",
-    "footerSupport": "帮助与支持"
+    "footerSupport": "帮助与支持",
+    "more": "更多"
   },
   "subscription": {
     "checkoutFailedDefault": "无法开始结账，请重试。",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "你",
     "yourCareerGoal": "你的职业目标",
-    "leaderboardEmptyDescription": "等你和其他人记录了一些练习活动后再来看看。"
+    "leaderboardEmptyDescription": "等你和其他人记录了一些练习活动后再来看看。",
+    "skillLabels": {
+      "confidence": "自信",
+      "communication": "沟通",
+      "technical": "技术能力",
+      "leadership": "领导力",
+      "problem_solving": "解决问题",
+      "creativity": "创造力",
+      "critical_thinking": "批判性思维"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "电梯演讲",
+      "coding_problem": "编程题",
+      "salary_negotiation": "薪资谈判",
+      "leadership_scenario": "领导力情景",
+      "public_speaking": "公开演讲"
+    }
   },
   "error": {
     "title": "出了点问题",
@@ -1782,7 +1835,13 @@
     "confidence": "置信度",
     "factors": "影响这个数字的因素",
     "toNegotiation": "练习谈判",
-    "unavailable": "薪资基准暂时不可用，请稍后再来看看。"
+    "unavailable": "薪资基准暂时不可用，请稍后再来看看。",
+    "position_below_market": "低于市场水平",
+    "position_at_market": "与市场持平",
+    "position_above_market": "高于市场水平",
+    "confidence_low": "低",
+    "confidence_medium": "中",
+    "confidence_high": "高"
   },
   "growth": {
     "title": "职业成长",
@@ -1823,7 +1882,14 @@
     "risks": "需要注意",
     "premiumPaywall": "晋升计划是 Premium 功能。",
     "upgradePremium": "升级到 Premium",
-    "upgrade": "升级"
+    "upgrade": "升级",
+    "kind": {
+      "start": "入职",
+      "raise": "加薪",
+      "promotion": "晋升",
+      "job_change": "换工作",
+      "other": "其他"
+    }
   },
   "careerDiary": {
     "today": "今天",
@@ -1838,7 +1904,12 @@
     "empty": "在上方添加你的第一条。",
     "composerPlaceholder": "你今天做了、学到或取得了什么？",
     "roleLabel": "职位 / 职业 / 工作（可选）",
-    "saving": "保存中…"
+    "saving": "保存中…",
+    "category": {
+      "did": "做了",
+      "learned": "学到了",
+      "achieved": "达成了"
+    }
   },
   "goals": {
     "loadFailedDefault": "无法加载你的目标。",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "辅导报告",
-    "subtitle": "根据你最近的模拟面试，了解你做得好的地方和接下来要改进的方向。"
+    "subtitle": "根据你最近的模拟面试，了解你做得好的地方和接下来要改进的方向。",
+    "performingWell": "表现出色",
+    "keyInsights": "关键洞察",
+    "areasToImprove": "待改进之处",
+    "whatsNext": "下一步",
+    "emptyBody": "你的辅导报告还是空的——完成 {{count}} 次模拟面试，即可看到你的优势以及接下来要改进的方向。",
+    "emptyCta": "练习模拟面试",
+    "basedOnSessions": "基于你最近的 {{count}} 次模拟面试",
+    "panelEmpty": "这里暂时还没有内容。"
   },
   "rating": {
     "title": "喜欢 Saveur 吗？",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "出了点问题。请检查你的信息后重试。",
     "offline": "没有网络连接。请检查你的连接后重试。",
-    "somethingWentWrong": "出了点问题，请重试。"
+    "somethingWentWrong": "出了点问题，请重试。",
+    "requestFailed": "请求失败（状态码 {{status}}）",
+    "notEnoughCredits": "积分不足。",
+    "downloadFailed": "下载失败（状态码 {{status}}）",
+    "exportFailed": "导出失败（状态码 {{status}}）"
   },
   "fields": {
     "country": "国家",
@@ -2450,5 +2533,12 @@
       "followup_draft": "跟进草稿",
       "daily_challenge_submit": "每日挑战"
     }
+  },
+  "upload": {
+    "uploadingPercent": "正在上传… {{percent}}%",
+    "processing": "上传完成 — 正在处理…",
+    "done": "上传成功",
+    "failed": "上传失败，请重试。",
+    "dismiss": "关闭"
   }
 }

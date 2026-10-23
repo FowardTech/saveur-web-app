@@ -260,7 +260,13 @@
       "totalStepsLabel": "إجمالي الخطوات",
       "allComplete": "لقد حققت جميع المحطات نحو {{role}}!",
       "milestoneOverview": "نظرة عامة على المحطات",
-      "typeCaption": "اكتملت {{completed}} من {{total}} خطوات"
+      "typeCaption": "اكتملت {{completed}} من {{total}} خطوات",
+      "type": {
+        "skill": "المهارات",
+        "project": "المشاريع",
+        "interview": "المقابلات",
+        "milestone": "المحطات"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "طلبك",
@@ -449,7 +455,8 @@
       "promptBody": "مدربك الذكي مفيد بقدر ما يعرفه عنك. أكمل هذه الخطوات السريعة ({{count}}) ليقدّم لك المساعدة الأدق والأكثر تخصيصاً.",
       "promptCta": "ابدأ: {{step}}",
       "promptLater": "سأفعل ذلك لاحقاً"
-    }
+    },
+    "toolsTitle": "انتقل إلى أداة"
   },
   "jobAlerts": {
     "empty": "لا توجد تنبيهات وظائف بعد — تحقق مرة أخرى بعد التحديث القادم.",
@@ -511,7 +518,8 @@
       "shareRequestPending": "الطلب معلّق",
       "shareSendRequest": "إرسال طلب اتصال",
       "applicationTrackedBody": "تمت إضافة {{role}} لدى {{company}} إلى متتبع الطلبات.",
-      "theEmployersSite": "موقع صاحب العمل"
+      "theEmployersSite": "موقع صاحب العمل",
+      "shareText": "اطّلع على هذه الوظيفة: {{title}} في {{company}} — عبر Saveur."
     },
     "filteredByCompany": "عرض تنبيهات {{company}}",
     "clearFilter": "إزالة التصفية",
@@ -883,7 +891,17 @@
       "freeSessionsRemaining_zero": "لم تتبقَّ جلسات مجانية هذا الشهر",
       "freeSessionsRemaining_two": "تبقّت جلستان مجانيتان هذا الشهر",
       "freeSessionsRemaining_few": "تبقّت {{count}} جلسات مجانية هذا الشهر",
-      "freeSessionsRemaining_many": "تبقّت {{count}} جلسة مجانية هذا الشهر"
+      "freeSessionsRemaining_many": "تبقّت {{count}} جلسة مجانية هذا الشهر",
+      "modes": {
+        "voice": "صوت",
+        "text": "نص",
+        "video": "فيديو"
+      },
+      "modeDescriptions": {
+        "voice": "أجب بصوتك واحصل على ملاحظات صوتية",
+        "text": "اكتب إجاباتك بالسرعة التي تناسبك",
+        "video": "تدرّب أمام الكاميرا كما في مقابلة حقيقية"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "اشترِ إضافة السيناريوهات العملية من حسابك لفتح وضع التدريب هذا.",
@@ -967,7 +985,13 @@
       "rubricScores": "درجات المهارات",
       "summary": "ملخص",
       "decisionByDecision": "قرارًا بقرار",
-      "stepLabel": "الخطوة {{order}}"
+      "stepLabel": "الخطوة {{order}}",
+      "scores": {
+        "judgment": "الحكم",
+        "domainKnowledge": "المعرفة بالمجال",
+        "communication": "التواصل",
+        "criticalThinking": "التفكير النقدي"
+      }
     },
     "history": {
       "durationMin": "{{min}} دقيقة",
@@ -1015,7 +1039,16 @@
       "fillers": "كلمات الحشو",
       "longPauses": "وقفات طويلة",
       "transcript": "النص المكتوب",
-      "discussWithCoach": "ناقش هذه المقابلة مع مدربك"
+      "discussWithCoach": "ناقش هذه المقابلة مع مدربك",
+      "skills": {
+        "confidence": "الثقة",
+        "communication": "التواصل",
+        "technical": "المهارة التقنية",
+        "leadership": "القيادة",
+        "problem_solving": "حل المشكلات",
+        "creativity": "الإبداع",
+        "critical_thinking": "التفكير النقدي"
+      }
     },
     "schedule": {
       "dateTimeRequired": "اختر تاريخًا ووقتًا للتذكير.",
@@ -1135,7 +1168,8 @@
       "stdinPrefillLabel": "إدخال مسبق (اختياري) — قيمة واحدة في كل سطر",
       "stdinPrefillPlaceholder": "تخطَّ هذا — سيطلب برنامجك الإدخال في وحدة التحكم أعلاه",
       "consoleInputLabel": "إدخال البرنامج"
-    }
+    },
+    "anyCompany": "أخرى / أي شركة"
   },
   "referral": {
     "copied": "تم النسخ!",
@@ -1532,7 +1566,9 @@
       "enterCodeDescription": "أرسلنا رمزًا من 6 أرقام إلى {{email}}.",
       "codeLabel": "رمز التحقق",
       "codePlaceholder": "رمز من 6 أرقام",
-      "verifyCode": "تحقق"
+      "verifyCode": "تحقق",
+      "personalEmailBlock": "هذا مزوّد بريد شخصي — يرجى استخدام بريد مدرستك الرسمي بدلًا منه.",
+      "emailDomainWarn": "لا يبدو هذا بريدًا إلكترونيًا لـ {{school}} — يجب أن ينتهي بـ @{{domain}}."
     }
   },
   "shell": {
@@ -1546,7 +1582,8 @@
     "sectionMenu": "القائمة",
     "sectionAccount": "الحساب",
     "footer": "Saveur · التدريب المهني بالذكاء الاصطناعي",
-    "footerSupport": "المساعدة والدعم"
+    "footerSupport": "المساعدة والدعم",
+    "more": "المزيد"
   },
   "subscription": {
     "checkoutFailedDefault": "تعذّر بدء الدفع. يرجى المحاولة مرة أخرى.",
@@ -1749,7 +1786,23 @@
     "xpLabel": "نقاط الخبرة",
     "you": "أنت",
     "yourCareerGoal": "هدفك المهني",
-    "leaderboardEmptyDescription": "عاود التحقق بعد أن تسجّل أنت وآخرون بعض نشاط التدريب."
+    "leaderboardEmptyDescription": "عاود التحقق بعد أن تسجّل أنت وآخرون بعض نشاط التدريب.",
+    "skillLabels": {
+      "confidence": "الثقة",
+      "communication": "التواصل",
+      "technical": "المهارة التقنية",
+      "leadership": "القيادة",
+      "problem_solving": "حل المشكلات",
+      "creativity": "الإبداع",
+      "critical_thinking": "التفكير النقدي"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "عرض المصعد",
+      "coding_problem": "مسألة برمجية",
+      "salary_negotiation": "التفاوض على الراتب",
+      "leadership_scenario": "سيناريو قيادي",
+      "public_speaking": "التحدث أمام الجمهور"
+    }
   },
   "error": {
     "title": "حدث خطأ ما",
@@ -1798,7 +1851,13 @@
     "confidence": "الثقة",
     "factors": "ما الذي يحرّك هذا الرقم",
     "toNegotiation": "تدرّب على التفاوض",
-    "unavailable": "مقارنة الرواتب غير متاحة حاليًا. يرجى المحاولة مرة أخرى قريبًا."
+    "unavailable": "مقارنة الرواتب غير متاحة حاليًا. يرجى المحاولة مرة أخرى قريبًا.",
+    "position_below_market": "أقل من السوق",
+    "position_at_market": "بمستوى السوق",
+    "position_above_market": "أعلى من السوق",
+    "confidence_low": "منخفضة",
+    "confidence_medium": "متوسطة",
+    "confidence_high": "عالية"
   },
   "growth": {
     "title": "النمو المهني",
@@ -1839,7 +1898,14 @@
     "risks": "احذر من",
     "premiumPaywall": "خطة الترقية ميزة في خطة Premium.",
     "upgradePremium": "الترقية إلى Premium",
-    "upgrade": "ترقية"
+    "upgrade": "ترقية",
+    "kind": {
+      "start": "البداية",
+      "raise": "زيادة",
+      "promotion": "ترقية",
+      "job_change": "تغيير الوظيفة",
+      "other": "أخرى"
+    }
   },
   "careerDiary": {
     "today": "اليوم",
@@ -1854,7 +1920,12 @@
     "empty": "أضف أول إدخال أعلاه.",
     "composerPlaceholder": "ماذا فعلت أو تعلمت أو أنجزت اليوم؟",
     "roleLabel": "الدور / المسار المهني / الوظيفة (اختياري)",
-    "saving": "جارٍ الحفظ…"
+    "saving": "جارٍ الحفظ…",
+    "category": {
+      "did": "ما فعلته",
+      "learned": "ما تعلمته",
+      "achieved": "ما حققته"
+    }
   },
   "goals": {
     "loadFailedDefault": "تعذّر تحميل أهدافك.",
@@ -2203,7 +2274,15 @@
   },
   "coachingReport": {
     "title": "تقرير التدريب",
-    "subtitle": "ما تُجيده وما يجب العمل عليه لاحقًا، بناءً على مقابلاتك التجريبية الأخيرة."
+    "subtitle": "ما تُجيده وما يجب العمل عليه لاحقًا، بناءً على مقابلاتك التجريبية الأخيرة.",
+    "performingWell": "ما تفعله جيدًا",
+    "keyInsights": "أهم الرؤى",
+    "areasToImprove": "مجالات التحسين",
+    "whatsNext": "الخطوات التالية",
+    "emptyBody": "تقرير التدريب الخاص بك فارغ — أكمل {{count}} مقابلات تجريبية لترى ما تفعله جيدًا وما الذي يجب العمل عليه بعد ذلك.",
+    "emptyCta": "تدرّب على مقابلة تجريبية",
+    "basedOnSessions": "استنادًا إلى آخر {{count}} مقابلات تجريبية",
+    "panelEmpty": "لا يوجد شيء هنا بعد."
   },
   "rating": {
     "title": "هل تستمتع بـ Saveur؟",
@@ -2237,7 +2316,11 @@
   "errorsGeneric": {
     "checkDetails": "حدث خطأ ما. يرجى التحقق من بياناتك والمحاولة مرة أخرى.",
     "offline": "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
-    "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "requestFailed": "فشل الطلب (الحالة {{status}})",
+    "notEnoughCredits": "رصيد الأرصدة غير كافٍ.",
+    "downloadFailed": "فشل التنزيل (الحالة {{status}})",
+    "exportFailed": "فشل التصدير (الحالة {{status}})"
   },
   "fields": {
     "country": "الدولة",
@@ -2466,5 +2549,12 @@
       "followup_draft": "مسودة متابعة",
       "daily_challenge_submit": "التحدي اليومي"
     }
+  },
+  "upload": {
+    "uploadingPercent": "جارٍ الرفع… {{percent}}%",
+    "processing": "اكتمل الرفع — جارٍ المعالجة…",
+    "done": "تم الرفع بنجاح",
+    "failed": "فشل الرفع. يرجى المحاولة مرة أخرى.",
+    "dismiss": "إغلاق"
   }
 }

@@ -463,7 +463,7 @@ function MockInterviewSetupInner() {
                           ) : undefined
                         }
                       >
-                        {name}
+                        {isRealCompany ? name : t("web:practice.anyCompany", { defaultValue: "Other / Any Company" })}
                       </Pill>
                     );
                   })}

@@ -113,7 +113,7 @@ export default function ResumeVariantsPage() {
         },
         body: JSON.stringify({ format: "pdf" }),
       });
-      if (!res.ok) throw new Error(`Export failed with status ${res.status}`);
+      if (!res.ok) throw new Error(t("web:errorsGeneric.exportFailed", { defaultValue: "Export failed with status {{status}}", status: res.status }));
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

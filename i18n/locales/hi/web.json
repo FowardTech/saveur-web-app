@@ -260,7 +260,13 @@
       "totalStepsLabel": "कुल चरण",
       "allComplete": "आपने {{role}} की ओर सभी पड़ाव पूरे कर लिए हैं!",
       "milestoneOverview": "पड़ाव अवलोकन",
-      "typeCaption": "{{total}} में से {{completed}} चरण पूरे"
+      "typeCaption": "{{total}} में से {{completed}} चरण पूरे",
+      "type": {
+        "skill": "कौशल",
+        "project": "प्रोजेक्ट",
+        "interview": "इंटरव्यू",
+        "milestone": "मील के पत्थर"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "आपकी मांग",
@@ -449,7 +455,8 @@
       "promptBody": "आपका AI कोच उतना ही अच्छा है जितना वह आपके बारे में जानता है। ये {{count}} छोटे चरण पूरे करें ताकि वह सबसे सटीक और व्यक्तिगत मदद दे सके।",
       "promptCta": "शुरू करें: {{step}}",
       "promptLater": "मैं बाद में करूँगा"
-    }
+    },
+    "toolsTitle": "किसी टूल पर जाएँ"
   },
   "jobAlerts": {
     "empty": "अभी तक कोई जॉब अलर्ट नहीं — अगले रीफ़्रेश के बाद फिर से देखें।",
@@ -511,7 +518,8 @@
       "shareRequestPending": "अनुरोध लंबित",
       "shareSendRequest": "कनेक्शन अनुरोध भेजें",
       "applicationTrackedBody": "{{company}} में {{role}} आपके आवेदन ट्रैकर में जोड़ दिया गया है।",
-      "theEmployersSite": "नियोक्ता की साइट"
+      "theEmployersSite": "नियोक्ता की साइट",
+      "shareText": "यह नौकरी देखें: {{company}} में {{title}} — Saveur के ज़रिए।"
     },
     "filteredByCompany": "{{company}} के अलर्ट दिखाए जा रहे हैं",
     "clearFilter": "फ़िल्टर हटाएँ",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "किसी विशिष्ट इंटरव्यूअर शैली के साथ अभ्यास करें — AI इंटरव्यू लैबोरेटरी।",
       "freeLimitReachedBody": "निःशुल्क प्लान में हर महीने {{limit}} अभ्यास सत्र शामिल हैं। असीमित अभ्यास के लिए Basic में अपग्रेड करें।",
       "upgradeToBasic": "Basic में अपग्रेड करें",
-      "goToCodingPractice": "कोडिंग अभ्यास पर जाएँ"
+      "goToCodingPractice": "कोडिंग अभ्यास पर जाएँ",
+      "modes": {
+        "voice": "वॉइस",
+        "text": "टेक्स्ट",
+        "video": "वीडियो"
+      },
+      "modeDescriptions": {
+        "voice": "बोलकर जवाब दें और बोलकर फीडबैक पाएँ",
+        "text": "अपनी गति से जवाब टाइप करें",
+        "video": "असली इंटरव्यू की तरह कैमरे के सामने अभ्यास करें"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "इस अभ्यास मोड को अनलॉक करने के लिए अपने खाते से व्यावहारिक परिदृश्य ऐड-ऑन खरीदें।",
@@ -963,7 +981,13 @@
       "rubricScores": "कौशल स्कोर",
       "summary": "सारांश",
       "decisionByDecision": "निर्णय-दर-निर्णय",
-      "stepLabel": "चरण {{order}}"
+      "stepLabel": "चरण {{order}}",
+      "scores": {
+        "judgment": "निर्णय क्षमता",
+        "domainKnowledge": "क्षेत्र का ज्ञान",
+        "communication": "संवाद",
+        "criticalThinking": "आलोचनात्मक सोच"
+      }
     },
     "history": {
       "durationMin": "{{min}} मिनट",
@@ -1011,7 +1035,16 @@
       "fillers": "भराव शब्द",
       "longPauses": "लंबे विराम",
       "transcript": "ट्रांसक्रिप्ट",
-      "discussWithCoach": "इस इंटरव्यू पर अपने कोच से चर्चा करें"
+      "discussWithCoach": "इस इंटरव्यू पर अपने कोच से चर्चा करें",
+      "skills": {
+        "confidence": "आत्मविश्वास",
+        "communication": "संवाद",
+        "technical": "तकनीकी कौशल",
+        "leadership": "नेतृत्व",
+        "problem_solving": "समस्या समाधान",
+        "creativity": "रचनात्मकता",
+        "critical_thinking": "आलोचनात्मक सोच"
+      }
     },
     "schedule": {
       "dateTimeRequired": "रिमाइंडर के लिए तारीख और समय चुनें।",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "पहले से भरा इनपुट (वैकल्पिक) — हर लाइन में एक मान",
       "stdinPrefillPlaceholder": "इसे छोड़ दें — आपका प्रोग्राम ऊपर कंसोल में इनपुट माँगेगा",
       "consoleInputLabel": "प्रोग्राम इनपुट"
-    }
+    },
+    "anyCompany": "अन्य / कोई भी कंपनी"
   },
   "referral": {
     "copied": "कॉपी हो गया!",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "हमने {{email}} पर 6 अंकों का कोड भेजा है।",
       "codeLabel": "सत्यापन कोड",
       "codePlaceholder": "6 अंकों का कोड",
-      "verifyCode": "सत्यापित करें"
+      "verifyCode": "सत्यापित करें",
+      "personalEmailBlock": "यह एक निजी ईमेल प्रदाता है — कृपया इसके बजाय अपने स्कूल का आधिकारिक ईमेल उपयोग करें।",
+      "emailDomainWarn": "यह {{school}} का ईमेल नहीं लगता — यह @{{domain}} पर समाप्त होना चाहिए।"
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "मेनू",
     "sectionAccount": "खाता",
     "footer": "Saveur · AI करियर कोचिंग",
-    "footerSupport": "सहायता और समर्थन"
+    "footerSupport": "सहायता और समर्थन",
+    "more": "और"
   },
   "subscription": {
     "checkoutFailedDefault": "चेकआउट शुरू नहीं हो सका। कृपया फिर से कोशिश करें।",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "आप",
     "yourCareerGoal": "आपका करियर लक्ष्य",
-    "leaderboardEmptyDescription": "जब आप और अन्य लोग कुछ अभ्यास गतिविधि दर्ज कर लें, तब फिर देखें।"
+    "leaderboardEmptyDescription": "जब आप और अन्य लोग कुछ अभ्यास गतिविधि दर्ज कर लें, तब फिर देखें।",
+    "skillLabels": {
+      "confidence": "आत्मविश्वास",
+      "communication": "संवाद",
+      "technical": "तकनीकी कौशल",
+      "leadership": "नेतृत्व",
+      "problem_solving": "समस्या समाधान",
+      "creativity": "रचनात्मकता",
+      "critical_thinking": "आलोचनात्मक सोच"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "एलिवेटर पिच",
+      "coding_problem": "कोडिंग समस्या",
+      "salary_negotiation": "वेतन वार्ता",
+      "leadership_scenario": "नेतृत्व परिदृश्य",
+      "public_speaking": "सार्वजनिक भाषण"
+    }
   },
   "error": {
     "title": "कुछ गड़बड़ हो गई",
@@ -1782,7 +1835,13 @@
     "confidence": "विश्वास स्तर",
     "factors": "यह संख्या किससे बदलती है",
     "toNegotiation": "बातचीत का अभ्यास करें",
-    "unavailable": "वेतन बेंचमार्क अभी उपलब्ध नहीं है। कृपया जल्द फिर देखें।"
+    "unavailable": "वेतन बेंचमार्क अभी उपलब्ध नहीं है। कृपया जल्द फिर देखें।",
+    "position_below_market": "बाज़ार से कम",
+    "position_at_market": "बाज़ार के बराबर",
+    "position_above_market": "बाज़ार से अधिक",
+    "confidence_low": "कम",
+    "confidence_medium": "मध्यम",
+    "confidence_high": "उच्च"
   },
   "growth": {
     "title": "करियर विकास",
@@ -1823,7 +1882,14 @@
     "risks": "इनसे सावधान रहें",
     "premiumPaywall": "पदोन्नति योजना एक Premium सुविधा है।",
     "upgradePremium": "Premium में अपग्रेड करें",
-    "upgrade": "अपग्रेड करें"
+    "upgrade": "अपग्रेड करें",
+    "kind": {
+      "start": "शुरुआत",
+      "raise": "वेतन वृद्धि",
+      "promotion": "पदोन्नति",
+      "job_change": "नौकरी बदलना",
+      "other": "अन्य"
+    }
   },
   "careerDiary": {
     "today": "आज",
@@ -1838,7 +1904,12 @@
     "empty": "ऊपर अपनी पहली प्रविष्टि जोड़ें।",
     "composerPlaceholder": "आज आपने क्या किया, सीखा या हासिल किया?",
     "roleLabel": "भूमिका / करियर / नौकरी (वैकल्पिक)",
-    "saving": "सहेजा जा रहा है…"
+    "saving": "सहेजा जा रहा है…",
+    "category": {
+      "did": "किया",
+      "learned": "सीखा",
+      "achieved": "हासिल किया"
+    }
   },
   "goals": {
     "loadFailedDefault": "आपके लक्ष्य लोड नहीं हो सके।",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "कोचिंग रिपोर्ट",
-    "subtitle": "आपके हाल के मॉक इंटरव्यू के आधार पर: आप क्या अच्छा कर रहे हैं और आगे किस पर काम करें।"
+    "subtitle": "आपके हाल के मॉक इंटरव्यू के आधार पर: आप क्या अच्छा कर रहे हैं और आगे किस पर काम करें।",
+    "performingWell": "जो अच्छा चल रहा है",
+    "keyInsights": "मुख्य अंतर्दृष्टि",
+    "areasToImprove": "सुधार के क्षेत्र",
+    "whatsNext": "आगे क्या",
+    "emptyBody": "आपकी कोचिंग रिपोर्ट खाली है — आप क्या अच्छा कर रहे हैं और आगे किस पर काम करना है, यह देखने के लिए {{count}} मॉक इंटरव्यू पूरे करें।",
+    "emptyCta": "मॉक इंटरव्यू का अभ्यास करें",
+    "basedOnSessions": "आपके पिछले {{count}} मॉक इंटरव्यू के आधार पर",
+    "panelEmpty": "यहाँ अभी कुछ नहीं है।"
   },
   "rating": {
     "title": "Saveur पसंद आ रहा है?",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "कुछ गड़बड़ हो गई। कृपया अपना विवरण जाँचें और फिर कोशिश करें।",
     "offline": "इंटरनेट कनेक्शन नहीं है। कृपया अपना कनेक्शन जाँचें और फिर कोशिश करें।",
-    "somethingWentWrong": "कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।"
+    "somethingWentWrong": "कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
+    "requestFailed": "अनुरोध विफल रहा (स्टेटस {{status}})",
+    "notEnoughCredits": "पर्याप्त क्रेडिट नहीं हैं।",
+    "downloadFailed": "डाउनलोड विफल रहा (स्टेटस {{status}})",
+    "exportFailed": "एक्सपोर्ट विफल रहा (स्टेटस {{status}})"
   },
   "fields": {
     "country": "देश",
@@ -2450,5 +2533,12 @@
       "followup_draft": "फ़ॉलो-अप ड्राफ़्ट",
       "daily_challenge_submit": "दैनिक चैलेंज"
     }
+  },
+  "upload": {
+    "uploadingPercent": "अपलोड हो रहा है… {{percent}}%",
+    "processing": "अपलोड पूरा हुआ — प्रोसेस हो रहा है…",
+    "done": "सफलतापूर्वक अपलोड हुआ",
+    "failed": "अपलोड विफल रहा। कृपया पुनः प्रयास करें।",
+    "dismiss": "बंद करें"
   }
 }

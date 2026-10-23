@@ -226,7 +226,7 @@ export default function CareerGrowthPage() {
                   {[...records].reverse().map((r) => (
                     <div key={r.id} className="flex items-center justify-between gap-3 border-b border-border pb-2 last:border-0 last:pb-0">
                       <div>
-                        <p className="text-sm font-medium text-primary">{fmt(r.base_salary, r.currency)} <span className="text-hint">· {r.kind.replace("_", " ")}</span></p>
+                        <p className="text-sm font-medium text-primary">{fmt(r.base_salary, r.currency)} <span className="text-hint">· {t(`web:growth.kind.${r.kind.replace(" ", "_")}`, { defaultValue: r.kind.replace("_", " ") })}</span></p>
                         <p className="text-xs text-hint">{r.effective_date}{r.role ? ` · ${r.role}` : ""}{r.company ? ` · ${r.company}` : ""}</p>
                       </div>
                       <button type="button" onClick={() => onDelete(r.id)} className="text-xs text-danger hover:underline">

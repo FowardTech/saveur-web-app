@@ -80,12 +80,12 @@ async function request<T>(
     // ran out of credits.
     if (res.status === 402 && body?.error === "insufficient_credits") {
       if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("credits:insufficient", { detail: body }));
-      throw { status: 429, error: "insufficient_credits", message: body?.message ?? "Not enough credits.", code: body?.code } as ApiError;
+      throw { status: 429, error: "insufficient_credits", message: body?.message ?? i18n.t("web:errorsGeneric.notEnoughCredits", { defaultValue: "Not enough credits." }), code: body?.code } as ApiError;
     }
     const err: ApiError = {
       status: res.status,
       error: body?.error,
-      message: body?.message ?? body?.detail ?? `Request failed with status ${res.status}`,
+      message: body?.message ?? body?.detail ?? i18n.t("web:errorsGeneric.requestFailed", { defaultValue: "Request failed with status {{status}}", status: res.status }),
       code: body?.code,
     };
     throw err;
@@ -129,7 +129,7 @@ async function upload<T>(path: string, formData: FormData, onProgress?: (percent
     const err: ApiError = {
       status: res.status,
       error: body?.error,
-      message: body?.message ?? body?.detail ?? `Request failed with status ${res.status}`,
+      message: body?.message ?? body?.detail ?? i18n.t("web:errorsGeneric.requestFailed", { defaultValue: "Request failed with status {{status}}", status: res.status }),
       code: body?.code,
     };
     throw err;
@@ -171,7 +171,7 @@ function uploadWithProgress<T>(path: string, formData: FormData, onProgress: (pe
           reject({
             status: xhr.status,
             error: body?.error,
-            message: body?.message ?? body?.detail ?? `Request failed with status ${xhr.status}`,
+            message: body?.message ?? body?.detail ?? i18n.t("web:errorsGeneric.requestFailed", { defaultValue: "Request failed with status {{status}}", status: xhr.status }),
             code: body?.code,
           } as ApiError);
         }
@@ -209,7 +209,7 @@ async function downloadBlob(path: string): Promise<Blob> {
   const isOwnApi = !path.startsWith("http") || url.startsWith(API_BASE_URL);
   const authHeaders = isOwnApi ? await authHeader() : {};
   const res = await fetch(url, { headers: { ...authHeaders } });
-  if (!res.ok) throw new Error(`Download failed with status ${res.status}`);
+  if (!res.ok) throw new Error(i18n.t("web:errorsGeneric.downloadFailed", { defaultValue: "Download failed with status {{status}}", status: res.status }));
   return res.blob();
 }
 

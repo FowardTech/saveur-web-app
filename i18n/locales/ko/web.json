@@ -260,7 +260,13 @@
       "totalStepsLabel": "전체 단계",
       "allComplete": "{{role}}을(를) 향한 모든 마일스톤을 달성했습니다!",
       "milestoneOverview": "마일스톤 개요",
-      "typeCaption": "{{total}}개 단계 중 {{completed}}개 완료"
+      "typeCaption": "{{total}}개 단계 중 {{completed}}개 완료",
+      "type": {
+        "skill": "스킬",
+        "project": "프로젝트",
+        "interview": "면접",
+        "milestone": "마일스톤"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "당신의 요청",
@@ -449,7 +455,8 @@
       "promptBody": "AI 코치는 당신에 대해 아는 만큼만 도움이 됩니다. 이 {{count}}개의 간단한 단계를 마치면 가장 정확하고 개인화된 도움을 받을 수 있어요.",
       "promptCta": "시작: {{step}}",
       "promptLater": "나중에 할게요"
-    }
+    },
+    "toolsTitle": "도구로 바로 이동"
   },
   "jobAlerts": {
     "empty": "아직 채용 알림이 없습니다 — 다음 새로고침 후 다시 확인해 주세요.",
@@ -511,7 +518,8 @@
       "shareRequestPending": "요청 대기 중",
       "shareSendRequest": "연결 요청 보내기",
       "applicationTrackedBody": "{{company}}의 {{role}}을(를) 지원 현황 추적에 추가했습니다.",
-      "theEmployersSite": "고용주 사이트"
+      "theEmployersSite": "고용주 사이트",
+      "shareText": "이 채용 공고를 확인해 보세요: {{company}}의 {{title}} — Saveur 제공"
     },
     "filteredByCompany": "{{company}}의 채용 알림 표시 중",
     "clearFilter": "필터 제거",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "특정 면접관 스타일로 연습하세요: AI 면접 연구소.",
       "freeLimitReachedBody": "무료 플랜에는 월 {{limit}}회의 연습 세션이 포함됩니다. Basic으로 업그레이드하면 무제한으로 연습할 수 있습니다.",
       "upgradeToBasic": "Basic으로 업그레이드",
-      "goToCodingPractice": "코딩 연습으로 이동"
+      "goToCodingPractice": "코딩 연습으로 이동",
+      "modes": {
+        "voice": "음성",
+        "text": "텍스트",
+        "video": "영상"
+      },
+      "modeDescriptions": {
+        "voice": "말로 답하고 음성 피드백을 받아보세요",
+        "text": "원하는 속도로 답변을 입력하세요",
+        "video": "실제 면접처럼 카메라 앞에서 연습하세요"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "계정에서 실전 시나리오 애드온을 구매하면 이 연습 모드를 이용할 수 있습니다.",
@@ -963,7 +981,13 @@
       "rubricScores": "역량 점수",
       "summary": "요약",
       "decisionByDecision": "결정별 평가",
-      "stepLabel": "{{order}}단계"
+      "stepLabel": "{{order}}단계",
+      "scores": {
+        "judgment": "판단력",
+        "domainKnowledge": "분야 지식",
+        "communication": "의사소통",
+        "criticalThinking": "비판적 사고"
+      }
     },
     "history": {
       "durationMin": "{{min}}분",
@@ -1011,7 +1035,16 @@
       "fillers": "군더더기 말",
       "longPauses": "긴 침묵",
       "transcript": "스크립트",
-      "discussWithCoach": "이 면접에 대해 코치와 이야기하기"
+      "discussWithCoach": "이 면접에 대해 코치와 이야기하기",
+      "skills": {
+        "confidence": "자신감",
+        "communication": "의사소통",
+        "technical": "기술 역량",
+        "leadership": "리더십",
+        "problem_solving": "문제 해결",
+        "creativity": "창의성",
+        "critical_thinking": "비판적 사고"
+      }
     },
     "schedule": {
       "dateTimeRequired": "알림을 받을 날짜와 시간을 선택하세요.",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "미리 채울 입력(선택) — 한 줄에 하나씩",
       "stdinPrefillPlaceholder": "건너뛰어도 됩니다. 프로그램이 위 콘솔에서 입력을 요청합니다",
       "consoleInputLabel": "프로그램 입력"
-    }
+    },
+    "anyCompany": "기타 / 모든 회사"
   },
   "referral": {
     "copied": "복사됨!",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "{{email}}(으)로 6자리 코드를 보냈습니다.",
       "codeLabel": "인증 코드",
       "codePlaceholder": "6자리 코드",
-      "verifyCode": "인증"
+      "verifyCode": "인증",
+      "personalEmailBlock": "개인 이메일 서비스입니다. 학교 공식 이메일을 사용해 주세요.",
+      "emailDomainWarn": "{{school}} 이메일이 아닌 것 같습니다. @{{domain}}(으)로 끝나야 합니다."
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "메뉴",
     "sectionAccount": "계정",
     "footer": "Saveur · AI 커리어 코칭",
-    "footerSupport": "도움말 및 지원"
+    "footerSupport": "도움말 및 지원",
+    "more": "더보기"
   },
   "subscription": {
     "checkoutFailedDefault": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "나",
     "yourCareerGoal": "내 커리어 목표",
-    "leaderboardEmptyDescription": "나와 다른 사용자가 연습 활동을 기록한 뒤에 다시 확인해 보세요."
+    "leaderboardEmptyDescription": "나와 다른 사용자가 연습 활동을 기록한 뒤에 다시 확인해 보세요.",
+    "skillLabels": {
+      "confidence": "자신감",
+      "communication": "의사소통",
+      "technical": "기술 역량",
+      "leadership": "리더십",
+      "problem_solving": "문제 해결",
+      "creativity": "창의성",
+      "critical_thinking": "비판적 사고"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "엘리베이터 피치",
+      "coding_problem": "코딩 문제",
+      "salary_negotiation": "연봉 협상",
+      "leadership_scenario": "리더십 시나리오",
+      "public_speaking": "대중 연설"
+    }
   },
   "error": {
     "title": "문제가 발생했습니다",
@@ -1782,7 +1835,13 @@
     "confidence": "신뢰도",
     "factors": "이 수치에 영향을 주는 요인",
     "toNegotiation": "협상 연습",
-    "unavailable": "연봉 벤치마크를 지금은 사용할 수 없습니다. 곧 다시 확인해 주세요."
+    "unavailable": "연봉 벤치마크를 지금은 사용할 수 없습니다. 곧 다시 확인해 주세요.",
+    "position_below_market": "시장 평균 이하",
+    "position_at_market": "시장 평균 수준",
+    "position_above_market": "시장 평균 이상",
+    "confidence_low": "낮음",
+    "confidence_medium": "보통",
+    "confidence_high": "높음"
   },
   "growth": {
     "title": "커리어 성장",
@@ -1823,7 +1882,14 @@
     "risks": "주의할 점",
     "premiumPaywall": "승진 계획은 Premium 기능입니다.",
     "upgradePremium": "Premium으로 업그레이드",
-    "upgrade": "업그레이드"
+    "upgrade": "업그레이드",
+    "kind": {
+      "start": "입사",
+      "raise": "급여 인상",
+      "promotion": "승진",
+      "job_change": "이직",
+      "other": "기타"
+    }
   },
   "careerDiary": {
     "today": "오늘",
@@ -1838,7 +1904,12 @@
     "empty": "위에서 첫 항목을 추가하세요.",
     "composerPlaceholder": "오늘 무엇을 했고, 배웠고, 이뤘나요?",
     "roleLabel": "직무 / 커리어 / 일(선택 사항)",
-    "saving": "저장 중…"
+    "saving": "저장 중…",
+    "category": {
+      "did": "한 일",
+      "learned": "배운 점",
+      "achieved": "이룬 일"
+    }
   },
   "goals": {
     "loadFailedDefault": "목표를 불러올 수 없습니다.",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "코칭 리포트",
-    "subtitle": "최근 모의 면접을 바탕으로 잘하고 있는 점과 다음에 개선할 점을 보여줍니다."
+    "subtitle": "최근 모의 면접을 바탕으로 잘하고 있는 점과 다음에 개선할 점을 보여줍니다.",
+    "performingWell": "잘하고 있는 점",
+    "keyInsights": "핵심 인사이트",
+    "areasToImprove": "개선할 점",
+    "whatsNext": "다음 단계",
+    "emptyBody": "코칭 리포트가 비어 있습니다. 모의 면접을 {{count}}회 완료하면 잘하고 있는 점과 다음에 개선할 점을 확인할 수 있습니다.",
+    "emptyCta": "모의 면접 연습하기",
+    "basedOnSessions": "최근 모의 면접 {{count}}회 기준",
+    "panelEmpty": "아직 아무것도 없습니다."
   },
   "rating": {
     "title": "Saveur가 마음에 드시나요?",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "문제가 발생했습니다. 정보를 확인하고 다시 시도해 주세요.",
     "offline": "인터넷에 연결되어 있지 않습니다. 연결을 확인하고 다시 시도해 주세요.",
-    "somethingWentWrong": "문제가 발생했습니다. 다시 시도해 주세요."
+    "somethingWentWrong": "문제가 발생했습니다. 다시 시도해 주세요.",
+    "requestFailed": "요청에 실패했습니다(상태 {{status}})",
+    "notEnoughCredits": "크레딧이 부족합니다.",
+    "downloadFailed": "다운로드에 실패했습니다(상태 {{status}})",
+    "exportFailed": "내보내기에 실패했습니다(상태 {{status}})"
   },
   "fields": {
     "country": "국가",
@@ -2450,5 +2533,12 @@
       "followup_draft": "후속 메시지 초안",
       "daily_challenge_submit": "일일 챌린지"
     }
+  },
+  "upload": {
+    "uploadingPercent": "업로드 중… {{percent}}%",
+    "processing": "업로드 완료 — 처리 중…",
+    "done": "업로드했습니다",
+    "failed": "업로드에 실패했습니다. 다시 시도해 주세요.",
+    "dismiss": "닫기"
   }
 }

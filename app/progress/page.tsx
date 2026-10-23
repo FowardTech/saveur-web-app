@@ -296,7 +296,7 @@ function ProgressPageInner() {
                       </span>
                       <div>
                         <h3 className="font-semibold text-primary">{t("web:progress.dailyChallenge.title", { defaultValue: "Today's Surprise Challenge" })}</h3>
-                        <p className="mt-0.5 text-xs text-hint">{fallbackTypeLabel(challenge.challengeType)}</p>
+                        <p className="mt-0.5 text-xs text-hint">{t(`web:progress.challengeTypes.${challenge.challengeType}`, { defaultValue: fallbackTypeLabel(challenge.challengeType) })}</p>
                       </div>
                     </div>
                     <span className="inline-flex shrink-0 items-center gap-1 rounded-pill bg-surface-3 px-2.5 py-1 text-xs font-bold text-primary">

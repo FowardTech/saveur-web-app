@@ -260,7 +260,13 @@
       "totalStepsLabel": "合計ステップ",
       "allComplete": "{{role}}に向けたすべてのマイルストーンを達成しました！",
       "milestoneOverview": "マイルストーン概要",
-      "typeCaption": "{{total}}ステップ中{{completed}}ステップ完了"
+      "typeCaption": "{{total}}ステップ中{{completed}}ステップ完了",
+      "type": {
+        "skill": "スキル",
+        "project": "プロジェクト",
+        "interview": "面接",
+        "milestone": "マイルストーン"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "あなたの要求",
@@ -449,7 +455,8 @@
       "promptBody": "AIコーチはあなたについて知っている分だけ役に立ちます。この{{count}}つの簡単なステップを完了すると、最も正確でパーソナルなサポートが受けられます。",
       "promptCta": "開始：{{step}}",
       "promptLater": "あとでやる"
-    }
+    },
+    "toolsTitle": "ツールにすばやくアクセス"
   },
   "jobAlerts": {
     "empty": "まだ求人アラートはありません — 次回の更新後に再度ご確認ください。",
@@ -511,7 +518,8 @@
       "shareRequestPending": "リクエスト保留中",
       "shareSendRequest": "つながりリクエストを送信",
       "applicationTrackedBody": "{{company}}の{{role}}を応募トラッカーに追加しました。",
-      "theEmployersSite": "雇用主のサイト"
+      "theEmployersSite": "雇用主のサイト",
+      "shareText": "この求人をチェック：{{company}}の{{title}} — Saveur より"
     },
     "filteredByCompany": "{{company}}の求人アラートを表示中",
     "clearFilter": "フィルターを解除",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "特定の面接官スタイルを相手に練習：AI面接ラボ。",
       "freeLimitReachedBody": "無料プランには月{{limit}}回の練習セッションが含まれます。Basicにアップグレードすると練習し放題です。",
       "upgradeToBasic": "Basicにアップグレード",
-      "goToCodingPractice": "コーディング練習へ"
+      "goToCodingPractice": "コーディング練習へ",
+      "modes": {
+        "voice": "音声",
+        "text": "テキスト",
+        "video": "ビデオ"
+      },
+      "modeDescriptions": {
+        "voice": "声で答えて、音声でフィードバックを受け取れます",
+        "text": "自分のペースで回答を入力できます",
+        "video": "本番の面接のようにカメラの前で練習できます"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "アカウントから実践シナリオアドオンを購入すると、この練習モードが利用できます。",
@@ -963,7 +981,13 @@
       "rubricScores": "スキルスコア",
       "summary": "概要",
       "decisionByDecision": "判断ごとの結果",
-      "stepLabel": "ステップ{{order}}"
+      "stepLabel": "ステップ{{order}}",
+      "scores": {
+        "judgment": "判断力",
+        "domainKnowledge": "専門知識",
+        "communication": "コミュニケーション",
+        "criticalThinking": "クリティカルシンキング"
+      }
     },
     "history": {
       "durationMin": "{{min}}分",
@@ -1011,7 +1035,16 @@
       "fillers": "フィラーワード",
       "longPauses": "長い間",
       "transcript": "文字起こし",
-      "discussWithCoach": "コーチとこの面接について話す"
+      "discussWithCoach": "コーチとこの面接について話す",
+      "skills": {
+        "confidence": "自信",
+        "communication": "コミュニケーション",
+        "technical": "技術力",
+        "leadership": "リーダーシップ",
+        "problem_solving": "問題解決",
+        "creativity": "創造性",
+        "critical_thinking": "クリティカルシンキング"
+      }
     },
     "schedule": {
       "dateTimeRequired": "リマインダーの日付と時刻を選択してください。",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "事前入力（任意）— 1行に1つの値",
       "stdinPrefillPlaceholder": "これは省略できます。プログラムは上のコンソールで入力を求めます",
       "consoleInputLabel": "プログラム入力"
-    }
+    },
+    "anyCompany": "その他／どの企業でも"
   },
   "referral": {
     "copied": "コピーしました！",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "{{email}}に6桁のコードを送信しました。",
       "codeLabel": "認証コード",
       "codePlaceholder": "6桁のコード",
-      "verifyCode": "認証"
+      "verifyCode": "認証",
+      "personalEmailBlock": "これは個人用のメールサービスです。代わりに学校の公式メールアドレスを使用してください。",
+      "emailDomainWarn": "{{school}} のメールアドレスではないようです。@{{domain}} で終わる必要があります。"
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "メニュー",
     "sectionAccount": "アカウント",
     "footer": "Saveur · AIキャリアコーチング",
-    "footerSupport": "ヘルプとサポート"
+    "footerSupport": "ヘルプとサポート",
+    "more": "その他"
   },
   "subscription": {
     "checkoutFailedDefault": "チェックアウトを開始できませんでした。もう一度お試しください。",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "あなた",
     "yourCareerGoal": "あなたのキャリア目標",
-    "leaderboardEmptyDescription": "あなたや他のユーザーが練習を記録したら、またご確認ください。"
+    "leaderboardEmptyDescription": "あなたや他のユーザーが練習を記録したら、またご確認ください。",
+    "skillLabels": {
+      "confidence": "自信",
+      "communication": "コミュニケーション",
+      "technical": "技術力",
+      "leadership": "リーダーシップ",
+      "problem_solving": "問題解決",
+      "creativity": "創造性",
+      "critical_thinking": "クリティカルシンキング"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "エレベーターピッチ",
+      "coding_problem": "コーディング問題",
+      "salary_negotiation": "給与交渉",
+      "leadership_scenario": "リーダーシップシナリオ",
+      "public_speaking": "パブリックスピーキング"
+    }
   },
   "error": {
     "title": "問題が発生しました",
@@ -1782,7 +1835,13 @@
     "confidence": "信頼度",
     "factors": "この数値を左右する要因",
     "toNegotiation": "交渉を練習",
-    "unavailable": "給与ベンチマークは現在ご利用いただけません。しばらくしてからご確認ください。"
+    "unavailable": "給与ベンチマークは現在ご利用いただけません。しばらくしてからご確認ください。",
+    "position_below_market": "市場水準を下回る",
+    "position_at_market": "市場水準",
+    "position_above_market": "市場水準を上回る",
+    "confidence_low": "低",
+    "confidence_medium": "中",
+    "confidence_high": "高"
   },
   "growth": {
     "title": "キャリア成長",
@@ -1823,7 +1882,14 @@
     "risks": "注意すべき点",
     "premiumPaywall": "昇進プランはPremiumの機能です。",
     "upgradePremium": "Premiumにアップグレード",
-    "upgrade": "アップグレード"
+    "upgrade": "アップグレード",
+    "kind": {
+      "start": "入社",
+      "raise": "昇給",
+      "promotion": "昇進",
+      "job_change": "転職",
+      "other": "その他"
+    }
   },
   "careerDiary": {
     "today": "今日",
@@ -1838,7 +1904,12 @@
     "empty": "上から最初のエントリを追加しましょう。",
     "composerPlaceholder": "今日、何をしましたか？何を学びましたか？何を達成しましたか？",
     "roleLabel": "役職／キャリア／仕事（任意）",
-    "saving": "保存中…"
+    "saving": "保存中…",
+    "category": {
+      "did": "やったこと",
+      "learned": "学んだこと",
+      "achieved": "達成したこと"
+    }
   },
   "goals": {
     "loadFailedDefault": "目標を読み込めませんでした。",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "コーチングレポート",
-    "subtitle": "最近の模擬面接をもとに、できていることと次に取り組むことをまとめました。"
+    "subtitle": "最近の模擬面接をもとに、できていることと次に取り組むことをまとめました。",
+    "performingWell": "得意なこと",
+    "keyInsights": "重要なポイント",
+    "areasToImprove": "改善ポイント",
+    "whatsNext": "次のステップ",
+    "emptyBody": "コーチングレポートはまだ空です。模擬面接を{{count}}回完了すると、得意な点と次に取り組むべき点が表示されます。",
+    "emptyCta": "模擬面接を練習する",
+    "basedOnSessions": "直近の模擬面接{{count}}回に基づく",
+    "panelEmpty": "まだ何もありません。"
   },
   "rating": {
     "title": "Saveurを楽しんでいますか？",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "問題が発生しました。内容を確認してもう一度お試しください。",
     "offline": "インターネットに接続されていません。接続を確認してもう一度お試しください。",
-    "somethingWentWrong": "問題が発生しました。もう一度お試しください。"
+    "somethingWentWrong": "問題が発生しました。もう一度お試しください。",
+    "requestFailed": "リクエストに失敗しました（ステータス {{status}}）",
+    "notEnoughCredits": "クレジットが足りません。",
+    "downloadFailed": "ダウンロードに失敗しました（ステータス {{status}}）",
+    "exportFailed": "エクスポートに失敗しました（ステータス {{status}}）"
   },
   "fields": {
     "country": "国",
@@ -2450,5 +2533,12 @@
       "followup_draft": "フォローアップ下書き",
       "daily_challenge_submit": "デイリーチャレンジ"
     }
+  },
+  "upload": {
+    "uploadingPercent": "アップロード中… {{percent}}%",
+    "processing": "アップロード完了 — 処理中…",
+    "done": "アップロードしました",
+    "failed": "アップロードに失敗しました。もう一度お試しください。",
+    "dismiss": "閉じる"
   }
 }

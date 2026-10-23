@@ -260,7 +260,13 @@
       "totalStepsLabel": "Total de etapas",
       "allComplete": "Você alcançou todos os marcos rumo a {{role}}!",
       "milestoneOverview": "Resumo dos marcos",
-      "typeCaption": "{{completed}} de {{total}} etapas concluídas"
+      "typeCaption": "{{completed}} de {{total}} etapas concluídas",
+      "type": {
+        "skill": "Habilidades",
+        "project": "Projetos",
+        "interview": "Entrevistas",
+        "milestone": "Marcos"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "Seu pedido",
@@ -449,7 +455,8 @@
       "promptBody": "Seu coach de IA é tão bom quanto o que sabe sobre você. Conclua estas {{count}} etapas rápidas para ele dar a ajuda mais precisa e pessoal.",
       "promptCta": "Começar: {{step}}",
       "promptLater": "Farei isso depois"
-    }
+    },
+    "toolsTitle": "Vá direto a uma ferramenta"
   },
   "jobAlerts": {
     "empty": "Ainda não há alertas de vagas — volte a verificar após a próxima atualização.",
@@ -511,7 +518,8 @@
       "shareRequestPending": "Solicitação pendente",
       "shareSendRequest": "Enviar solicitação de conexão",
       "applicationTrackedBody": "{{role}} na {{company}} foi adicionado ao seu Acompanhamento de candidaturas.",
-      "theEmployersSite": "o site do empregador"
+      "theEmployersSite": "o site do empregador",
+      "shareText": "Confira esta vaga: {{title}} na {{company}} — via Saveur."
     },
     "filteredByCompany": "Mostrando alertas da {{company}}",
     "clearFilter": "Remover filtro",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "Pratique com um estilo específico de entrevistador: o Laboratório de entrevistas com IA.",
       "freeLimitReachedBody": "Os planos gratuitos incluem {{limit}} sessões de prática por mês. Faça upgrade para o Basic para prática ilimitada.",
       "upgradeToBasic": "Fazer upgrade para Basic",
-      "goToCodingPractice": "Ir para a prática de programação"
+      "goToCodingPractice": "Ir para a prática de programação",
+      "modes": {
+        "voice": "Voz",
+        "text": "Texto",
+        "video": "Vídeo"
+      },
+      "modeDescriptions": {
+        "voice": "Responda falando e receba feedback por voz",
+        "text": "Digite suas respostas no seu ritmo",
+        "video": "Pratique diante da câmera como em uma entrevista real"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "Compre o complemento Cenários práticos na sua conta para desbloquear este modo de prática.",
@@ -963,7 +981,13 @@
       "rubricScores": "Pontuações por habilidade",
       "summary": "Resumo",
       "decisionByDecision": "Decisão por decisão",
-      "stepLabel": "Etapa {{order}}"
+      "stepLabel": "Etapa {{order}}",
+      "scores": {
+        "judgment": "Julgamento",
+        "domainKnowledge": "Conhecimento da área",
+        "communication": "Comunicação",
+        "criticalThinking": "Pensamento crítico"
+      }
     },
     "history": {
       "durationMin": "{{min}} min",
@@ -1011,7 +1035,16 @@
       "fillers": "Palavras de preenchimento",
       "longPauses": "Pausas longas",
       "transcript": "Transcrição",
-      "discussWithCoach": "Converse sobre esta entrevista com seu coach"
+      "discussWithCoach": "Converse sobre esta entrevista com seu coach",
+      "skills": {
+        "confidence": "Confiança",
+        "communication": "Comunicação",
+        "technical": "Habilidade técnica",
+        "leadership": "Liderança",
+        "problem_solving": "Resolução de problemas",
+        "creativity": "Criatividade",
+        "critical_thinking": "Pensamento crítico"
+      }
     },
     "schedule": {
       "dateTimeRequired": "Escolha uma data e hora para o lembrete.",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "Entrada pré-preenchida (opcional) — um valor por linha",
       "stdinPrefillPlaceholder": "Pule isto — seu programa pedirá a entrada no console acima",
       "consoleInputLabel": "Entrada do programa"
-    }
+    },
+    "anyCompany": "Outra / Qualquer empresa"
   },
   "referral": {
     "copied": "Copiado!",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "Enviamos um código de 6 dígitos para {{email}}.",
       "codeLabel": "Código de verificação",
       "codePlaceholder": "Código de 6 dígitos",
-      "verifyCode": "Verificar"
+      "verifyCode": "Verificar",
+      "personalEmailBlock": "Esse é um provedor de e-mail pessoal — use o e-mail oficial da sua escola.",
+      "emailDomainWarn": "Isso não parece um e-mail de {{school}} — deveria terminar em @{{domain}}."
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "Menu",
     "sectionAccount": "Conta",
     "footer": "Saveur · coaching de carreira com IA",
-    "footerSupport": "Ajuda e suporte"
+    "footerSupport": "Ajuda e suporte",
+    "more": "Mais"
   },
   "subscription": {
     "checkoutFailedDefault": "Não foi possível iniciar o checkout. Tente novamente.",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "Você",
     "yourCareerGoal": "Sua meta de carreira",
-    "leaderboardEmptyDescription": "Volte quando você e outras pessoas tiverem registrado alguma atividade de prática."
+    "leaderboardEmptyDescription": "Volte quando você e outras pessoas tiverem registrado alguma atividade de prática.",
+    "skillLabels": {
+      "confidence": "Confiança",
+      "communication": "Comunicação",
+      "technical": "Habilidade técnica",
+      "leadership": "Liderança",
+      "problem_solving": "Resolução de problemas",
+      "creativity": "Criatividade",
+      "critical_thinking": "Pensamento crítico"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "Elevator pitch",
+      "coding_problem": "Problema de programação",
+      "salary_negotiation": "Negociação salarial",
+      "leadership_scenario": "Cenário de liderança",
+      "public_speaking": "Falar em público"
+    }
   },
   "error": {
     "title": "Algo deu errado",
@@ -1782,7 +1835,13 @@
     "confidence": "Confiança",
     "factors": "O que influencia este número",
     "toNegotiation": "Praticar negociação",
-    "unavailable": "A Referência salarial está indisponível no momento. Volte em breve."
+    "unavailable": "A Referência salarial está indisponível no momento. Volte em breve.",
+    "position_below_market": "Abaixo do mercado",
+    "position_at_market": "Na média do mercado",
+    "position_above_market": "Acima do mercado",
+    "confidence_low": "Baixa",
+    "confidence_medium": "Média",
+    "confidence_high": "Alta"
   },
   "growth": {
     "title": "Crescimento profissional",
@@ -1823,7 +1882,14 @@
     "risks": "Cuidado com",
     "premiumPaywall": "O plano de promoção é um recurso Premium.",
     "upgradePremium": "Fazer upgrade para Premium",
-    "upgrade": "Fazer upgrade"
+    "upgrade": "Fazer upgrade",
+    "kind": {
+      "start": "Início",
+      "raise": "Aumento",
+      "promotion": "Promoção",
+      "job_change": "Mudança de emprego",
+      "other": "Outro"
+    }
   },
   "careerDiary": {
     "today": "Hoje",
@@ -1838,7 +1904,12 @@
     "empty": "Adicione a primeira acima.",
     "composerPlaceholder": "O que você fez, aprendeu ou conquistou hoje?",
     "roleLabel": "Cargo / carreira / emprego (opcional)",
-    "saving": "Salvando…"
+    "saving": "Salvando…",
+    "category": {
+      "did": "Fiz",
+      "learned": "Aprendi",
+      "achieved": "Conquistei"
+    }
   },
   "goals": {
     "loadFailedDefault": "Não foi possível carregar suas metas.",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "Relatório de coaching",
-    "subtitle": "O que você faz bem e no que trabalhar a seguir, com base nas suas simulações recentes."
+    "subtitle": "O que você faz bem e no que trabalhar a seguir, com base nas suas simulações recentes.",
+    "performingWell": "O que vai bem",
+    "keyInsights": "Principais insights",
+    "areasToImprove": "Pontos a melhorar",
+    "whatsNext": "Próximos passos",
+    "emptyBody": "Seu relatório de coaching está vazio — conclua {{count}} entrevistas simuladas para ver o que você faz bem e no que trabalhar em seguida.",
+    "emptyCta": "Praticar uma entrevista simulada",
+    "basedOnSessions": "Com base nas suas últimas {{count}} entrevistas simuladas",
+    "panelEmpty": "Nada aqui ainda."
   },
   "rating": {
     "title": "Curtindo o Saveur?",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "Algo deu errado. Confira seus dados e tente novamente.",
     "offline": "Sem conexão com a internet. Verifique sua conexão e tente novamente.",
-    "somethingWentWrong": "Algo deu errado. Tente novamente."
+    "somethingWentWrong": "Algo deu errado. Tente novamente.",
+    "requestFailed": "A solicitação falhou com o status {{status}}",
+    "notEnoughCredits": "Créditos insuficientes.",
+    "downloadFailed": "O download falhou com o status {{status}}",
+    "exportFailed": "A exportação falhou com o status {{status}}"
   },
   "fields": {
     "country": "País",
@@ -2450,5 +2533,12 @@
       "followup_draft": "Rascunho de acompanhamento",
       "daily_challenge_submit": "Desafio diário"
     }
+  },
+  "upload": {
+    "uploadingPercent": "Enviando… {{percent}}%",
+    "processing": "Envio concluído — processando…",
+    "done": "Enviado com sucesso",
+    "failed": "Falha no envio. Tente novamente.",
+    "dismiss": "Dispensar"
   }
 }

@@ -341,7 +341,13 @@
       "totalStepsLabel": "Total Steps",
       "allComplete": "You've reached every milestone toward {{role}}!",
       "milestoneOverview": "Milestone Overview",
-      "typeCaption": "{{completed}} of {{total}} steps complete"
+      "typeCaption": "{{completed}} of {{total}} steps complete",
+      "type": {
+        "skill": "Skills",
+        "project": "Projects",
+        "interview": "Interviews",
+        "milestone": "Milestones"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "Your ask",
@@ -517,7 +523,8 @@
       "promptBody": "Your AI coach is only as good as what it knows about you. Finish these {{count}} quick steps so it can give you the most accurate, personal help.",
       "promptCta": "Start: {{step}}",
       "promptLater": "I'll do it later"
-    }
+    },
+    "toolsTitle": "Jump into a tool"
   },
   "jobAlerts": {
     "empty": "No job alerts yet — check back after your next refresh.",
@@ -579,7 +586,8 @@
       "shareRequestPending": "Request pending",
       "shareSendRequest": "Send connection request",
       "applicationTrackedBody": "Added {{role}} at {{company}} to your Application Tracker.",
-      "theEmployersSite": "the employer's site"
+      "theEmployersSite": "the employer's site",
+      "shareText": "Check out this job: {{title}} at {{company}} — via Saveur."
     },
     "filteredByCompany": "Showing alerts for {{company}}",
     "clearFilter": "Clear filter",
@@ -964,7 +972,17 @@
       "interviewerPersonalityDescription": "Practice against a specific interviewer style — the AI Interview Laboratory.",
       "freeLimitReachedBody": "Free plans include {{limit}} practice sessions a month. Upgrade to Basic for unlimited practice.",
       "upgradeToBasic": "Upgrade to Basic",
-      "goToCodingPractice": "Go to Coding Practice"
+      "goToCodingPractice": "Go to Coding Practice",
+      "modes": {
+        "voice": "Voice",
+        "text": "Text",
+        "video": "Video"
+      },
+      "modeDescriptions": {
+        "voice": "Speak your answers, get spoken feedback",
+        "text": "Type your answers at your own pace",
+        "video": "Practice on camera like a real interview"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "Purchase the Practical Scenarios add-on from your account to unlock this practice mode.",
@@ -1048,7 +1066,13 @@
       "rubricScores": "Skill scores",
       "summary": "Summary",
       "decisionByDecision": "Decision by decision",
-      "stepLabel": "Step {{order}}"
+      "stepLabel": "Step {{order}}",
+      "scores": {
+        "judgment": "Judgment",
+        "domainKnowledge": "Field Knowledge",
+        "communication": "Communication",
+        "criticalThinking": "Critical Thinking"
+      }
     },
     "session": {
       "scores": "Skill scores",
@@ -1085,7 +1109,16 @@
       "fillers": "Filler words",
       "longPauses": "Long pauses",
       "transcript": "Transcript",
-      "discussWithCoach": "Discuss this interview with your coach"
+      "discussWithCoach": "Discuss this interview with your coach",
+      "skills": {
+        "confidence": "Confidence",
+        "communication": "Communication",
+        "technical": "Technical Skill",
+        "leadership": "Leadership",
+        "problem_solving": "Problem Solving",
+        "creativity": "Creativity",
+        "critical_thinking": "Critical Thinking"
+      }
     },
     "schedule": {
       "dateTimeRequired": "Pick a date and time for the reminder.",
@@ -1205,7 +1238,8 @@
       "stdinPrefillLabel": "Pre-filled input (optional) — one value per line",
       "stdinPrefillPlaceholder": "Skip this — your program will ask for input in the console above",
       "consoleInputLabel": "Program input"
-    }
+    },
+    "anyCompany": "Other / Any Company"
   },
   "progress": {
     "averageScore": "Average score",
@@ -1274,7 +1308,23 @@
     "xpLabel": "XP",
     "you": "You",
     "yourCareerGoal": "Your career goal",
-    "leaderboardEmptyDescription": "Check back once you and others have logged some practice activity."
+    "leaderboardEmptyDescription": "Check back once you and others have logged some practice activity.",
+    "skillLabels": {
+      "confidence": "Confidence",
+      "communication": "Communication",
+      "technical": "Technical Skill",
+      "leadership": "Leadership",
+      "problem_solving": "Problem Solving",
+      "creativity": "Creativity",
+      "critical_thinking": "Critical Thinking"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "Elevator Pitch",
+      "coding_problem": "Coding Problem",
+      "salary_negotiation": "Salary Negotiation",
+      "leadership_scenario": "Leadership Scenario",
+      "public_speaking": "Public Speaking"
+    }
   },
   "referral": {
     "apply": "Apply",
@@ -1659,7 +1709,9 @@
       "enterCodeDescription": "We sent a 6-digit code to {{email}}.",
       "codeLabel": "Verification code",
       "codePlaceholder": "6-digit code",
-      "verifyCode": "Verify"
+      "verifyCode": "Verify",
+      "personalEmailBlock": "That's a personal email provider — please use your official school email instead.",
+      "emailDomainWarn": "This doesn't look like a {{school}} email — expected it to end in @{{domain}}."
     }
   },
   "shell": {
@@ -1673,7 +1725,8 @@
     "sectionMenu": "Menu",
     "sectionAccount": "Account",
     "footer": "Saveur · AI career coaching",
-    "footerSupport": "Help & support"
+    "footerSupport": "Help & support",
+    "more": "More"
   },
   "subscription": {
     "checkoutFailedDefault": "Couldn't start checkout. Please try again.",
@@ -1779,7 +1832,13 @@
     "confidence": "Confidence",
     "factors": "What moves this number",
     "toNegotiation": "Practice negotiating",
-    "unavailable": "Salary Benchmark is unavailable right now. Please check back soon."
+    "unavailable": "Salary Benchmark is unavailable right now. Please check back soon.",
+    "position_below_market": "Below market",
+    "position_at_market": "At market",
+    "position_above_market": "Above market",
+    "confidence_low": "Low",
+    "confidence_medium": "Medium",
+    "confidence_high": "High"
   },
   "growth": {
     "title": "Career Growth",
@@ -1820,7 +1879,14 @@
     "risks": "Watch out for",
     "premiumPaywall": "The promotion plan is a Premium feature.",
     "upgradePremium": "Upgrade to Premium",
-    "upgrade": "Upgrade"
+    "upgrade": "Upgrade",
+    "kind": {
+      "start": "Start",
+      "raise": "Raise",
+      "promotion": "Promotion",
+      "job_change": "Job change",
+      "other": "Other"
+    }
   },
   "careerDiary": {
     "today": "Today",
@@ -1835,7 +1901,12 @@
     "empty": "Add your first one above.",
     "composerPlaceholder": "What did you do, learn, or achieve today?",
     "roleLabel": "Role / career / job (optional)",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "category": {
+      "did": "Did",
+      "learned": "Learned",
+      "achieved": "Achieved"
+    }
   },
   "goals": {
     "loadFailedDefault": "Could not load your goals.",
@@ -2184,7 +2255,15 @@
   },
   "coachingReport": {
     "title": "Your Coaching Report",
-    "subtitle": "What you're doing well and what to work on next, based on your recent mock interviews."
+    "subtitle": "What you're doing well and what to work on next, based on your recent mock interviews.",
+    "performingWell": "Performing Well",
+    "keyInsights": "Key Insights",
+    "areasToImprove": "Areas to Improve",
+    "whatsNext": "What's Next",
+    "emptyBody": "Your coaching report is empty — complete {{count}} mock interviews to see what you're doing well and what to work on next.",
+    "emptyCta": "Practice a mock interview",
+    "basedOnSessions": "Based on your last {{count}} mock interviews",
+    "panelEmpty": "Nothing here yet."
   },
   "rating": {
     "title": "Enjoying Saveur?",
@@ -2218,7 +2297,11 @@
   "errorsGeneric": {
     "checkDetails": "Something went wrong. Please check your details and try again.",
     "offline": "No internet connection. Please check your connection and try again.",
-    "somethingWentWrong": "Something went wrong. Please try again."
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "requestFailed": "Request failed with status {{status}}",
+    "notEnoughCredits": "Not enough credits.",
+    "downloadFailed": "Download failed with status {{status}}",
+    "exportFailed": "Export failed with status {{status}}"
   },
   "fields": {
     "country": "Country",
@@ -2447,5 +2530,12 @@
       "followup_draft": "Follow-up draft",
       "daily_challenge_submit": "Daily challenge"
     }
+  },
+  "upload": {
+    "uploadingPercent": "Uploading… {{percent}}%",
+    "processing": "Upload complete — processing…",
+    "done": "Uploaded successfully",
+    "failed": "Upload failed. Please try again.",
+    "dismiss": "Dismiss"
   }
 }

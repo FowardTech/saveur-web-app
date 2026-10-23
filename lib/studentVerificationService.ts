@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import apiClient from "./apiClient";
 
 // ---------------------------------------------------------------------------
@@ -170,14 +171,14 @@ export function schoolEmailWarning(
   if (FREE_EMAIL_DOMAINS.has(domain)) {
     return {
       severity: "block",
-      message: "That's a personal email provider — please use your official school email instead.",
+      message: i18n.t("web:settings.student.personalEmailBlock", { defaultValue: "That's a personal email provider — please use your official school email instead." }),
     };
   }
   const schoolDomains = (university?.domains ?? []).map((d) => d.toLowerCase().trim()).filter(Boolean);
   if (university && schoolDomains.length && !schoolDomains.some((d) => domain === d || domain.endsWith(`.${d}`))) {
     return {
       severity: "warn",
-      message: `This doesn't look like a ${university.name} email — expected it to end in @${schoolDomains[0]}.`,
+      message: i18n.t("web:settings.student.emailDomainWarn", { defaultValue: "This doesn't look like a {{school}} email — expected it to end in @{{domain}}.", school: university.name, domain: schoolDomains[0] }),
     };
   }
   return null;

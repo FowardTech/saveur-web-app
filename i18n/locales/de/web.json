@@ -260,7 +260,13 @@
       "totalStepsLabel": "Schritte gesamt",
       "allComplete": "Du hast alle Meilensteine auf dem Weg zu {{role}} erreicht!",
       "milestoneOverview": "Meilenstein-Übersicht",
-      "typeCaption": "{{completed}} von {{total}} Schritten abgeschlossen"
+      "typeCaption": "{{completed}} von {{total}} Schritten abgeschlossen",
+      "type": {
+        "skill": "Fähigkeiten",
+        "project": "Projekte",
+        "interview": "Vorstellungsgespräche",
+        "milestone": "Meilensteine"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "Deine Forderung",
@@ -449,7 +455,8 @@
       "promptBody": "Dein KI-Coach ist nur so gut wie das, was er über dich weiß. Erledige diese {{count}} kurzen Schritte, damit er dir die genaueste, persönlichste Hilfe geben kann.",
       "promptCta": "Starten: {{step}}",
       "promptLater": "Später erledigen"
-    }
+    },
+    "toolsTitle": "Direkt zu einem Tool"
   },
   "jobAlerts": {
     "empty": "Noch keine Job-Benachrichtigungen — schau nach deiner nächsten Aktualisierung wieder vorbei.",
@@ -511,7 +518,8 @@
       "shareRequestPending": "Anfrage ausstehend",
       "shareSendRequest": "Verbindungsanfrage senden",
       "applicationTrackedBody": "{{role}} bei {{company}} wurde zu deiner Bewerbungsverfolgung hinzugefügt.",
-      "theEmployersSite": "die Website des Arbeitgebers"
+      "theEmployersSite": "die Website des Arbeitgebers",
+      "shareText": "Schau dir diesen Job an: {{title}} bei {{company}} – über Saveur."
     },
     "filteredByCompany": "Zeige Stellenanzeigen von {{company}}",
     "clearFilter": "Filter entfernen",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "Übe mit einem bestimmten Interviewer-Stil: dem KI-Interview-Labor.",
       "freeLimitReachedBody": "Kostenlose Tarife enthalten {{limit}} Übungssitzungen pro Monat. Upgrade auf Basic für unbegrenztes Üben.",
       "upgradeToBasic": "Auf Basic upgraden",
-      "goToCodingPractice": "Zum Coding-Training"
+      "goToCodingPractice": "Zum Coding-Training",
+      "modes": {
+        "voice": "Sprache",
+        "text": "Text",
+        "video": "Video"
+      },
+      "modeDescriptions": {
+        "voice": "Antworte per Sprache und erhalte gesprochenes Feedback",
+        "text": "Tippe deine Antworten in deinem eigenen Tempo",
+        "video": "Übe vor der Kamera wie in einem echten Vorstellungsgespräch"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "Kaufe das Praxisszenarien-Add-on über dein Konto, um diesen Übungsmodus freizuschalten.",
@@ -963,7 +981,13 @@
       "rubricScores": "Fähigkeitswerte",
       "summary": "Zusammenfassung",
       "decisionByDecision": "Entscheidung für Entscheidung",
-      "stepLabel": "Schritt {{order}}"
+      "stepLabel": "Schritt {{order}}",
+      "scores": {
+        "judgment": "Urteilsvermögen",
+        "domainKnowledge": "Fachwissen",
+        "communication": "Kommunikation",
+        "criticalThinking": "Kritisches Denken"
+      }
     },
     "history": {
       "durationMin": "{{min}} Min.",
@@ -1011,7 +1035,16 @@
       "fillers": "Füllwörter",
       "longPauses": "Lange Pausen",
       "transcript": "Transkript",
-      "discussWithCoach": "Dieses Interview mit deinem Coach besprechen"
+      "discussWithCoach": "Dieses Interview mit deinem Coach besprechen",
+      "skills": {
+        "confidence": "Selbstvertrauen",
+        "communication": "Kommunikation",
+        "technical": "Technische Kompetenz",
+        "leadership": "Führung",
+        "problem_solving": "Problemlösung",
+        "creativity": "Kreativität",
+        "critical_thinking": "Kritisches Denken"
+      }
     },
     "schedule": {
       "dateTimeRequired": "Wähle Datum und Uhrzeit für die Erinnerung.",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "Vorab eingetragene Eingabe (optional) – ein Wert pro Zeile",
       "stdinPrefillPlaceholder": "Überspringen – dein Programm fragt die Eingabe in der Konsole oben ab",
       "consoleInputLabel": "Programmeingabe"
-    }
+    },
+    "anyCompany": "Andere / Beliebiges Unternehmen"
   },
   "referral": {
     "copied": "Kopiert!",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "Wir haben einen 6-stelligen Code an {{email}} gesendet.",
       "codeLabel": "Bestätigungscode",
       "codePlaceholder": "6-stelliger Code",
-      "verifyCode": "Bestätigen"
+      "verifyCode": "Bestätigen",
+      "personalEmailBlock": "Das ist ein privater E-Mail-Anbieter – bitte verwende stattdessen deine offizielle Schul-E-Mail-Adresse.",
+      "emailDomainWarn": "Das sieht nicht nach einer E-Mail-Adresse von {{school}} aus – sie sollte auf @{{domain}} enden."
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "Menü",
     "sectionAccount": "Konto",
     "footer": "Saveur · KI-Karrierecoaching",
-    "footerSupport": "Hilfe & Support"
+    "footerSupport": "Hilfe & Support",
+    "more": "Mehr"
   },
   "subscription": {
     "checkoutFailedDefault": "Der Bezahlvorgang konnte nicht gestartet werden. Bitte versuche es erneut.",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "Du",
     "yourCareerGoal": "Dein Karriereziel",
-    "leaderboardEmptyDescription": "Schau wieder vorbei, sobald du und andere etwas Übungsaktivität erfasst haben."
+    "leaderboardEmptyDescription": "Schau wieder vorbei, sobald du und andere etwas Übungsaktivität erfasst haben.",
+    "skillLabels": {
+      "confidence": "Selbstvertrauen",
+      "communication": "Kommunikation",
+      "technical": "Technische Kompetenz",
+      "leadership": "Führung",
+      "problem_solving": "Problemlösung",
+      "creativity": "Kreativität",
+      "critical_thinking": "Kritisches Denken"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "Elevator Pitch",
+      "coding_problem": "Programmieraufgabe",
+      "salary_negotiation": "Gehaltsverhandlung",
+      "leadership_scenario": "Führungsszenario",
+      "public_speaking": "Öffentliches Sprechen"
+    }
   },
   "error": {
     "title": "Etwas ist schiefgelaufen",
@@ -1782,7 +1835,13 @@
     "confidence": "Konfidenz",
     "factors": "Was diese Zahl beeinflusst",
     "toNegotiation": "Verhandlung üben",
-    "unavailable": "Der Gehaltsvergleich ist gerade nicht verfügbar. Bitte schau bald wieder vorbei."
+    "unavailable": "Der Gehaltsvergleich ist gerade nicht verfügbar. Bitte schau bald wieder vorbei.",
+    "position_below_market": "Unter Marktniveau",
+    "position_at_market": "Marktüblich",
+    "position_above_market": "Über Marktniveau",
+    "confidence_low": "Niedrig",
+    "confidence_medium": "Mittel",
+    "confidence_high": "Hoch"
   },
   "growth": {
     "title": "Karrierewachstum",
@@ -1823,7 +1882,14 @@
     "risks": "Worauf du achten solltest",
     "premiumPaywall": "Der Beförderungsplan ist eine Premium-Funktion.",
     "upgradePremium": "Auf Premium upgraden",
-    "upgrade": "Upgrade"
+    "upgrade": "Upgrade",
+    "kind": {
+      "start": "Einstieg",
+      "raise": "Gehaltserhöhung",
+      "promotion": "Beförderung",
+      "job_change": "Jobwechsel",
+      "other": "Sonstiges"
+    }
   },
   "careerDiary": {
     "today": "Heute",
@@ -1838,7 +1904,12 @@
     "empty": "Füge oben deinen ersten hinzu.",
     "composerPlaceholder": "Was hast du heute getan, gelernt oder erreicht?",
     "roleLabel": "Rolle / Karriere / Stelle (optional)",
-    "saving": "Wird gespeichert…"
+    "saving": "Wird gespeichert…",
+    "category": {
+      "did": "Erledigt",
+      "learned": "Gelernt",
+      "achieved": "Erreicht"
+    }
   },
   "goals": {
     "loadFailedDefault": "Deine Ziele konnten nicht geladen werden.",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "Coaching-Bericht",
-    "subtitle": "Was du gut machst und woran du als Nächstes arbeiten solltest – basierend auf deinen letzten Probeinterviews."
+    "subtitle": "Was du gut machst und woran du als Nächstes arbeiten solltest – basierend auf deinen letzten Probeinterviews.",
+    "performingWell": "Das läuft gut",
+    "keyInsights": "Wichtige Erkenntnisse",
+    "areasToImprove": "Verbesserungsbereiche",
+    "whatsNext": "Nächste Schritte",
+    "emptyBody": "Dein Coaching-Bericht ist noch leer — absolviere {{count}} Probeinterviews, um zu sehen, was gut läuft und woran du als Nächstes arbeiten solltest.",
+    "emptyCta": "Probeinterview üben",
+    "basedOnSessions": "Basierend auf deinen letzten {{count}} Probeinterviews",
+    "panelEmpty": "Hier ist noch nichts."
   },
   "rating": {
     "title": "Gefällt dir Saveur?",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "Etwas ist schiefgelaufen. Bitte prüfe deine Angaben und versuche es erneut.",
     "offline": "Keine Internetverbindung. Bitte prüfe deine Verbindung und versuche es erneut.",
-    "somethingWentWrong": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    "somethingWentWrong": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "requestFailed": "Anfrage fehlgeschlagen (Status {{status}})",
+    "notEnoughCredits": "Nicht genügend Guthaben.",
+    "downloadFailed": "Download fehlgeschlagen (Status {{status}})",
+    "exportFailed": "Export fehlgeschlagen (Status {{status}})"
   },
   "fields": {
     "country": "Land",
@@ -2450,5 +2533,12 @@
       "followup_draft": "Nachfass-Entwurf",
       "daily_challenge_submit": "Tägliche Challenge"
     }
+  },
+  "upload": {
+    "uploadingPercent": "Wird hochgeladen… {{percent}} %",
+    "processing": "Upload abgeschlossen – wird verarbeitet…",
+    "done": "Erfolgreich hochgeladen",
+    "failed": "Upload fehlgeschlagen. Bitte versuche es erneut.",
+    "dismiss": "Schließen"
   }
 }

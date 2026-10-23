@@ -260,7 +260,13 @@
       "totalStepsLabel": "Всего шагов",
       "allComplete": "Вы достигли всех вех на пути к должности «{{role}}»!",
       "milestoneOverview": "Обзор вех",
-      "typeCaption": "Выполнено шагов: {{completed}} из {{total}}"
+      "typeCaption": "Выполнено шагов: {{completed}} из {{total}}",
+      "type": {
+        "skill": "Навыки",
+        "project": "Проекты",
+        "interview": "Собеседования",
+        "milestone": "Вехи"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "Ваша просьба",
@@ -449,7 +455,8 @@
       "promptBody": "ИИ-коуч полезен ровно настолько, насколько он знает вас. Выполните эти быстрые шаги ({{count}}), чтобы он мог помогать точнее и персональнее.",
       "promptCta": "Начать: {{step}}",
       "promptLater": "Сделаю позже"
-    }
+    },
+    "toolsTitle": "Перейти к инструменту"
   },
   "jobAlerts": {
     "empty": "Пока нет уведомлений о вакансиях — загляните снова после следующего обновления.",
@@ -511,7 +518,8 @@
       "shareRequestPending": "Запрос ожидает ответа",
       "shareSendRequest": "Отправить запрос на связь",
       "applicationTrackedBody": "«{{role}}» в {{company}} добавлена в ваше Отслеживание откликов.",
-      "theEmployersSite": "сайт работодателя"
+      "theEmployersSite": "сайт работодателя",
+      "shareText": "Посмотрите вакансию: {{title}} в {{company}} — через Saveur."
     },
     "filteredByCompany": "Показаны вакансии {{company}}",
     "clearFilter": "Убрать фильтр",
@@ -881,7 +889,17 @@
       "upgradeToBasic": "Перейти на Basic",
       "goToCodingPractice": "Перейти к практике программирования",
       "freeSessionsRemaining_few": "В этом месяце осталось {{count}} бесплатные сессии",
-      "freeSessionsRemaining_many": "В этом месяце осталось {{count}} бесплатных сессий"
+      "freeSessionsRemaining_many": "В этом месяце осталось {{count}} бесплатных сессий",
+      "modes": {
+        "voice": "Голос",
+        "text": "Текст",
+        "video": "Видео"
+      },
+      "modeDescriptions": {
+        "voice": "Отвечайте голосом и получайте голосовую обратную связь",
+        "text": "Печатайте ответы в своём темпе",
+        "video": "Тренируйтесь перед камерой, как на настоящем собеседовании"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "Приобретите дополнение «Практические сценарии» в своём аккаунте, чтобы открыть этот режим практики.",
@@ -965,7 +983,13 @@
       "rubricScores": "Оценки по навыкам",
       "summary": "Резюме",
       "decisionByDecision": "Решение за решением",
-      "stepLabel": "Шаг {{order}}"
+      "stepLabel": "Шаг {{order}}",
+      "scores": {
+        "judgment": "Суждение",
+        "domainKnowledge": "Знание предметной области",
+        "communication": "Коммуникация",
+        "criticalThinking": "Критическое мышление"
+      }
     },
     "history": {
       "durationMin": "{{min}} мин",
@@ -1013,7 +1037,16 @@
       "fillers": "Слова-паразиты",
       "longPauses": "Длинные паузы",
       "transcript": "Расшифровка",
-      "discussWithCoach": "Обсудить это собеседование с коучем"
+      "discussWithCoach": "Обсудить это собеседование с коучем",
+      "skills": {
+        "confidence": "Уверенность",
+        "communication": "Коммуникация",
+        "technical": "Технические навыки",
+        "leadership": "Лидерство",
+        "problem_solving": "Решение проблем",
+        "creativity": "Креативность",
+        "critical_thinking": "Критическое мышление"
+      }
     },
     "schedule": {
       "dateTimeRequired": "Выберите дату и время напоминания.",
@@ -1133,7 +1166,8 @@
       "stdinPrefillLabel": "Предзаполненный ввод (необязательно) — по одному значению в строке",
       "stdinPrefillPlaceholder": "Пропустите это — программа запросит ввод в консоли выше",
       "consoleInputLabel": "Ввод программы"
-    }
+    },
+    "anyCompany": "Другая / Любая компания"
   },
   "referral": {
     "copied": "Скопировано!",
@@ -1524,7 +1558,9 @@
       "enterCodeDescription": "Мы отправили 6-значный код на {{email}}.",
       "codeLabel": "Код подтверждения",
       "codePlaceholder": "6-значный код",
-      "verifyCode": "Подтвердить"
+      "verifyCode": "Подтвердить",
+      "personalEmailBlock": "Это личный почтовый сервис — используйте официальную школьную почту.",
+      "emailDomainWarn": "Это не похоже на почту {{school}} — адрес должен заканчиваться на @{{domain}}."
     }
   },
   "shell": {
@@ -1538,7 +1574,8 @@
     "sectionMenu": "Меню",
     "sectionAccount": "Аккаунт",
     "footer": "Saveur · карьерный коучинг с ИИ",
-    "footerSupport": "Помощь и поддержка"
+    "footerSupport": "Помощь и поддержка",
+    "more": "Ещё"
   },
   "subscription": {
     "checkoutFailedDefault": "Не удалось начать оформление заказа. Попробуйте снова.",
@@ -1741,7 +1778,23 @@
     "xpLabel": "XP",
     "you": "Вы",
     "yourCareerGoal": "Ваша карьерная цель",
-    "leaderboardEmptyDescription": "Загляните позже, когда вы и другие пользователи наберёте немного практики."
+    "leaderboardEmptyDescription": "Загляните позже, когда вы и другие пользователи наберёте немного практики.",
+    "skillLabels": {
+      "confidence": "Уверенность",
+      "communication": "Коммуникация",
+      "technical": "Технические навыки",
+      "leadership": "Лидерство",
+      "problem_solving": "Решение проблем",
+      "creativity": "Креативность",
+      "critical_thinking": "Критическое мышление"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "Элевейтор-питч",
+      "coding_problem": "Задача по программированию",
+      "salary_negotiation": "Переговоры о зарплате",
+      "leadership_scenario": "Лидерский сценарий",
+      "public_speaking": "Публичные выступления"
+    }
   },
   "error": {
     "title": "Что-то пошло не так",
@@ -1790,7 +1843,13 @@
     "confidence": "Достоверность",
     "factors": "Что влияет на эту цифру",
     "toNegotiation": "Потренироваться в переговорах",
-    "unavailable": "Зарплатный ориентир сейчас недоступен. Загляните позже."
+    "unavailable": "Зарплатный ориентир сейчас недоступен. Загляните позже.",
+    "position_below_market": "Ниже рынка",
+    "position_at_market": "На уровне рынка",
+    "position_above_market": "Выше рынка",
+    "confidence_low": "Низкая",
+    "confidence_medium": "Средняя",
+    "confidence_high": "Высокая"
   },
   "growth": {
     "title": "Карьерный рост",
@@ -1831,7 +1890,14 @@
     "risks": "Чего остерегаться",
     "premiumPaywall": "План повышения — функция тарифа Premium.",
     "upgradePremium": "Перейти на Premium",
-    "upgrade": "Улучшить"
+    "upgrade": "Улучшить",
+    "kind": {
+      "start": "Старт",
+      "raise": "Повышение зарплаты",
+      "promotion": "Повышение в должности",
+      "job_change": "Смена работы",
+      "other": "Другое"
+    }
   },
   "careerDiary": {
     "today": "Сегодня",
@@ -1846,7 +1912,12 @@
     "empty": "Добавьте первую выше.",
     "composerPlaceholder": "Что вы сегодня сделали, узнали или чего достигли?",
     "roleLabel": "Должность / карьера / работа (необязательно)",
-    "saving": "Сохранение…"
+    "saving": "Сохранение…",
+    "category": {
+      "did": "Сделал",
+      "learned": "Узнал",
+      "achieved": "Достиг"
+    }
   },
   "goals": {
     "loadFailedDefault": "Не удалось загрузить ваши цели.",
@@ -2195,7 +2266,15 @@
   },
   "coachingReport": {
     "title": "Отчёт коучинга",
-    "subtitle": "Что у вас получается хорошо и над чем работать дальше — по вашим последним пробным собеседованиям."
+    "subtitle": "Что у вас получается хорошо и над чем работать дальше — по вашим последним пробным собеседованиям.",
+    "performingWell": "Что получается хорошо",
+    "keyInsights": "Ключевые выводы",
+    "areasToImprove": "Что улучшить",
+    "whatsNext": "Что дальше",
+    "emptyBody": "Ваш отчёт коучинга пуст — пройдите {{count}} пробных интервью, чтобы увидеть, что у вас получается хорошо и над чем работать дальше.",
+    "emptyCta": "Пройти пробное интервью",
+    "basedOnSessions": "На основе ваших последних {{count}} пробных интервью",
+    "panelEmpty": "Пока здесь ничего нет."
   },
   "rating": {
     "title": "Нравится Saveur?",
@@ -2229,7 +2308,11 @@
   "errorsGeneric": {
     "checkDetails": "Что-то пошло не так. Проверьте данные и повторите попытку.",
     "offline": "Нет подключения к интернету. Проверьте соединение и повторите попытку.",
-    "somethingWentWrong": "Что-то пошло не так. Повторите попытку."
+    "somethingWentWrong": "Что-то пошло не так. Повторите попытку.",
+    "requestFailed": "Запрос не выполнен (статус {{status}})",
+    "notEnoughCredits": "Недостаточно кредитов.",
+    "downloadFailed": "Не удалось скачать (статус {{status}})",
+    "exportFailed": "Не удалось экспортировать (статус {{status}})"
   },
   "fields": {
     "country": "Страна",
@@ -2458,5 +2541,12 @@
       "followup_draft": "Черновик напоминания",
       "daily_challenge_submit": "Ежедневный челлендж"
     }
+  },
+  "upload": {
+    "uploadingPercent": "Загрузка… {{percent}}%",
+    "processing": "Загрузка завершена — идёт обработка…",
+    "done": "Успешно загружено",
+    "failed": "Не удалось загрузить. Попробуйте ещё раз.",
+    "dismiss": "Закрыть"
   }
 }

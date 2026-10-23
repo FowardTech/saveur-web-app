@@ -260,7 +260,13 @@
       "totalStepsLabel": "Total des étapes",
       "allComplete": "Vous avez atteint tous les jalons vers {{role}} !",
       "milestoneOverview": "Aperçu des jalons",
-      "typeCaption": "{{completed}} sur {{total}} étapes terminées"
+      "typeCaption": "{{completed}} sur {{total}} étapes terminées",
+      "type": {
+        "skill": "Compétences",
+        "project": "Projets",
+        "interview": "Entretiens",
+        "milestone": "Étapes clés"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "Votre demande",
@@ -449,7 +455,8 @@
       "promptBody": "Votre coach IA n'est aussi bon que ce qu'il sait de vous. Terminez ces {{count}} étapes rapides pour qu'il vous aide de façon plus précise et personnelle.",
       "promptCta": "Commencer : {{step}}",
       "promptLater": "Je le ferai plus tard"
-    }
+    },
+    "toolsTitle": "Accédez à un outil"
   },
   "jobAlerts": {
     "empty": "Pas encore d'alertes emploi — revenez après votre prochaine actualisation.",
@@ -511,7 +518,8 @@
       "shareRequestPending": "Demande en attente",
       "shareSendRequest": "Envoyer une demande de connexion",
       "applicationTrackedBody": "{{role}} chez {{company}} a été ajouté à votre suivi des candidatures.",
-      "theEmployersSite": "le site de l'employeur"
+      "theEmployersSite": "le site de l'employeur",
+      "shareText": "Découvrez cette offre : {{title}} chez {{company}} — via Saveur."
     },
     "filteredByCompany": "Affichage des offres de {{company}}",
     "clearFilter": "Retirer le filtre",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "Entraînez-vous face à un style d'intervieweur précis : le Laboratoire d'entretiens IA.",
       "freeLimitReachedBody": "Les forfaits gratuits incluent {{limit}} séances d'entraînement par mois. Passez à Basic pour un entraînement illimité.",
       "upgradeToBasic": "Passer à Basic",
-      "goToCodingPractice": "Aller à l'entraînement au code"
+      "goToCodingPractice": "Aller à l'entraînement au code",
+      "modes": {
+        "voice": "Voix",
+        "text": "Texte",
+        "video": "Vidéo"
+      },
+      "modeDescriptions": {
+        "voice": "Répondez à voix haute et recevez un retour oral",
+        "text": "Écrivez vos réponses à votre rythme",
+        "video": "Entraînez-vous face caméra comme dans un vrai entretien"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "Achetez le module Mises en situation pratiques depuis votre compte pour débloquer ce mode d'entraînement.",
@@ -963,7 +981,13 @@
       "rubricScores": "Scores par compétence",
       "summary": "Résumé",
       "decisionByDecision": "Décision par décision",
-      "stepLabel": "Étape {{order}}"
+      "stepLabel": "Étape {{order}}",
+      "scores": {
+        "judgment": "Jugement",
+        "domainKnowledge": "Connaissance du domaine",
+        "communication": "Communication",
+        "criticalThinking": "Esprit critique"
+      }
     },
     "history": {
       "durationMin": "{{min}} min",
@@ -1011,7 +1035,16 @@
       "fillers": "Mots de remplissage",
       "longPauses": "Longues pauses",
       "transcript": "Transcription",
-      "discussWithCoach": "Discuter de cet entretien avec votre coach"
+      "discussWithCoach": "Discuter de cet entretien avec votre coach",
+      "skills": {
+        "confidence": "Confiance",
+        "communication": "Communication",
+        "technical": "Compétence technique",
+        "leadership": "Leadership",
+        "problem_solving": "Résolution de problèmes",
+        "creativity": "Créativité",
+        "critical_thinking": "Esprit critique"
+      }
     },
     "schedule": {
       "dateTimeRequired": "Choisissez une date et une heure pour le rappel.",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "Entrée pré-remplie (facultatif) — une valeur par ligne",
       "stdinPrefillPlaceholder": "Ignorez ceci : votre programme demandera la saisie dans la console ci-dessus",
       "consoleInputLabel": "Entrée du programme"
-    }
+    },
+    "anyCompany": "Autre / Toute entreprise"
   },
   "referral": {
     "copied": "Copié !",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "Nous avons envoyé un code à 6 chiffres à {{email}}.",
       "codeLabel": "Code de vérification",
       "codePlaceholder": "Code à 6 chiffres",
-      "verifyCode": "Vérifier"
+      "verifyCode": "Vérifier",
+      "personalEmailBlock": "Il s’agit d’un fournisseur de messagerie personnel — veuillez utiliser votre adresse e-mail scolaire officielle.",
+      "emailDomainWarn": "Cela ne ressemble pas à une adresse e-mail de {{school}} — elle devrait se terminer par @{{domain}}."
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "Menu",
     "sectionAccount": "Compte",
     "footer": "Saveur · coaching de carrière par IA",
-    "footerSupport": "Aide et assistance"
+    "footerSupport": "Aide et assistance",
+    "more": "Plus"
   },
   "subscription": {
     "checkoutFailedDefault": "Impossible de démarrer le paiement. Veuillez réessayer.",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "Vous",
     "yourCareerGoal": "Votre objectif de carrière",
-    "leaderboardEmptyDescription": "Revenez quand vous et d'autres aurez enregistré de l'activité d'entraînement."
+    "leaderboardEmptyDescription": "Revenez quand vous et d'autres aurez enregistré de l'activité d'entraînement.",
+    "skillLabels": {
+      "confidence": "Confiance",
+      "communication": "Communication",
+      "technical": "Compétence technique",
+      "leadership": "Leadership",
+      "problem_solving": "Résolution de problèmes",
+      "creativity": "Créativité",
+      "critical_thinking": "Esprit critique"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "Pitch express",
+      "coding_problem": "Problème de code",
+      "salary_negotiation": "Négociation salariale",
+      "leadership_scenario": "Scénario de leadership",
+      "public_speaking": "Prise de parole en public"
+    }
   },
   "error": {
     "title": "Une erreur s'est produite",
@@ -1782,7 +1835,13 @@
     "confidence": "Confiance",
     "factors": "Ce qui fait varier ce chiffre",
     "toNegotiation": "S'entraîner à négocier",
-    "unavailable": "La Référence salariale est indisponible pour le moment. Revenez bientôt."
+    "unavailable": "La Référence salariale est indisponible pour le moment. Revenez bientôt.",
+    "position_below_market": "Sous le marché",
+    "position_at_market": "Dans le marché",
+    "position_above_market": "Au-dessus du marché",
+    "confidence_low": "Faible",
+    "confidence_medium": "Moyenne",
+    "confidence_high": "Élevée"
   },
   "growth": {
     "title": "Évolution de carrière",
@@ -1823,7 +1882,14 @@
     "risks": "Points de vigilance",
     "premiumPaywall": "Le plan de promotion est une fonctionnalité Premium.",
     "upgradePremium": "Passer à Premium",
-    "upgrade": "Passer à la version supérieure"
+    "upgrade": "Passer à la version supérieure",
+    "kind": {
+      "start": "Début",
+      "raise": "Augmentation",
+      "promotion": "Promotion",
+      "job_change": "Changement de poste",
+      "other": "Autre"
+    }
   },
   "careerDiary": {
     "today": "Aujourd'hui",
@@ -1838,7 +1904,12 @@
     "empty": "Ajoutez la première ci-dessus.",
     "composerPlaceholder": "Qu'avez-vous fait, appris ou accompli aujourd'hui ?",
     "roleLabel": "Poste / carrière / emploi (facultatif)",
-    "saving": "Enregistrement…"
+    "saving": "Enregistrement…",
+    "category": {
+      "did": "Fait",
+      "learned": "Appris",
+      "achieved": "Réalisé"
+    }
   },
   "goals": {
     "loadFailedDefault": "Impossible de charger vos objectifs.",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "Rapport de coaching",
-    "subtitle": "Ce que vous faites bien et ce qu'il faut travailler ensuite, d'après vos simulations récentes."
+    "subtitle": "Ce que vous faites bien et ce qu'il faut travailler ensuite, d'après vos simulations récentes.",
+    "performingWell": "Points forts",
+    "keyInsights": "Enseignements clés",
+    "areasToImprove": "Axes d’amélioration",
+    "whatsNext": "Prochaines étapes",
+    "emptyBody": "Votre rapport de coaching est vide — réalisez {{count}} simulations d’entretien pour voir vos points forts et ce qu’il faut travailler ensuite.",
+    "emptyCta": "S’entraîner avec un entretien simulé",
+    "basedOnSessions": "Basé sur vos {{count}} derniers entretiens simulés",
+    "panelEmpty": "Rien pour le moment."
   },
   "rating": {
     "title": "Vous aimez Saveur ?",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "Une erreur s'est produite. Vérifiez vos informations et réessayez.",
     "offline": "Pas de connexion internet. Vérifiez votre connexion et réessayez.",
-    "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer."
+    "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer.",
+    "requestFailed": "La requête a échoué (statut {{status}})",
+    "notEnoughCredits": "Crédits insuffisants.",
+    "downloadFailed": "Le téléchargement a échoué (statut {{status}})",
+    "exportFailed": "L’exportation a échoué (statut {{status}})"
   },
   "fields": {
     "country": "Pays",
@@ -2450,5 +2533,12 @@
       "followup_draft": "Brouillon de relance",
       "daily_challenge_submit": "Défi quotidien"
     }
+  },
+  "upload": {
+    "uploadingPercent": "Téléversement… {{percent}} %",
+    "processing": "Téléversement terminé — traitement en cours…",
+    "done": "Téléversé avec succès",
+    "failed": "Échec du téléversement. Veuillez réessayer.",
+    "dismiss": "Fermer"
   }
 }

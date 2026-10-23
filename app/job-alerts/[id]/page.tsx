@@ -140,7 +140,7 @@ export default function JobAlertDetailsPage() {
     if (!alert) return;
     const shareData = {
       title: alert.title,
-      text: `Check out this job: ${alert.title} at ${alert.company} — via Saveur.`,
+      text: t("web:jobAlerts.details.shareText", { defaultValue: "Check out this job: {{title}} at {{company}} — via Saveur.", title: alert.title, company: alert.company }),
       url: window.location.href,
     };
     if (typeof navigator !== "undefined" && navigator.share) {

@@ -344,7 +344,7 @@ export default function ScheduleInterviewPage() {
                           ) : undefined
                         }
                       >
-                        {name}
+                        {isRealCompany ? name : t("web:practice.anyCompany", { defaultValue: "Other / Any Company" })}
                       </Pill>
                     );
                   })}

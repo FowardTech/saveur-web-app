@@ -260,7 +260,13 @@
       "totalStepsLabel": "Passi totali",
       "allComplete": "Hai raggiunto tutti i traguardi verso {{role}}!",
       "milestoneOverview": "Panoramica dei traguardi",
-      "typeCaption": "{{completed}} di {{total}} passi completati"
+      "typeCaption": "{{completed}} di {{total}} passi completati",
+      "type": {
+        "skill": "Competenze",
+        "project": "Progetti",
+        "interview": "Colloqui",
+        "milestone": "Traguardi"
+      }
     },
     "salaryNegotiation": {
       "askLabel": "La tua richiesta",
@@ -449,7 +455,8 @@
       "promptBody": "Il tuo coach IA è valido quanto ciò che sa di te. Completa questi {{count}} passaggi rapidi per ricevere un aiuto più preciso e personale.",
       "promptCta": "Inizia: {{step}}",
       "promptLater": "Lo farò più tardi"
-    }
+    },
+    "toolsTitle": "Vai direttamente a uno strumento"
   },
   "jobAlerts": {
     "empty": "Nessun avviso di lavoro ancora — torna a controllare dopo il prossimo aggiornamento.",
@@ -511,7 +518,8 @@
       "shareRequestPending": "Richiesta in sospeso",
       "shareSendRequest": "Invia richiesta di connessione",
       "applicationTrackedBody": "{{role}} presso {{company}} è stato aggiunto al tuo Monitoraggio candidature.",
-      "theEmployersSite": "il sito del datore di lavoro"
+      "theEmployersSite": "il sito del datore di lavoro",
+      "shareText": "Dai un’occhiata a questo lavoro: {{title}} presso {{company}} — tramite Saveur."
     },
     "filteredByCompany": "Annunci di {{company}}",
     "clearFilter": "Rimuovi filtro",
@@ -879,7 +887,17 @@
       "interviewerPersonalityDescription": "Esercitati con uno stile di intervistatore specifico: il Laboratorio di colloqui IA.",
       "freeLimitReachedBody": "I piani gratuiti includono {{limit}} sessioni di pratica al mese. Passa a Basic per una pratica illimitata.",
       "upgradeToBasic": "Passa a Basic",
-      "goToCodingPractice": "Vai alla pratica di programmazione"
+      "goToCodingPractice": "Vai alla pratica di programmazione",
+      "modes": {
+        "voice": "Voce",
+        "text": "Testo",
+        "video": "Video"
+      },
+      "modeDescriptions": {
+        "voice": "Rispondi a voce e ricevi un feedback parlato",
+        "text": "Scrivi le risposte al tuo ritmo",
+        "video": "Esercitati davanti alla fotocamera come in un colloquio reale"
+      }
     },
     "scenarios": {
       "addonRequiredSubtitle": "Acquista il componente aggiuntivo Scenari pratici dal tuo account per sbloccare questa modalità di esercitazione.",
@@ -963,7 +981,13 @@
       "rubricScores": "Punteggi per competenza",
       "summary": "Riepilogo",
       "decisionByDecision": "Decisione per decisione",
-      "stepLabel": "Passo {{order}}"
+      "stepLabel": "Passo {{order}}",
+      "scores": {
+        "judgment": "Giudizio",
+        "domainKnowledge": "Conoscenza del settore",
+        "communication": "Comunicazione",
+        "criticalThinking": "Pensiero critico"
+      }
     },
     "history": {
       "durationMin": "{{min}} min",
@@ -1011,7 +1035,16 @@
       "fillers": "Intercalari",
       "longPauses": "Pause lunghe",
       "transcript": "Trascrizione",
-      "discussWithCoach": "Discuti questo colloquio con il tuo coach"
+      "discussWithCoach": "Discuti questo colloquio con il tuo coach",
+      "skills": {
+        "confidence": "Sicurezza",
+        "communication": "Comunicazione",
+        "technical": "Competenza tecnica",
+        "leadership": "Leadership",
+        "problem_solving": "Problem solving",
+        "creativity": "Creatività",
+        "critical_thinking": "Pensiero critico"
+      }
     },
     "schedule": {
       "dateTimeRequired": "Scegli data e ora per il promemoria.",
@@ -1131,7 +1164,8 @@
       "stdinPrefillLabel": "Input precompilato (facoltativo) — un valore per riga",
       "stdinPrefillPlaceholder": "Salta questo: il programma chiederà l'input nella console sopra",
       "consoleInputLabel": "Input del programma"
-    }
+    },
+    "anyCompany": "Altra / Qualsiasi azienda"
   },
   "referral": {
     "copied": "Copiato!",
@@ -1516,7 +1550,9 @@
       "enterCodeDescription": "Abbiamo inviato un codice di 6 cifre a {{email}}.",
       "codeLabel": "Codice di verifica",
       "codePlaceholder": "Codice di 6 cifre",
-      "verifyCode": "Verifica"
+      "verifyCode": "Verifica",
+      "personalEmailBlock": "Questo è un provider di posta personale — usa invece l’indirizzo email ufficiale della tua scuola.",
+      "emailDomainWarn": "Non sembra un indirizzo email di {{school}} — dovrebbe terminare con @{{domain}}."
     }
   },
   "shell": {
@@ -1530,7 +1566,8 @@
     "sectionMenu": "Menu",
     "sectionAccount": "Account",
     "footer": "Saveur · coaching di carriera con IA",
-    "footerSupport": "Aiuto e supporto"
+    "footerSupport": "Aiuto e supporto",
+    "more": "Altro"
   },
   "subscription": {
     "checkoutFailedDefault": "Impossibile avviare il pagamento. Riprova.",
@@ -1733,7 +1770,23 @@
     "xpLabel": "XP",
     "you": "Tu",
     "yourCareerGoal": "Il tuo obiettivo di carriera",
-    "leaderboardEmptyDescription": "Ricontrolla quando tu e altri avrete registrato un po' di attività di pratica."
+    "leaderboardEmptyDescription": "Ricontrolla quando tu e altri avrete registrato un po' di attività di pratica.",
+    "skillLabels": {
+      "confidence": "Sicurezza",
+      "communication": "Comunicazione",
+      "technical": "Competenza tecnica",
+      "leadership": "Leadership",
+      "problem_solving": "Problem solving",
+      "creativity": "Creatività",
+      "critical_thinking": "Pensiero critico"
+    },
+    "challengeTypes": {
+      "elevator_pitch": "Elevator pitch",
+      "coding_problem": "Problema di coding",
+      "salary_negotiation": "Negoziazione salariale",
+      "leadership_scenario": "Scenario di leadership",
+      "public_speaking": "Parlare in pubblico"
+    }
   },
   "error": {
     "title": "Qualcosa è andato storto",
@@ -1782,7 +1835,13 @@
     "confidence": "Affidabilità",
     "factors": "Cosa influisce su questa cifra",
     "toNegotiation": "Esercitati nella negoziazione",
-    "unavailable": "Il Benchmark salariale non è disponibile al momento. Ricontrolla presto."
+    "unavailable": "Il Benchmark salariale non è disponibile al momento. Ricontrolla presto.",
+    "position_below_market": "Sotto il mercato",
+    "position_at_market": "In linea con il mercato",
+    "position_above_market": "Sopra il mercato",
+    "confidence_low": "Bassa",
+    "confidence_medium": "Media",
+    "confidence_high": "Alta"
   },
   "growth": {
     "title": "Crescita professionale",
@@ -1823,7 +1882,14 @@
     "risks": "Attenzione a",
     "premiumPaywall": "Il piano di promozione è una funzione Premium.",
     "upgradePremium": "Passa a Premium",
-    "upgrade": "Passa a un piano superiore"
+    "upgrade": "Passa a un piano superiore",
+    "kind": {
+      "start": "Inizio",
+      "raise": "Aumento",
+      "promotion": "Promozione",
+      "job_change": "Cambio di lavoro",
+      "other": "Altro"
+    }
   },
   "careerDiary": {
     "today": "Oggi",
@@ -1838,7 +1904,12 @@
     "empty": "Aggiungi la tua prima qui sopra.",
     "composerPlaceholder": "Cosa hai fatto, imparato o ottenuto oggi?",
     "roleLabel": "Ruolo / carriera / lavoro (facoltativo)",
-    "saving": "Salvataggio…"
+    "saving": "Salvataggio…",
+    "category": {
+      "did": "Fatto",
+      "learned": "Imparato",
+      "achieved": "Ottenuto"
+    }
   },
   "goals": {
     "loadFailedDefault": "Impossibile caricare i tuoi obiettivi.",
@@ -2187,7 +2258,15 @@
   },
   "coachingReport": {
     "title": "Rapporto di coaching",
-    "subtitle": "Cosa fai bene e su cosa lavorare dopo, in base ai tuoi colloqui di prova recenti."
+    "subtitle": "Cosa fai bene e su cosa lavorare dopo, in base ai tuoi colloqui di prova recenti.",
+    "performingWell": "Cosa va bene",
+    "keyInsights": "Approfondimenti chiave",
+    "areasToImprove": "Aree da migliorare",
+    "whatsNext": "Prossimi passi",
+    "emptyBody": "Il tuo report di coaching è vuoto — completa {{count}} colloqui simulati per vedere cosa fai bene e su cosa lavorare dopo.",
+    "emptyCta": "Esercitati con un colloquio simulato",
+    "basedOnSessions": "In base agli ultimi {{count}} colloqui simulati",
+    "panelEmpty": "Ancora niente qui."
   },
   "rating": {
     "title": "Ti piace Saveur?",
@@ -2221,7 +2300,11 @@
   "errorsGeneric": {
     "checkDetails": "Qualcosa è andato storto. Controlla i dati e riprova.",
     "offline": "Nessuna connessione a internet. Controlla la connessione e riprova.",
-    "somethingWentWrong": "Qualcosa è andato storto. Riprova."
+    "somethingWentWrong": "Qualcosa è andato storto. Riprova.",
+    "requestFailed": "Richiesta non riuscita (stato {{status}})",
+    "notEnoughCredits": "Crediti insufficienti.",
+    "downloadFailed": "Download non riuscito (stato {{status}})",
+    "exportFailed": "Esportazione non riuscita (stato {{status}})"
   },
   "fields": {
     "country": "Paese",
@@ -2450,5 +2533,12 @@
       "followup_draft": "Bozza di follow-up",
       "daily_challenge_submit": "Sfida giornaliera"
     }
+  },
+  "upload": {
+    "uploadingPercent": "Caricamento… {{percent}}%",
+    "processing": "Caricamento completato — elaborazione in corso…",
+    "done": "Caricato con successo",
+    "failed": "Caricamento non riuscito. Riprova.",
+    "dismiss": "Chiudi"
   }
 }
