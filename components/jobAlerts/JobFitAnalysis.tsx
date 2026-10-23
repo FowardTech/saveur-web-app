@@ -1,8 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as jdService from "@/lib/jdService";
+import { Button } from "@/components/ui/Button";
+import { DocumentPickerModal } from "@/components/documents/DocumentPickerModal";
+import type { DocumentRecord } from "@/lib/documentsService";
+
+// Same one-shot sessionStorage hand-off app/jd-analyzer/page.tsx uses to
+// pass the job description to app/resume/generate/page.tsx (the JD can be
+// too long for a URL).
+const RESUME_GEN_INPUT_KEY = "saveur:resumeGenerate:input";
 
 // Web port of Saveur (mobile)'s src/more/JobFitAnalysis.tsx — see that
 // file's own header comment for the full design rationale. Reuses the same
@@ -32,8 +41,13 @@ interface JobFitAnalysisProps {
   jobTitle?: string;
 }
 
-export function JobFitAnalysis({ applyUrl }: JobFitAnalysisProps) {
+export function JobFitAnalysis({ applyUrl, jobTitle }: JobFitAnalysisProps) {
   const { t } = useTranslation();
+  const router = useRouter();
+  const [jdText, setJdText] = useState<string | null>(null);
+  const [showBuildChoices, setShowBuildChoices] = useState(false);
+  const [showTailorChoices, setShowTailorChoices] = useState(false);
+  const [showDocumentPicker, setShowDocumentPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [qualifications, setQualifications] = useState<string[]>([]);
   const [gaps, setGaps] = useState<string[]>([]);
@@ -55,6 +69,7 @@ export function JobFitAnalysis({ applyUrl }: JobFitAnalysisProps) {
         if (!text.trim()) throw new Error("empty jd");
         const [analysis, match] = await Promise.all([jdService.analyzeJD(text), jdService.matchJD(text)]);
         if (cancelled) return;
+        setJdText(text);
         setQualifications(analysis.mustHaves.length ? analysis.mustHaves : analysis.keywords);
         setGaps(match.missingSkills);
         setScore(match.score);
@@ -68,6 +83,28 @@ export function JobFitAnalysis({ applyUrl }: JobFitAnalysisProps) {
       cancelled = true;
     };
   }, [applyUrl]);
+
+  function goToGenerate(handoff: { useStoredResume?: boolean; existingResumeDocumentId?: string }) {
+    if (!jdText) return;
+    try {
+      sessionStorage.setItem(RESUME_GEN_INPUT_KEY, JSON.stringify({ jdText, ...handoff }));
+    } catch {
+      // sessionStorage unavailable — the generate page just builds fresh
+    }
+    const role = jobTitle?.trim() ? `&role=${encodeURIComponent(jobTitle.trim())}` : "";
+    router.push(`/resume/generate?docType=resume${role}`);
+  }
+
+  function closeChoices() {
+    setShowBuildChoices(false);
+    setShowTailorChoices(false);
+  }
+
+  function onPickedDocumentToTailor(doc: DocumentRecord) {
+    setShowDocumentPicker(false);
+    closeChoices();
+    goToGenerate({ existingResumeDocumentId: doc.id });
+  }
 
   if (failed) return null;
 
@@ -128,6 +165,59 @@ export function JobFitAnalysis({ applyUrl }: JobFitAnalysisProps) {
           {t("web:jobAlerts.details.jobFitNoGaps", { defaultValue: "Your resume already covers this role's key requirements." })}
         </p>
       )}
+      {jdText && (
+        <Button type="button" onClick={() => setShowBuildChoices(true)} className="w-full justify-center">
+          {t("web:jdAnalyzer.buildResumeCta", { defaultValue: "Build Resume" })}
+        </Button>
+      )}
+
+      {/* Build Resume choice sheet: fresh vs. tailor an existing one (same
+          flow as app/jd-analyzer/page.tsx and mobile's JobFitAnalysis). */}
+      {showBuildChoices && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={closeChoices}>
+          <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+            <h2 className="mb-1 font-semibold text-primary">{t("web:jdAnalyzer.buildResumeCta", { defaultValue: "Build Resume" })}</h2>
+            <p className="mb-4 text-sm text-hint">{t("web:jdAnalyzer.buildResumeChoiceDescription", { defaultValue: "Tailor a resume you already have to this job, or build a brand-new one from scratch." })}</p>
+            <div className="flex flex-col gap-2">
+              <Button type="button" onClick={() => { closeChoices(); goToGenerate({}); }}>
+                {t("web:jdAnalyzer.buildResumeFresh", { defaultValue: "Build a fresh one" })}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => { setShowBuildChoices(false); setShowTailorChoices(true); }}>
+                {t("web:jdAnalyzer.buildResumeTailor", { defaultValue: "Tailor an existing resume" })}
+              </Button>
+              <Button type="button" variant="ghost" onClick={closeChoices}>
+                {t("common:cancel", { defaultValue: "Cancel" })}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTailorChoices && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={closeChoices}>
+          <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-t-card border border-border bg-surface-2 p-6 sm:rounded-card" onClick={(e) => e.stopPropagation()}>
+            <h2 className="mb-4 font-semibold text-primary">{t("web:jdAnalyzer.buildResumeTailor", { defaultValue: "Tailor an existing resume" })}</h2>
+            <div className="flex flex-col gap-2">
+              <Button type="button" onClick={() => { closeChoices(); goToGenerate({ useStoredResume: true }); }}>
+                {t("web:jdAnalyzer.tailorMyGeneratedResume", { defaultValue: "My generated resume" })}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowDocumentPicker(true)}>
+                {t("web:jdAnalyzer.chooseFromMyDocuments", { defaultValue: "Choose from My Documents" })}
+              </Button>
+              <Button type="button" variant="ghost" onClick={closeChoices}>
+                {t("common:cancel", { defaultValue: "Cancel" })}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <DocumentPickerModal
+        open={showDocumentPicker}
+        onClose={() => setShowDocumentPicker(false)}
+        onSelect={onPickedDocumentToTailor}
+        title={t("web:jdAnalyzer.buildResumeTailor", { defaultValue: "Tailor an existing resume" }).toString()}
+      />
     </div>
   );
 }
