@@ -241,7 +241,7 @@ function JobAlertsPageInner() {
               <EvaIcon name="info-outline" size={18} className="mt-0.5 shrink-0" />
               <p>
                 {t("web:jobAlerts.retentionNotice", {
-                  defaultValue: "Job alerts auto-delete after 1 month. Tap the pin icon on one to keep it for 6 months instead.",
+                  defaultValue: "Job alerts auto-delete after 2 weeks. Tap the pin icon on one to keep it for 2 months instead.",
                 })}
               </p>
             </div>

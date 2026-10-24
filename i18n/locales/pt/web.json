@@ -534,7 +534,7 @@
     "saved": "Salva",
     "saveJob": "Salvar",
     "applyButton": "Candidatar-se",
-    "retentionNotice": "Os alertas de emprego são excluídos automaticamente após 1 mês. Toque no ícone de fixar para mantê-lo por 6 meses."
+    "retentionNotice": "Os alertas de emprego são excluídos automaticamente após 2 semanas. Toque no ícone de fixar para mantê-lo por 2 meses."
   },
   "landing": {
     "bottomCtaButton": "Crie sua conta gratuita",

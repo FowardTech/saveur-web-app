@@ -534,7 +534,7 @@
     "saved": "Gespeichert",
     "saveJob": "Speichern",
     "applyButton": "Bewerben",
-    "retentionNotice": "Job-Benachrichtigungen werden nach 1 Monat automatisch gelöscht. Tippe auf das Pin-Symbol, um eine stattdessen 6 Monate lang zu behalten."
+    "retentionNotice": "Job-Benachrichtigungen werden nach 2 Wochen automatisch gelöscht. Tippe auf das Pin-Symbol, um eine stattdessen 2 Monate lang zu behalten."
   },
   "landing": {
     "bottomCtaButton": "Kostenloses Konto erstellen",

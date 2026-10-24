@@ -534,7 +534,7 @@
     "saved": "Enregistré",
     "saveJob": "Enregistrer",
     "applyButton": "Postuler",
-    "retentionNotice": "Les alertes emploi sont automatiquement supprimées après 1 mois. Appuyez sur l'icône d'épingle pour en conserver une pendant 6 mois à la place."
+    "retentionNotice": "Les alertes emploi sont automatiquement supprimées après 2 semaines. Appuyez sur l'icône d'épingle pour en conserver une pendant 2 mois à la place."
   },
   "landing": {
     "bottomCtaButton": "Créez votre compte gratuit",

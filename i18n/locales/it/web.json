@@ -534,7 +534,7 @@
     "saved": "Salvato",
     "saveJob": "Salva",
     "applyButton": "Candidati",
-    "retentionNotice": "Gli avvisi di lavoro si eliminano automaticamente dopo 1 mese. Tocca l'icona del segnalibro per conservarne uno per 6 mesi."
+    "retentionNotice": "Gli avvisi di lavoro si eliminano automaticamente dopo 2 settimane. Tocca l'icona del segnalibro per conservarne uno per 2 mesi."
   },
   "landing": {
     "bottomCtaButton": "Crea il tuo account gratuito",

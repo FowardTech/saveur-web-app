@@ -534,7 +534,7 @@
     "saved": "已保存",
     "saveJob": "保存",
     "applyButton": "申请",
-    "retentionNotice": "职位提醒会在1个月后自动删除。点击图钉图标可改为保留6个月。"
+    "retentionNotice": "职位提醒会在2周后自动删除。点击图钉图标可改为保留2个月。"
   },
   "landing": {
     "bottomCtaButton": "创建免费账户",

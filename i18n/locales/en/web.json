@@ -602,7 +602,7 @@
     "saved": "Saved",
     "saveJob": "Save",
     "applyButton": "Apply",
-    "retentionNotice": "Job alerts auto-delete after 1 month. Tap the pin icon on one to keep it for 6 months instead."
+    "retentionNotice": "Job alerts auto-delete after 2 weeks. Tap the pin icon on one to keep it for 2 months instead."
   },
   "landing": {
     "bottomCtaButton": "Create your free account",
