@@ -533,7 +533,8 @@
     "saveJobAria": "Enregistrer cet emploi",
     "saved": "Enregistré",
     "saveJob": "Enregistrer",
-    "applyButton": "Postuler"
+    "applyButton": "Postuler",
+    "retentionNotice": "Les alertes emploi sont automatiquement supprimées après 1 mois. Appuyez sur l'icône d'épingle pour en conserver une pendant 6 mois à la place."
   },
   "landing": {
     "bottomCtaButton": "Créez votre compte gratuit",

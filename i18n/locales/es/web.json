@@ -533,7 +533,8 @@
     "saveJobAria": "Guardar este empleo",
     "saved": "Guardado",
     "saveJob": "Guardar",
-    "applyButton": "Postularse"
+    "applyButton": "Postularse",
+    "retentionNotice": "Las alertas de empleo se eliminan automáticamente después de 1 mes. Toca el ícono de fijar para conservar una durante 6 meses en su lugar."
   },
   "landing": {
     "bottomCtaButton": "Crea tu cuenta gratis",

@@ -235,6 +235,18 @@ function JobAlertsPageInner() {
 
           {error && <p className="text-sm text-danger">{error}</p>}
 
+          {/* Same retention notice as the mobile Job Alerts screen. */}
+          {!proRequired && (
+            <div className="flex items-start gap-2.5 rounded-card border border-border bg-surface-2 px-4 py-3 text-sm text-hint">
+              <EvaIcon name="info-outline" size={18} className="mt-0.5 shrink-0" />
+              <p>
+                {t("web:jobAlerts.retentionNotice", {
+                  defaultValue: "Job alerts auto-delete after 1 month. Tap the pin icon on one to keep it for 6 months instead.",
+                })}
+              </p>
+            </div>
+          )}
+
           {companyFilter && (
             <div className="flex items-center justify-between gap-3 rounded-card border border-dashed border-border p-3 text-sm">
               <span className="text-hint">

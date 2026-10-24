@@ -533,7 +533,8 @@
     "saveJobAria": "이 채용 저장",
     "saved": "저장됨",
     "saveJob": "저장",
-    "applyButton": "지원하기"
+    "applyButton": "지원하기",
+    "retentionNotice": "구직 알림은 1개월 후 자동으로 삭제됩니다. 대신 6개월간 보관하려면 고정 아이콘을 탭하세요."
   },
   "landing": {
     "bottomCtaButton": "무료 계정 만들기",

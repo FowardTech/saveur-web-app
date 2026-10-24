@@ -601,7 +601,8 @@
     "saveJobAria": "Save this job",
     "saved": "Saved",
     "saveJob": "Save",
-    "applyButton": "Apply"
+    "applyButton": "Apply",
+    "retentionNotice": "Job alerts auto-delete after 1 month. Tap the pin icon on one to keep it for 6 months instead."
   },
   "landing": {
     "bottomCtaButton": "Create your free account",

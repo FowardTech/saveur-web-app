@@ -533,7 +533,8 @@
     "saveJobAria": "Diesen Job speichern",
     "saved": "Gespeichert",
     "saveJob": "Speichern",
-    "applyButton": "Bewerben"
+    "applyButton": "Bewerben",
+    "retentionNotice": "Job-Benachrichtigungen werden nach 1 Monat automatisch gelöscht. Tippe auf das Pin-Symbol, um eine stattdessen 6 Monate lang zu behalten."
   },
   "landing": {
     "bottomCtaButton": "Kostenloses Konto erstellen",

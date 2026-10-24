@@ -533,7 +533,8 @@
     "saveJobAria": "Salvar esta vaga",
     "saved": "Salva",
     "saveJob": "Salvar",
-    "applyButton": "Candidatar-se"
+    "applyButton": "Candidatar-se",
+    "retentionNotice": "Os alertas de emprego são excluídos automaticamente após 1 mês. Toque no ícone de fixar para mantê-lo por 6 meses."
   },
   "landing": {
     "bottomCtaButton": "Crie sua conta gratuita",
